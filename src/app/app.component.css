@@ -1,0 +1,16 @@
+img {
+    max-width:30px;
+    height:auto;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+.smallTitle{
+font-size: 4.5vw;
+}
+
+.bigTitle{
+font-size: 1.25vw;
+}

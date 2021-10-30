@@ -1,0 +1,37 @@
+
+
+<div class="card-body p-0 pb-0 bg-{{storeInfo().colorStyle!.back_code}}">
+    <button [style.font-family]="storeInfo().fontName!" class="btn text-{{storeInfo().colorStyle!.text_code}}" 
+    (click) = 'openBtn()' 
+    type="submit"
+    style='
+    width: 100%;
+    height:10%;
+    display: block;
+    border:none;
+    font-weight: bold;
+    cursor:pointer;
+    '>
+        CLOSE
+    </button>
+    <div class="w-100" id="capture">
+        <iframe style="z-index: 1; position: absolute; border: 0; width:100%; height: 600px; overflow: auto;" [srcdoc]="myHtmlTemplate">
+        </iframe>
+    </div>
+    <div *ngIf="isSpinning" style="z-index: 2; position: absolute; border: 0; width:100%; height: 600px; overflow: auto;">
+        <ngx-spinner
+bdColor = '{{selectedIndicator().bg_color}}'
+size = "medium"
+color = '{{selectedIndicator().color}}'
+type = {{selectedIndicator().name}} 
+[fullScreen] = "false"
+style.color = "{{selectedIndicator()!.color}}"
+[disableAnimation] = "true"
+[name]="'modelSpinner'"
+>
+<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!" class="mt-5">Launching Model Viewer...
+</h3>
+</ngx-spinner>
+    </div>
+</div>
+

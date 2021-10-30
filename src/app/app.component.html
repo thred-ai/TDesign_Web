@@ -1,0 +1,56 @@
+
+<nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined"class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.back_code}} bg-{{storeInfo().colorStyle!.back_code}}">
+    <div class="container px-4 px-lg-5">
+        <img src='{{storeInfo().profileLink}}'/>
+        <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
+        <button class="navbar-toggler mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" aria-current="page"role="button" (click)="routeToHome()" [style.font-family]="storeInfo().fontName!">HOME</a></li>
+                <li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" role="button" (click)="routeToAbout()" [style.font-family]="storeInfo().fontName!">ABOUT</a></li>
+                <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo().username}}/blogs">Blogs</a></li> -->
+                
+                <li *ngIf="isShopComponent(); else elseBlock" class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" [style.font-family]="storeInfo().fontName!">SHOP</a>
+                    <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
+                        <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">All Products</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
+                    </ul>
+                </li>
+                <ng-template #elseBlock>
+                    <li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" role="button" (click)="routeToShop()" [style.font-family]="storeInfo().fontName!">SHOP</a></li>
+                </ng-template>
+                <li [hidden]="selectedCurrency() == undefined || !shouldShowCurrency()" class="nav-item dropdown">
+                    <a  class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{selectedCurrency()?.flag ?? ""}}</a>
+                    <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
+                        <li *ngFor="let currency of availableCurrencies()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" style.color="{{selectedTheme()!.color}}" role=button (click)="updateCurrency(currency)" [style.font-family]="storeInfo().fontName!" >{{currency.name}} {{currency.flag}}</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 " >
+                <li *ngIf="!(hideCart())" class="d-flex">
+                    <div class="nav-item dropdown">
+                        <button id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false" class="btn me-2">
+                            <img class="rounded-circle" src='/assets/account_{{storeInfo().colorStyle!.text_code}}.png'/>
+                        </button>
+                        <ul class="dropdown-menu mb-2"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
+                            <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)= "accountPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[0].Title}}</a></li>
+                            <li *ngFor="let option of settings(true)"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)= "routeToOrders()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{option.Title}}</a></li>
+                        </ul>
+                    </div>
+                    
+                </li>
+                <li *ngIf="!(hideCart())" [hidden]="selectedCurrency() == undefined" class="d-flex mt-1 mb-1">
+                    <a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToCart()" [style.font-family]="storeInfo().fontName!">
+                        MY BAG
+                        <span class="badge bg-{{storeInfo().colorStyle!.text_code}} text-{{storeInfo().colorStyle!.back_code}} ms-1 rounded-pill" [style.font-family]="storeInfo().fontName!">{{cartLength()}}</span>
+                    </a>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+  </nav>
+  <router-outlet></router-outlet>

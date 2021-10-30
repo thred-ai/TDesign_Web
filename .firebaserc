@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "clothingapp-ed125"
+  },
+  "targets": {
+    "clothingapp-ed125": {
+      "hosting": {
+        "thred-web": [
+          "clothingapp-ed125"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+
+<app-landing></app-landing>
+<ngx-spinner
+bdColor = '{{selectedIndicator().bg_color}}'
+size = "medium"
+color = '{{selectedIndicator().color}}'
+type = {{selectedIndicator().name}} 
+[fullScreen] = "false"
+style.color = "{{selectedIndicator()!.color}}"
+[disableAnimation] = "true"
+[name]="'loginSpinner'"
+>
+<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!" class="mt-5">{{loadingAction}}
+</h3>
+</ngx-spinner>
+
+<div class="wrapper w-100" style.background-color="{{selectedTheme()!.bg_color}}" >
+    <div class="w-100" id="formContent" style.background-color="{{selectedTheme()!.bg_color}}">
+      <!-- Tabs Titles -->
+      <!-- Login Form -->
+      <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} mt-5" style = "line-height:1.0em; font-size: 25px;font-weight: bold;">
+        Create your {{title}}
+       </p>
+       <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style.color="{{selectedTheme()!.color}}" style = "line-height:1.0em; font-size: 15px;font-weight: normal;">
+        Or log in below
+       </p>
+       <div class="container px-4 px-lg-5 mt-5" style = "width:300px">
+        <div style = "width:auto" class="row row-cols-3 row-cols-md-3 row-cols-xl-3 justify-content-center">
+            <div class="col">
+                <a class="brand-logo" role=button (click)="changeAuth(2)">
+                    <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/email.png'/>
+                </a>
+            </div>
+            <div class="col">
+                <a class="brand-logo" role=button (click)="useApple()">
+                    <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/apple_{{storeInfo().colorStyle!.back_code}}.png'/>
+                </a>
+            </div>
+            <div class="col">
+                <a class="brand-logo" role=button (click)="useGoogle()">
+                    <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/google.png'/>
+                </a>
+            </div>
+        </div>
+       </div>
+       <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
+        {{err}}
+       </p>
+       <div *ngIf="isSignUp()">
+        <form class = "mt-4" [formGroup]="authForm">
+            <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
+            <input [style.font-family]="storeInfo().fontName!" class = "fadeIn second bg-{{storeInfo().colorStyle!.back_code}}"  placeholder="Email Address" [email]="true" type="text" name="email" formControlName="email">
+
+            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}}" name="username" placeholder="Username" formControlName="username">
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}}" name="password" placeholder="Password" formControlName="password">
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword">
+            <!-- <input type="submit" class="fadeIn fourth mt-5" value="Create Account"> -->
+            <!-- <a type="submit" href="#" class="btn btn-primary mt-5 mb-5">Create Account</a>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> -->
+            <div>
+                <div class="col">
+                  <button [style.font-family]="storeInfo().fontName!" type="submit" role=button (click)="useEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-4 pe-4 fadeIn fourth" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CREATE ACCOUNT</button>
+                </div>
+            </div>
+          </form>
+          <div id="formFooter" class="bg-{{storeInfo().colorStyle!.back_code}}">
+            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{storeInfo().colorStyle!.text_code}}" role=button (click)="useGuest()" >No thanks, continue as Guest</a>
+          </div>
+       </div>
+       <div *ngIf="isSignIn()">
+        <form  class = "mt-4" [formGroup]="loginForm">
+            <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
+            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}}" name="username" placeholder="Username/Email" formControlName="username">
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}}" name="password" placeholder="Password" formControlName="password">
+            <!-- <button class="btn forgot underlineHover">Forgot Password</button> -->
+            <div>
+                <div class="col">
+                  <button [style.font-family]="storeInfo().fontName!" type="submit" role=button (click)="signInEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-4 pe-4 fadeIn fourth" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">SIGN IN</button>
+                </div>
+            </div>
+          </form>
+          <div id="formFooter"  class="bg-{{storeInfo().colorStyle!.back_code}}">
+            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{storeInfo().colorStyle!.text_code}}" role=button (click)="changeAuth(1)">Don't have an account?</a>
+          </div>
+        </div>
+      <!-- Remind Passowrd -->
+    </div>
+  </div>
