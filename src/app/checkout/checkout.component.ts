@@ -194,7 +194,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   async callback(){
     if (await this.loadService.authenticated()){
       if (Globals.storeInfo.username){
-        this.cardOptions.style!.paymentRequestButton.theme = this.theme()
+        // this.cardOptions.style!.paymentRequestButton.theme = this.theme()
 
         this.loadingName = this.storeInfo()?.fullName ?? ''
         this.showSpinner()
@@ -574,13 +574,13 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     requestPayerEmail: false,
   }
 
-  cardOptions: StripePaymentRequestButtonElementOptions = {
-    style:{
-      paymentRequestButton:{
-        theme:'dark',
-      }
-    },
-  };
+  // cardOptions: StripePaymentRequestButtonElementOptions = {
+  //   style:{
+  //     paymentRequestButton:{
+  //       theme:'dark',
+  //     }
+  //   },
+  // };
 
   
   constructor(

@@ -98,7 +98,6 @@ style.color = "{{selectedIndicator()!.color}}"
                 <ngx-stripe-payment-request-button
                 *ngIf="isBrowser() && tax() != undefined && billingAddress()?.admin_area != undefined && billingAddress()?.admin_area != ''"
                 [paymentOptions]="paymentRequestOptions"
-                [options]="cardOptions"
                 (paymentMethod)="onPaymentMethod($event)"
                 class="mb-4"
                 ></ngx-stripe-payment-request-button>
