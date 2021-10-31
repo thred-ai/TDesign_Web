@@ -1336,7 +1336,7 @@ isSpinning = false
 
   copyAffiliateURL(){
     this.toast("Affiliate link copied to clipboard!")
-    var host = 'www.shopmythred.com'
+    var host = 'shopmythred.com'
 
     this.clipboard.copy(host + "/?affiliate=" + this.storeInfo().uid);
   }
@@ -1705,7 +1705,7 @@ isSpinning = false
       else{
         request = globalThis.location.host
       }  
-      if (request != 'localhost:4200' && request != 'www.shopmythred.com'){
+      if (request != 'localhost:4200' && request != 'shopmythred.com'){
         return {
           isCustom: true,
           link: request
