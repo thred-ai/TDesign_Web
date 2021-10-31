@@ -329,7 +329,7 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
     else{
       request = globalThis.location.host
     }  
-    if (request != 'localhost:4200' && request != 'shopmythred.com'){
+    if (request != 'localhost:4200' && request != 'www.shopmythred.com'){
       return {
         isCustom: true,
         link: request

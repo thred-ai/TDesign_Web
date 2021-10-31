@@ -194,7 +194,7 @@ export class AppComponent implements OnInit {
     else{
       request = globalThis.location.host
     }  
-    if (request != 'localhost:4200' && request != 'shopmythred.com'){
+    if (request != 'localhost:4200' && request != 'www.shopmythred.com'){
       return {
         isCustom: true,
         link: request
