@@ -82,7 +82,7 @@ export class AppModule {
     if (globalThis.location){
         request = globalThis.location.host
     }
-    if (request != 'localhost:4200' && request != 'www.shopmythred.com' && request != ""){
+    if (request != 'localhost:4200' && request != 'shopmythred.com' && request != ""){
       console.log("URL: " + request)
       router.config = [
         { path: '', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
