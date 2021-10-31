@@ -86,7 +86,7 @@ export class RoutingService {
     if (externalURL){
       url = "externalURL" + "/" + "my-store"
       if (selected){
-        url += "/?selected=" + selected
+        url += "?selected=" + selected
       }
 
       window.location.href = url
@@ -99,7 +99,7 @@ export class RoutingService {
         url = storeName + "/" + "my-store"
       }
       if (selected){
-        url += "/?selected=" + selected
+        url += "?selected=" + selected
       }
       this._router.navigateByUrl(url)
     }

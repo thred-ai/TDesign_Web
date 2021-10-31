@@ -295,8 +295,11 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
   routeToReview(){
     if (isPlatformBrowser(this.platformID)){
           this.spinner.hide()
-   };
-    this.rootComponent.routeToProfile("billing")
+   }
+   console.log(Globals.storeInfo?.username!)
+   console.log(this.getStoreName().isCustom)
+
+   this.routingService.routeToProfile(Globals.storeInfo?.username!, this.getStoreName().isCustom, 'billing')
   }
   
   init() {
