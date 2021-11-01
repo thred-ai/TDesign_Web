@@ -1777,7 +1777,7 @@ isSpinning = false
       let ngbModalOptions: NgbModalOptions = {
         backdrop : 'static',
         keyboard : false,
-        size : "xl"
+        size : "md"
       };
       const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
       modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName}).length != 0})
