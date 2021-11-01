@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'app-social-form',
@@ -11,11 +12,16 @@ export class SocialFormComponent implements OnInit {
 
   linkImg?: string
   name?: string
+  isDomain = false
+  step = 0
+  copied = false
 
-  constructor(private fb: FormBuilder, private activeModal: NgbActiveModal) { }
+
+  constructor(private fb: FormBuilder, private activeModal: NgbActiveModal, private clipboard: Clipboard) { }
 
   socialForm = this.fb.group({
     link: [null],
+    dns: ["75.2.60.5"]
   });
 
 
@@ -23,16 +29,56 @@ export class SocialFormComponent implements OnInit {
     console.log(this.linkImg)
   }
 
+  copyDNS(){
+    this.copied = true
+
+    this.clipboard.copy(this.socialForm.controls.dns.value);
+  }
+
   close(){
-    this.activeModal.dismiss()
+    this.activeModal.dismiss('0')
+  }
+
+  btnName(){
+    if (this.step == 0){
+      return 'Save ' + name + ' URL'
+    }
+    else{
+      return 'Finish Setup'
+    }
   }
 
   finish(){
     var returnItem = this.socialForm.controls.link.value ?? undefined
 
     console.log(returnItem)
-    this.activeModal.dismiss(returnItem)
 
+    let link = returnItem as string
+
+    console.log(link.length)
+    var tester = /((ftp|http|https):\/\/)([a-z0-9][a-z0-9-]*)?((\.[a-z]{2,6})|(\.[a-z]{2,6})(\.[a-z]{2,6}))$/i
+    if (
+      this.isDomain
+      &&
+      link != ''
+      &&
+      ((link.indexOf('https://') != 0 
+      && 
+      link.indexOf('http://') != 0)
+      ||
+      !tester.test(link))
+      ||
+      link.includes('shopmythred.com')
+      ){
+      return
+    }
+
+    if (this.isDomain && this.step == 0){
+      this.step = 1
+      return
+    }
+
+    this.activeModal.dismiss(returnItem)
   }
   
 

@@ -4,10 +4,8 @@ export class StoreDomain {
   protocol: string
   status: number
   txt: string
+  fullURL?: string
 
-  fullURL(){
-    return this.protocol + "://" + this.host
-  }
 
   constructor(
     host: string,
@@ -20,5 +18,8 @@ export class StoreDomain {
     this.protocol = protocol ?? "";
     this.status = status ?? 1;
     this.txt = txt;
+    if (host && protocol){
+      this.fullURL = protocol + "://" + host
+    }
   }
 }

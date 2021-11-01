@@ -140,18 +140,14 @@ export class AppComponent implements OnInit {
       if (Globals.storeInfo.uid != Globals.userInfo?.uid){
         Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
         if (Globals.userInfo.customURL && Globals.userInfo.customURL.host != ""){
-          this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, Globals.userInfo?.customURL.fullURL())
+          this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, Globals.userInfo?.customURL.fullURL)
         }
         else{
           if (this.getStoreName().isCustom){
-            this._router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-              this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, "https://shopmythred.com/" + Globals.userInfo?.username)
-            });
+            this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, "https://shopmythred.com/" + Globals.userInfo?.username)
           }
           else{
-            this._router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-              this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected)
-            });
+            this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected)
           }
         }
       }

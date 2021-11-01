@@ -53,8 +53,8 @@ activeAffiliates = new Array<{
 items: Array<Dict<any>> = []
 miscItems: Array<Dict<any>> = []
 signedIn = false
-bankInfo?: any
-subInfo?: any
+bankInfo?: any = ''
+subInfo?: any = ''
 canTrial?: boolean = true
 
 invTitle = 'SELL MORE'
@@ -80,6 +80,53 @@ toolTip(logo: {
   return {
     name: 'No ' + logo.name + ' URL set',
     link: "",
+  }
+}
+
+showLinkModal(){
+
+  const modalRef = this.modalService.open(SocialFormComponent);
+
+  modalRef.componentInstance.linkImg = '/assets/domain.png'
+  modalRef.componentInstance.name = 'My Domain'
+  modalRef.componentInstance.isDomain = true
+
+
+  if (Globals.storeInfo.customURL){
+    modalRef.componentInstance.socialForm.controls.link.setValue(Globals.storeInfo.customURL?.fullURL)
+  }
+
+  let sub = modalRef.dismissed.subscribe((domain: string) => {
+    sub.unsubscribe()
+    if (domain != '0'){
+      if ((domain != Globals.storeInfo.customURL?.fullURL)){
+        if (domain == undefined) {return}
+        this.loadService.saveDomain(domain, success => {
+          if (success){
+            if (domain == ''){
+              this.userForm.controls.custom_url.setValue(null)
+              this.toast("Custom Domain Removed!")
+              return
+            }
+            this.userForm.controls.custom_url.setValue(domain)
+            this.toast("Custom Domain Saved!")
+          } 
+        }, Globals.storeInfo.uid)
+      }
+    }
+  })
+
+}
+
+domainNotSetUp(){
+  if (Globals.storeInfo.customURL?.status == 1){
+    return true
+  }
+  else if (Globals.storeInfo.customURL?.status == 2){
+    return false
+  }
+  else{
+    return undefined
   }
 }
 
@@ -133,9 +180,9 @@ showSocialModal(logo: {
         array[array.indexOf(same[0])].link = url
       }
     }
-    else{
+    else if (url != '0'){
       array.forEach((element,index)=>{
-        if(element.name==logo.name) array.splice(index,1);
+        if(element.name == logo.name) array.splice(index,1);
      });
     }
     this.userForm.controls.socials.setValue(array)
@@ -587,17 +634,18 @@ showSocialModal(logo: {
 
   shouldRed(panel: any){
     if (panel.Title == "BILLING"){
-      if (Globals.billingInfo?.number == ""){
+      console.log(Globals.billingInfo)
+      if (Globals.billingInfo?.name == ' '){
         return true
       }
     }
     else if (panel.Title == "PAYMENTS"){
-      if (this.bankInfo == undefined){
+      if (this.bankInfo == ''){
         return true
       }
     }
     else if (panel.Title == "PLAN"){
-      if (this.subInfo == undefined){
+      if (this.subInfo == ''){
         
         return true
       }
@@ -682,7 +730,7 @@ showSocialModal(logo: {
   }
 
   checkBilling(){
-    if (Globals.billingInfo?.number && Globals.billingInfo?.number != ""){
+    if (Globals.billingInfo?.name && Globals.billingInfo?.name != ""){
       
       return true
 
@@ -704,10 +752,12 @@ showSocialModal(logo: {
     }
   }
 
+  shouldHideLiveBtn(){
+    return (this.storeProducts == undefined || Globals.billingInfo == undefined || this.bankInfo == undefined || this.subInfo == undefined)
+  }
 
   storeLive(){
-
-    return (this.storeProducts?.length ?? 0) != 0 && Globals.billingInfo?.number && this.bankInfo && this.subInfo
+    return (this.storeProducts?.length ?? 0) != 0 && Globals.billingInfo?.name && this.bankInfo != '' && this.subInfo != ''
   }
 
   buyNewInventory(template: Template){
@@ -729,13 +779,13 @@ showSocialModal(logo: {
   missingInfo(){
     var array = Array<string>()
 
-    if (Globals.billingInfo?.number == ""){
+    if (Globals.billingInfo?.name == ''){
       array.push("Add your billing method")
     }
-    if (this.subInfo == undefined){
+    if (this.subInfo == ''){
       array.push("Start your Thred Merchant plan")
     }
-    if (this.bankInfo == undefined){
+    if (this.bankInfo == ''){
       array.push("Set up your merchant payments account")
     }
     if ((this.storeProducts?.length ?? 0) == 0){
@@ -935,7 +985,7 @@ isSpinning = false
 
     this.userForm.controls.socials.setValue(Globals.userInfo?.socials)
 
-    this.userForm.controls.custom_url.setValue(Globals.userInfo?.customURL?.fullURL())
+    this.userForm.controls.custom_url.setValue(Globals.userInfo?.customURL?.fullURL)
 
 
     this.storeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name.toString())
@@ -1493,7 +1543,7 @@ isSpinning = false
         let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
           sub.unsubscribe()
           if (subInfo){
-            this.subInfo = subInfo
+            this.subInfo = subInfo ?? ''
           }
         })
       }
@@ -1520,7 +1570,7 @@ isSpinning = false
       let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
         sub.unsubscribe()
         if (subInfo){
-          this.subInfo = subInfo
+          this.subInfo = subInfo ?? ''
         }
       })
     }
@@ -1634,15 +1684,13 @@ isSpinning = false
 
       if (!this.bankInfo){
         this.loadService.getBankInfo(async (bankInfo: any) => {
-          this.bankInfo = bankInfo
-          this.cdr.detectChanges()
+          this.bankInfo = bankInfo ?? ''
         })
       }
       if (!this.subInfo){
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
-          this.subInfo = subInfo
+          this.subInfo = subInfo ?? ''
           this.canTrial = canTrial
-          this.cdr.detectChanges()
         })
       }
       

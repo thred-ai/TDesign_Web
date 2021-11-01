@@ -1641,6 +1641,49 @@ export class LoadService {
     return picID;
   }
 
+  async saveDomain(domain: string, callback: (success: boolean) => any, uid?: string){
+
+
+    var data: {
+      Custom_URL: any
+    } = {
+      Custom_URL: ''
+    }
+
+    if (domain && domain.trim() != ""){
+      var splitURL = domain.split("://")
+
+      let domainData = {
+        host: splitURL[1],
+        protocol: splitURL[0],
+        status: 1
+      }
+      data.Custom_URL = domainData
+    }
+    else{
+      if (Globals.userInfo?.customURL || Globals.userInfo?.customURL?.fullURL?.trim() != ""){
+        data.Custom_URL = firebase.firestore.FieldValue.delete()
+      }
+    }
+
+    if (uid && data){
+      if (data.Custom_URL.host){
+        Globals.userInfo!.customURL = new StoreDomain(data.Custom_URL.host, data.Custom_URL.protocol, data.Custom_URL.status, '')
+
+        Globals.storeInfo = Globals.userInfo!
+      }
+      else{
+        if (Globals.userInfo!.customURL){
+          Globals.userInfo!.customURL = undefined
+        }
+        Globals.storeInfo = Globals.userInfo!
+      }
+      await this.db.collection("Users").doc(uid).update(data)
+    }
+    
+    callback(true)
+  }
+
   async saveUsername(mappedData: Dict<any>, uid?: string){
 
 
@@ -1657,19 +1700,6 @@ export class LoadService {
       data["Socials"] = mappedData.socials ?? []
     }
     console.log(mappedData.custom_url)
-    if (mappedData.custom_url && mappedData.custom_url.trim() != ""){
-      var splitURL = mappedData.custom_url.split("://")
-      data["Custom_URL"] = {
-        host: splitURL[1],
-        protocol: splitURL[0],
-        status: 1
-      }
-    }
-    else{
-      if (Globals.userInfo?.customURL || Globals.userInfo?.customURL?.fullURL().trim() != ""){
-        data["Custom_URL"] = firebase.firestore.FieldValue.delete()
-      }
-    }
 
     if (uid){
       await this.db.collection("Users").doc(uid).update(data)

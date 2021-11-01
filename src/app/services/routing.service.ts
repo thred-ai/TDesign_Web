@@ -84,7 +84,7 @@ export class RoutingService {
   routeToProfile(storeName: string, isCustom: boolean = false, selected?: string, externalURL?: string){
     var url = ""
     if (externalURL){
-      url = "externalURL" + "/" + "my-store"
+      url = externalURL + "/" + "my-store"
       if (selected){
         url += "?selected=" + selected
       }
