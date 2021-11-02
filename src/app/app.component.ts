@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
     if (!this.hasPixel){
       this.hasPixel = true
       // this.pixelService.remove()
-      // this.pixelService.initialize(pixelID)
+      this.pixelService.initialize()
     }
   }
 
