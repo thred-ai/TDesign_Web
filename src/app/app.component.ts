@@ -23,6 +23,7 @@ import { AdminViewModule } from './admin-view/admin-view.module';
 import { Store } from './models/store.model';
 import { ProductInCart } from './models/product-in-cart.model';
 import { RoutingService } from './services/routing.service';
+import { PixelService } from 'ngx-pixel';
 
 @Component({
   selector: 'app-root',
@@ -57,6 +58,16 @@ export class AppComponent implements OnInit {
   changeIcon() {
     document.getElementById('appIcon')!.setAttribute('href', 'https://www.google.com/favicon.ico')
 
+  }
+
+  hasPixel = false
+
+  initializePixel(pixelID: string){
+    if (!this.hasPixel){
+      this.hasPixel = true
+      // this.pixelService.remove()
+      // this.pixelService.initialize(pixelID)
+    }
   }
 
   async setOptions(){
@@ -434,6 +445,7 @@ export class AppComponent implements OnInit {
     private router: ActivatedRoute,
     private loadService: LoadService,
     private routingService: RoutingService,
+    private pixelService: PixelService,
     private modalService: NgbModal,
     private _router: Router,
     ) {

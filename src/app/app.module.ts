@@ -48,6 +48,7 @@ import { Router } from '@angular/router';
 // import { DesignComponent } from './design/design.component';
 // import { InvalidPageModule } from './invalid-page/invalid-page.module';
 // import { CheckoutModule } from './checkout/checkout.module';
+import { PixelModule } from 'ngx-pixel'
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { Router } from '@angular/router';
     NgxSpinnerModule,
     MatSnackBarModule,
     LoginModule,
+    PixelModule.forRoot({pixelId: '646165189889348'}),
     // NgxAwesomePopupModule.forRoot(),
     // ConfirmBoxConfigModule.forRoot(),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),

@@ -56,6 +56,7 @@
     "ngx-flip": "^9.0.0",
     "ngx-image-cropper": "^4.0.1",
     "ngx-metafrenzy": "^7.0.0",
+    "ngx-pixel": "^1.1.1",
     "ngx-spinner": "^12.0.0",
     "ngx-stripe": "^12.5.0",
     "proxy-polyfill": "^0.3.2",

@@ -340,7 +340,9 @@ export class LoadService {
           let slogan = docData["Slogan"] as string
           let loading = docData["indicator"] as Dict<any>
           let style = docData["store_style"] as Dict<any>
+          let pixelID = docData["fb_pixel"] as string
           let font = docData["font"] as string
+
           let socials = docData["Socials"] as Array<{ name: string; link: string; }>
           let custom_url = docData["Custom_URL"] as Dict<any> ?? {}
 
@@ -348,6 +350,7 @@ export class LoadService {
           let protocol = custom_url.protocol as string
           let status = custom_url.status as number
           let txt = custom_url.txt as string
+          
 
           let finalURL = new StoreDomain(
             host,
@@ -358,6 +361,7 @@ export class LoadService {
 
           Globals.storeInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL)
 
+          this.rootComponent?.initializePixel(pixelID)
 
           let list = docData["image_list"] as Array<string> ?? []
 
