@@ -23,6 +23,7 @@ import { EditPlanComponent } from '../edit-plan/edit-plan.component';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { StoreSetupComponent } from '../store-setup/store-setup.component';
 import { RoutingService } from '../services/routing.service';
+import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 
 
 @Component({
@@ -1768,8 +1769,27 @@ isSpinning = false
     }
 
     async deleteProduct(product: Product){
-     await this.loadService.deleteProduct({productID : product.productID})
-     this.toast("Product Removed")
+      this.openPopup("Are you sure?", 'Your product will be removed forever.', product.url.toString(), 'Yes, Remove', 'Never Mind', async () => {
+        await this.loadService.deleteProduct({productID : product.productID})
+        this.toast("Product Removed")
+      })
+    }
+
+    openPopup(title: string, message: string, img: string, yesBtn = 'Yes', noBtn = 'No', callback: () => any) {
+
+      const modalRef = this.modalService.open(PopupDialogComponent, {size : "sm", centered: true});
+        modalRef.componentInstance.yesBtn = yesBtn
+        modalRef.componentInstance.noBtn = noBtn
+        modalRef.componentInstance.message = message
+        modalRef.componentInstance.title = title
+        modalRef.componentInstance.img = img
+  
+        let sub = modalRef.dismissed.subscribe((resp: any) => {
+          sub.unsubscribe()
+          if (resp.Success){
+            callback()
+          }
+        })
     }
     
 
@@ -1780,14 +1800,20 @@ isSpinning = false
         size : "md"
       };
       const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
-      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName}).length != 0})
+      modalRef.componentInstance.inventory = this.inventory ?? []
+      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0})
       modalRef.componentInstance.step = 1
+      modalRef.componentInstance.frontImg = product.picID
+      if (product.supportedSides.find(side => { return side == 'Back'})){
+        modalRef.componentInstance.backImg = product.picID
+      }
       modalRef.componentInstance.mode = "edit"
       modalRef.componentInstance.designForm.controls.name.setValue(product.name ?? "")
       modalRef.componentInstance.designForm.controls.price.setValue(product.price / 100)
       modalRef.componentInstance.product = product
       modalRef.componentInstance.designForm.controls.description.setValue(product.description ?? "")
       modalRef.componentInstance.linkImg = product.url
+
     }
 
     createNewProduct(){
@@ -1797,7 +1823,8 @@ isSpinning = false
         size : "md"
       };
       const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
-      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName}).length != 0})
+      modalRef.componentInstance.inventory = this.inventory ?? []
+      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0})
     }
 
     routeToHome(){

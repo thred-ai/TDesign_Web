@@ -14,6 +14,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { CurrencyMaskInputMode } from "ngx-currency";
 import { Product } from '../models/product.model';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
+import { Inventory } from '../models/inventory.model';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class DesignComponent implements OnInit {
   mode = "create"
 
   product?: Product
+  inventory: Array<Inventory> = []
 
 
   myInnerHeight(){
@@ -121,7 +123,13 @@ export class DesignComponent implements OnInit {
   
       html2canvas.default(element).then(async (canvas) => {
         this.linkImg = canvas.toDataURL()
+        if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode})){
+
+        }
         var amt = this.selectedTemplate!.minPrice / 100
+        if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
+          amt = this.selectedTemplate!.bulkSuggestPrice / 100
+        }
         if (this.backImg && this.frontImg){
           amt += this.selectedTemplate!.extraCost / 100
         }
@@ -140,12 +148,21 @@ export class DesignComponent implements OnInit {
     let priceField = this.designForm.controls.price
     let descField = this.designForm.controls.description
 
+    var amt = this.selectedTemplate!.minPrice
+
+    if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
+      amt = 0
+    }
+
+    if (this.backImg && this.frontImg){
+      amt += this.selectedTemplate!.extraCost
+    }
 
     if (nameField.invalid){
 
       return
     }
-    else if (priceField.invalid || (priceField.value * 100) < this.selectedTemplate!.minPrice){
+    else if (priceField.invalid || (priceField.value * 100) < amt){
 
       return
     }
@@ -338,7 +355,7 @@ export class DesignComponent implements OnInit {
   }
 
   cancel(){
-    if (this.frontImg == undefined && this.backImg == undefined){
+    if (this.frontImg == undefined && this.backImg == undefined || this.mode == 'edit'){
       this.activeModal.dismiss()
       return
     }

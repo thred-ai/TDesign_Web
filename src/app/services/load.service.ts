@@ -449,6 +449,7 @@ export class LoadService {
           let font = docData["font"] as string
           let socials = docData["Socials"] as Array<{ name: string; link: string; }>
           let custom_url = docData["Custom_URL"] as Dict<any> ?? {}
+          let pixelID = docData["fb_pixel"] as string
 
           let host = custom_url.host as string
           let protocol = custom_url.protocol as string
@@ -462,6 +463,7 @@ export class LoadService {
             txt
           )
 
+          this.rootComponent?.initializePixel(pixelID)
 
           let loading = docData["indicator"] as Dict<any>
 

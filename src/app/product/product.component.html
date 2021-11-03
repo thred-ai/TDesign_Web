@@ -26,10 +26,20 @@ style.color = "{{selectedIndicator()!.color}}"
                         <a role="button" (click)="open()"><img class="card-img-top" src='{{selectedProduct()?.url ?? ""}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
     
                         <div  class="card-footer p-4 pt-3 pb-3 border-top-0 bg-transparent">
-                            <div *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" class="text-center"><a class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:15px" [style.font-family]="storeInfo().fontName!" (click)="open()">VIEW IN 3D</a></div>
-                            <ng-template #elseBlock>
-                                <div [hidden]="selectedTemplate() == undefined" class="text-center"><a  class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:12px" [style.font-family]="storeInfo().fontName!">Product does not support 3D</a></div>
-                            </ng-template>
+                            <!-- <div *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" class="text-center"><a class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:15px" [style.font-family]="storeInfo().fontName!" (click)="open()">VIEW IN 3D</a></div> -->
+                            <div class="mx-auto d-flex justify-content-center">
+                                <a *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex text-light btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill mb-2 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                                    VIEW IN 3D
+                                    <mat-icon class="ms-2">
+                                        <span class="material-icons-outlined" style="font-size: 25px;">
+                                            check_circle
+                                        </span>
+                                    </mat-icon>
+                                </a>
+                                <ng-template #elseBlock>
+                                    <div [hidden]="selectedTemplate() == undefined" class="text-center"><a  class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:12px" [style.font-family]="storeInfo().fontName!">Product does not support 3D</a></div>
+                                </ng-template>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -80,7 +90,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="card-footer p-4 pt-5 pb-3 border-top-0 bg-transparent">
                            
 
-                            <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div>
+                            <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div>
                             <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div>
                         </div>
                     </div>

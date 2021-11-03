@@ -87,7 +87,7 @@ export class AppModule {
     if (request != 'localhost:4200' && request != 'shopmythred.com' && request != ""){
       console.log("URL: " + request)
       router.config = [
-        { path: '', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
+        { path: '', redirectTo: 'home', pathMatch: 'full'},
         { path: 'not-found', loadChildren: () => import('./invalid-page/invalid-page.module').then((m) => m.InvalidPageModule), pathMatch: 'full' },
         { path: 'not-found/home', redirectTo: 'not-found', pathMatch: 'full' },
       
