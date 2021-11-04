@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   firebase: {
     apiKey: "AIzaSyD3Ec_FWZrlbTBWdgBWRrsBwMmXQ4aniWU",
-    authDomain: "clothingapp-ed125.firebaseapp.com",
+    authDomain: "shopmythred.com",
     databaseURL: "https://clothingapp-ed125.firebaseio.com",
     projectId: "clothingapp-ed125",
     storageBucket: "clothingapp-ed125.appspot.com",
