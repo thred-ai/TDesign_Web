@@ -3,7 +3,7 @@
     <div class="container px-4 px-lg-5">
         <img src='{{storeInfo().profileLink}}'/>
         <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
-        <button class="navbar-toggler mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="nav-link" aria-current="page"role="button" (click)="routeToHome()" [style.font-family]="storeInfo().fontName!">HOME</a></li>
@@ -38,6 +38,8 @@
                         <ul class="dropdown-menu mb-2"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
                             <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)= "accountPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[0].Title}}</a></li>
                             <li *ngFor="let option of settings(true)"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)= "routeToOrders()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{option.Title}}</a></li>
+                            <li><a *ngIf='!signedIn' data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item text-center fw-bold text-success" style="font-size: smaller;" role=button (click)= "signInPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[profileSettings.length-1].Title}}</a></li>
+                            <li><a *ngIf='signedIn' data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item text-center fw-bold text-danger" style="font-size: smaller;" role=button (click)= "signOutPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[profileSettings.length-1].Title}}</a></li>
                         </ul>
                     </div>
                     

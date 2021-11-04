@@ -17,8 +17,8 @@ style.color = "{{selectedIndicator()!.color}}"
     <section *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="py-5"  style.background-color="{{selectedTheme()!.bg_color}}">
 
         <div class="container px-4 px-lg-5 mt-0">
-            <div [hidden]="selectedProduct() == undefined || selectedTemplate() == undefined" class="row gx-4 gx-lg-1 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center">
-                <div class="col mb-1">
+            <div [hidden]="selectedProduct() == undefined || selectedTemplate() == undefined" class="row gx-4 gx-lg-1 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center align-items-center h-100">
+                <div class="col mb-1 h-100">
     
                     
     
@@ -27,71 +27,89 @@ style.color = "{{selectedIndicator()!.color}}"
     
                         <div  class="card-footer p-4 pt-3 pb-3 border-top-0 bg-transparent">
                             <!-- <div *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" class="text-center"><a class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:15px" [style.font-family]="storeInfo().fontName!" (click)="open()">VIEW IN 3D</a></div> -->
-                            <div class="mx-auto d-flex justify-content-center">
-                                <a *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex text-light btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill mb-2 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
-                                    VIEW IN 3D
-                                    <mat-icon class="ms-2">
+                            <div class="mx-auto d-flex justify-content-center align-items-center">
+                                <a *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                                    <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
-                                            check_circle
+                                            view_in_ar
                                         </span>
                                     </mat-icon>
+                                    VIEW IN 3D
+
                                 </a>
                                 <ng-template #elseBlock>
-                                    <div [hidden]="selectedTemplate() == undefined" class="text-center"><a  class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:12px" [style.font-family]="storeInfo().fontName!">Product does not support 3D</a></div>
+                                    <a [hidden]="selectedTemplate() == undefined" role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill mb-2 align-items-center justify-content-center fw-bold" style="font-size: 12px;">
+                                        <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
+                                            <span class="material-icons-outlined" style="font-size: 23px;">
+                                                crop_free
+                                            </span>
+                                        </mat-icon>
+                                        3D Not Supported
+                                    </a>
                                 </ng-template>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col mb-1">
-                    <div [hidden]="selectedTemplate() == undefined" class="card h-80 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <div class="card-body p-4 pb-0">
-                            <div class="text-center">
-                                <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:34px; line-height:1.4em;">{{selectedProduct()?.name ?? ""}}</h5>
+                <div class="col mb-1 h-100">
+                    <div [hidden]="selectedTemplate() == undefined" class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                        <div>
+                            <div class="card-body p-4 pb-0 order-3 order-sm-1">
+                                <div class="text-center">
+                                    <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:34px; line-height:1.4em;">{{selectedProduct()?.name ?? ""}}</h5>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body p-4 pb-0 mt-0">
-                            <div class="text-left">
-                                <div class="card-body p-0 pb-0">
-                                    <div class="text-center" style.color="{{selectedTheme()!.color}}">
-                                        <h5 class="fw-bolder" style="font-size:17px" [innerHTML]="'Details'" [style.font-family]="storeInfo().fontName!"></h5>
+                            <div class="card-body p-4 pb-0 mt-0 order-4 order-sm-2">
+                                <div class="text-left">
+                                    <div class="card-body p-0 pb-0">
+                                        <div class="text-center" style.color="{{selectedTheme()!.color}}">
+                                            <h5 class="fw-bolder" style="font-size:17px" [innerHTML]="'Details'" [style.font-family]="storeInfo().fontName!"></h5>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="text-left mt-5 mb-0" style="color: rgb(190, 6, 6)" >
-                                    <h5 class="fw-bolder" style="font-size:35px" [style.font-family]="storeInfo().fontName!">{{formatPrice((selectedProduct()?.price ?? 0) / 100)}}</h5>
-                                </div>
-                                <div class="card-body p-0 pb-0 ">
-                                    <div class="text-left">
-                                        <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:14px; font-style: italic" [innerHTML]="selectedProduct()?.description ?? ''"></h5>
-                                        <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:11px" [innerHTML]="formattedInfo()"></h5>
+                                    <div class="text-left mt-5 mb-0" style="color: rgb(190, 6, 6)" >
+                                        <h5 class="fw-bolder" style="font-size:35px" [style.font-family]="storeInfo().fontName!">{{formatPrice((selectedProduct()?.price ?? 0) / 100)}}</h5>
                                     </div>
-                                    <div ngbDropdown class ="d-inline" container="body">
-                                        <button [style.font-family]="storeInfo().fontName!" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} btn-sm mb-5" ngbDropdownToggle>Qty: {{quantity()}}</button>
-                                        <div ngbDropdownMenu style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                          <button [style.font-family]="storeInfo().fontName!" *ngFor="let num of quantityNumbers" style.color="{{selectedTheme()!.color}}" (click)="selectQuantity(num)" ngbDropdownItem>{{num}}</button>
+                                    <div class="card-body p-0 pb-0 ">
+                                        <div class="text-left">
+                                            <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:14px; font-style: italic" [innerHTML]="selectedProduct()?.description ?? ''"></h5>
+                                            <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:11px" [innerHTML]="formattedInfo()"></h5>
+                                        </div>
+                                        <div ngbDropdown class ="d-inline" container="body">
+                                            <button [style.font-family]="storeInfo().fontName!" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} btn-sm mb-5" ngbDropdownToggle>Qty: {{quantity()}}</button>
+                                            <div ngbDropdownMenu style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                              <button [style.font-family]="storeInfo().fontName!" *ngFor="let num of quantityNumbers" style.color="{{selectedTheme()!.color}}" (click)="selectQuantity(num)" ngbDropdownItem>{{num}}</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="container px-4 mt-3 " >
-                            <div class="text-center">
-                                <div class="card-body p-0 pb-0">
-                                    <div class="text-left">
-                                        <h5 style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Your Size'" [style.font-family]="storeInfo().fontName!"></h5>
+                            
+                            <div class="container px-4 mt-3 order-1 order-sm-3" >
+                                <div class="text-center">
+                                    <div class="card-body p-0 pb-0">
+                                        <div class="text-left">
+                                            <h5 style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Your Size'" [style.font-family]="storeInfo().fontName!"></h5>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="row gx-4 gx-lg-1 row-cols-5 row-cols-md-4 row-cols-xl-6 justify-content-center" >
+                                    <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
+                                    <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                                </div>
                             </div>
-                            <div class="row gx-4 gx-lg-1 row-cols-5 row-cols-md-4 row-cols-xl-6 justify-content-center" >
-                                <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
-                                <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                            <div class="card-footer p-4 pt-sm-5 pb-3 border-top-0 bg-transparent order-2 order-sm-4">
+                               
+                                <a (click)="addToCart()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-flex btn rounded-pill mb-2 align-items-center justify-content-center fw-bold" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" style="font-size: 25px;">
+                                    ADD TO BAG
+                                    <mat-icon class="ms-2 mb-2" style.color="{{selectedTheme()!.bg_color}}">
+                                        <span class="material-icons-outlined" style="font-size: 30px;">
+                                            local_mall
+                                        </span>
+                                    </mat-icon>
+                                </a>
+                                <!-- <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div> -->
+                                <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div>
                             </div>
-                        </div>
-                        <div class="card-footer p-4 pt-5 pb-3 border-top-0 bg-transparent">
-                           
-
-                            <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div>
-                            <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div>
                         </div>
                     </div>
                 </div>

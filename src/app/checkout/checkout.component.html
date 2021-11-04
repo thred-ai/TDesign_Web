@@ -10,14 +10,14 @@ type = {{selectedIndicator().name}}
 [fullScreen] = "true"
 style.color = "{{selectedIndicator()!.color}}"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!" class="text-center"> {{loadingName}}
+<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!"> {{loadingName}}
 </h3>
 </ngx-spinner>
   <!-- Header-->
   <header *ngIf="isBrowser() && hasCart() && storeInfo().username != undefined" [hidden]="stillLoadingProducts()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
     <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
-        <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:35px">
-          <div>
+        <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:30px">
+          <div class="px-2">
             <p [style.font-family]="storeInfo().fontName!" class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">
               REVIEW ORDER
              </p>
@@ -40,7 +40,7 @@ style.color = "{{selectedIndicator()!.color}}"
             <a class="btn btn-outline-primary btn-sm ps-2" href="shop-grid-ls.html"><i class="ci-arrow-left me-2"></i>Continue shopping</a>
           </div> -->
 
-          <section class="col-lg-8">
+          <section class="col-lg-8 order-2 order-sm-1">
             
             <div class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-2 pb-1">
                 <div class="py-0 px-xl-2">
@@ -87,7 +87,7 @@ style.color = "{{selectedIndicator()!.color}}"
             
           </section>
           <!-- Sidebar-->
-          <aside class="col-lg-4 pt-4 pt-lg-0 ps-xl-5">
+          <aside class="col-lg-4 pb-2 pb-sm-0 ps-xl-5 order-1 order-sm-2">
             <div [hidden]="stillLoading()" class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-4 pb-0">
               <div class="py-2 px-xl-2">
                 <p [hidden]="err == ''" [style.font-family]="storeInfo().fontName!" class = "text-center mt-1 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
@@ -119,6 +119,9 @@ style.color = "{{selectedIndicator()!.color}}"
                 <div class="d-flex justify-content-between pt-2 mt-2">
                     <h3 style.color="{{selectedTheme()!.color}}" class="fw-bold" style="font-size: 9;">Order Total:</h3>
                     <h3 style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size: 9;">{{orderTotal()}}</h3>
+                </div>
+                <div class="w-100 d-flex justify-content-end my-1 mb-4">
+                  <img class="rounded"  style="object-fit: contain;" [style.height.px]="60"  alt='ok' src="assets/secure.png"/>
                 </div>
               </div>
             </div>

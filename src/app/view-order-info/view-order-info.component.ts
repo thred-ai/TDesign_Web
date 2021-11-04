@@ -28,8 +28,6 @@ export class ViewOrderInfoComponent implements OnInit {
 
   availableTemplates(){return Globals.availableTemplates}
 
-
-  selectedProduct(){return Globals.selectedProduct}
   
   selectedTemplate(){return Globals.selectedTemplate}
 
@@ -51,6 +49,32 @@ export class ViewOrderInfoComponent implements OnInit {
     return this.rootComponent.cart?.length
   }
 
+  routeToProduct(productID: string){
+    this.rootComponent.routeToProduct(productID)
+  }
+
+  routeToProducts(){
+    this.rootComponent.routeToShop()
+  }
+
+  selectedTheme(){
+    
+    let co = Globals.storeInfo?.colorStyle?.btn_color
+    let bco = Globals.storeInfo?.colorStyle?.bg_color
+    let name = Globals.storeInfo?.colorStyle?.name
+
+    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
+
+    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+
+    var theme: Dict<string> = {
+      "name": name,
+      "color": color,
+      "bg_color": bg_color
+    }
+    return theme
+  }
+
   selectedOrder(){
     return Globals.selectedOrder
   }
@@ -63,9 +87,6 @@ export class ViewOrderInfoComponent implements OnInit {
     return colors?.find(color => color.code == product?.templateColor)?.display ?? "White"
   }
 
-  stillLoadingProducts(){
-    return this.rootComponent.cart?.filter(product => product.product?.price == undefined)?.length != 0
-  }
 
   calculateShipping($event: any){
  
@@ -158,7 +179,9 @@ export class ViewOrderInfoComponent implements OnInit {
       this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
 
       this.showSpinner()
-      this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+      
+      this.addTags((Globals.storeInfo.fullName ?? "Thred") + " - " + "Orders", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+
       if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getTemplates()
       } 
@@ -167,14 +190,16 @@ export class ViewOrderInfoComponent implements OnInit {
       }
       else if (Globals.selectedOrder?.merchantUID != Globals.storeInfo.uid){
         this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
-        
         return
       }
       else if (Globals.shippingInfo == undefined && isPlatformBrowser(this.platformID)){
+        this.addTags(Globals.selectedOrder!.orderID, Globals.storeInfo?.profileLink!.toString(), 'Track Your Order', "https://shopmythred.com")
+
         this.loadService.getShippingAddress(this.selectedOrder()?.uid)
       }
       else{
         this.loadedCart = true
+
         this.cdr.detectChanges()
         this.rootComponent.cdr.detectChanges()
       }
@@ -348,7 +373,10 @@ export class ViewOrderInfoComponent implements OnInit {
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string){
-    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Home"});
+
+    this.metaService.updateTag({property: 'og:title', content: title});
+    this.metaService.updateTag({property: 'og:image:width', content: '200'});
+    this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})

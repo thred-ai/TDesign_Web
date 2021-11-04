@@ -29,7 +29,9 @@ style.color = "{{selectedIndicator()!.color}}"
     <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-5 mx-5 mb-5" style = "font-size: 30px;line-height:1.2em;font-weight: bold;" style.color="{{selectedTheme()!.color}}">
         Our Story
        </p>
-    <p  [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" [innerHTML]= "storeBio()" class = "text-left px-5 mx-2" style = "font-size: 20px;line-height:1.2em;"></p>
+    <div class="text-left px-sm-5 px-0">
+        <p  [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" [innerHTML]= "storeBio()" class = "px-5 mx-2" style = "font-size: 20px;line-height:1.2em;"></p>
+    </div>
   </section>
 
   <footer *ngIf="isBrowser()" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">

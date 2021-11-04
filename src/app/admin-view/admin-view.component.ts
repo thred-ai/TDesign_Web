@@ -580,6 +580,11 @@ showSocialModal(logo: {
           "Active": false
         },
         {
+          "Title": "MARKETING",
+          "Icon": "share",
+          "Active": false
+        },
+        {
           "Title": "AFFILIATE",
           "Icon": "local_atm",
           "Active": false
@@ -961,10 +966,35 @@ isSpinning = false
     newPassword: [null, Validators.required],
     confirmNewPassword: [null, Validators.required],
   });
+
+  marketingForm = this.fb.group({
+    pixel: [null, Validators.required],
+  });
   
   getSelectedPanel(){
     let selected = this.panels.filter(panel => panel.Options?.filter(option => option.Active).length != 0)[0]?.Options.filter(option => option?.Active)[0]
     return selected
+  }
+
+  openFBAdsManager(){
+    const link = document.createElement('a');
+    link.target = '_blank';
+
+    let url: string = 'https://www.facebook.com/business/learn/facebook-ads-pixel';
+
+
+    link.href = url
+    this.spinner.hide("adminSpinner")
+
+    link.setAttribute('visibility', 'hidden')
+    link.click()
+    link.remove()
+  }
+
+  async setFBPixel(){
+    let pixel = this.marketingForm.controls.pixel.value as string
+    await this.loadService.setPixel(pixel)
+    this.toast('Facebook Pixel Updated!')
   }
 
   setForm(){
@@ -988,6 +1018,7 @@ isSpinning = false
 
     this.userForm.controls.custom_url.setValue(Globals.userInfo?.customURL?.fullURL)
 
+    this.marketingForm.controls.pixel.setValue(Globals.userInfo?.fb_pixel)
 
     this.storeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name.toString())
     this.theme = Globals.userInfo?.colorStyle?.name.toString() ?? 'Light'
@@ -1623,7 +1654,7 @@ isSpinning = false
           }
           else{
             this.spinner.hide("adminSpinner")
-            this.rootComponent.accountPressed()
+            this.rootComponent.accountPressed(2, true)
           }
         }
       }
@@ -1837,7 +1868,9 @@ isSpinning = false
     }
 
     addTags(title: string, imgUrl: string, description: string, url: string){
-      this.metaService.updateTag({property: 'og:title', content: title + " - " + "About"});
+      this.metaService.updateTag({property: 'og:title', content: title  + " - " + "My Account"});
+      this.metaService.updateTag({property: 'og:image:width', content: '200'});
+      this.metaService.updateTag({property: 'og:image:height', content: '200'});
       this.metaService.updateTag({property: 'og:image', content: imgUrl});
       this.metaService.updateTag({property: 'og:url', content: url})
       this.metaService.updateTag({property: 'og:description', content: description})

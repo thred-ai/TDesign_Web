@@ -30,8 +30,23 @@ export class ViewOrderComponent implements OnInit {
 
   availableTemplates(){return Globals.availableTemplates}
 
+  selectedTheme(){
+    
+    let co = Globals.storeInfo?.colorStyle?.btn_color
+    let bco = Globals.storeInfo?.colorStyle?.bg_color
+    let name = Globals.storeInfo?.colorStyle?.name
 
-  selectedProduct(){return Globals.selectedProduct}
+    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
+
+    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+
+    var theme: Dict<string> = {
+      "name": name,
+      "color": color,
+      "bg_color": bg_color
+    }
+    return theme
+  }
   
   selectedTemplate(){return Globals.selectedTemplate}
 
@@ -47,9 +62,7 @@ export class ViewOrderComponent implements OnInit {
     return this.rootComponent.cart?.length
   }
 
-  orders(){
-    return Globals.orders
-  }
+  orders?: Array<Order>
 
 
   getColor(product?: Product){
@@ -175,6 +188,18 @@ export class ViewOrderComponent implements OnInit {
       }
     }
 
+  routeToOrder(orderID: string){
+    this.rootComponent.routeToOrder(orderID)
+  }
+
+  routeToProduct(productID: string){
+    this.rootComponent.routeToProduct(productID)
+  }
+
+  routeToProducts(){
+    this.rootComponent.routeToShop()
+  }
+
   async callback(){
     if (Globals.storeInfo.username){
       this.showSpinner()
@@ -191,14 +216,17 @@ export class ViewOrderComponent implements OnInit {
       else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getTemplates()
       } 
-      else if (Globals.orders == undefined && isPlatformBrowser(this.platformID)){
+      else if (this.orders == undefined && isPlatformBrowser(this.platformID)){
         if (await this.loadService.authenticated()){
-          this.loadService.getOrders()
+          this.loadService.getOrders(orders => {
+            console.log(orders)
+            this.orders = orders ?? []
+            this.callback()
+          })
         }
         else{
-
           this.loadedCart = true
-          Globals.orders = []
+          this.orders = []
           this.cdr.detectChanges()
         }
       }
@@ -224,7 +252,6 @@ export class ViewOrderComponent implements OnInit {
   init() {
 
 
-    Globals.orders = undefined
     Globals.shippingInfo = undefined
     Globals.billingInfo = undefined
 
@@ -266,7 +293,7 @@ export class ViewOrderComponent implements OnInit {
   }
 
   hasCart(){
-    return (Globals.orders?.length != 0 ?? false)
+    return (this.orders?.length != 0 ?? false)
   }
   
   formatPrice(price: number, order: Order){
@@ -315,7 +342,9 @@ export class ViewOrderComponent implements OnInit {
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string){
-    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Home"});
+    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Orders"});
+    this.metaService.updateTag({property: 'og:image:width', content: '200'});
+    this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})

@@ -34,6 +34,7 @@ export class Store {
       link: string
     }>
     customURL?: StoreDomain
+    fb_pixel?: string
 
 
     constructor(
@@ -64,7 +65,8 @@ export class Store {
         name: string,
         link: string
       }>,
-      customURL?: StoreDomain
+      customURL?: StoreDomain,
+      fb_pixel?: string
       ) {
 
       this.uid = uid
@@ -129,5 +131,6 @@ export class Store {
         this.socials = s
       }
       this.customURL = customURL
+      this.fb_pixel = fb_pixel
     }
 }

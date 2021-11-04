@@ -30,10 +30,6 @@ export class Globals {
   public static selectedTemplate?: Template = new Template()
 
 
-  public static selectedProduct?: Product = new Product()
-
-  public static orders?: Array<Order> = []
-
   public static selectedOrder?: Order = new Order()
 
   public static selectedBlog?: Blog = new Blog()

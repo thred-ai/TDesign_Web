@@ -46,6 +46,10 @@ export class ModelViewerComponent implements OnInit, AfterViewInit {
 
   }
 
+  isMobile(){
+    return window.screen.width < window.screen.height
+  }
+
   getModelUrl(type: string){
     switch (type){
     case "ATC Hoodie":

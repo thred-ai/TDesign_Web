@@ -232,7 +232,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                     <div class="form-group mb-4">
                                         <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Current Domain</label>
                                         
-                                        <input [attr.disabled]="true" [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" type="email" placeholder="shopmythred.com (default)" formControlName="custom_url" style.color="{{selectedTheme()!.color}}">
+                                        <input [attr.disabled]="true" [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="shopmythred.com (default)" formControlName="custom_url" style.color="{{selectedTheme()!.color}}">
                                         <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">Adding a custom domain helps boost conversions by over 30%</i></mat-hint>
                                     </div>
                                 </div>
@@ -243,7 +243,33 @@ style.color = "{{selectedIndicator()!.color}}"
                     </div>
                 </form>
             </div>
+
+            <div *ngIf="getSelectedPanel()?.Title == 'MARKETING'" class="py-3">
+            <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
+                <form [formGroup]="marketingForm" novalidate>
+                    <div class="col mb-2">
+                        <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                            <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Facebook Ads</h2>
+                            <div class="card-body">    
+                                <div class="row">
+                                    <div class="col-md-8 mx-auto d-block">
+                                        <div class="form-group mb-4">
+                                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Facebook Pixel</label>
+                                            <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="ex: '642345685432123'" style.color="{{selectedTheme()!.color}}" formControlName="pixel">
+                                            <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">For more info, visit <a role="button" (click)="openFBAdsManager()">Facebook Ads Manager</a></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button [style.font-family]="storeInfo().fontName!" (click)='setFBPixel()' class="btn btn-dark mx-auto d-flex mt-2">Set Facebook Pixel</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </div>
+
             <div *ngIf="getSelectedPanel()?.Title == 'STORE'" class="py-3">
+
                 <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                     <div class="card-body">
 

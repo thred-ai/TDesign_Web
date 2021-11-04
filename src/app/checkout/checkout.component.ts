@@ -32,8 +32,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   availableTemplates(){return Globals.availableTemplates}
 
-
-  selectedProduct(){return Globals.selectedProduct}
   
   selectedTemplate(){return Globals.selectedTemplate}
 
@@ -151,6 +149,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       this.routeToCart()
       return
     }
+
+    this.updatePayBtnOptions()
+
     this.cdr.detectChanges()
     // this.selectedCountry = country
   }
@@ -189,6 +190,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     return this.rootComponent.cart?.length != 0 ?? false
   }
 
+  
   
 
   async callback(){
@@ -239,45 +241,8 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         else{
           
           console.log(Globals.billingInfo.country)
-          let same = Globals.availableCurrencies?.filter(currency => { return currency.name_full == Globals.billingInfo?.country})
-
-
-          if (same && same.length != 0){
-
-            const amount = Math.round((((this.total() + this.shippingNum() + this.productTaxNum()) * same[0].rate ?? 1)* 100))
-            console.log(same[0].currency_name)
-            console.log(amount)
-            
-            this.paymentRequestOptions = {
-              country: same[0].name,
-              currency: same[0].currency_name.toLowerCase(),
-              total: {
-                label: Globals.storeInfo.fullName ?? "Thred Apps Inc.",
-                amount: amount,
-              },
-              requestPayerName: true,
-              requestPayerEmail: true,
-            };
-
-            console.log(this.paymentRequestOptions)
-          }
-          else{
-            const amount = Math.round(((this.total() + this.shippingNum() + this.productTaxNum()) * 100))
-            console.log(same[0].currency_name)
-            console.log(amount)
-            
-            this.paymentRequestOptions = {
-              country: 'US',
-              currency: 'usd',
-              total: {
-                label: Globals.storeInfo.fullName ?? "Thred Apps Inc.",
-                amount: amount,
-              },
-              requestPayerName: true,
-              requestPayerEmail: true,
-            };
-          }
           
+          this.updatePayBtnOptions()
 
           this.cdr.detectChanges()
         }
@@ -288,6 +253,45 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     }
     else{
       this.routeToCart()
+    }
+  }
+
+  updatePayBtnOptions(){
+    let same = Globals.availableCurrencies?.filter(currency => { return currency.name_full == Globals.billingInfo?.country})
+    if (same && same.length != 0){
+
+      const amount = Math.round((((this.total() + this.shippingNum() + this.productTaxNum()) * same[0].rate ?? 1)* 100))
+      console.log(same[0].currency_name)
+      console.log(amount)
+      
+      this.paymentRequestOptions = {
+        country: same[0].name,
+        currency: same[0].currency_name.toLowerCase(),
+        total: {
+          label: Globals.storeInfo.fullName ?? "Thred Apps Inc.",
+          amount: amount,
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      };
+
+      console.log(this.paymentRequestOptions)
+    }
+    else{
+      const amount = Math.round(((this.total() + this.shippingNum() + this.productTaxNum()) * 100))
+      console.log(same[0].currency_name)
+      console.log(amount)
+      
+      this.paymentRequestOptions = {
+        country: 'US',
+        currency: 'usd',
+        total: {
+          label: Globals.storeInfo.fullName ?? "Thred Apps Inc.",
+          amount: amount,
+        },
+        requestPayerName: true,
+        requestPayerEmail: true,
+      };
     }
   }
 
@@ -509,13 +513,24 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   getBillingAddressFirst(){
-    var name = this.billingAddress()?.brand + " ending in " + this.billingAddress()?.number
+    var name = this.titleCase(this.billingAddress()?.brand) + " ending in " + this.billingAddress()?.number
 
     if (this.useOtherPaymentMethod){
       name = ""
     }
     return name
   }
+
+  titleCase(str: string = '') {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    // Directly return the joined string
+    return splitStr.join(' '); 
+ }
 
   isBrowser(){
     return isPlatformBrowser(this.platformID)
@@ -551,8 +566,11 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     return returnItem
   }
 
+
   addTags(title: string, imgUrl: string, description: string, url: string){
-    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Home"});
+    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Checkout"});
+    this.metaService.updateTag({property: 'og:image:width', content: '200'});
+    this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})

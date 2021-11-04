@@ -10,7 +10,7 @@ type = {{selectedIndicator().name}}
 [fullScreen] = "true"
 style.color = "{{selectedIndicator()!.color}}"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!" class="text-center"> Updating Billing Information...
+<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!"> Updating Billing Information...
 </h3>
 </ngx-spinner>
 
@@ -19,7 +19,7 @@ style.color = "{{selectedIndicator()!.color}}"
     <header *ngIf="isBrowser() && storeInfo().username != undefined" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
       <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
           <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:35px">
-            <div>
+            <div class="px-2">
               <p [style.font-family]="storeInfo().fontName!" class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">
                 BILLING
                </p>
@@ -213,6 +213,29 @@ style.color = "{{selectedIndicator()!.color}}"
                       <h2 [style.font-family]="storeInfo().fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2>
                       <h3 [style.font-family]="storeInfo().fontName!" class="fw-normal" style.color="{{selectedTheme()!.color}}">{{formatPrice(total())}}</h3>
                     </div>
+                    <p [hidden]="err == ''" [style.font-family]="storeInfo().fontName!" class = "text-center mt-3 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
+                      {{err}}
+                    </p>
+                    <div *ngIf="googlePay && useGoogle" class="col my-4 d-flex justify-content-center rounded w-100" style.background-color="{{buttonBack()}}">
+                      <a class="w-100" (click) = "addCard()" role="button">
+                        <img class="w-100" style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/google_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
+                      </a>
+                      <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block" type="button" (click)="calculate()">Use Google Pay</button> -->
+                    </div>
+              
+                    <div *ngIf="microsoftPay && useMicrosoft" class="col my-4 d-flex justify-content-center rounded" style.background-color="{{buttonBack()}}">
+                      <a class="w-100" (click) = "addCard()" role="button">
+                        <img class="w-100" style="object-fit: cover;" [style.height.px]="45"  alt='ok' [src]="'/assets/microsoft_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
+                      </a>
+                    </div>
+                    
+                    <div *ngIf="applePay && useApple" class="col my-4 d-flex justify-content-center rounded" style.background-color="{{buttonBack()}}">
+                      <a class="w-100" (click) = "addCard()" role="button">
+                        <img class="w-100" style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/apple_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
+                      </a>
+                    </div>
+
+                    <div class="text-center my-2"><a *ngIf="!useApple && !useGoogle && !useMicrosoft" [style.font-family]="storeInfo().fontName!" class="btn mt-4 d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" (click) = "addCard()" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}"  [innerHTML]="'Review Order'"></a></div>
                     <div class="accordion" id="order-options">
                       <!-- <div class="accordion-item">
                         <h3 class="accordion-header"><a class="accordion-button" href="#promo-code" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="promo-code">Apply promo code</a></h3>
@@ -269,32 +292,9 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                     </div>
 
-                    
-
-                    <div *ngIf="googlePay && useGoogle" class="col mt-4 d-flex justify-content-center rounded w-100" style.background-color="{{buttonBack()}}">
-                      <a class="w-100" (click) = "addCard()" role="button">
-                        <img class="w-100" style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/google_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
-                      </a>
-                      <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block" type="button" (click)="calculate()">Use Google Pay</button> -->
+                    <div class="w-100 d-flex justify-content-end mt-2 mb-0 ">
+                      <img class="rounded"  style="object-fit: contain;" [style.height.px]="60"  alt='ok' src="assets/secure.png"/>
                     </div>
-              
-                    <div *ngIf="microsoftPay && useMicrosoft" class="col mt-4 d-flex justify-content-center rounded" style.background-color="{{buttonBack()}}">
-                      <a class="w-100" (click) = "addCard()" role="button">
-                        <img class="w-100" style="object-fit: cover;" [style.height.px]="45"  alt='ok' [src]="'/assets/microsoft_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
-                      </a>
-                    </div>
-                    
-                    <div *ngIf="applePay && useApple" class="col mt-4 d-flex justify-content-center rounded" style.background-color="{{buttonBack()}}">
-                      <a class="w-100" (click) = "addCard()" role="button">
-                        <img class="w-100" style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/apple_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
-                      </a>
-                    </div>
-
-                    <div class="text-center mt-2"><a *ngIf="!useApple && !useGoogle && !useMicrosoft" [style.font-family]="storeInfo().fontName!" class="btn mt-4 d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" (click) = "addCard()" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}"  [innerHTML]="'Review Order'"></a></div>
-
-                    <p [hidden]="err == ''" [style.font-family]="storeInfo().fontName!" class = "text-center mt-3 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
-                      {{err}}
-                    </p>
                   </div>
                 </div>
               </aside>

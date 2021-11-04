@@ -18,7 +18,7 @@ style.color = "{{selectedIndicator()!.color}}"
   <header *ngIf="isBrowser() && storeInfo().username != undefined" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
     <div class="cover" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
         <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:35px">
-          <div>
+          <div class="px-2">
             <p [style.font-family]="storeInfo().fontName!" class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">
               SHIPPING
              </p>
@@ -204,6 +204,10 @@ style.color = "{{selectedIndicator()!.color}}"
                     <h2 [style.font-family]="storeInfo().fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2>
                     <h3 [style.font-family]="storeInfo().fontName!" class="fw-normal" style.color="{{selectedTheme()!.color}}">{{formatPrice(total())}}</h3>
                   </div>
+                  <p [hidden]="err == ''" [style.font-family]="storeInfo().fontName!" class = "text-center mt-3 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
+                    {{err}}
+                  </p>
+                  <div class="text-center mt-2"><a [style.font-family]="storeInfo().fontName!" class="btn my-2 d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" (click) = "save()" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}"  [innerHTML]="'Continue'"></a></div>
                   <div class="accordion" id="order-options">
                     <!-- <div class="accordion-item">
                       <h3 class="accordion-header"><a class="accordion-button" href="#promo-code" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="promo-code">Apply promo code</a></h3>
@@ -259,10 +263,9 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                     </div>
                   </div>
-                  <div class="text-center mt-2"><a [style.font-family]="storeInfo().fontName!" class="btn mt-4 d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" (click) = "save()" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}"  [innerHTML]="'Continue'"></a></div>
-                  <p [hidden]="err == ''" [style.font-family]="storeInfo().fontName!" class = "text-center mt-3 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
-                    {{err}}
-                  </p>
+                  <div class="w-100 d-flex justify-content-end mt-2 mb-0 ">
+                    <img class="rounded"  style="object-fit: contain;" [style.height.px]="60"  alt='ok' src="assets/secure.png"/>
+                  </div>
                 </div>
               </div>
             </aside>

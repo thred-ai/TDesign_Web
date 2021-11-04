@@ -30,7 +30,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   templates(){return Globals.availableTemplates}
   availableTemplates(){return Globals.availableTemplates}
   selectedTemplate(){return Globals.selectedTemplate}
-  selectedProduct(){return Globals.selectedProduct}
+  selectedProduct(){return this.productToBuy.product}
 
 
   productToBuy = new ProductInCart()
@@ -53,7 +53,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     private spinner: NgxSpinnerService,
     private routingService: RoutingService,
   ) { 
-    Globals.selectedProduct = undefined
+    this.productToBuy.product = undefined
     Globals.selectedTemplate = undefined
     Globals.selectedCurrency = undefined
     Globals.storeInfo.uid = undefined
@@ -104,11 +104,12 @@ export class ProductComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     const productID = this.getProductID()
 
-    
+    this.loadService.myCallback = () => this.checkLoad()
 
-    this.loadService.myCallback = () => this.checkLoad(productID)
-    
-    this.checkLoad(productID)
+    this.loadService.getPost(productID, () => {
+      this.checkLoad()
+    }, undefined, undefined, undefined, this.productToBuy)
+
 
     for (let i = 0; i < 9; i++) {
         this.quantityNumbers.push(i + 1)
@@ -230,21 +231,17 @@ export class ProductComponent implements OnInit, AfterViewInit {
       }
     }
 
-  checkLoad(productID: string){
-      if (Globals.selectedProduct == undefined){
-        Globals.selectedProduct = new Product()
-        this.loadService.getPost(productID)
-        this.productToBuy.product = Globals.selectedProduct
-      }
-      else{
-        if (!(Globals.selectedProduct.isAvailable)){
-          this.addTags(Globals.selectedProduct.name, Globals.selectedProduct.url.toString(), "* PRODUCT UNAVAILABLE *", "https://shopmythred.com")
+  checkLoad(){
+
+    if (this.productToBuy.product) {
+        if (!(this.productToBuy.product.isAvailable)){
+          this.addTags(this.productToBuy.product.name, this.productToBuy.product.url.toString(), "* PRODUCT UNAVAILABLE *", "https://shopmythred.com")
           if (isPlatformBrowser(this.platformID)){
             this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
           }
           return
         }
-        this.addTags(Globals.selectedProduct.name, Globals.selectedProduct.url.toString(), this.formatPrice(Globals.selectedProduct.price / 100) + ". " + Globals.selectedProduct.description, "https://shopmythred.com")
+        this.addTags(this.productToBuy.product.name, this.productToBuy.product.url.toString(), this.formatPrice(this.productToBuy.product.price / 100) + ". " + this.productToBuy.product.description, "https://shopmythred.com")
         if (isPlatformBrowser(this.platformID)){
           if (Globals.storeInfo.uid == undefined){
             const storeInfo = this.getStoreName()
@@ -254,7 +251,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
             this.showSpinner()
             this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
 
-            if (Globals.storeInfo.uid != Globals.selectedProduct.uid){
+            if (Globals.storeInfo.uid != this.productToBuy.product.uid){
               this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
             }
             else if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
@@ -262,7 +259,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
             }
             else if (Globals.selectedTemplate == undefined){
               this.rootComponent.setOptions()
-              this.loadService.getTemplate(Globals.selectedProduct!.productType ?? "")
+              this.loadService.getTemplate(this.productToBuy.product.productType ?? "")
             }
             else if (Globals.selectedCurrency == undefined){
               this.loadService.getCountries()
@@ -317,10 +314,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   async addToCart(){
         
-    if (Globals.selectedProduct! == undefined)return;
+    if (this.productToBuy.product! == undefined)return;
 
 
-    this.productToBuy.product = JSON.parse(JSON.stringify(Globals.selectedProduct))
+    this.productToBuy.product = JSON.parse(JSON.stringify(this.productToBuy.product))
 
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as ProductInCart
 

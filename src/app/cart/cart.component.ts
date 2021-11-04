@@ -30,7 +30,6 @@ export class CartComponent implements OnInit {
   availableTemplates(){return Globals.availableTemplates}
 
 
-  selectedProduct(){return Globals.selectedProduct}
   
   selectedTemplate(){return Globals.selectedTemplate}
 
@@ -303,7 +302,9 @@ export class CartComponent implements OnInit {
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string){
-    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Home"});
+    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Checkout"});
+    this.metaService.updateTag({property: 'og:image:width', content: '200'});
+    this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})

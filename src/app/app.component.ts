@@ -45,8 +45,6 @@ export class AppComponent implements OnInit {
 
   availableTemplates(){return Globals.availableTemplates}
 
-
-  selectedProduct(){return Globals.selectedProduct}
   
   selectedTemplate(){return Globals.selectedTemplate}
 
@@ -63,14 +61,28 @@ export class AppComponent implements OnInit {
   hasPixel = false
 
   initializePixel(pixelID?: string){
-    if (!this.hasPixel){
-      this.hasPixel = true
-      // this.pixelService.remove()
-      this.pixelService.initialize()
+    if (this.getStoreName().isCustom){
+      if (!this.hasPixel && pixelID){
+        this.hasPixel = true
+        this.pixelService.remove()
+        this.pixelService.initialize(pixelID)
+      }
+    }
+    else{
+      if (!this.hasPixel){
+        this.hasPixel = true
+        this.pixelService.initialize()
+      }
     }
   }
 
   async setOptions(){
+
+    let user = (await this.loadService.isLoggedIn())
+    let uid = user?.uid
+    let isAnon = user?.isAnonymous ?? false
+  
+    this.signedIn = uid != undefined && !isAnon
 
     this.profileSettings = []
 
@@ -84,16 +96,23 @@ export class AppComponent implements OnInit {
       "Link" : "/" + "STORE_NAME" + "/orders",
       "Function": this.routeToOrders
     }
-
-    // if (!(await this.loadService.isLoggedIn())?.uid){
-
-    //   option = {
-    //     "Title": "My Account",
-    //     "Link" : "/" + "STORE_NAME" + "/my-store",
-    //   }
-    // }
     
-    this.profileSettings = [option, option2]
+    var option3 = {
+      "Title": "Sign Out",
+      "Link" : "/" + "null",
+      "Function": undefined
+    }
+
+    if (!this.signedIn){
+
+      option3 = {
+        "Title": "Sign In",
+        "Link" : "/" + "null",
+        "Function": undefined
+      }
+    }
+    
+    this.profileSettings = [option, option2, option3]
   }
   
   async closeBtn(result: string){
@@ -150,17 +169,7 @@ export class AppComponent implements OnInit {
       this.loadService.myCallback = undefined
       if (Globals.storeInfo.uid != Globals.userInfo?.uid){
         Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
-        if (Globals.userInfo.customURL && Globals.userInfo.customURL.host != ""){
-          this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, Globals.userInfo?.customURL.fullURL)
-        }
-        else{
-          if (this.getStoreName().isCustom){
-            this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, "https://shopmythred.com/" + Globals.userInfo?.username)
-          }
-          else{
-            this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected)
-          }
-        }
+        this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, "https://shopmythred.com/" + Globals.userInfo?.username)
       }
       else{
         if (Globals.storeInfo?.username){
@@ -247,7 +256,7 @@ export class AppComponent implements OnInit {
 
   routeToOrder(orderID: string){
     if (Globals.storeInfo?.username)
-    this.routingService.routeToProduct(orderID, Globals.storeInfo.username, this.getStoreName().isCustom)
+    this.routingService.routeToOrder(orderID, Globals.storeInfo.username, this.getStoreName().isCustom)
   }
 
   routeToShipping(){
@@ -271,17 +280,11 @@ export class AppComponent implements OnInit {
 
   }
 
-  async accountPressed(){
+  async accountPressed(authMode = 1, prefillUser = false){
     if (await this.loadService.authenticated() && !((await this.loadService.isLoggedIn())?.isAnonymous)){
       this.routeToProfile()
     }
     else{
-      
-      if (!this.isOrder()){
-        if (Globals.availableCurrencies == undefined || Globals.availableCurrencies == [] || Globals.availableTemplates == undefined || Globals.availableTemplates == [] || Globals.orders == [] || Globals.storeInfo.username == undefined || Globals.storeInfo.username == ""  || isPlatformServer(this.platformID)){
-          return
-        }
-      }
 
       if (!this.modalService.hasOpenModals()){
         const modalRef = this.modalService.open(LoginComponent, {size : "lg"});
@@ -290,16 +293,35 @@ export class AppComponent implements OnInit {
             console.log("man")
             sub.unsubscribe()
           })
-          modalRef.componentInstance.authMode = 1
+          modalRef.componentInstance.authMode = authMode
+          if (prefillUser){
+            modalRef.componentInstance.loginForm.controls.username.setValue(Globals.storeInfo.username)
+          }
       }    
     }
   }
 
   settings(popFirst: boolean){
     if (popFirst){
-      return this.profileSettings.slice(1) ?? []
+      return this.profileSettings.slice(1, -1) ?? []
     }
     return this.profileSettings ?? []
+  }
+
+  signInPressed(){
+    if (!this.modalService.hasOpenModals()){
+      const modalRef = this.modalService.open(LoginComponent, {size : "lg"});
+        let sub = modalRef.dismissed.subscribe((result: string) => {
+          console.log("man")
+          sub.unsubscribe()
+        })
+        modalRef.componentInstance.authMode = 1
+    }
+  }
+
+  signOutPressed(){
+    this.loadService.myCallback = () => this.routeToHome()
+    this.loadService.signOut()
   }
 
   storeLink(link: string){
@@ -457,12 +479,14 @@ export class AppComponent implements OnInit {
     document.getElementById('appIcon')!.setAttribute('href', link)
   }
     
+  signedIn = false
 
-  ngOnInit() {
+  async ngOnInit() {
     
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR 
 
+    
     this.loadService.rootComponent = this
     this.setOptions()
   }

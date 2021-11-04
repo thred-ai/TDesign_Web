@@ -25,7 +25,7 @@ import { RoutingService } from '../services/routing.service';
   selector: 'app-billing-info',
   templateUrl: './billing-info.component.html',
   styleUrls: ['./billing-info.component.css'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class BillingInfoComponent implements OnInit, AfterViewInit {
 
@@ -155,7 +155,6 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
   availableTemplates(){return Globals.availableTemplates}
 
 
-  selectedProduct(){return Globals.selectedProduct}
   
   selectedTemplate(){return Globals.selectedTemplate}
 
@@ -377,7 +376,12 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
 
   async addCard(){
 
-    
+    if (this.billingForm.valid && !this.validCard){
+      if (Globals.billingInfo?.name != '' && Globals.billingInfo?.brand != ''){
+        this.routeToReview()
+        return
+      }
+    }
 
 
 
@@ -542,7 +546,9 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string){
-    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Home"});
+    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Checkout"});
+    this.metaService.updateTag({property: 'og:image:width', content: '200'});
+    this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})

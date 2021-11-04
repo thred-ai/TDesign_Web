@@ -9,7 +9,7 @@ type = {{selectedIndicator().name}}
 [fullScreen] = "true"
 style.color = "{{selectedIndicator()!.color}}"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!" class="text-center">{{storeInfo()?.fullName}}
+<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">{{storeInfo()?.fullName}}
 </h3>
 </ngx-spinner>
   <!-- Header-->
@@ -17,7 +17,7 @@ style.color = "{{selectedIndicator()!.color}}"
     <header *ngIf="isBrowser() && storeInfo().username != undefined" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
       <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
           <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:35px">
-            <div>
+            <div class="px-2">
               <p [style.font-family]="storeInfo().fontName!" class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">
                 SHOPPING BAG
                </p>
@@ -35,7 +35,7 @@ style.color = "{{selectedIndicator()!.color}}"
     <section *ngIf="isBrowser() && storeInfo().username != undefined" class="py-5"  style.background-color="{{selectedTheme()!.bg_color}}">
       <div class="container pb-5 mb-2 mb-md-4">
           <div class="row">
-            <section class="col-lg-8">
+            <section class="col-lg-8 order-2 order-sm-1">
               <div *ngIf="hasCart() && loadedCart;" class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-4 pt-3 mt-0">
                   <h2 style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" class="h6 mb-1 pb-1 ps-3 mt-2">My Shopping Bag</h2>
                   <div class="py-2 px-xl-2">
@@ -71,13 +71,15 @@ style.color = "{{selectedIndicator()!.color}}"
               </div>
             </section>
             <!-- Sidebar-->
-            <aside class="col-lg-4 pt-4 pt-lg-0 ps-xl-5">
+            <aside class="col-lg-4 pb-2 pb-sm-0 ps-xl-5 order-1 order-sm-2">
               <div class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-4">
                 <div class="py-2 px-xl-2">
                   <div [hidden]="stillLoadingProducts()" class="text-center mb-4 pb-3 border-bottom">
                     <h2 [style.font-family]="storeInfo().fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2>
                     <h3 [style.font-family]="storeInfo().fontName!" class="fw-normal" style.color="{{selectedTheme()!.color}}">{{formatPrice(total())}}</h3>
                   </div>
+                  <div class="text-center my-2"><a *ngIf="hasCart() && loadedCart;" [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click) = "next()" [innerHTML]="'CHECKOUT'"></a></div>
+
                   <div class="accordion" id="order-options">
                     <!-- <div class="accordion-item">
                       <h3 class="accordion-header"><a class="accordion-button" href="#promo-code" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="promo-code">Apply promo code</a></h3>
@@ -133,7 +135,9 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                     </div>
                   </div>
-                  <div class="text-center mt-2"><a *ngIf="hasCart() && loadedCart;" [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click) = "next()" [innerHTML]="'CHECKOUT'"></a></div>
+                  <div class="w-100 d-flex justify-content-end mt-2 mb-0 ">
+                    <img class="rounded"  style="object-fit: contain;" [style.height.px]="60"  alt='ok' src="assets/secure.png"/>
+                  </div>
                 </div>
               </div>
             </aside>

@@ -71,7 +71,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }).slice(0, 4);
   }
 
-  selectedProduct(){return Globals.selectedProduct}
 
   constructor(
   @Inject(PLATFORM_ID) private platformID: Object,

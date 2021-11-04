@@ -35,6 +35,7 @@ import { AdminViewComponent } from '../admin-view/admin-view.component';
 import { HomeComponent } from '../home/home.component';
 import { AppComponent } from '../app.component';
 import { StoreDomain } from '../models/store-domain.model';
+import { PixelService } from 'ngx-pixel';
 
 
 
@@ -56,6 +57,7 @@ export class LoadService {
   private storage: AngularFireStorage,
   private stripeService: StripeService,
   private snackBar: MatSnackBar,
+  private pixel: PixelService
   ) { 
   }
 
@@ -359,7 +361,7 @@ export class LoadService {
             txt
           )
 
-          Globals.storeInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL)
+          Globals.storeInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL, pixelID)
 
           this.rootComponent?.initializePixel(pixelID)
 
@@ -467,7 +469,7 @@ export class LoadService {
 
           let loading = docData["indicator"] as Dict<any>
 
-          Globals.userInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL)
+          Globals.userInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL, pixelID)
 
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -1303,6 +1305,15 @@ export class LoadService {
     }
     this.rootComponent!.cart = undefined
     this.rootComponent?.getCart()
+
+    var ids = []
+
+    // mappedData
+    // this.pixel?.track('InitiateCheckout', {
+    //   content_ids: ['ABC123', 'XYZ456'],  // Item SKUs
+    //   value: 100,                         // Value of all items
+    //   currency: 'USD'                     // Currency of the value
+    // });
   }
 
   async saveUser(mappedData: Dict<any>){
@@ -1995,6 +2006,28 @@ export class LoadService {
   }
 
 
+  async setPixel(pixel: string = ''){
+    
+    const uid = (await this.isLoggedIn())?.uid
+
+    var data: Dict<any> = {
+      'fb_pixel': undefined
+    }
+
+
+    if (pixel != ''){
+      data.fb_pixel = pixel
+    }
+    else{
+      data.fb_pixel = firebase.firestore.FieldValue.delete()
+    }
+
+    await this.db.collection("Users").doc(uid).update(data)
+
+    return true
+  }
+
+
   async checkUsername(username: string, callback: (err?: string) => any, myUID?: string){
 
 
@@ -2104,7 +2137,8 @@ export class LoadService {
           if (shouldGetProducts)
           console.log('okmo')
 
-          await this.getPost(productID, true, i)
+          await this.getPost(productID, () => {
+          }, productCart)
         })
         await Promise.all(promises)
       }
@@ -2184,7 +2218,7 @@ export class LoadService {
     });
   }
 
-  async getOrders(){
+  async getOrders(callback: (orders: Array<Order>) => any){
     
     const uid = (await this.isLoggedIn())?.uid
     const storeUID = Globals.storeInfo.uid
@@ -2198,9 +2232,10 @@ export class LoadService {
     var query = this.db.collection("Users/" + uid + "/Orders", ref => ref.where("merchant_uid",'==', storeUID).orderBy("timestamp", "desc"))
 
 
-    Globals.orders = []
+    var orders = new Array<Order>()
     
     let sub = query.valueChanges().subscribe((docDatas) => {
+
       docDatas.forEach((doc, index) => {
         const docData = doc as DocumentData
         if (docData){
@@ -2251,16 +2286,14 @@ export class LoadService {
           let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID)
 
 
-          Globals.orders?.push(order)
+          orders.push(order)
 
 
           this.getOrderProducts(order, uid, index)
     
         }
       })
-
-      if (this.myCallback) 
-          this.myCallback()
+      callback(orders)
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
     });
@@ -2306,20 +2339,10 @@ export class LoadService {
 
           order.products.push(orderProduct)
 
-          if (isSelectedOrder ?? false){
-            console.log('okpo')
-
-            this.getPost(productID, undefined, undefined, undefined, orderIndex, index, true)
-          }
-          else{
-            console.log('okp2o')
-
-            this.getPost(productID, undefined, undefined, true, orderIndex, index, false)
-          }
+          this.getPost(productID, () => {
+          }, undefined, orderProduct)
         }
       })
-      if (this.myCallback) 
-          this.myCallback()
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
     });
@@ -2421,7 +2444,9 @@ export class LoadService {
 
           Globals.productsSold?.push(orderProduct)
           console.log('okro')
-          this.getPost(productID, false, undefined, false, undefined, index, false, true)
+          this.getPost(productID, () => {
+
+          }, undefined, undefined, orderProduct)
         }
       })
       if (this.saleCallback) 
@@ -2431,10 +2456,10 @@ export class LoadService {
     });
   }
 
-  async getPost(productID: string, forCart?: boolean, cartIndex?: number, forOrder?: boolean, orderIndex?: number, productIndex?: number, isSelectedOrder?: boolean, forSale?: boolean){
+  async getPost(productID: string, callback: () => any, cartProduct?: ProductInCart, orderProduct?: ProductInCart, saleProduct?: ProductInCart, selectedProduct?: ProductInCart){
     
     var query = this.db.collectionGroup("Products", ref => ref.where("Product_ID",'==', productID))
-    if (!(forSale && productIndex && Globals.productsSold)){
+    if (!(saleProduct && Globals.productsSold)){
       query = this.db.collectionGroup("Products", ref => ref.where("Product_ID",'==', productID).where("Public",'==', true))
     }
     let sub = query.valueChanges().subscribe((docDatas) => {
@@ -2491,40 +2516,28 @@ export class LoadService {
           )
 
 
-          if (forSale && productIndex != undefined && Globals.productsSold != undefined){
-            Globals.productsSold![productIndex] = product;
+          if (saleProduct && Globals.productsSold != undefined){
+            saleProduct.product = product;
           }
           else{
-            if ((forCart ?? false)){
-              this.rootComponent!.cart![cartIndex!].product = product
-
-              if (this.myCallback) 
-              this.myCallback()
-            if (isPlatformBrowser(this.platformID))
-              sub.unsubscribe();
+            if (cartProduct){
+              cartProduct.product = product
             }
             else{
-
-              if ((forOrder ?? false)){
-                product.price = Globals.orders![orderIndex!].products[productIndex!].product?.price ?? 0
-                Globals.orders![orderIndex!].products[productIndex!].product = product
-
+              if (orderProduct){
+                product.price = orderProduct.product?.price ?? 0
+                orderProduct.product = product
               }
-              else if ((isSelectedOrder ?? false)){
-                product.price = Globals.selectedOrder!.products[productIndex!].product?.price ?? 0
-                Globals.selectedOrder!.products[productIndex!].product = product
-
+              else if (selectedProduct){
+                console.log(product)
+                selectedProduct.product = product;
               }
-              else{
-                Globals.selectedProduct = product;
-              }
-              if (this.myCallback) 
-              this.myCallback()
             if (isPlatformBrowser(this.platformID))
               sub.unsubscribe();
             }
           }
         }
+        callback()
       })
     });
   }
