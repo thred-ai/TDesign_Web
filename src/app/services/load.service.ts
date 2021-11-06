@@ -347,6 +347,7 @@ export class LoadService {
 
           let socials = docData["Socials"] as Array<{ name: string; link: string; }>
           let custom_url = docData["Custom_URL"] as Dict<any> ?? {}
+          let active = docData["Active"] as boolean
 
           let host = custom_url.host as string
           let protocol = custom_url.protocol as string
@@ -361,7 +362,35 @@ export class LoadService {
             txt
           )
 
-          Globals.storeInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL, pixelID)
+          Globals.storeInfo = new Store(
+            uid, 
+            dpUID, 
+            username, 
+            fullName, 
+            bio, 
+            notifID, 
+            userFollowing, 
+            [], 
+            followerCount, 
+            postCount, 
+            followingCount, 
+            usersBlocking, 
+            this.getProfileURL(uid, dpUID), 
+            verified, 
+            isPublic, 
+            postNotifs, 
+            slogan, 
+            undefined, 
+            this.getDefaultURL(), 
+            this.getDefaultURL(), 
+            this.getDefaultURL(), 
+            undefined, 
+            font, 
+            socials, 
+            finalURL, 
+            pixelID,
+            active
+          )
 
           this.rootComponent?.initializePixel(pixelID)
 
@@ -452,6 +481,7 @@ export class LoadService {
           let socials = docData["Socials"] as Array<{ name: string; link: string; }>
           let custom_url = docData["Custom_URL"] as Dict<any> ?? {}
           let pixelID = docData["fb_pixel"] as string
+          let active = docData["Active"] as boolean
 
           let host = custom_url.host as string
           let protocol = custom_url.protocol as string
@@ -465,12 +495,38 @@ export class LoadService {
             txt
           )
 
-          this.rootComponent?.initializePixel(pixelID)
+          // this.rootComponent?.initializePixel(pixelID)
 
           let loading = docData["indicator"] as Dict<any>
 
-          Globals.userInfo = new Store(uid, dpUID, username, fullName, bio, notifID, userFollowing, [], followerCount, postCount, followingCount, usersBlocking, this.getProfileURL(uid, dpUID), verified, isPublic, postNotifs, slogan, undefined, this.getDefaultURL(), this.getDefaultURL(), this.getDefaultURL(), undefined, font, socials, finalURL, pixelID)
-
+          Globals.userInfo = new Store(
+            uid, 
+            dpUID, 
+            username, 
+            fullName, 
+            bio, 
+            notifID, 
+            userFollowing, 
+            [], 
+            followerCount, 
+            postCount, 
+            followingCount, 
+            usersBlocking, 
+            this.getProfileURL(uid, dpUID), 
+            verified, 
+            isPublic, 
+            postNotifs, 
+            slogan, 
+            undefined, 
+            this.getDefaultURL(), 
+            this.getDefaultURL(), 
+            this.getDefaultURL(), 
+            undefined, 
+            font, socials, 
+            finalURL, 
+            pixelID, 
+            active
+          )
 
           let list = docData["image_list"] as Array<string> ?? []
 
@@ -1788,21 +1844,16 @@ export class LoadService {
     return this.auth.authState.pipe(first()).toPromise();
   }
 
-  registerAccount(type: string, credentials?: Dict<string>, affiliate?: string){
+  registerAccount(type: string, callback: (root?: AppComponent, error?: string) => any, credentials?: Dict<string>, affiliate?: string){
 
     if (type == "Guest"){
       this.auth.signInAnonymously().then(() => {
         // Signed in..
-    
-        if (this.myCallback)
-          this.myCallback()
-
+        callback(this.rootComponent, undefined)
         }).catch((error) => {
           var errorCode = error.code;
           var errorMessage = error.message;
-
-          if (this.errCallback)
-          this.errCallback(errorMessage)
+          callback(undefined, errorMessage)
         });
     }
 
@@ -1813,55 +1864,40 @@ export class LoadService {
       let email = credentials?.email!
 
       this.auth.createUserWithEmailAndPassword(email, password).then(async (result) => {
-        // Signed in..
         await result.user?.sendEmailVerification()
         if (result.user && username){
           Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
           await this.setUsername(result.user?.uid, username, true, affiliate)
-          if (this.myCallback)
-          this.myCallback()
+          callback(this.rootComponent, undefined)
         }
         else{
           await this.auth.signOut()
-          if (this.errCallback)
-          this.errCallback("Unknown Error Occured. Please Try Again Later")
+          callback(undefined, "Unknown Error Occured. Please Try Again Later")
         }
         }).catch((error) => {
           var errorCode = error.code;
           var errorMessage = error.message;
-
-          if (this.errCallback)
-          this.errCallback(errorMessage)
-
+          callback(undefined, errorMessage)
           console.log(errorCode)
-          
       });  
     }
     else if(type == "Email_IN"){
       let password = credentials?.password!
       let email = credentials?.email!
-
       this.auth.signInWithEmailAndPassword(email, password).then(async (result) => {
-        // Signed in..
         if (result.user){
           Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-          if (this.myCallback)
-          this.myCallback()
+          callback(this.rootComponent, undefined)
         }
         else{
           await this.auth.signOut()
-          if (this.errCallback)
-          this.errCallback("Unknown Error Occured. Please Try Again Later")
+          callback(undefined, "Unknown Error Occured. Please Try Again Later")
         }
         }).catch((error) => {
           var errorCode = error.code;
           var errorMessage = error.message;
-
           if (errorCode == "auth/wrong-password") errorMessage = "The password is incorrect."
-
-          if (this.errCallback)
-          this.errCallback(errorMessage)
-
+          callback(undefined, errorMessage)
           console.log(errorCode)
       }); 
     }
@@ -1878,8 +1914,7 @@ export class LoadService {
         if (resp as string){
           if (resp.includes("ERROR:")){
             let err = resp.replace("ERROR:", "")
-            if (this.errCallback)
-            this.errCallback(err)
+            callback(undefined, err)
             console.log(err)
           }
           else{
@@ -1891,86 +1926,80 @@ export class LoadService {
               // Signed in..
               if (result.user){
                 Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-                if (this.myCallback)
-                this.myCallback()
+                callback(this.rootComponent, undefined)
               }
               else{
                 await this.auth.signOut()
-                if (this.errCallback)
-                this.errCallback("Unknown Error Occured. Please Try Again Later")
+                callback(undefined, "Unknown Error Occured. Please Try Again Later")
+
               }
             }).catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 if (errorCode == "auth/wrong-password") errorMessage = "The password is incorrect."
-
-                if (this.errCallback)
-                this.errCallback(errorMessage)
-      
+                callback(undefined, errorMessage)
                 console.log(errorCode)
             }); 
           }
         }
         else {
-          if (this.errCallback)
-          this.errCallback("Unknown Error Occured. Please Try Again Later")
+          callback(undefined, "Unknown Error Occured. Please Try Again Later")
         }
       }, err => {
         var errorCode = err.code;
         var errorMessage = err.message;
-        if (this.errCallback)
-          this.errCallback(errorMessage)
+        callback(undefined, errorMessage)
         console.log(errorCode)
       });
     }
-    else if (type == "Apple"){
-      var appleProvider = new firebase.auth.OAuthProvider('apple.com');
-      appleProvider.addScope('email');
-      appleProvider.addScope('name');
+    // else if (type == "Apple"){
+    //   var appleProvider = new firebase.auth.OAuthProvider('apple.com');
+    //   appleProvider.addScope('email');
+    //   appleProvider.addScope('name');
 
-      this.auth.signInWithPopup(appleProvider).then(async (result) => {
-        // Signed in..
+    //   this.auth.signInWithPopup(appleProvider).then(async (result) => {
+    //     // Signed in..
     
-        if ((result.additionalUserInfo?.isNewUser ?? false) && result.user?.uid){
-          Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-          await result.user?.sendEmailVerification()
-          await this.setUsername(result.user?.uid, result?.additionalUserInfo?.username ?? 'user_' + uuid.toString(), (!(this.isUndefined(result?.additionalUserInfo?.username))), affiliate)
-        }
-        if (this.myCallback)
-          this.myCallback()
+    //     if ((result.additionalUserInfo?.isNewUser ?? false) && result.user?.uid){
+    //       Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
+    //       await result.user?.sendEmailVerification()
+    //       await this.setUsername(result.user?.uid, result?.additionalUserInfo?.username ?? 'user_' + uuid.toString(), (!(this.isUndefined(result?.additionalUserInfo?.username))), affiliate)
+    //     }
+    //     if (this.myCallback)
+    //       this.myCallback()
 
-        }).catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
+    //     }).catch((error) => {
+    //       var errorCode = error.code;
+    //       var errorMessage = error.message;
 
-          if (this.errCallback)
-          this.errCallback(errorMessage)
-        });
-    }
-    else if (type == "Google"){
-      var googleProvider = new firebase.auth.GoogleAuthProvider();
-      googleProvider.addScope('email');
-      googleProvider.addScope('profile');
+    //       if (this.errCallback)
+    //       this.errCallback(errorMessage)
+    //     });
+    // }
+    // else if (type == "Google"){
+    //   var googleProvider = new firebase.auth.GoogleAuthProvider();
+    //   googleProvider.addScope('email');
+    //   googleProvider.addScope('profile');
 
-      this.auth.signInWithPopup(googleProvider).then(async (result) => {
-        // Signed in..
-        if ((result.additionalUserInfo?.isNewUser ?? false) && result.user?.uid){
-          await result.user?.sendEmailVerification()
-          Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-          await this.setUsername(result.user?.uid, result?.additionalUserInfo?.username ?? 'user_' + uuid().replace('-', ''), (!(this.isUndefined(result?.additionalUserInfo?.username))), affiliate)
-        }
-        if (this.myCallback)
-          this.myCallback()
+    //   this.auth.signInWithPopup(googleProvider).then(async (result) => {
+    //     // Signed in..
+    //     if ((result.additionalUserInfo?.isNewUser ?? false) && result.user?.uid){
+    //       await result.user?.sendEmailVerification()
+    //       Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
+    //       await this.setUsername(result.user?.uid, result?.additionalUserInfo?.username ?? 'user_' + uuid().replace('-', ''), (!(this.isUndefined(result?.additionalUserInfo?.username))), affiliate)
+    //     }
+    //     if (this.myCallback)
+    //       this.myCallback()
 
-        }).catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
+    //     }).catch((error) => {
+    //       var errorCode = error.code;
+    //       var errorMessage = error.message;
 
-          console.log(error)
-          if (this.errCallback)
-          this.errCallback(errorMessage)
-        });
-    }
+    //       console.log(error)
+    //       if (this.errCallback)
+    //       this.errCallback(errorMessage)
+    //     });
+    // }
   }
 
   roundedFavIconLink(){
@@ -2150,6 +2179,7 @@ export class LoadService {
 
   async getOrder(orderID: string){
     
+    Globals.selectedOrder = new Order()
 
     let sub = this.db.collectionGroup("Orders", ref => ref.where("order_id",'==', orderID)).valueChanges().subscribe((docDatas) => {
       docDatas.forEach((doc) => {
@@ -2207,7 +2237,6 @@ export class LoadService {
           this.getOrderProducts(order, uid, 0, true)
         }
         else{
-          
           Globals.selectedOrder = new Order()
         }
       })

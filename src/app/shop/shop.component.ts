@@ -119,6 +119,9 @@ export class ShopComponent implements OnInit, OnDestroy {
       this.rootComponent.routeToProduct(productID)
     }
 
+    routeToAbout(){
+      this.rootComponent.routeToAbout()
+    }
 
 
     selectedTheme(){

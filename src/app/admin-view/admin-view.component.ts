@@ -795,7 +795,7 @@ showSocialModal(logo: {
       array.push("Set up your merchant payments account")
     }
     if ((this.storeProducts?.length ?? 0) == 0){
-      array.push("Create your first product")
+      array.push("Upload your first product")
     }
     return array
   }
@@ -1532,10 +1532,9 @@ isSpinning = false
 
     showWelcomeModal(){
 
-      if (Globals.isNewUser){
+      if (Globals.isNewUser && !this.modalService.hasOpenModals()){
         const modalRef = this.modalService.open(StoreSetupComponent, {size : "lg"});
         // modalRef.componentInstance.canTrial = this.canTrial
-  
         let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
           sub.unsubscribe()
           // if (subInfo){

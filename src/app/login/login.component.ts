@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit {
 
   authMode = 1
   err = ""
-  title = "account"
 
   @Input() isLanding?: boolean;
   @Input() affiliate?: string;
@@ -28,6 +27,19 @@ export class LoginComponent implements OnInit {
 
   storeInfo(){
     return Globals.storeInfo
+  }
+
+  title(){
+    var suffix = 'account'
+    if (this.isLanding) suffix = 'store'
+
+    if (this.isSignIn()){
+      return 'Sign in to your ' + suffix
+    }
+    else if (this.isSignUp()){
+      return 'Create your ' + suffix
+    }
+    return 'Recover your ' + suffix
   }
 
   selectedIndicator(){
@@ -95,10 +107,6 @@ showSpinner(){
   if (!this.isSpinning){
     this.isSpinning = true
     this.spinner.show("loginSpinner")
-
-    setTimeout(() => {
-        this.hideSpinner()
-    }, 2000);
   }
 }
 
@@ -110,20 +118,21 @@ hideSpinner(){
 }
 
   isSignIn(){
-    this.loadingAction = "Signing in..."
     return this.authMode == 2
   }
+
   isGoogle(){
-    this.loadingAction = "Signing in..."
     return this.authMode == 4
   }
   isApple(){
-    this.loadingAction = "Signing in..."
     return this.authMode == 3
   }
   isSignUp(){
-    this.loadingAction = "Creating Account..."
     return this.authMode == 1
+  }
+
+  isRecover(){
+    return this.authMode == 5
   }
 
   changeAuth(to: number){
@@ -133,16 +142,24 @@ hideSpinner(){
   }
 
   useGuest(){
-
-    this.load.myCallback = () => this.close()
+    this.loadingAction = "Making Guest Account..."
 
     this.showSpinner()
-    this.load.registerAccount("Guest")
+    this.load.registerAccount("Guest", (app, error) => {
+      if (error){
+        this.err = error
+        this.hideSpinner()
+      }
+      else{
+        app?.setOptions()
+        this.close()
+      }
+    })
   }
   
   close(){
-    this.hideSpinner()
     console.log("go")
+    this.hideSpinner()
     if (this.isLanding){
       this.signedIn.emit(true)
     }
@@ -165,10 +182,6 @@ hideSpinner(){
 
     if (this.loginForm.valid){
 
-      this.load.myCallback = () => this.close()
-      this.load.errCallback = (err: string) => this.error(err)
-
-
       const usernameOrEmail = this.loginForm.controls.username.value
 
       const password = this.loginForm.controls.password.value
@@ -182,16 +195,35 @@ hideSpinner(){
         "Field" : fieldToSearch,
         "Term" : usernameOrEmail
       }
-  
+      this.loadingAction = "Signing in..."
+
       this.showSpinner()
 
       if (usernameOrEmail.includes("@")){
         // this.showSpinner()
-        this.load.registerAccount("Email_IN", credentials)
+        this.load.registerAccount("Email_IN", (app, error) => {
+          if (error){
+            this.err = error
+            this.hideSpinner()
+          }
+          else{
+            app?.setOptions()
+            this.close()
+          }
+        }, credentials)
       }
       else{
         // this.showSpinner()
-        this.load.registerAccount("Email_IN_USER", credentials)
+        this.load.registerAccount("Email_IN_USER", (app, error) => {
+          if (error){
+            this.err = error
+            this.hideSpinner()
+          }
+          else{
+            app?.setOptions()
+            this.close()
+          }
+        }, credentials)
       }
     }
     else{
@@ -199,19 +231,19 @@ hideSpinner(){
     }
   }
 
-  useApple(){
-    this.load.myCallback = () => this.close()
-    this.load.errCallback = (err: string) => this.error(err)
+  // useApple(){
+  //   this.load.myCallback = () => this.close()
+  //   this.load.errCallback = (err: string) => this.error(err)
 
-    this.load.registerAccount("Apple", undefined, this.affiliate)
-  }
+  //   this.load.registerAccount("Apple", undefined, this.affiliate)
+  // }
 
-  useGoogle(){
-    this.load.myCallback = () => this.close()
-    this.load.errCallback = (err: string) => this.error(err)
+  // useGoogle(){
+  //   this.load.myCallback = () => this.close()
+  //   this.load.errCallback = (err: string) => this.error(err)
 
-    this.load.registerAccount("Google", undefined, this.affiliate)
-  }
+  //   this.load.registerAccount("Google", undefined, this.affiliate)
+  // }
 
   useEmail(){
 
@@ -234,6 +266,8 @@ hideSpinner(){
       }
 
       console.log(this.affiliate)
+      this.loadingAction = "Creating Account..."
+
       this.showSpinner()
       if (password == confirmpassword){
         this.load.myCallback = () => this.close()        
@@ -242,9 +276,21 @@ hideSpinner(){
             this.error(err)
           }
           else{
-            this.load.registerAccount("Email_UP", credentials, this.affiliate)
+            this.load.registerAccount("Email_UP", (app, error) => {
+              if (error){
+                this.err = error
+              }
+              else{
+                app?.setOptions()
+                this.hideSpinner()
+                this.close()
+              }
+            }, credentials, this.affiliate)
           }
         })
+      }
+      else{
+        this.hideSpinner()
       }
     }
     return false
@@ -253,7 +299,6 @@ hideSpinner(){
 
   ngOnInit(): void {
     
-    if (this.isLanding) this.title = 'store'
   }
 
 }

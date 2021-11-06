@@ -14,7 +14,7 @@
   </h3>
   </ngx-spinner>
 
-  <header *ngIf="isBrowser() && storeProducts?.length != 0" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
+  <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
     <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
         <div class="d-flex align-items-center justify-content-center" style="height: 300px; font-weight: bold;font-size:35px">
             <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;" [style.font-family]="storeInfo().fontName!">
@@ -25,7 +25,7 @@
   </header>
   <!-- Section-->
   <div style="max-height: 100%; min-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}">
-    <section *ngIf="isBrowser() && storeProducts?.length != 0" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+    <section *ngIf="isBrowser() && (storeInfo()?.active && storeProducts?.length != 0)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
         <h1 class="display-4 fw-bolder text-center" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{mode()}}</h1>
         <div [hidden]="storeProducts == []" class="container px-4 px-lg-5 mt-5">
             <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-center">
@@ -48,6 +48,26 @@
                     </div>
                 </div>
             </div>
+        </div>
+      </section>
+      <section *ngIf="isBrowser() && (!storeInfo()?.active || storeProducts?.length == 0)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+     
+    
+        <div class="container mt-5">
+    
+            <div class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
+                <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
+                  COMING SOON
+                </p>
+            </div>
+            <div>
+                <div class="d-block align-items-center pt-0">
+                    <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{(storeInfo()!.homeLink?.toString() ?? '')}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
+                    </div>
+                </div>
+            </div>
+    
+            
         </div>
       </section>
        <!-- Footer-->

@@ -23,7 +23,7 @@ style.color = "{{selectedIndicator()!.color}}"
       </div>
   </header>
 
-  <section *ngIf="isBrowser();" [hidden]="stillLoadingProducts()" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+  <section *ngIf="isBrowser();" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
     <div class="container pb-5 mb-2 mb-md-4">
         <div class="row">
           <!-- List of items-->
@@ -61,13 +61,13 @@ style.color = "{{selectedIndicator()!.color}}"
 
                </div>
             </div>
-            <div *ngIf="!(hasCart()) && loadedCart;" class="bg-white rounded-3 shadow-lg p-4 pt-3 mt-0">
-                <h2 class="h6 ps-3 mt-2 text-center" style="font-weight: bolder;">Your Order History is Empty</h2>
+            <div *ngIf="!(hasCart()) && loadedCart;" class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-4 pt-3 mt-0">
+                <h2 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="h6 ps-3 mt-2 text-center" style="font-weight: bolder;">Your Order History is Empty</h2>
                 <div class="py-2 px-xl-2">
                     <div class="d-block align-items-center pt-2">
-                        <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4"><img style="border-radius: 2.5%;" src="https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media" style="max-width: 100%; height: auto;" alt="Product"/></a>
+                        <div class="d-block align-items-center text-center text-sm-start"><a role="button" (click)='routeToProducts()' class="mx-auto me-sm-4"><img style="border-radius: 2.5%;" src="{{storeInfo()!.actionLink!.toString()}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
                           <div class="pt-2">
-                              <h2 class="h6 ps-3 mt-2 text-center"><a (click)='routeToProducts()' class="text-dark text-decoration-underline" style="font-weight: bold;">Shop More Products</a></h2>
+                              <h2 class="h6 ps-3 mt-2 text-center"><a [style.font-family]="storeInfo().fontName!" role="button" (click)='routeToProducts()' class="text-{{storeInfo().colorStyle!.text_code}} text-decoration-underline" style="font-weight: bold;">Shop More Products</a></h2>
                           </div>
                         </div>
                     </div>

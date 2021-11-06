@@ -14,7 +14,7 @@ style.color = "{{selectedIndicator()!.color}}"
 </ngx-spinner>
   <!-- Section -->
   <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
-    <section *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="py-5"  style.background-color="{{selectedTheme()!.bg_color}}">
+    <section *ngIf="isBrowser() && storeInfo()?.active" class="py-5"  style.background-color="{{selectedTheme()!.bg_color}}">
 
         <div class="container px-4 px-lg-5 mt-0">
             <div [hidden]="selectedProduct() == undefined || selectedTemplate() == undefined" class="row gx-4 gx-lg-1 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center align-items-center h-100">
@@ -118,6 +118,26 @@ style.color = "{{selectedIndicator()!.color}}"
 
         
         
+      </section>
+      <section *ngIf="isBrowser() && (!storeInfo()?.active)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+     
+    
+        <div class="container mt-5">
+    
+            <div class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
+                <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
+                  COMING SOON
+                </p>
+            </div>
+            <div>
+                <div class="d-block align-items-center pt-0">
+                    <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{(storeInfo()!.homeLink?.toString() ?? '')}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
+                    </div>
+                </div>
+            </div>
+    
+            
+        </div>
       </section>
       <footer *ngIf="isBrowser()" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
         <div class="container w-100 d-block justify-content-center">

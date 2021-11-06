@@ -19,31 +19,34 @@ style.color = "{{selectedIndicator()!.color}}"
       <!-- Tabs Titles -->
       <!-- Login Form -->
       <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} mt-5" style = "line-height:1.0em; font-size: 25px;font-weight: bold;">
-        Create your {{title}}
+        {{title()}}
        </p>
-       <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style.color="{{selectedTheme()!.color}}" style = "line-height:1.0em; font-size: 15px;font-weight: normal;">
-        Or log in below
+       <p *ngIf='isSignUp() || isSignIn()' [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style.color="{{selectedTheme()!.color}}" style = "line-height:1.0em; font-size: 15px;font-weight: normal;">
+        Or
        </p>
-       <div class="container px-4 px-lg-5 mt-5" style = "width:300px">
-        <div style = "width:auto" class="row row-cols-3 row-cols-md-3 row-cols-xl-3 justify-content-center">
-            <div class="col">
-                <a class="brand-logo" role=button (click)="changeAuth(2)">
-                    <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/email.png'/>
-                </a>
+       <div class="container  mt-3">
+        <div class="row row-cols-1 justify-content-center">
+            <div *ngIf="isSignUp()" class="col">
+              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">LOG IN <img src='assets/email.png' height="30" alt="none"></a>
+              <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">LOG IN <img src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
             </div>
-            <div class="col">
+            <div *ngIf="isSignIn()" class="col">
+              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img src='assets/email.png' height="30" alt="none"></a>
+              <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
+            </div>
+            <!-- <div class="col">
                 <a class="brand-logo" role=button (click)="useApple()">
                     <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/apple_{{storeInfo().colorStyle!.back_code}}.png'/>
                 </a>
-            </div>
-            <div class="col">
+            </div> -->
+            <!-- <div class="col">
                 <a class="brand-logo" role=button (click)="useGoogle()">
                     <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/google.png'/>
                 </a>
-            </div>
+            </div> -->
         </div>
        </div>
-       <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
+       <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
         {{err}}
        </p>
        <div *ngIf="isSignUp()">
@@ -68,7 +71,7 @@ style.color = "{{selectedIndicator()!.color}}"
           </div>
        </div>
        <div *ngIf="isSignIn()">
-        <form  class = "mt-4" [formGroup]="loginForm">
+          <form  class = "mt-4" [formGroup]="loginForm">
             <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
             <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="Username/Email" formControlName="username">
             <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="password" placeholder="Password" formControlName="password">
@@ -80,8 +83,11 @@ style.color = "{{selectedIndicator()!.color}}"
             </div>
           </form>
           <div id="formFooter"  class="bg-{{storeInfo().colorStyle!.back_code}}">
-            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{storeInfo().colorStyle!.text_code}}" role=button (click)="changeAuth(1)">Don't have an account?</a>
+            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{storeInfo().colorStyle!.text_code}}" role='button' (click)="changeAuth(5)">I can't access my account</a>
           </div>
+        </div>
+        <div *ngIf="isRecover()">
+          
         </div>
       <!-- Remind Passowrd -->
     </div>

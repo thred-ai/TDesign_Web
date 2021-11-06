@@ -225,6 +225,7 @@ export class AppComponent implements OnInit {
   }
 
   routeToHome(){
+    this.setOptions()
     if (Globals.storeInfo.username)
     this.routingService.routeToHome(Globals.storeInfo.username, this.getStoreName().isCustom)
   }

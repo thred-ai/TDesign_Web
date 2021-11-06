@@ -35,6 +35,7 @@ export class Store {
     }>
     customURL?: StoreDomain
     fb_pixel?: string
+    active?: boolean
 
 
     constructor(
@@ -66,7 +67,8 @@ export class Store {
         link: string
       }>,
       customURL?: StoreDomain,
-      fb_pixel?: string
+      fb_pixel?: string,
+      active?: boolean
       ) {
 
       this.uid = uid
@@ -132,5 +134,6 @@ export class Store {
       }
       this.customURL = customURL
       this.fb_pixel = fb_pixel
+      this.active = (active ?? false) && ((postCount ?? 0) > 0)
     }
 }

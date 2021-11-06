@@ -101,6 +101,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
     return indicator
   }
 
+  routeToAbout(){
+    this.rootComponent.routeToAbout()
+  }
+
   ngOnInit(): void {
     const productID = this.getProductID()
 

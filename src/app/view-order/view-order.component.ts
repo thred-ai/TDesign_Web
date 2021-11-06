@@ -71,10 +71,6 @@ export class ViewOrderComponent implements OnInit {
     return colors?.find(color => color.code == product?.templateColor)?.display ?? "White"
   }
 
-  stillLoadingProducts(){
-    return this.rootComponent.cart?.filter(product => product.product?.price == undefined)?.length != 0
-  }
-
   calculateShipping($event: any){
  
     let country = $event.target.options[$event.target.options.selectedIndex].text;
@@ -228,6 +224,7 @@ export class ViewOrderComponent implements OnInit {
           this.loadedCart = true
           this.orders = []
           this.cdr.detectChanges()
+          return
         }
       }
       else if (Globals.shippingInfo == undefined && isPlatformBrowser(this.platformID)){

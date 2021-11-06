@@ -268,7 +268,8 @@ export class CartComponent implements OnInit {
   }
 
   hasCart(){
-    return this.rootComponent.cart?.length != 0
+    console.log(this.rootComponent.cart?.length)
+    return (this.rootComponent.cart?.length ?? 0) != 0
   }
 
   formatPrice(price: number){
