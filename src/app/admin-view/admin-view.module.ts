@@ -24,6 +24,10 @@ import { InventoryListComponent } from '../inventory-list/inventory-list.compone
 import { EditPlanComponent } from '../edit-plan/edit-plan.component';
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import { StoreSetupComponent } from '../store-setup/store-setup.component';
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
+import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -45,6 +49,7 @@ const routes: Routes = [
     InventoryListComponent,
     EditPlanComponent,
     StoreSetupComponent,
+    ProductDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -59,9 +64,11 @@ const routes: Routes = [
     ImageCropperModule,
     ColorPickerModule,
     NgbModule,
+    HttpClientModule,
     NgxChartsModule,
     ClipboardModule,
     NgxCurrencyModule,
+    DragDropModule,
     RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

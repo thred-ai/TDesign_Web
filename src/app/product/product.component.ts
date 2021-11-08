@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Inject, AfterViewInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Inject, AfterViewInit, ViewChild } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Product } from 'src/app/models/product.model';
 
@@ -16,6 +16,7 @@ import { LoginComponent } from '../login/login.component';
 import { AppComponent } from '../app.component';
 import { NgxSpinnerService } from "ngx-spinner";
 import { RoutingService } from '../services/routing.service';
+import { DragScrollComponent } from 'ngx-drag-scroll';
 
 @Component({
   selector: 'app-product',
@@ -23,6 +24,8 @@ import { RoutingService } from '../services/routing.service';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit, AfterViewInit {
+
+  @ViewChild('carousel', {read: DragScrollComponent}) ds?: DragScrollComponent;
 
   storeInfo(){return Globals.storeInfo}
   availableCurrencies(){return Globals.availableCurrencies}
@@ -32,6 +35,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   selectedTemplate(){return Globals.selectedTemplate}
   selectedProduct(){return this.productToBuy.product}
 
+  selectedIndex = 0
 
   productToBuy = new ProductInCart()
   
@@ -111,6 +115,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.loadService.myCallback = () => this.checkLoad()
 
     this.loadService.getPost(productID, () => {
+      this.selectedIndex = 0
       this.checkLoad()
     }, undefined, undefined, undefined, this.productToBuy)
 
@@ -153,6 +158,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   format(d: Date) {
     return Globals.days[d.getDay()] + ', ' + Globals.months[d.getMonth()] + " " + d.getDate()
+  }
+
+  scrollTo(i: number){
+    this.selectedIndex = i
   }
 
   formattedInfo(){

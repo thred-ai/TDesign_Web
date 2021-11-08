@@ -647,7 +647,7 @@ export class LoadService {
           let productType = docData.Type as string ?? "ATC1000"
           let displaySide = docData.Side as string ?? "front"
           let sides = docData["Sides"] as Array<string> ?? ["Front"]
-  
+          let images = docData["Images"] as Array<any> ?? [{index:0, img: this.getURL(uid, productID)}]
 
   
           let product = new Product(
@@ -669,7 +669,8 @@ export class LoadService {
             productType, 
             displaySide, 
             sides,
-            this.getURL(uid, productID)
+            this.getURL(uid, productID),
+            images
           )
 
             products.push(product);
@@ -715,33 +716,54 @@ export class LoadService {
   editProduct(product: Product){
 
     if (this.shopComponent){
-      let p = this.shopComponent.storeProducts?.filter(obj => {
+      let p = this.shopComponent.storeProducts?.find(obj => {
         return obj.productID == product.productID
-      })[0] as Product
+      }) as Product
+
+      if (!p){
+        this.addProduct(product)
+        return
+      }
   
       p.name = product.name
       p.description = product.description
       p.price = product.price
+      p.url = product.url
+      p.images = product.images
     }
 
     if (this.adminComponent){
-      let p = this.adminComponent.storeProducts?.filter(obj => {
+      let p = this.adminComponent.storeProducts?.find(obj => {
         return obj.productID == product.productID
-      })[0] as Product
+      }) as Product
+
+      if (!p){
+        this.addProduct(product)
+        return
+      }
   
       p.name = product.name
       p.description = product.description
       p.price = product.price
+      p.url = product.url
+      p.images = product.images
     }
 
     if (this.homeComponent){
-      let p = this.homeComponent.storeProducts?.filter(obj => {
+      let p = this.homeComponent.storeProducts?.find(obj => {
         return obj.productID == product.productID
-      })[0] as Product
+      }) as Product
+
+      if (!p){
+        this.addProduct(product)
+        return
+      }
   
       p.name = product.name
       p.description = product.description
       p.price = product.price
+      p.url = product.url
+      p.images = product.images
     }
   }
 
@@ -760,12 +782,18 @@ export class LoadService {
     }
 
     if (this.adminComponent){
+
       let p = this.adminComponent.storeProducts?.filter(obj => {
         return obj.productID == product.productID
       })[0] as Product
+
+      console.log(p)
   
       let index = this.adminComponent.storeProducts?.indexOf(p)
-      if (index){
+      console.log(index)
+
+      if (index != undefined){
+        console.log(index)
         this.adminComponent.storeProducts?.splice(index,1)
       }
     }
@@ -776,7 +804,7 @@ export class LoadService {
       })[0] as Product
   
       let index = this.homeComponent.storeProducts?.indexOf(p)
-      if (index){
+      if (index != undefined){
         this.homeComponent.storeProducts?.splice(index,1)
       }
     }
@@ -1431,24 +1459,61 @@ export class LoadService {
       }
     })
   }
+
   
   
-  async updateProduct(mappedData: Dict<any>){
+  async updateProduct(mappedData: Dict<any>, product?: Product){
     let uid = (await this.isLoggedIn())?.uid ?? ""
     let productID = mappedData.productID
-    let data = {
-      "Name" : mappedData.name ?? "Post",
-      "Search_Name" : mappedData.name.toLowerCase() ?? "post",
-      "Description" : mappedData.description ?? "",
-      "Price_Cents" : mappedData.price ?? 2000,
-      "Available" : mappedData.available ?? true,
+
+
+    if (mappedData.images?.length > 0){
+      var images = new Array<{
+        index: number,
+        img: string
+      }>()
+      
+      const promises = await mappedData.images.map(async (image: Dict<string>, index: number) => {
+        var url = image.img
+        url = await this.uploadProductImages(image.img, image.type, productID, uid) as string
+        var split = url.split('&token=')
+        url = split[0]
+        
+        if (image.type.includes('link')){
+          images.push({
+            img: url,
+            index: index
+          })
+        }
+      });
+
+      console.log(images)
+
+      await Promise.all(promises)
+
+      images.sort(function(a, b){
+        if(a.index < b.index) { return -1; }
+        if(a.index > b.index) { return 1; }
+        return 0;
+      })
+
+      let data = {
+        "Name" : mappedData.name ?? "Post",
+        "Search_Name" : mappedData.name.toLowerCase() ?? "post",
+        "Description" : mappedData.description ?? "",
+        "Price_Cents" : mappedData.price ?? 2000,
+        "Available" : mappedData.available ?? true,
+        'Public' : true,
+        "Images":images
+      }
+      await this.db.collection("Users/" + uid + "/Products").doc(productID).update(data)
+  
+      // this.addProduct(product)
+
+      let k = new Product(uid, productID, data.Description, productID, product?.timestamp, undefined, product?.blurred, data.Price_Cents, data.Name, product?.templateColor, product?.likes, product?.liked, product?.comments, data.Available, true, product?.productType, product?.displaySide, product?.supportedSides, images[0].img, images)
+  
+      this.editProduct(k)
     }
-    await this.db.collection("Users/" + uid + "/Products").doc(productID).update(data)
-
-    let product = new Product(uid, productID, data.Description, productID, undefined, undefined, undefined, data.Price_Cents, data.Name, undefined, undefined, undefined, undefined, data.Available)
-
-    this.editProduct(product)
-
     return console.log("Updated Product")
   }
 
@@ -1467,47 +1532,68 @@ export class LoadService {
 
   async createProduct(mappedData: Dict<any>){
 
+    return new Promise(async (resolve, reject) => {
+      let uid = (await this.isLoggedIn())?.uid ?? ""
 
-    let uid = (await this.isLoggedIn())?.uid ?? ""
-
-    let productID = this.db.collection("Users/" + uid + "/Products").doc().ref.id
-
-    console.log(productID)
-    let data = await this.saveProductInfo(mappedData, productID, uid) ?? {}
-
-    if (mappedData.images?.length > 0){
-      await mappedData.images.forEach(async (image: Dict<string>) => {
-        let url = await this.uploadProductImages(image.img, image.type, productID, uid)
-        console.log(url)
-      });
-      let url = mappedData.images.filter((obj: Dict<string>) => {
-        return obj.type == "link_"
-      })[0].img as string
-      let product = new Product(
-        uid, 
-        productID, 
-        data.Description, 
-        productID, 
-        data.Timestamp, 
-        undefined, 
-        data.Blurred, 
-        data.Price_Cents, 
-        data.Name, 
-        data.Template_Color, 
-        data.Likes, 
-        false, 
-        data.Comments, 
-        data.Available, 
-        data.Public, 
-        data.Type, 
-        data.Side,
-        data.sides,
-        url
-      )
-
-      this.addProduct(product)
-      // Globals.products?.unshift(product)
-    }
+      let productID = this.db.collection("Users/" + uid + "/Products").doc().ref.id
+  
+      console.log(productID)
+      let data = await this.saveProductInfo(mappedData, productID, uid) ?? {}
+  
+      if (mappedData.images?.length > 0){
+        var images = new Array<{
+          index: number,
+          img: string
+        }>()
+        
+        const promises = await mappedData.images.map(async (image: Dict<string>, index: number) => {
+          var url = await this.uploadProductImages(image.img, image.type, productID, uid) as string
+          var split = url.split('&token=')
+          url = split[0]
+          https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2FProducts%2F' + productID + '%2Flink_' + productID + '.png?alt=media
+          if (image.type.includes('link')){
+            images.push({
+              img: url,
+              index: index
+            })
+          }
+        });
+        await Promise.all(promises)
+  
+        console.log(images)
+  
+        await this.db.collection("Users/" + uid + "/Products").doc(productID).update({Images:images})
+  
+        let url = mappedData.images.filter((obj: Dict<string>) => {
+          return obj.type == "link_"
+        })[0].img as string
+        let product = new Product(
+          uid, 
+          productID, 
+          data.Description, 
+          productID, 
+          data.Timestamp, 
+          undefined, 
+          data.Blurred, 
+          data.Price_Cents, 
+          data.Name, 
+          data.Template_Color, 
+          data.Likes, 
+          false, 
+          data.Comments, 
+          data.Available, 
+          data.Public, 
+          data.Type, 
+          data.Side,
+          data.sides,
+          url,
+          images
+        )
+  
+        resolve(product)  
+        // Globals.products?.unshift(product)
+      }
+    })
   }
 
   async saveStore(mappedData: Dict<any>){
@@ -1530,7 +1616,9 @@ export class LoadService {
   private async uploadProductImages(image: string, type: string, productID: string, uid?: string) {
       const filePath = 'Users/' + uid + '/Products/' + productID + "/" + type + productID + '.png';
       let ref = this.storage.ref(filePath);
-      const byteArray = new Buffer(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
+
+      console.log(typeof image)
+      const byteArray = Buffer.from(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
   
       // const task = await this.storage.upload(filePath, byteArray);
       const task = await ref.put(byteArray);
@@ -1566,7 +1654,8 @@ export class LoadService {
     if (type){
       const filePath = 'Users/' + uid + '/Store_Images/' + type + '.png';
       let ref = this.storage.ref(filePath);
-      const byteArray = new Buffer(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
+      console.log(typeof image)
+      const byteArray = Buffer.from(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
   
   
       // const task = await this.storage.upload(filePath, byteArray);
@@ -1617,7 +1706,7 @@ export class LoadService {
       "Has_Picture" : false,
       "Product_ID" : productID,
       "Available" : true,
-      "Public" : true,
+      "Public" : false,
       "Type" : mappedData.productType ?? "ATC1000",
       "Side" : mappedData.displaySide ?? "front",
       "Sides" : mappedData.sides
@@ -2521,6 +2610,7 @@ export class LoadService {
           let displaySide = docData.Side as string ?? "front"
           let sides = docData["Sides"] as Array<string> ?? ["Front"]
           let priceCents = docData.Price_Cents as number
+          let images = docData["Images"] as Array<any> ?? [{index:0, img: this.getURL(uid, productID)}]
 
           let product = new Product(
             uid, 
@@ -2541,7 +2631,8 @@ export class LoadService {
             productType, 
             displaySide, 
             sides,
-            this.getURL(uid, productID)
+            this.getURL(uid, productID),
+            images
           )
 
 

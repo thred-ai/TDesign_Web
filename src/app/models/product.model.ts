@@ -20,6 +20,10 @@ export class Product {
     displaySide: string
     supportedSides: Array<string>
     url: URL
+    images: Array<{
+      index: number,
+      img: URL
+    }> = []
 
 
     getUrl(downloadBack: boolean){
@@ -51,7 +55,11 @@ export class Product {
       productType?: string,
       displaySide?: string,
       supportedSides?: Array<string>,
-      url?: string
+      url?: string,
+      images?: Array<{
+        index: number,
+        img: string
+      }>
       ) {
 
       this.uid = uid ?? ""
@@ -73,5 +81,12 @@ export class Product {
       this.displaySide = displaySide ?? ""
       this.supportedSides = supportedSides ?? []
       this.url = new URL(url ?? "https://shopmythred.com")
+
+      images?.forEach(image => {
+        this.images.push({
+          img: new URL(image.img),
+          index: image.index
+        })
+      })
     }
 }

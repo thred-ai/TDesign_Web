@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { DragScrollModule } from 'ngx-drag-scroll';
 
 const routes: Routes = [
   {
@@ -24,7 +25,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ProductComponent,
-    ModelViewerComponent
   ],
   imports: [
     CommonModule,
@@ -36,6 +36,7 @@ const routes: Routes = [
     HttpClientModule,
     NgxSpinnerModule,
     NgbModule,
+    DragScrollModule,
     RouterModule.forChild(routes),
 
 

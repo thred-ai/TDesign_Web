@@ -3,15 +3,12 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Template } from '../models/template.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Color } from '../models/color.model';
-import { TemplateSide } from '../models/template-side.model';
 import { CropperComponent } from '../cropper/cropper.component';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Globals } from '../globals';
-import { Validators, FormBuilder } from '@angular/forms';
 import { Dict, LoadService } from '../services/load.service';
 import * as html2canvas from 'html2canvas'
 import { NgxSpinnerService } from 'ngx-spinner';
-import { CurrencyMaskInputMode } from "ngx-currency";
 import { Product } from '../models/product.model';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { Inventory } from '../models/inventory.model';
@@ -45,18 +42,6 @@ export class DesignComponent implements OnInit {
     }
   }
 
-  customCurrencyMaskConfig = {
-    align: "left",
-    allowNegative: false,
-    allowZero: true,
-    decimal: ".",
-    precision: 2,
-    prefix: "$ ",
-    suffix: "",
-    thousands: ",",
-    min: 0,
-    inputMode: CurrencyMaskInputMode.NATURAL
-  };
 
   
 
@@ -67,7 +52,6 @@ export class DesignComponent implements OnInit {
   linkImg?: any
   backImg?: any
 
-
   selectedColor?: Color
   selectedSide?: number = 0
   step?: number = 0
@@ -75,6 +59,8 @@ export class DesignComponent implements OnInit {
   openCrop = false
 
   storeInfo(){return Globals.storeInfo}
+
+  
 
   availableCurrencies(){return Globals.availableCurrencies}
 
@@ -122,72 +108,55 @@ export class DesignComponent implements OnInit {
       let element = document.querySelector("#capture") as HTMLElement
   
       html2canvas.default(element).then(async (canvas) => {
-        this.linkImg = canvas.toDataURL()
-        if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode})){
+        this.linkImg = canvas.toDataURL('image/jpeg', 0.8)
+        this.hideCanvas = true
 
+        if (this.selectedSide == 0){
+          this.selectedSide = 1
+          this.cdr.detectChanges()
+          html2canvas.default(element).then(async (canvas) => {
+            this.finishedDesigning(canvas.toDataURL('image/jpeg', 0.8))
+          })
         }
-        var amt = this.selectedTemplate!.minPrice / 100
-        if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
-          amt = this.selectedTemplate!.bulkSuggestPrice / 100
+        else if (this.selectedSide == 1){
+          this.selectedSide = 0
+          this.cdr.detectChanges()
+          html2canvas.default(element).then(async (canvas) => {
+            this.finishedDesigning(canvas.toDataURL('image/jpeg', 0.8))
+          })
         }
-        if (this.backImg && this.frontImg){
-          amt += this.selectedTemplate!.extraCost / 100
-        }
-        this.designForm.controls.price.setValue(amt)
-        this.spinner.hide("designSpinner")
-        this.step = 1
       })
     }, 500);
 
 
   }
 
-  async createDesign(){
+  hideCanvas = false
 
-    let nameField = this.designForm.controls.name
-    let priceField = this.designForm.controls.price
-    let descField = this.designForm.controls.description
+  async finishedDesigning(back_link_img: string){
+    var amt = this.selectedTemplate!.minPrice / 100
+        if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
+          amt = this.selectedTemplate!.bulkSuggestPrice / 100
+        }
+        if (this.backImg && this.frontImg){
+          amt += this.selectedTemplate!.extraCost / 100
+        }
+        // this.designForm.controls.price.setValue(amt)
 
-    var amt = this.selectedTemplate!.minPrice
-
-    if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
-      amt = 0
-    }
-
-    if (this.backImg && this.frontImg){
-      amt += this.selectedTemplate!.extraCost
-    }
-
-    if (nameField.invalid){
-
-      return
-    }
-    else if (priceField.invalid || (priceField.value * 100) < amt){
-
-      return
-    }
-    else if (descField.invalid){
-
-      return
-    }
-
-
-    this.spinner.show("productSpinner")
-
-    let name = nameField.value as string
-    let price = (priceField.value as number) * 100
-    let desc = descField.value as string ?? ""
-
-    if (this.mode == "create"){
       var displaySide = "front"
       var sides = new Array<string>()
+
+
       var images: Array<Dict<any>> = [
         {
           img: this.linkImg,
           type: "link_"
+        },
+        {
+          img: back_link_img,
+          type: "link_2"
         }
       ]
-  
   
       if (this.frontImg){
         sides.push("Front")
@@ -210,51 +179,42 @@ export class DesignComponent implements OnInit {
   
       if (sides.length == 0){
         sides.push("Front")
-        images = [
-          {
-            img: this.linkImg,
-            type: "link_"
-          },
-          {
-            img: this.frontImg,
-            type: ""
-          }
-        ]
+        images.push({
+          img: this.frontImg,
+          type: ""
+        })
       }
-  
-  
-      let mappedData = {
-        name: name ?? "Post",
-        price: price ?? 2000,
-        description: desc ?? "",
-        productType: this.selectedTemplate?.productCode ?? "ATC1000",
-        displaySide: displaySide,
-        templateColor: this.selectedColor?.code ?? "white",
-        sides: sides,
-        images: images
-      }
-  
-      await this.loadService.createProduct(mappedData)
-    }
-    else{
-      let mappedData = {
-        name: name ?? "Post",
-        price: price ?? 2000,
-        description: desc ?? "",
-        available: true,
-        productID: this.product?.productID ?? ""
-      }
-      await this.loadService.updateProduct(mappedData)
-    }    
 
-    this.modalService.dismissAll()
-
+        let mappedData = {
+          name: 'DRAFT',
+          price: amt * 100 ?? 2000,
+          description: "",
+          productType: this.selectedTemplate?.productCode ?? "ATC1000",
+          displaySide: displaySide,
+          templateColor: this.selectedColor?.code ?? "white",
+          sides: sides,
+          images: images
+        }
     
-    return this.spinner.hide("productSpinner")
+        let product = await this.loadService.createProduct(mappedData)
+        this.hideCanvas = false
 
-
-
+        this.spinner.hide("designSpinner")
+        
+        var data = {
+          linkImg: this.linkImg,
+          back_linkImg: back_link_img,
+          frontImg: this.frontImg,
+          backImg: this.backImg,
+          selectedTemplate: this.selectedTemplate,
+          selectedColor: this.selectedColor,
+          suggested_price: amt,
+          product: product
+        }
+        this.activeModal.dismiss(data)
   }
+
+  
   
 
   selectedTheme(){
@@ -275,16 +235,11 @@ export class DesignComponent implements OnInit {
     return theme
   }
 
-  designForm = this.fb.group({
-    name: [null, Validators.required],
-    description: null,
-    price: [null, [Validators.required]],
-  });
-
-
   sanitizer?: DomSanitizer
 
   @ViewChild('carousel', {read: DragScrollComponent}) ds?: DragScrollComponent;
+  @ViewChild('carousel2', {read: DragScrollComponent}) ds2?: DragScrollComponent;
+
   @ViewChild('productTemplates', {read: DragScrollComponent}) dsp?: DragScrollComponent;
 
   shouldShowCanvas(){
@@ -545,7 +500,6 @@ export class DesignComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private modalService: NgbModal,
     private activeModal: NgbActiveModal,
-    private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private loadService: LoadService,
 

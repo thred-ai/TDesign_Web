@@ -20,11 +20,15 @@ export class ModelViewerComponent implements OnInit, AfterViewInit {
 
   data = {
     "template": new Template(),
-    "product": new Product()
+    "product": new Product(),
+    "isSc": false
   }
+
+  titleBtn = 'INFO'
 
   template = new Template()
   product = new Product()
+  showScInfo = true
   
   constructor(
     public http: HttpClient, 
@@ -40,6 +44,7 @@ export class ModelViewerComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.template = this.data.template
     this.product = this.data.product
+    this.titleBtn = this.data.isSc ? 'SNAPSHOTS' : 'INFO'
     this.showSpinner()
 
     this.openModel()

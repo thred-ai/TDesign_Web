@@ -49,11 +49,13 @@ import { Router } from '@angular/router';
 // import { InvalidPageModule } from './invalid-page/invalid-page.module';
 // import { CheckoutModule } from './checkout/checkout.module';
 import { PixelModule } from 'ngx-pixel'
+import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PopupDialogComponent,
+    ModelViewerComponent
   ],
   imports: [
     CommonModule,

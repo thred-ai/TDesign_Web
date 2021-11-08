@@ -22,10 +22,22 @@
             <a role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold m-2" style="font-size: 15px;"[ngbTooltip]="etipContent">
                 <ng-template #etipContent>
                     
-                    <div class="d-flex">
+                    <div *ngIf='!showScInfo' class="d-flex">
                         <p class="m-2 text-start" style="font-size: smaller;">
                             3D Model rendering is <b>not</b> 100% accurate. Any <b>clipping</b> or <b>distortion</b> will not be on the actual product.
                         </p>
+                    </div>
+                    <div *ngIf='showScInfo'>
+                        <p class="m-2 text-start fw-bold" style="font-size: small;">
+                            Taking Screenshot for Product Images:
+                        </p>
+                        <p class="m-2 text-start" style="font-size: smaller;">
+                            Windows: <b>Windows+SHIFT+S<br>Drag Cursor</b>
+                        </p>
+                        <p class="m-2 text-start" style="font-size: smaller;">
+                            Mac: <b>Command+SHIFT+4<br>Drag Cursor</b>
+                            
+                        </p>                            
                     </div>
                     
                 </ng-template>
@@ -35,7 +47,7 @@
                         help_outline
                     </span>
                 </mat-icon>
-                INFO
+                {{titleBtn}}
             </a>
         </div>
     </div>

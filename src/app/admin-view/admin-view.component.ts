@@ -640,7 +640,6 @@ showSocialModal(logo: {
 
   shouldRed(panel: any){
     if (panel.Title == "BILLING"){
-      console.log(Globals.billingInfo)
       if (Globals.billingInfo?.name == ' '){
         return true
       }
@@ -1716,12 +1715,14 @@ isSpinning = false
       if (!this.bankInfo){
         this.loadService.getBankInfo(async (bankInfo: any) => {
           this.bankInfo = bankInfo ?? ''
+          this.cdr.detectChanges()
         })
       }
       if (!this.subInfo){
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
           this.subInfo = subInfo ?? ''
           this.canTrial = canTrial
+          this.cdr.detectChanges()
         })
       }
       
@@ -1824,27 +1825,32 @@ isSpinning = false
     
 
     editProduct(product: Product){
-      let ngbModalOptions: NgbModalOptions = {
-        backdrop : 'static',
-        keyboard : false,
-        size : "md"
-      };
-      const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
-      modalRef.componentInstance.inventory = this.inventory ?? []
-      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0})
-      modalRef.componentInstance.step = 1
-      modalRef.componentInstance.frontImg = product.picID
-      if (product.supportedSides.find(side => { return side == 'Back'})){
-        modalRef.componentInstance.backImg = product.picID
-      }
-      modalRef.componentInstance.mode = "edit"
-      modalRef.componentInstance.designForm.controls.name.setValue(product.name ?? "")
-      modalRef.componentInstance.designForm.controls.price.setValue(product.price / 100)
-      modalRef.componentInstance.product = product
-      modalRef.componentInstance.designForm.controls.description.setValue(product.description ?? "")
-      modalRef.componentInstance.linkImg = product.url
+      
+      let same = this.templates().find(temp => { return temp.productCode == product.productType})
+      let sameC = same?.colors.find(co => { return co.code == product.templateColor})
 
+      var data: Dict<any> = {
+        linkImg: product.url,
+        back_linkImg: undefined,
+        frontImg: product.picID,
+        backImg: undefined,
+        selectedTemplate: same,
+        selectedColor: sameC,
+        suggested_price: product.price / 100,
+        templates: this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0}),
+        inventory: this.inventory ?? [],
+        mode: 'edit',
+        product: product
+      }
+      if (product.supportedSides.find(side => { return side == 'Back'})){
+        data.backImg = product.picID
+      }
+      this.productDetailsMode = true
+      this.productDetails = data
     }
+
+    productDetailsMode = false
+    productDetails: any 
 
     createNewProduct(){
       let ngbModalOptions: NgbModalOptions = {
@@ -1855,6 +1861,28 @@ isSpinning = false
       const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
       modalRef.componentInstance.inventory = this.inventory ?? []
       modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0})
+
+      let sub = modalRef.dismissed.subscribe((resp: any) => {
+        sub.unsubscribe()
+        console.log(resp)
+        if (resp){
+          this.productDetailsMode = true
+          resp.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0}),
+          resp.inventory = this.inventory ?? []
+          resp.mode = 'create'
+          this.productDetails = resp
+        }
+        else{
+          this.productDetailsMode = false
+          this.productDetails = undefined
+        }
+      })
+    }
+
+    finish(success: boolean){
+
+      this.productDetailsMode = false
+      this.productDetails = undefined
     }
 
     routeToHome(){
