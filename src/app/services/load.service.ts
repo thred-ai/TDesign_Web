@@ -206,7 +206,7 @@ export class LoadService {
 
           let name = Globals.templates.filter(obj => {
             return obj.productCode == code
-          })[0].templateDisplayName
+          })[0]?.templateDisplayName
 
           let inventory = new Inventory(code, name, amt, timestamp, id, autoReload)
           totalInventory.push(inventory)

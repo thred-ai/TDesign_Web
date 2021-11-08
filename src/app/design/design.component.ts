@@ -98,32 +98,29 @@ export class DesignComponent implements OnInit {
     this.spinner.show("designSpinner")
 
     
+    this.selectedSide = 0
+    this.cdr.detectChanges()
+
 
     setTimeout(() => {
-      this.selectedSide = 0
-      if (this.frontImg == undefined){
-        this.selectedSide = 1
-      }
-      this.cdr.detectChanges()
+      
+      
       let element = document.querySelector("#capture") as HTMLElement
   
       html2canvas.default(element).then(async (canvas) => {
         this.linkImg = canvas.toDataURL('image/jpeg', 0.8)
         this.hideCanvas = true
-
-        if (this.selectedSide == 0){
+        if (this.selectedColor?.imgBack){
           this.selectedSide = 1
           this.cdr.detectChanges()
-          html2canvas.default(element).then(async (canvas) => {
-            this.finishedDesigning(canvas.toDataURL('image/jpeg', 0.8))
-          })
+          setTimeout(() => {
+            html2canvas.default(element).then(async (canvas2) => {
+              this.finishedDesigning(canvas2.toDataURL('image/jpeg', 0.8))
+            })
+          }, 500)
         }
-        else if (this.selectedSide == 1){
-          this.selectedSide = 0
-          this.cdr.detectChanges()
-          html2canvas.default(element).then(async (canvas) => {
-            this.finishedDesigning(canvas.toDataURL('image/jpeg', 0.8))
-          })
+        else{
+          this.finishedDesigning(undefined)
         }
       })
     }, 500);
@@ -133,7 +130,7 @@ export class DesignComponent implements OnInit {
 
   hideCanvas = false
 
-  async finishedDesigning(back_link_img: string){
+  async finishedDesigning(back_link_img?: string){
     var amt = this.selectedTemplate!.minPrice / 100
         if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
           amt = this.selectedTemplate!.bulkSuggestPrice / 100
@@ -152,11 +149,14 @@ export class DesignComponent implements OnInit {
           img: this.linkImg,
           type: "link_"
         },
-        {
+      ]
+
+      if (back_link_img){
+        images.push({
           img: back_link_img,
           type: "link_2"
-        }
-      ]
+        })
+      }
   
       if (this.frontImg){
         sides.push("Front")

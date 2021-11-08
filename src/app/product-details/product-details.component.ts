@@ -99,8 +99,8 @@ export class ProductDetailsComponent implements OnInit {
           img: this.data.linkImg
         },
         {
-          isActive: true,
-          img: this.data.back_linkImg
+          isActive: false,
+          img: ''
         },
         {
           isActive: false,
@@ -115,6 +115,12 @@ export class ProductDetailsComponent implements OnInit {
           img: ''
         }
       ]
+      if (this.data.back_linkImg){
+        this.images[1] = {
+          isActive: true,
+          img: this.data.back_linkImg
+        }
+      }
       console.log(this.images)
     }
     else{

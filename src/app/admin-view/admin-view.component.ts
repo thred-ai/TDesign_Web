@@ -696,10 +696,10 @@ showSocialModal(logo: {
 
   
 
-  getTypeImages(templateName: string) {
+  getTypeImages(templateCode: string) {
 
     let template = Globals.templates.filter(obj => {
-      return obj.templateDisplayName == templateName
+      return obj.productCode == templateCode
     })[0]
 
     var len = template.colors.filter(obj => {
@@ -824,16 +824,18 @@ showSocialModal(logo: {
     if (this.inventory != undefined) return
     this.inventory = []
     this.loadService.getInventory(inventory => {
-      this.inventory = inventory
+      console.log(inventory)
+      this.inventory = inventory ?? []
       if (inventory.length == 0){
         this.invTitle = 'INCREASE PROFIT'
       }
+      console.log(this.inventory)
       this.cdr.detectChanges()
     })
   }
 
   hasInventory(template: Template){
-    return (this.inventory?.filter(obj => { return template.productCode == obj.code })?.length ?? 0) > 0
+    return this.inventory?.find(obj => { return template.productCode == obj.code })
   }
 
   availableToBuyTemplates(){
@@ -1642,8 +1644,13 @@ isSpinning = false
             }
             else{
               Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
+              this.inventory?.forEach(inv => {
+                let name = Globals.templates.filter(obj => {
+                  return obj.productCode == inv.code
+                })[0]?.templateDisplayName
+                inv.name = name
+              });
               this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
-              this.getInventory()
               this.hideSpinner()
               this.setForm()
               this.showWelcomeModal()
@@ -1724,6 +1731,9 @@ isSpinning = false
           this.canTrial = canTrial
           this.cdr.detectChanges()
         })
+      }
+      if (!this.inventory){
+        this.getInventory()
       }
       
       this.router.queryParams
@@ -1837,7 +1847,7 @@ isSpinning = false
         selectedTemplate: same,
         selectedColor: sameC,
         suggested_price: product.price / 100,
-        templates: this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0}),
+        templates: this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0}),
         inventory: this.inventory ?? [],
         mode: 'edit',
         product: product
@@ -1860,14 +1870,14 @@ isSpinning = false
       };
       const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
       modalRef.componentInstance.inventory = this.inventory ?? []
-      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0})
+      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0})
 
       let sub = modalRef.dismissed.subscribe((resp: any) => {
         sub.unsubscribe()
         console.log(resp)
         if (resp){
           this.productDetailsMode = true
-          resp.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.name == template.templateDisplayName && inv.amount > 0}).length != 0}),
+          resp.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0}),
           resp.inventory = this.inventory ?? []
           resp.mode = 'create'
           this.productDetails = resp

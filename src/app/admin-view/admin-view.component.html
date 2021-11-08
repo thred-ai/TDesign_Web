@@ -568,7 +568,7 @@ style.color = "{{selectedIndicator()!.color}}"
     
                                     <div class="rounded mx-auto" style="width: 25%; aspect-ratio: 1 / 1" >
                                         <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                            <img [src]='getTypeImages(inv.name)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+                                            <img [src]='getTypeImages(inv.code)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
                                         </a>
                                     </div>
     
@@ -592,9 +592,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
                         <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <!-- <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
-                                    {{item.series[0].name.toUpperCase()}}
-                                </p> -->
+                               
                                 <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{template.templateDisplayName}}</h2>
                                 <div class="card-body mt-2">
                                     <div class="d-flex align-items-center justify-content-center">
@@ -609,24 +607,10 @@ style.color = "{{selectedIndicator()!.color}}"
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Sold: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{100-inv.amount}}</a></mat-hint>
-                                    </div> -->
-                                    <!-- <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Country: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{bankInfo.external_accounts.data[0].country}}</a></mat-hint>
-                                    </div> -->
-                                    <!-- <div class="px-5 mt-4 d-flex align-items-center justify-content-center">
-                                        <div style="background-color:#cdf4fc;">
-                                            <a role="button"><img style="object-fit: contain; width: 25%;"  [src]="getTypeImages(inv.name)" alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                                        </div>
-    
-                                    </div> -->
     
                                     <div class="rounded mx-auto" style="width: 25%; aspect-ratio: 1 / 1" >
                                         <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                            <img [src]='getTypeImages(template.templateDisplayName)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+                                            <img [src]='getTypeImages(template.productCode)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
                                         </a>
                                     </div>
     
@@ -634,9 +618,6 @@ style.color = "{{selectedIndicator()!.color}}"
                                         <button [style.font-family]="storeInfo().fontName!" (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
                                     </div>
                                 </div>
-                                <!-- <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
-                                    {{item.xAxisLabel.toUpperCase()}}
-                                </p> -->
                             </div>
                         </div>
                     </div>
