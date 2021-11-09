@@ -247,6 +247,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   checkLoad(){
 
     if (this.productToBuy.product) {
+      console.log(this.productToBuy.product)
         if (!(this.productToBuy.product.isAvailable)){
           this.addTags(this.productToBuy.product.name, this.productToBuy.product.url.toString(), "* PRODUCT UNAVAILABLE *", "https://shopmythred.com")
           if (isPlatformBrowser(this.platformID)){

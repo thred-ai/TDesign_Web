@@ -648,6 +648,7 @@ export class LoadService {
           let displaySide = docData.Side as string ?? "front"
           let sides = docData["Sides"] as Array<string> ?? ["Front"]
           let images = docData["Images"] as Array<any> ?? [{index:0, img: this.getURL(uid, productID)}]
+          let isAvailable = docData.Available as boolean ?? false
 
   
           let product = new Product(
@@ -664,7 +665,7 @@ export class LoadService {
             likes, 
             false, 
             comments, 
-            true, 
+            isAvailable, 
             isPublic, 
             productType, 
             displaySide, 
@@ -2610,6 +2611,8 @@ export class LoadService {
           let displaySide = docData.Side as string ?? "front"
           let sides = docData["Sides"] as Array<string> ?? ["Front"]
           let priceCents = docData.Price_Cents as number
+          let isAvailable = docData.Available as boolean ?? false
+
           let images = docData["Images"] as Array<any> ?? [{index:0, img: this.getURL(uid, productID)}]
 
           let product = new Product(
@@ -2626,7 +2629,7 @@ export class LoadService {
             likes, 
             false, 
             comments, 
-            true, 
+            isAvailable, 
             isPublic, 
             productType, 
             displaySide, 
