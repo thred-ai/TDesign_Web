@@ -27,11 +27,11 @@ style.color = "{{selectedIndicator()!.color}}"
        <div class="container  mt-3">
         <div class="row row-cols-1 justify-content-center">
             <div *ngIf="isSignUp()" class="col">
-              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">SIGN IN <img class="ms-1" src='assets/email.png' height="30" alt="none"></a>
+              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">SIGN IN <img class="ms-1" src='assets/thred_basic_2.png' height="30" alt="none"></a>
               <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">SIGN IN <img class="ms-1" src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
             </div>
             <div *ngIf="isSignIn()" class="col">
-              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='assets/email.png' height="30" alt="none"></a>
+              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='assets/thred_basic_2.png' height="30" alt="none"></a>
               <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
             </div>
             <!-- <div class="col">
