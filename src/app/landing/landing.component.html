@@ -10,7 +10,7 @@
                         </p>
                         Did you know Thred has a growing community of over 30,000 brands?
                     </ng-template>
-                    <img class="bubble1 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain; opacity: 0.3; background-color: rgb(5, 224, 97)">
+                    <img class="bubble1 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain; opacity: 0.5; background-color: rgb(5, 224, 97)">
                 </a>
             </li>
             <li>
@@ -21,7 +21,7 @@
                         </p>
                         <img class="rounded w-100" [src]="'assets/landing_app_preview.png'" style="object-fit: contain; ">
                     </ng-template>
-                    <img class="bubble2 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.4; background-color: rgb(255, 83, 83);">
+                    <img class="bubble2 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.7; background-color: rgb(255, 83, 83);">
 
                 </a>
             </li>
@@ -34,7 +34,7 @@
                         </p>
                         Have full control over your profit margins with bulk-buying options.
                     </ng-template>
-                    <img class="bubble3 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.6; background-color: rgb(231, 213, 44);">
+                    <img class="bubble3 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.8; background-color: rgb(231, 213, 44);">
                 </a>
             </li>
             <li>
@@ -45,7 +45,7 @@
                         </p>
                         Take advantage of Fast Fashion trends by launching lines 34.7x faster 
                     </ng-template>
-                    <img class="bubble4 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.2; background-color: rgb(130, 93, 204);">
+                    <img class="bubble4 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.5; background-color: rgb(130, 93, 204);">
                 </a>
             </li>
             <li>
@@ -56,7 +56,7 @@
                         </p>
                         Most P.O.D services lack love and branding options. We give lots of both :)
                     </ng-template>
-                    <img class="bubble5 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.25; background-color: white;">
+                    <img class="bubble5 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.7; background-color: white;">
                 </a>
             </li>
             <li>
@@ -75,7 +75,7 @@
         <div *ngIf="signedIn != undefined && affiliate != undefined" class="mx-0 row h-100">
             <div class="row row-cols-1 justify-content-center pb-2 h-100 w-100 mx-0">
                 <h1 *ngIf="signedIn == false" class="text-center text-light fw-bolder col mt-5 mx-0 w-100" style="font-size: xx-large; line-height: 1.2em; text-shadow: 2px 2px 4px #42424281;">Join Thred,
-                    the world’s fastest growing brand platform
+                    The ultimate online store builder
                 </h1>
                 <div *ngIf="signedIn == false" class="col mb-5 mt-2 mx-0 h-100 w-100" >
                     <div class="h-100 mx-auto" style="width: fit-content;" data-aos="flip-up" data-aos-duration="1500">
@@ -233,12 +233,12 @@
                         <!-- Product details-->
                             <div *ngIf="signedIn == false" class="text-center text-light">
                                 <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
-                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-dark rounded-pill w-100" >Get Started</h2> 
+                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-danger rounded w-100" >Get Started</h2> 
                                 </a>
                             </div>
                             <div *ngIf="signedIn == true" class="text-center text-light">
                                 <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
-                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-dark rounded-pill w-100" >View My Store</h2> 
+                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-danger rounded w-100" >View My Store</h2> 
                                 </a>
                             </div>
                             <!-- <div class="text-end text-light px-2">

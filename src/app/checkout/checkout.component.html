@@ -49,7 +49,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     <h3 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal ps-4" style="font-style: italic">{{getShippingAddressFirst()}}</h3>
                     <h3 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal ps-4" style="font-style: italic">{{getShippingAddressSecond()}}</h3>
                     <h3 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal ps-4" style="font-style: italic">{{getShippingAddressThird()}}</h3>
-                    <p><a [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" role="button" (click)="routeToShipping()" href="/{{storeInfo().username}}/shipping-address" class="text-primary text-decoration-none ps-4" style="font-weight: bold;">Change</a></p>
+                    <p><a [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" role="button" (click)="routeToShipping()" class="text-primary text-decoration-none ps-4" style="font-weight: bold;">Change</a></p>
                   </div>
                 </div>
             </div>
