@@ -554,6 +554,11 @@ showSocialModal(logo: {
           "Icon": "trending_up",
           "Active": false
         },
+        {
+          "Title": "AFFILIATE",
+          "Icon": "local_atm",
+          "Active": false
+        },
       ]
     },  
     {
@@ -582,11 +587,6 @@ showSocialModal(logo: {
         {
           "Title": "MARKETING",
           "Icon": "share",
-          "Active": false
-        },
-        {
-          "Title": "AFFILIATE",
-          "Icon": "local_atm",
           "Active": false
         },
       ]
@@ -639,8 +639,11 @@ showSocialModal(logo: {
   ]
 
   shouldRed(panel: any){
+    if (this.shouldHideLiveBtn()){
+      return false
+    }
     if (panel.Title == "BILLING"){
-      if (Globals.billingInfo?.name == ' '){
+      if (Globals.billingInfo?.name?.replace(" ", "") == ''){
         return true
       }
     }

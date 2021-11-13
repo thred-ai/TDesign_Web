@@ -125,7 +125,7 @@ style.color = "{{selectedIndicator()!.color}}"
         
         
       </section>
-      <section *ngIf="isBrowser() && (!storeInfo()?.active)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+      <section *ngIf="isBrowser() && (!storeInfo()?.active) && selectedProduct() != undefined && selectedTemplate() != undefined" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
      
     
         <div class="container mt-5">
@@ -145,7 +145,7 @@ style.color = "{{selectedIndicator()!.color}}"
             
         </div>
       </section>
-      <footer *ngIf="isBrowser()" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
+      <footer *ngIf="isBrowser() && selectedProduct() != undefined && selectedTemplate() != undefined" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
         <div class="container w-100 d-block justify-content-center">
             <div class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-sm-start mb-5">
                 <div class="col mb- mx-2" [style.width.px]="50">

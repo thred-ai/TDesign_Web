@@ -3,7 +3,7 @@ import { AngularFaviconService } from 'angular-favicon';
 import { Country } from './models/shipping-country.model';
 import { Template } from './models/template.model';
 import { Globals } from './globals';
-import { ActivatedRoute, Router, NavigationEnd, RoutesRecognized, ActivationStart } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, Event as NavigationEvent, RoutesRecognized, ActivationStart, NavigationStart } from '@angular/router';
 import { LoadService, Dict } from './services/load.service';
 import { ShopComponent } from './shop/shop.component';
 import { HomeComponent } from './home/home.component';
@@ -490,6 +490,14 @@ export class AppComponent implements OnInit {
     
     this.loadService.rootComponent = this
     this.setOptions()
+
+    // this._router.events
+    //       .subscribe(
+    //         (event: NavigationEvent) => {
+    //           if(event instanceof NavigationStart) {
+    //             console.log(event.url)
+    //       }
+    // });
   }
 
 

@@ -37,7 +37,10 @@ export class LoginComponent implements OnInit {
       return 'Sign in to your ' + suffix
     }
     else if (this.isSignUp()){
-      return 'Create your ' + suffix
+      var action = 'Create your '
+      if (this.isLanding) action = 'Launch your '
+
+      return action + suffix
     }
     return 'Recover your ' + suffix
   }
