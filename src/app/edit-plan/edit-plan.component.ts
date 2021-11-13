@@ -26,7 +26,7 @@ export class EditPlanComponent implements OnInit {
 
     let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
 
-    var theme: Dict<string> = {
+    var theme: Dict<string> = { 
       "name": name,
       "color": color,
       "bg_color": bg_color

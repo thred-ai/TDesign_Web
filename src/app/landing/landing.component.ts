@@ -40,7 +40,7 @@ export class LandingComponent implements OnInit {
         this.cdr.detectChanges()
         console.log(this.affiliate)
       })
-    }
+    } 
 
     // if (!Globals.userInfo?.username){
       this.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, free.", "shopmythred.com")

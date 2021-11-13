@@ -732,7 +732,7 @@ showSocialModal(logo: {
         let same = this.inventory?.filter(i => { i.id == inv.id})[0]
         if (same){
           same.amount = inv.amount
-        }
+        } 
       }
     })
   }

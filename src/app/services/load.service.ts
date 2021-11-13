@@ -654,7 +654,7 @@ export class LoadService {
           let product = new Product(
             uid, 
             productID, 
-            description, 
+            description,  
             productID, 
             timestamp, 
             "", 

@@ -42,7 +42,7 @@
                             <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Plan Ends: </label>
                             <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planEndDate()}}</a></mat-hint>
                         </div>
-                    </div>
+                    </div> 
                     <div *ngIf="!subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
                         <button [style.font-family]="storeInfo().fontName!" (click)="cancelSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Cancel Subscription <mat-icon class="ms-1">back_hand</mat-icon></button>
                     </div>

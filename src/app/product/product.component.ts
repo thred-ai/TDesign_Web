@@ -45,7 +45,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   constructor(    
     @Inject(PLATFORM_ID) private platformID: Object,
     private cdr: ChangeDetectorRef,
-    private db: AngularFirestore,
+    private db: AngularFirestore, 
     private router: ActivatedRoute,
     private titleService: Title, 
     private metaService: Meta,
