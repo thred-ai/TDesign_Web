@@ -29,9 +29,7 @@ style.color = "{{selectedIndicator()!.color}}"
                   lock
                 </mat-icon>
                </p>
-            </div>
-              
-               
+            </div>               
              </div>
         </div>
     </header>
@@ -71,8 +69,6 @@ style.color = "{{selectedIndicator()!.color}}"
               <!-- Item-->
               <form [formGroup]="billingForm" novalidate>
                 
-  
-  
                   <mat-card class="shipping-card bg-{{storeInfo().colorStyle!.back_code}} mt-0">
                     <mat-card-header *ngIf="useGoogle != true && useApple != true">
                       <mat-card-title style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Billing Method</mat-card-title>
@@ -142,6 +138,9 @@ style.color = "{{selectedIndicator()!.color}}"
                           <div class="col">
                               <mat-form-field class="full-width text-{{storeInfo().colorStyle!.text_code}}">
                                 <mat-select formControlName="country">
+                                  <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}">
+                                    {{billingForm.controls['country'].value}}
+                                  </mat-select-trigger>
                                   <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let country of countries()" [value]="country.name">
                                     {{ country.name }}
                                   </mat-option>
@@ -164,6 +163,9 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <mat-select formControlName="state">
+                              <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}">
+                                {{billingForm.controls['state'].value}}
+                              </mat-select-trigger>
                               <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let state of states(billingForm.controls['country'].value)" [value]="state.abbreviation">
                                 {{ state.name }}
                               </mat-option>

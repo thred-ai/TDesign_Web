@@ -64,8 +64,8 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     this.rootComponent.routeToCart()
   }
 
-  productTax(){
-    let tax = this.productTaxNum() ?? 0
+  productTax(noCoupon = false){
+    let tax = this.productTaxNum(noCoupon) ?? 0
     if (tax > 0){
       return this.numberWithCommas(this.formatPrice((tax ?? 0)))
     }
@@ -74,12 +74,16 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   
 
-  productTaxNum(){
-    return (this.total() + this.shippingNum()) * (this.tax() ?? 0)
+  productTaxNum(noCoupon = false){
+    return (this.d_total(noCoupon) + this.shippingNum()) * (this.tax() ?? 0)
   }
 
-  orderTotal(){
-    return this.numberWithCommas(this.formatPrice(this.total() + this.shippingNum() + this.productTaxNum()))
+  orderTotal(noCoupon = false){
+    return this.numberWithCommas(this.formatPrice(this.orderNum(noCoupon)))
+  }
+
+  orderNum(noCoupon = false){
+    return this.total(noCoupon) + this.shippingNum() + this.productTaxNum(noCoupon)
   }
 
   getColor(product?: Product){
@@ -173,12 +177,58 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
   
 
-  total(){
+  autoCoupon(product: Product){
+
+    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+      if(a.amt < b.amt) { return 1; }
+      if(a.amt > b.amt) { return -1; }
+      return 0;
+    })[0]
+    return autoCoupon
+  }
+
+  mainPrice(product: Product, cartDiscounts = false){
+    
+    let coupon = this.autoCoupon(product)
+    if (coupon && !this.cartDiscount()){
+      return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    }
+    if (cartDiscounts){
+      let cartCoupon = this.cartDiscount()
+      if (cartCoupon){
+        return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * cartCoupon.amt)
+      }
+    }
+    return (product.price ?? 0) / 100
+  }
+
+  total(noCoupon = false){
     var total = 0
     
     this.rootComponent.cart?.forEach(product => {
-      total += (product.product?.price ?? 0) * (product.quantity ?? 1)
+      if (noCoupon){
+        total += (product.product?.price ?? 0) * (product.quantity ?? 1)
+      }
+      else{
+        total += (this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1)
+      }
     })
+    
+    return total / 100
+  }
+  
+  d_total(noCoupon = false){
+    var total = 0
+    
+    this.rootComponent.cart?.forEach(product => {
+      if (noCoupon){
+        total += (this.mainPrice(product.product!, false) * 100) * (product.quantity ?? 1)
+      }
+      else{
+        total += (this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1)
+      }
+    })
+    
     return total / 100
   }
 
@@ -513,12 +563,33 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   getBillingAddressFirst(){
-    var name = this.titleCase(this.billingAddress()?.brand) + " ending in " + this.billingAddress()?.number
+    var name = this.titleCase(this.billingAddress()?.brand ?? '') + " ending in " + this.billingAddress()?.number ?? ''
 
     if (this.useOtherPaymentMethod){
       name = ""
     }
     return name
+  }
+
+  totalLength(){
+    var total = 0
+    
+    this.rootComponent.cart?.forEach(product => {
+      total += product.quantity ?? 1
+    })
+    return total
+  }
+
+  cartDiscount(){
+
+    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
+      (coupon.type == 'order_val' && (this.total(true) ?? 0) >= coupon.threshold) && coupon.auto}).sort(function(a, b){
+        if(a.amt < b.amt) { return 1; }
+        if(a.amt > b.amt) { return -1; }
+        return 0;
+    })[0]
+
+    return autoCoupon
   }
 
   titleCase(str: string = '') {

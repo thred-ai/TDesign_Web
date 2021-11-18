@@ -8,7 +8,7 @@ import { LoadService, Dict } from './services/load.service';
 import { ShopComponent } from './shop/shop.component';
 import { HomeComponent } from './home/home.component';
 import { ProductComponent } from './product/product.component';
-import { isPlatformBrowser, isPlatformServer } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer, DOCUMENT } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CartComponent } from './cart/cart.component';
 import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
@@ -36,6 +36,8 @@ export class AppComponent implements OnInit {
   mode = "All Products"
 
   storeInfo(){return Globals.storeInfo}
+
+  userInfo(){return Globals.userInfo}
 
   availableCurrencies(){return Globals.availableCurrencies}
 
@@ -87,7 +89,7 @@ export class AppComponent implements OnInit {
     this.profileSettings = []
 
     var option = {
-      "Title": "My Account",
+      "Title": "My Store",
       "Link" : "/" + "STORE_NAME" + "/my-store",
       "Function": this.routeToProfile
     }
@@ -126,6 +128,8 @@ export class AppComponent implements OnInit {
       this.routeToHome()
     }
   }
+
+  
 
 
 
@@ -464,8 +468,9 @@ export class AppComponent implements OnInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
+    @Inject(DOCUMENT) private doc: Document,
     public cdr: ChangeDetectorRef,
-    private router: ActivatedRoute,
+    public router: ActivatedRoute,
     private loadService: LoadService,
     private routingService: RoutingService,
     private pixelService: PixelService,
@@ -476,8 +481,62 @@ export class AppComponent implements OnInit {
 
 
   setFavIcon(link: string){
-    if (isPlatformBrowser(this.platformID))
-    document.getElementById('appIcon')!.setAttribute('href', link)
+    if (isPlatformBrowser(this.platformID)){
+      this.createLinkForFavURL(link)
+    }
+  }
+
+  createLinkForFavURL(url: string) {
+    
+    console.log(url)
+    if (document.getElementById('appIcon')){
+      document.getElementById('appIcon')!.setAttribute('href', url)
+    }
+    else{
+      let link: HTMLLinkElement = this.doc.createElement('link');
+      link.setAttribute('rel', 'icon');
+      link.setAttribute('id', 'appIcon');
+      link.setAttribute("type", "image/x-icon")
+      link.setAttribute('href', url);
+      this.doc.head.appendChild(link);
+    }
+    if (document.getElementById('appleIcon')){
+      document.getElementById('appleIcon')!.setAttribute('href', url)
+    }
+    else{
+      let link2: HTMLLinkElement = this.doc.createElement('link');
+      link2.setAttribute('rel', 'apple-touch-icon');
+      link2.setAttribute('id', 'appleIcon');
+      link2.setAttribute("type", "image/x-icon")
+      link2.setAttribute('href', url);
+      this.doc.head.appendChild(link2);
+    }
+
+
+  }
+
+  getLinkImg(name: string){
+    return Globals.socials.filter(obj => { 
+      return obj.name == name
+    })[0].img
+  }
+
+  openSocial(l: string){
+    const link = document.createElement('a');
+    link.target = '_blank';
+
+    let url: string = '';
+    if (!/^http[s]?:\/\//.test(l)) {
+      url += 'http://';
+    }
+
+    url += l
+
+    link.href = url
+    
+    link.setAttribute('visibility', 'hidden')
+    link.click()
+    link.remove()
   }
     
   signedIn = false

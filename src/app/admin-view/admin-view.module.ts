@@ -26,10 +26,13 @@ import {ClipboardModule} from '@angular/cdk/clipboard';
 import { StoreSetupComponent } from '../store-setup/store-setup.component';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
-import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 import { HttpClientModule } from '@angular/common/http';
-
-
+import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
+import {MatChipsModule} from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {MatDialogModule} from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 const routes: Routes = [
   {
@@ -50,6 +53,7 @@ const routes: Routes = [
     EditPlanComponent,
     StoreSetupComponent,
     ProductDetailsComponent,
+    CouponInfoComponent,
   ],
   imports: [
     CommonModule,
@@ -64,11 +68,16 @@ const routes: Routes = [
     ImageCropperModule,
     ColorPickerModule,
     NgbModule,
+    FormsModule,
+    MatCheckboxModule,
     HttpClientModule,
     NgxChartsModule,
     ClipboardModule,
     NgxCurrencyModule,
     DragDropModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatDialogModule,
     RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

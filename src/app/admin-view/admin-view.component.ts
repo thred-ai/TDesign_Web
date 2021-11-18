@@ -24,6 +24,9 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { StoreSetupComponent } from '../store-setup/store-setup.component';
 import { RoutingService } from '../services/routing.service';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
+import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
+import { Coupon } from '../models/coupon.model';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 
 @Component({
@@ -84,6 +87,25 @@ toolTip(logo: {
   }
 }
 
+couponHeader(coupon: Coupon){
+  if (coupon.type == 'product'){
+    return 'Applied to ' + coupon.products.length + ' product(s)'
+  }
+  else if (coupon.type == 'order_val'){
+    return 'Order ≥ ' + this.formatPrice(coupon.threshold, true)
+  }
+  else if (coupon.type == 'order_qty'){
+    return 'Order ≥ ' + coupon.threshold + " products"
+  }
+  return ''
+}
+
+matchingType(id: string){
+  console.log(id)
+  return Globals.types.find(type => { return type.id == id})
+}
+
+
 showLinkModal(){
 
   const modalRef = this.modalService.open(SocialFormComponent);
@@ -116,7 +138,73 @@ showLinkModal(){
       }
     }
   })
+}
 
+autoCoupon(product: Product){
+  var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+    if(a.amt < b.amt) { return 1; }
+    if(a.amt > b.amt) { return -1; }
+    return 0;
+  })[0]
+  return autoCoupon
+}
+
+mainPrice(product: Product){
+  
+  let coupon = this.autoCoupon(product)
+  if (coupon){
+    return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+  }
+  return (product.price ?? 0) / 100
+}
+
+showCouponModal(coupon?: Coupon){
+
+
+  const modalRef = this.dialog.open(CouponInfoComponent, {
+    width: '800px',
+    data: {
+      coupons: Globals.storeInfo.coupons, 
+      editCoupon: coupon, 
+      products: this.storeProducts?.filter(product => { return this.inventory?.filter(inv =>{ return inv.code == product.productType && inv.amount > 0}).length != 0})
+    },
+  });
+
+  let sub = modalRef.afterClosed().subscribe(coupon => {
+    console.log('The dialog was closed');
+    sub.unsubscribe()
+    if (coupon != '0'){
+      if ((!Globals.storeInfo?.coupons?.find(c => { return c == coupon}))){
+        if (coupon == undefined) {return}
+
+        this.loadService.addDiscount(coupon, success => {
+          if (success){
+            this.toast("Coupon Saved!")
+          } 
+        }, Globals.storeInfo.uid)
+      }
+    }
+  });
+}
+
+async deleteCoupon(coupon: Coupon, i: number){
+  
+  var color = ''
+  if ((coupon?.amt ?? 0) <= 0.2){
+    color = 'rgb(165, 101, 42)'
+  }
+  else if ((coupon?.amt ?? 0) > 0.2 && (coupon?.amt ?? 0) <= 0.5){
+    color = 'silver'
+  }
+  else{
+    color = 'gold'
+  }
+
+  this.openPopup("Are you sure?", "Your coupon '" + coupon.code +  "' will be removed forever.", 'MATICON:' + this.matchingType(coupon.type)?.icon + ':' + color, 'Yes, Remove', 'Never Mind', async () => {
+    await this.loadService.removeDiscount(coupon, success => {
+      this.toast("Coupon Removed")
+    }, Globals.storeInfo.uid)
+  })
 }
 
 domainNotSetUp(){
@@ -207,7 +295,7 @@ showSocialModal(logo: {
     private sanitizer: DomSanitizer,
     private clipboard: Clipboard,
     private routingService: RoutingService,
-
+    private dialog: MatDialog,
   ) {
       Globals.userInfo = undefined
       Globals.selectedCurrency = undefined
@@ -589,6 +677,11 @@ showSocialModal(logo: {
           "Icon": "share",
           "Active": false
         },
+        {
+          "Title": "DISCOUNTS",
+          "Icon": "local_offer",
+          "Active": false
+        },
       ]
     },
     {
@@ -884,7 +977,6 @@ showSocialModal(logo: {
           priceAsString += "0"
           break
       default:
-  
           break
     }
     return this.getCurrencyForCountry(Globals.selectedCurrency?.name != "US", Globals.selectedCurrency) + priceAsString

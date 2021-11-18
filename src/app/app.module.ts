@@ -7,47 +7,16 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from "@angular/common";
 import { AngularFireModule } from '@angular/fire';
-// import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
-// import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
-// import { ShopModule } from './shop/shop.module';
-// import { BlogsModule } from './blogs/blogs.module';
-// import { HomeModule } from './home/home.module';
-// import { AboutModule } from './about/about.module';
-// import { ProductModule } from './product/product.module';
-// import { ModelViewerComponent } from './model-viewer/model-viewer.component';
-// import { SafeHtmlPipe } from './safeHtml.pipe'
-// import { HttpClientModule } from '@angular/common/http';
 import { Globals } from './globals';
-// import { ArticleModule } from './article/article.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { LoginComponent } from './login/login.component';
-// import { SignupComponent } from './signup/signup.component'
 import { ReactiveFormsModule } from '@angular/forms';
-// import { CartModule } from './cart/cart.module';
-// import { ShippingAddressModule } from './shipping-address/shipping-address.module';
-// import { MatButtonModule } from '@angular/material/button';
-// import { MatRadioModule } from '@angular/material/radio';
-// import { MatCardModule } from '@angular/material/card';
-// import { MatInputModule } from '@angular/material/input';
-// import { MatSelectModule } from '@angular/material/select';
 import { LoginModule } from './login/login.module';
 import { NgxSpinnerModule } from "ngx-spinner";
-// import { ViewOrderModule } from './view-order/view-order.module';
-// import { AdminViewModule } from './admin-view/admin-view.module';
-// import { ViewOrderInfoModule } from './view-order-info/view-order-info.module';
 import { NgxStripeModule } from 'ngx-stripe';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { PopupDialogComponent } from './popup-dialog/popup-dialog.component';
 import { Router } from '@angular/router';
-// import { ImageCropperModule } from 'ngx-image-cropper';
-// import { CropperComponent } from './cropper/cropper.component';
-// import { AngularFireStorageModule } from '@angular/fire/storage';
-// import { LandingModule } from './landing/landing.module';
-// import { ColorPickerModule } from 'ngx-color-picker';
-// import { DesignComponent } from './design/design.component';
-// import { InvalidPageModule } from './invalid-page/invalid-page.module';
-// import { CheckoutModule } from './checkout/checkout.module';
 import { PixelModule } from 'ngx-pixel'
 import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 
@@ -55,7 +24,7 @@ import { ModelViewerComponent } from './model-viewer/model-viewer.component';
   declarations: [
     AppComponent,
     PopupDialogComponent,
-    ModelViewerComponent
+    ModelViewerComponent,
   ],
   imports: [
     CommonModule,
@@ -72,8 +41,6 @@ import { ModelViewerComponent } from './model-viewer/model-viewer.component';
     MatSnackBarModule,
     LoginModule,
     PixelModule.forRoot({pixelId: '646165189889348'}),
-    // NgxAwesomePopupModule.forRoot(),
-    // ConfirmBoxConfigModule.forRoot(),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

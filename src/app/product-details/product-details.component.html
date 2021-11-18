@@ -68,7 +68,7 @@
                                     <!-- <input class="input1" 
                                     
                                      formControlName="price" name="quantity" placeholder="Price"> -->
-                                    <input [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" currencyMask class="shadow rounded input1 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" placeholder="Price" [options]="customCurrencyMaskConfig" formControlName="price" />
+                                    <input [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" currencyMask [options]="customCurrencyMaskConfig" class="shadow rounded input1 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" placeholder="Price" formControlName="price" />
                                     <span class="rounded shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
                                     
                                 </div>

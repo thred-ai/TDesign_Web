@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { Globals } from '../globals';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { Routes, RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     MatCardModule,
-    
+    MatIconModule,
     NgxSpinnerModule,
     RouterModule.forChild(routes),
 

@@ -1,4 +1,4 @@
-img {
+.set-img {
     max-width:30px;
     height:auto;
 }
@@ -13,4 +13,14 @@ font-size: 4vw;
 
 .bigTitle{
 font-size: 1.25vw;
+}
+
+.footer-link{
+  line-height:1.2em; 
+  color: #808385;
+  text-decoration: none;
+}
+
+.footer-link :hover{
+  color: #a2a4a5;
 }

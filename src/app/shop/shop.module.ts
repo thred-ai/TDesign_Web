@@ -9,6 +9,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { ShopComponent } from './shop.component';
 import { Routes, RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 const routes: Routes = [
   {
@@ -20,12 +21,12 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    ShopComponent
+    ShopComponent,
   ],
   imports: [
     CommonModule,
     MatCardModule,
-    
+    MatIconModule,
     NgxSpinnerModule,
     RouterModule.forChild(routes)
 

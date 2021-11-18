@@ -3905,7 +3905,7 @@ textarea.form-control-lg {
 }
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #495057;
+  color: rgb(73, 80, 87);
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
@@ -4810,6 +4810,12 @@ textarea.form-control-lg {
   background-size: 1rem 1rem;
 }
 
+.mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-start,
+.mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-end,
+.mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-gap {
+    border-width: 3px !important;
+}
+
 .progress-bar-animated {
   -webkit-animation: 1s linear infinite progress-bar-stripes;
           animation: 1s linear infinite progress-bar-stripes;
@@ -5251,6 +5257,7 @@ textarea.form-control-lg {
   overflow-y: auto;
   outline: 0;
 }
+
 
 .modal-dialog {
   position: relative;

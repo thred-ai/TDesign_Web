@@ -116,6 +116,9 @@ style.color = "{{selectedIndicator()!.color}}"
                           <div class="col">
                               <mat-form-field class="full-width text-{{storeInfo().colorStyle!.text_code}}">
                                 <mat-select formControlName="country">
+                                  <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}">
+                                    {{billingForm.controls['country'].value}}
+                                  </mat-select-trigger>
                                   <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let country of countries()" [value]="country.name">
                                     {{ country.name }}
                                   </mat-option>

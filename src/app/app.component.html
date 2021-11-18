@@ -1,7 +1,7 @@
 
-<nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined"class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.back_code}} bg-{{storeInfo().colorStyle!.back_code}}">
+<nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.back_code}} bg-{{storeInfo().colorStyle!.back_code}}">
     <div class="container px-4 px-lg-5">
-        <img src='{{storeInfo().profileLink}}'/>
+        <img class="set-img" src='{{storeInfo().profileLink}}'/>
         <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
         <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -33,10 +33,10 @@
                 <li *ngIf="!(hideCart())" class="d-flex">
                     <div class="nav-item dropdown">
                         <button id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false" class="btn me-2">
-                            <img class="rounded-circle" src='/assets/account_{{storeInfo().colorStyle!.text_code}}.png'/>
+                            <img class="rounded-circle set-img" src='/assets/account_{{storeInfo().colorStyle!.text_code}}.png'/>
                         </button>
                         <ul class="dropdown-menu mb-2"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
-                            <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role='button' (click)= "accountPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[0]?.Title}}</a></li>
+                            <li *ngIf='storeInfo().uid == userInfo()?.uid'><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role='button' (click)= "accountPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[0]?.Title}}</a></li>
                             <li *ngFor="let option of settings(true)"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)= "routeToOrders()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{option.Title}}</a></li>
                             <li><a *ngIf='!signedIn' data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item fw-bold text-success" style="font-size: smaller;" role=button (click)= "signInPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[profileSettings.length-1]?.Title}}</a></li>
                             <li><a *ngIf='signedIn' data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item fw-bold text-danger" style="font-size: smaller;" role=button (click)= "signOutPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[profileSettings.length-1]?.Title}}</a></li>
@@ -56,3 +56,141 @@
     </div>
   </nav>
   <router-outlet></router-outlet>
+  
+  <footer 
+    *ngIf="
+    isBrowser() && 
+    storeInfo()?.username != undefined &&
+    !router.snapshot.firstChild?.routeConfig?.path?.includes('my-store')
+    " 
+    class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
+    <div class="container w-100 d-block justify-content-center">
+        <div class="d-block d-sm-flex justify-content-center justify-content-sm-between ">
+            <div class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-sm-start mb-5">
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img class="bg-info" style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/visacard.png"/>
+                    </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/mastercard.png"/>
+                    </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/amexcard.png"/>
+                    </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/applecard.png"/>
+                    </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/googlecard.png"/>
+                    </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/microsoftcard.png"/>
+                    </a>
+                </div>
+    
+                
+            </div>
+            <div class="d-sm-block d-none">
+                <div class="row row-cols-3 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-sm-end">
+                    <div class="col mb-4 px-5">
+                        <a>
+                            <h4 class = "fw-bold text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
+                                HELP
+                            </h4>
+                        </a>
+                        <a class="footer-link" role="button" (click)="routeToShipping()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Shipping
+                            </p>
+                        </a>
+                        <a class="footer-link" role="button" (click)="routeToBilling()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Billing
+                            </p>
+                        </a>
+                        <a class="footer-link" role="button" (click)="routeToOrders()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Orders
+                            </p>
+                        </a>
+                    </div>
+                    <div class="col mb-4 px-5">
+                        <a>
+                            <h4 class = " fw-bolder text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
+                                ACCOUNT
+                            </h4>
+                        </a>
+                        <a class="footer-link" role="button" (click)="accountPressed(1)">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Login
+                            </p>
+                        </a>
+                        <a class="footer-link" role="button" (click)="accountPressed()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Register
+                            </p>
+                        </a>
+                    </div>
+                    <div class="col mb-4 px-5">
+                        <a>
+                            <h4 class = " fw-bold text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
+                                PAGES
+                            </h4>
+                        </a>
+                        <a class="footer-link" role="button" (click)="routeToAbout()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                About
+                            </p>
+                        </a>
+                        <a class="footer-link" role="button" (click)="routeToHome()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Home
+                            </p>
+                        </a>
+                        <a class="footer-link" role="button" (click)="routeToShop()">
+                            <p [style.font-family]="storeInfo().fontName!">
+                                Shop
+                            </p>
+                        </a>
+                    </div>          
+                </div>
+            </div>
+        </div>
+        <div class="w-100 row row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center">
+            <div class="col mb-4 mx-3" *ngFor="let social of storeInfo().socials" [style.width.px]="45">
+                <a role="button" (click)="openSocial(social.link)">
+                    <img class="rounded-circle" style="object-fit: contain;" [style.width.px]="45"  alt='ok' [src]="getLinkImg(social.name)"/>
+                </a>
+            </div>
+        </div>
+        <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
+            <div class="col mb-4 mx-2" [style.width.px]="50">
+                
+            </div>
+            <div class="col mb-4 mx-2" [style.width.px]="50">
+                
+            </div>
+            <div class="col mb-4 mx-2" [style.width.px]="50">
+                
+            </div>
+            <div class="col mb-4 mx-2" [style.width.px]="50">
+                
+            </div>
+            <div class="col mb-4 mx-2" [style.width.px]="50">
+                
+            </div>
+        </div>
+    </div>
+    <div class="container"><p class="m-0 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">&copy; {{storeInfo().fullName}} 2021</p></div>
+    <div class="container"><p class="m-0 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">Powered by Thred</p></div>
+  </footer>

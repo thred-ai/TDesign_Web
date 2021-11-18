@@ -36,6 +36,7 @@ import { HomeComponent } from '../home/home.component';
 import { AppComponent } from '../app.component';
 import { StoreDomain } from '../models/store-domain.model';
 import { PixelService } from 'ngx-pixel';
+import { Coupon } from '../models/coupon.model';
 
 
 
@@ -348,6 +349,12 @@ export class LoadService {
           let socials = docData["Socials"] as Array<{ name: string; link: string; }>
           let custom_url = docData["Custom_URL"] as Dict<any> ?? {}
           let active = docData["Active"] as boolean
+          let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
+
+          var coupons = new Array<Coupon>()
+          discounts.forEach(discount => {
+            coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
+          })
 
           let host = custom_url.host as string
           let protocol = custom_url.protocol as string
@@ -361,6 +368,8 @@ export class LoadService {
             status,
             txt
           )
+
+          
 
           Globals.storeInfo = new Store(
             uid, 
@@ -389,7 +398,8 @@ export class LoadService {
             socials, 
             finalURL, 
             pixelID,
-            active
+            active,
+            coupons
           )
 
           this.rootComponent?.initializePixel(pixelID)
@@ -483,6 +493,12 @@ export class LoadService {
           let pixelID = docData["fb_pixel"] as string
           let active = docData["Active"] as boolean
 
+          let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
+          var coupons = new Array<Coupon>()
+          discounts.forEach(discount => {
+            coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
+          })
+          
           let host = custom_url.host as string
           let protocol = custom_url.protocol as string
           let status = custom_url.status as number
@@ -525,7 +541,8 @@ export class LoadService {
             font, socials, 
             finalURL, 
             pixelID, 
-            active
+            active,
+            coupons
           )
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -1844,6 +1861,61 @@ export class LoadService {
       await this.db.collection("Users").doc(uid).update(data)
     }
     
+    callback(true)
+  }
+
+  async addDiscount(coupon: Coupon, callback: (success: boolean) => any, uid?: string){
+
+    var coupons = new Array<Coupon>()
+    Globals.storeInfo.coupons?.forEach(c => {
+      coupons.push(c)
+    });
+    let same = coupons.find(c => { return c.code == coupon.code})
+    if (same){
+      same.amt = coupon.amt
+      same.code = coupon.code
+      same.products = coupon.products
+      same.type = coupon.type
+      same.threshold = coupon.threshold
+      same.auto = coupon.auto
+    }
+    else{
+      coupons.push(coupon)
+    }
+    var data = {
+      Coupons: JSON.parse(JSON.stringify(coupons))
+    }
+    if (uid && data){
+      await this.db.collection("Users").doc(uid).update(data)
+      if (data.Coupons){
+        Globals.userInfo!.coupons = data.Coupons
+        Globals.storeInfo = Globals.userInfo!
+      }
+    }
+    callback(true)
+  }
+
+  async removeDiscount(coupon: Coupon, callback: (success: boolean) => any, uid?: string){
+
+    var data = {
+      Coupons: firebase.firestore.FieldValue.arrayRemove(JSON.parse(JSON.stringify(coupon)))
+    }
+    if (uid && data){
+      if (data.Coupons){
+        let p = Globals.storeInfo.coupons?.find(obj => {
+          return obj.code == coupon.code
+        })
+    
+        if (p){
+          let index = Globals.storeInfo.coupons?.indexOf(p)
+          Globals.storeInfo.coupons?.splice(index!, 1)
+        }
+      }
+      await this.db.collection("Users").doc(uid).update(data)
+    }
+    else{
+      console.log("shaymus")
+    }
     callback(true)
   }
 

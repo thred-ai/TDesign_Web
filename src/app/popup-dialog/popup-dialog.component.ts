@@ -15,6 +15,10 @@ export class PopupDialogComponent implements OnInit {
   yesBtn = "Yes"
   noBtn = "No"
 
+  mode = 'img'
+  iconName?: string
+  iconColor?: string
+
   constructor(private activeModal: NgbActiveModal) { }
 
   dismiss(success: boolean){
@@ -22,6 +26,15 @@ export class PopupDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.mode = (this.img?.indexOf('MATICON') != 0) ? 'img' : 'icon'
+    if (this.mode == 'icon'){
+      var icon = this.img?.split(":")
+      if (icon && icon[1] && [icon[2]]){
+        this.iconName = icon[1]
+        this.iconColor = icon[2]
+        console.log(icon)
+      }
+    }
   }
 
 }

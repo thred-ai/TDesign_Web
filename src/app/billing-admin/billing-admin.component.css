@@ -4,9 +4,6 @@
     color: rebeccapurple;
   }
   
-  .mat-select .mat-form-field-type-mat-select .mat-form-field-label, .mat-select-value {
-    color: #808080
-  }
   
   .not-empty-select.mat-selected {
     color: #808080 !important;

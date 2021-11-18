@@ -106,7 +106,6 @@ export class RoutingService {
   }
 
   routeToShipping(storeName: string, isCustom: boolean = false){
-    isCustom = true
     if (isCustom){
       this._router.navigateByUrl("/shipping-address")
       return

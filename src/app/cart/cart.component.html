@@ -13,7 +13,6 @@ style.color = "{{selectedIndicator()!.color}}"
 </h3>
 </ngx-spinner>
   <!-- Header-->
-  <div style="max-height: 100%; min-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}">
     <header *ngIf="isBrowser() && storeInfo().username != undefined" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
       <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
           <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:35px">
@@ -45,7 +44,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 <p [style.font-family]="storeInfo().fontName!"><a role="button" (click)="routeToProduct(product.product!.productID)" class="text-{{storeInfo().colorStyle!.text_code}} text-decoration-none" style="font-weight: bold;" style.color="{{selectedTheme()!.color}}">{{product.product?.name ?? ""}}</a></p>
                               <div class="fs-sm" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}"><span [style.font-family]="storeInfo().fontName!" class="text-muted me-2">Size:</span>{{product.size ?? "M"}}</div>
                               <div class="fs-sm" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}"><span [style.font-family]="storeInfo().fontName!" class="text-muted me-2">Color:</span>{{getColor(product.product)}}</div>
-                              <div class="fs-lg text-accent pt-2" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{formatPrice(product.product!.price / 100)}}</div>
+                              <div class="fs-lg text-accent pt-2" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{formatPrice(mainPrice(product.product!))}}</div>
                             </div>
                           </div>
                           <div class="pt-2 pt-sm-0 ps-sm-3 mx-auto mx-sm-0 text-center text-sm-start" style="max-width: 5.5rem;">
@@ -77,6 +76,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     <h2 [style.font-family]="storeInfo().fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2>
                     <h3 [style.font-family]="storeInfo().fontName!" class="fw-normal" style.color="{{selectedTheme()!.color}}">{{formatPrice(total())}}</h3>
                   </div>
+                  <h3 *ngIf='cartDiscount()' [style.font-family]="storeInfo().fontName!" class="fw-normal text-center" style.color="{{selectedTheme()!.color}}">{{cartDiscount()!.amt * 100}}% off applied at checkout</h3>
                   <div class="text-center my-2"><a *ngIf="hasCart() && loadedCart;" [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click) = "next()" [innerHTML]="'CHECKOUT'"></a></div>
 
                   <div class="accordion" id="order-options">
@@ -143,4 +143,3 @@ style.color = "{{selectedIndicator()!.color}}"
           </div>
         </div>
     </section>
-  </div>

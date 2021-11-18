@@ -9,3 +9,25 @@ apple-pay-button {
   .selected{
     opacity: 0.5;
   }
+
+.old-price {
+    text-decoration: line-through;
+    text-decoration-style: solid;
+    color: #808080;
+}
+
+.new-price {
+  text-decoration: none;
+}
+
+.low{
+  color: rgb(165, 101, 42);
+}
+
+.mid{
+  color: silver;
+}
+
+.high{
+  color: gold;
+}

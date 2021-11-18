@@ -1,6 +1,7 @@
 import { Dict } from '../services/load.service'
 import { StoreTheme } from './theme.model'
 import { StoreDomain } from './store-domain.model'
+import { Coupon } from './coupon.model'
 
 import { Globals } from '../globals'
 
@@ -36,6 +37,7 @@ export class Store {
     customURL?: StoreDomain
     fb_pixel?: string
     active?: boolean
+    coupons?: Array<Coupon>
 
 
     constructor(
@@ -68,7 +70,8 @@ export class Store {
       }>,
       customURL?: StoreDomain,
       fb_pixel?: string,
-      active?: boolean
+      active?: boolean,
+      coupons?: Array<Coupon>,
       ) {
 
       this.uid = uid
@@ -135,5 +138,7 @@ export class Store {
       this.customURL = customURL
       this.fb_pixel = fb_pixel
       this.active = (active ?? false) && ((postCount ?? 0) > 0)
+
+      this.coupons = coupons ?? []
     }
 }

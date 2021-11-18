@@ -115,6 +115,24 @@ export class ShopComponent implements OnInit, OnDestroy {
       }
     }
 
+    autoCoupon(product: Product){
+      var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+        if(a.amt < b.amt) { return 1; }
+        if(a.amt > b.amt) { return -1; }
+        return 0;
+      })[0]
+      return autoCoupon
+    }
+  
+    mainPrice(product: Product){
+      
+      let coupon = this.autoCoupon(product)
+      if (coupon){
+        return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+      }
+      return (product.price ?? 0) / 100
+    }
+
     routeToProduct(productID: string){
       this.rootComponent.routeToProduct(productID)
     }

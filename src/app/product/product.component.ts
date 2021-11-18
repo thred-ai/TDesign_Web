@@ -1,8 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, Inject, AfterViewInit, ViewChild } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Product } from 'src/app/models/product.model';
 
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Country } from '../models/shipping-country.model';
 import { Title, Meta } from '@angular/platform-browser';  
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
@@ -17,6 +15,7 @@ import { AppComponent } from '../app.component';
 import { NgxSpinnerService } from "ngx-spinner";
 import { RoutingService } from '../services/routing.service';
 import { DragScrollComponent } from 'ngx-drag-scroll';
+import { Product } from '../models/product.model';
 
 @Component({
   selector: 'app-product',
@@ -45,15 +44,12 @@ export class ProductComponent implements OnInit, AfterViewInit {
   constructor(    
     @Inject(PLATFORM_ID) private platformID: Object,
     private cdr: ChangeDetectorRef,
-    private db: AngularFirestore, 
     private router: ActivatedRoute,
     private titleService: Title, 
     private metaService: Meta,
     private loadService: LoadService,
     private modalService: NgbModal,
-    private route: Router,
     private rootComponent: AppComponent,
-    private _router: Router,
     private spinner: NgxSpinnerService,
     private routingService: RoutingService,
   ) { 
@@ -67,6 +63,38 @@ export class ProductComponent implements OnInit, AfterViewInit {
     return Globals.socials.filter(obj => { 
       return obj.name == name
     })[0].img
+  }
+
+  autoCoupon(product: Product){
+    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { 
+      return (coupon.products.includes(product.productID)) && coupon.auto}).sort(function(a, b){
+      if(a.amt < b.amt) { return 1; }
+      if(a.amt > b.amt) { return -1; }
+      return 0;
+    })[0]
+
+
+    // if (!autoCoupon){
+    //   autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && (this.productToBuy.quantity ?? 0) >= coupon.threshold) ||
+    //   (coupon.type == 'order_val' && (this.productToBuy.product?.price ?? 0) >= coupon.threshold)}).sort(function(a, b){
+    //     if(a.amt < b.amt) { return -1; }
+    //     if(a.amt > b.amt) { return 1; }
+    //     return 0;
+    //   })[0]
+    // }
+
+    console.log(autoCoupon?.code)
+
+    return autoCoupon
+  }
+
+  mainPrice(product: Product){
+    
+    let coupon = this.autoCoupon(product)
+    if (coupon){
+      return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    }
+    return (product.price ?? 0) / 100
   }
 
   openSocial(l: string){

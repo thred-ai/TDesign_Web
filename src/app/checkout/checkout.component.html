@@ -73,7 +73,7 @@ style.color = "{{selectedIndicator()!.color}}"
                               <p><a [style.font-family]="storeInfo().fontName!" role="button" (click)="routeToProduct(product.product!.productID)" class="text-{{storeInfo().colorStyle!.text_code}} text-decoration-none" style="font-weight: bold;" style.color="{{selectedTheme()!.color}}">{{product.product?.name ?? ""}}</a></p>
                             <div [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fs-sm"><span class="text-muted me-2">Size:</span>{{product.size ?? "M"}}</div>
                             <div [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fs-sm"><span class="text-muted me-2">Color:</span>{{getColor(product.product)}}</div>
-                            <div [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fs-lg text-accent pt-2">{{formatPrice(product.product!.price / 100)}}</div>
+                            <div [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fs-lg text-accent pt-2">{{formatPrice(mainPrice(product.product!))}}</div>
                           </div>
                         </div>
                         <div class="pt-2 pt-sm-0 ps-sm-3 mx-auto mx-sm-0 text-center text-sm-start" style="max-width: 5.5rem;">
@@ -105,7 +105,7 @@ style.color = "{{selectedIndicator()!.color}}"
                 <div class="text-center mt-4 pt-3 border-top border-bottom">
                 <div class="d-flex justify-content-between">
                     <h3 style.color="{{selectedTheme()!.color}}" class="fw-bold" style="font-size: 9;">Items ({{itemCount()}}):</h3>
-                    <h3 style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size: 9;">{{formatPrice(total())}}</h3>
+                    <h3 style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size: 9;">{{formatPrice(d_total(true))}}</h3>
                 </div>
                 <div class="d-flex justify-content-between">
                     <h3 style.color="{{selectedTheme()!.color}}" class="fw-bold" style="font-size: 9;">Shipping & Handling:</h3>
@@ -113,7 +113,11 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div>
                 <div class="d-flex justify-content-between">
                     <h3 style.color="{{selectedTheme()!.color}}" class="fw-bold" style="font-size: 9;">Sales Tax:</h3>
-                    <h3 style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size: 9;">{{productTax()}}</h3>
+                    <h3 style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size: 9;">{{productTax(true)}}</h3>
+                </div>
+                <div *ngIf='cartDiscount()' class="d-flex justify-content-between">
+                  <h3 style.color="{{selectedTheme()!.color}}" class="fw-bold" style="font-size: 9;">Discount:</h3>
+                  <h3 class="fw-normal" style="font-size: 9; color: rgb(192, 19, 19);">-{{formatPrice(orderNum(true)-orderNum())}}</h3>
                 </div>
                 </div>
                 <div class="d-flex justify-content-between pt-2 mt-2">

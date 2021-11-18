@@ -121,14 +121,6 @@ export class CartComponent implements OnInit {
     return "FREE"
   }
 
-  total(){
-    var total = 0
-    
-    this.rootComponent.cart?.forEach(product => {
-      total += (product.product?.price ?? 0) * (product.quantity ?? 1)
-    })
-    return total / 100
-  }
 
   format(d: Date) {
     return Globals.months[d.getMonth()].substring(0,3) + " " + d.getDate() + " " + d.getFullYear()
@@ -268,8 +260,65 @@ export class CartComponent implements OnInit {
   }
 
   hasCart(){
-    console.log(this.rootComponent.cart?.length)
     return (this.rootComponent.cart?.length ?? 0) != 0
+  }
+
+  autoCoupon(product: Product){
+    if (this.cartDiscount()){
+      return undefined
+    }
+    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+      if(a.amt < b.amt) { return 1; }
+      if(a.amt > b.amt) { return -1; }
+      return 0;
+    })[0]
+    return autoCoupon
+  }
+
+  mainPrice(product: Product){
+    
+    let coupon = this.autoCoupon(product)
+    if (coupon){
+      return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    }
+    return (product.price ?? 0) / 100
+  }
+
+  totalLength(){
+    var total = 0
+    
+    this.rootComponent.cart?.forEach(product => {
+      total += product.quantity ?? 1
+    })
+    return total
+  }
+
+  cartDiscount(){
+
+    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
+      (coupon.type == 'order_val' && (this.total(true) ?? 0) >= coupon.threshold) && coupon.auto}).sort(function(a, b){
+        if(a.amt < b.amt) { return 1; }
+        if(a.amt > b.amt) { return -1; }
+        return 0;
+    })[0]
+
+    return autoCoupon
+  }
+
+  
+
+  total(noCoupon = false){
+    var total = 0
+    
+    this.rootComponent.cart?.forEach(product => {
+      if (noCoupon){
+        total += (product.product?.price ?? 0) * (product.quantity ?? 1)
+      }
+      else{
+        total += (this.mainPrice(product.product!) * 100) * (product.quantity ?? 1)
+      }
+    })
+    return total / 100
   }
 
   formatPrice(price: number){

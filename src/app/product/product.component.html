@@ -73,7 +73,21 @@ style.color = "{{selectedIndicator()!.color}}"
                                         </div>
                                     </div>
                                     <div class="text-left mt-5 mb-0" style="color: rgb(190, 6, 6)" >
-                                        <h5 class="fw-bolder" style="font-size:35px" [style.font-family]="storeInfo().fontName!">{{formatPrice((selectedProduct()?.price ?? 0) / 100)}}</h5>
+                                        <h5 class="fw-bolder" style="font-size:35px" [class.new-price]='autoCoupon(selectedProduct()!)' [style.font-family]="storeInfo().fontName!">{{formatPrice(mainPrice(selectedProduct()!))}}</h5>
+                                        <h5 *ngIf='autoCoupon(selectedProduct()!)' class="mt-2 fw-bolder d-flex justify-content-start align-items-center" style="font-size:18px" [style.font-family]="storeInfo().fontName!">
+                                            <b class="old-price">
+                                                {{formatPrice((selectedProduct()?.price ?? 0) / 100)}}
+                                            </b>
+                                            <mat-icon
+                                            class="ms-1" 
+                                            style="font-size:18px; width: fit-content; height: fit-content;" 
+                                            [class.low]='(autoCoupon(selectedProduct()!)?.amt ?? 0) <= 0.2'
+                                            [class.mid]='(autoCoupon(selectedProduct()!)?.amt ?? 0) > 0.2 && (autoCoupon(selectedProduct()!)?.amt ?? 0) <= 0.5'
+                                            [class.high]='(autoCoupon(selectedProduct()!)?.amt ?? 0) > 0.5'
+                                        >
+                                        loyalty
+                                        </mat-icon>
+                                        </h5>
                                     </div>
                                     <div class="card-body p-0 pb-0 ">
                                         <div class="text-left">
@@ -121,11 +135,8 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div>
             </div>
         </div>
-
-        
-        
       </section>
-      <section *ngIf="isBrowser() && (!storeInfo()?.active) && selectedProduct() != undefined && selectedTemplate() != undefined" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+      <section *ngIf="isBrowser() && storeInfo()?.username && (!storeInfo()?.active) && selectedProduct() != undefined && selectedTemplate() != undefined" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
      
     
         <div class="container mt-5">
@@ -145,68 +156,6 @@ style.color = "{{selectedIndicator()!.color}}"
              
         </div>
       </section>
-      <footer *ngIf="isBrowser() && selectedProduct() != undefined && selectedTemplate() != undefined" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
-        <div class="container w-100 d-block justify-content-center">
-            <div class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-sm-start mb-5">
-                <div class="col mb- mx-2" [style.width.px]="50">
-                    <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/visacard.png"/>
-                    </a>
-                </div>
-                <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/mastercard.png"/>
-                    </a>
-                </div>
-                <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/amexcard.png"/>
-                    </a>
-                </div>
-                <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/applecard.png"/>
-                    </a>
-                </div>
-                <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/googlecard.png"/>
-                    </a>
-                </div>
-                <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/microsoftcard.png"/>
-                    </a>
-                </div>
-            </div>
-            <div class="w-100 row row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center">
-                <div class="col mb-4 mx-3" *ngFor="let social of storeInfo().socials" [style.width.px]="45">
-                    <a role="button" (click)="openSocial(social.link)">
-                        <img class="rounded-circle" style="object-fit: contain;" [style.width.px]="45"  alt='ok' [src]="getLinkImg(social.name)"/>
-                    </a>
-                </div>
-            </div>
-            <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
-                <div class="col mb-4 mx-2" [style.width.px]="50">
-                    
-                </div>
-                <div class="col mb-4 mx-2" [style.width.px]="50">
-                    
-                </div>
-                <div class="col mb-4 mx-2" [style.width.px]="50">
-                    
-                </div>
-                <div class="col mb-4 mx-2" [style.width.px]="50">
-                    
-                </div>
-                <div class="col mb-4 mx-2" [style.width.px]="50">
-                    
-                </div>
-            </div>
-        </div>
-        <div class="container"><p class="m-0 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">&copy; {{storeInfo().fullName}} 2021</p></div>
-        <div class="container"><p class="m-0 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">Powered by Thred</p></div>
-      </footer>
   <!-- </div> -->
   <!-- Footer-->
   

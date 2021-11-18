@@ -18,6 +18,27 @@
     background-size: cover;
 }
 
+.low{
+    color: rgb(165, 101, 42);
+}
+
+.mid{
+    color: silver;
+}
+
+.high{
+    color: gold;
+}
+
+.old-price {
+    text-decoration: line-through;
+    text-decoration-style: solid;
+    color: #808080;
+  }
+  
+  .new-price {
+    text-decoration: none;
+  }
 
 .middle{
     color: rgb(255, 255, 255);

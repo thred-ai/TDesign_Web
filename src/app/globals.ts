@@ -29,6 +29,23 @@ export class Globals {
 
   public static selectedTemplate?: Template = new Template()
 
+  public static types = [
+    {
+      id: 'product',
+      name: 'Per. Product',
+      icon: 'sell'
+    },
+    {
+      id: 'order_val',
+      name: 'Cart Value',
+      icon: 'add_shopping_cart'
+    },
+    {
+      id: 'order_qty',
+      name: 'Cart Size',
+      icon: 'receipt'
+    }
+  ]
 
   public static selectedOrder?: Order = new Order()
 

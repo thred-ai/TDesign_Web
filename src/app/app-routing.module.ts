@@ -39,6 +39,7 @@ var routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     initialNavigation: 'enabled',
+    scrollPositionRestoration: 'enabled',
     paramsInheritanceStrategy: 'always'
 })],
   exports: [RouterModule]
