@@ -1,6 +1,6 @@
-# ThredWeb
+# SHOPMYTHRED
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.0.
+The Ultimate Store Builder - SHOPMYTHRED
 
 ## Development server
 
