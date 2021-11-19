@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, Inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Template } from '../models/template.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';
@@ -12,6 +12,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Product } from '../models/product.model';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { Inventory } from '../models/inventory.model';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
 @Component({
@@ -211,7 +212,7 @@ export class DesignComponent implements OnInit {
           suggested_price: amt,
           product: product
         }
-        this.activeModal.dismiss(data)
+        this.activeModal.close(data)
   }
 
   
@@ -311,7 +312,7 @@ export class DesignComponent implements OnInit {
 
   cancel(){
     if (this.frontImg == undefined && this.backImg == undefined || this.mode == 'edit'){
-      this.activeModal.dismiss()
+      this.activeModal.close()
       return
     }
     this.openPopup()
@@ -335,7 +336,7 @@ export class DesignComponent implements OnInit {
           sub.unsubscribe()
           if (resp.Success){
         
-            this.activeModal.dismiss()
+            this.activeModal.close()
           }
         })
       })
@@ -352,7 +353,7 @@ export class DesignComponent implements OnInit {
         sub.unsubscribe()
         if (resp.Success){
       
-          this.activeModal.dismiss()
+          this.activeModal.close()
         }
       })
     }
@@ -499,11 +500,14 @@ export class DesignComponent implements OnInit {
     sanitizer: DomSanitizer,
     private cdr: ChangeDetectorRef,
     private modalService: NgbModal,
-    private activeModal: NgbActiveModal,
     private spinner: NgxSpinnerService,
     private loadService: LoadService,
-
+    public activeModal: MatDialogRef<DesignComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any,
   ) { 
+
+    this.templates = data.templates ?? []
+    this.inventory = data.inventory ?? []
     this.sanitizer = sanitizer
   }
 

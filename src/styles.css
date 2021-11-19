@@ -4816,6 +4816,13 @@ textarea.form-control-lg {
     border-width: 3px !important;
 }
 
+@media (max-width: 600px) {
+  .cdk-overlay-pane {
+    width: 100vw !important;
+    height: 100vh !important;
+  }
+}
+
 .progress-bar-animated {
   -webkit-animation: 1s linear infinite progress-bar-stripes;
           animation: 1s linear infinite progress-bar-stripes;

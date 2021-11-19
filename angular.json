@@ -188,8 +188,37 @@
           "builder": "@nguniversal/builders:prerender",
           "options": {
             "routes": [
-              "/"
-            ]
+              "/",
+              "/home",
+              "/my-store",
+              "/products",
+              "/products/:product",
+              "/about",
+              "/shipping-address",
+              "/billing-info",
+              "/review-order",
+              "/orders",
+              "/orders/order",
+              "/my-store/billing",
+              "/not-found",
+              "/404",
+
+              "/user:/",
+              "/user:/home",
+              "/user:/my-store",
+              "/user:/products",
+              "/user:/products/:product",
+              "/user:/about",
+              "/user:/shipping-address",
+              "/user:/billing-info",
+              "/user:/review-order",
+              "/user:/orders",
+              "/user:/orders/order",
+              "/user:/my-store/billing",
+              "/user:/not-found",
+              "/user:/404"
+            ],
+            "guessRoutes": false
           },
           "configurations": {
             "production": {

@@ -187,6 +187,18 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     return autoCoupon
   }
 
+  cartDiscount(){
+
+    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
+      (coupon.type == 'order_val' && (this.total(true) ?? 0) >= coupon.threshold) && coupon.auto}).sort(function(a, b){
+        if(a.amt < b.amt) { return 1; }
+        if(a.amt > b.amt) { return -1; }
+        return 0;
+    })[0]
+
+    return autoCoupon
+  }
+
   mainPrice(product: Product, cartDiscounts = false){
     
     let coupon = this.autoCoupon(product)
@@ -447,7 +459,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       else{
         this.finishedOrder(order_id, client_secret)
       }
-    })
+    }, this.cartDiscount())
   }
 
   finishedOrder(order_id: string, _client_secret: string){
@@ -580,17 +592,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     return total
   }
 
-  cartDiscount(){
-
-    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
-      (coupon.type == 'order_val' && (this.total(true) ?? 0) >= coupon.threshold) && coupon.auto}).sort(function(a, b){
-        if(a.amt < b.amt) { return 1; }
-        if(a.amt > b.amt) { return -1; }
-        return 0;
-    })[0]
-
-    return autoCoupon
-  }
 
   titleCase(str: string = '') {
     var splitStr = str.toLowerCase().split(' ');

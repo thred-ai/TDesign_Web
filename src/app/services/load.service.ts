@@ -959,10 +959,19 @@ export class LoadService {
     }
   }
 
-  async createPayment(storeID: string, isCard: boolean = true, callback: (order_id: string, client_secret: string, err?: any) => any){
+  async createPayment(storeID: string, isCard: boolean = true, callback: (order_id: string, client_secret: string, err?: any) => any, coupon?: Coupon){
 
-    this.functions.httpsCallable('createWebIntent')({merchant_uid: storeID, isCard: isCard})
-      .pipe(first())
+    var data = {
+      merchant_uid: storeID, 
+      isCard: isCard,
+      coupon: undefined
+    }
+
+    if (coupon){
+      data.coupon = JSON.parse(JSON.stringify(coupon))
+    }
+
+    this.functions.httpsCallable('createWebIntent')(data).pipe(first())
       .subscribe(async resp => {        
           callback(resp.order_id, resp.client_secret)
       }, err => {

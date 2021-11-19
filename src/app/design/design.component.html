@@ -1,144 +1,144 @@
 
+<div mat-dialog-title class="bg-light rounded-top d-flex justify-content-between align-items-center px-4 py-2 mb-0" style="height: 70px;">
+    <a role="button" (click)="cancel()" style="text-shadow: 2px 2px 4px #42424281;">
+        <mat-icon >highlight_off</mat-icon>
+    </a>
+    <div class="text-center mt-3">
+        <h4 class="fw-bolder" ><a style="text-decoration: none; font-size: larger; "  role="button">{{selectedTemplate?.templateDisplayName}}
+            <h5 class="fw-normal" style="text-decoration: none; font-size: smaller;">{{selectedColor?.display}}</h5>
+        </a></h4>
+    </div>
+    <mat-icon ></mat-icon>
 
-    <div id="frame" [hidden]="openCrop">
+    
+</div>
+<mat-dialog-content class="mt-0" style="overflow: hidden;" [style.height.px]="myInnerHeight()">
+    <div id="frame" class="h-100" [hidden]="openCrop">
         
-            <div [hidden]="step != 0" class="w-100" style="position: relative;">
-                <div class="bg-light rounded-top d-flex justify-content-between align-items-center px-3" style="height: 70px;">
-                    <a role="button" (click)="cancel()" style="text-shadow: 2px 2px 4px #42424281;">
-                        <mat-icon >highlight_off</mat-icon>
-                    </a>
-                    <div class="text-center mt-3">
-                        <h4 class="fw-bolder" ><a style="text-decoration: none; font-size: larger; "  role="button">{{selectedTemplate?.templateDisplayName}}
-                            <h5 class="fw-normal" style="text-decoration: none; font-size: smaller;">{{selectedColor?.display}}</h5>
-                        </a></h4>
-                    </div>
-                    <mat-icon ></mat-icon>
-
-                    <!-- <h5 class="fw-bold mt-2" style="text-decoration: none; font-size: smaller;">NEW PRODUCT</h5> -->
-                    
-                </div>
-                <div class="w-100"  style="position: absolute;">
-                    <div class="w-100" id="capture">
-                        <drag-scroll #carousel class="w-100 h-100" [indexChanged]="didMove()" [scrollbar-hidden]="true">
-                            <div drag-scroll-item class="w-100 bg-light" *ngFor="let color of templates![templateNum()!].colors" >
-                                <div id="back" style="background-color:#cdf4fc; position: relative; aspect-ratio: 1/1;">
-                                    
-                                    <div class=" w-100 h-100 d-flex justify-content-center" style="position: absolute;">
-                                        <a role="button" (click)="fileBackground.click()" class="d-flex align-items-center justify-content-center" style="position: absolute; pointer-events: auto;  text-decoration: none;" [class.noDesign]="shouldShowCanvas() && !hideCanvas" [style.borderColor] = "calculateColor(color).border_color" [style.height.px]="calculateHeight()" [style.top.px]="calculateCenterY()" [style.width.px]="calculateWidth()">
-                                            
-                                            <p *ngIf='!hideCanvas' [hidden]="!shouldShowCanvas()" class="fw-bolder text-center text-wrap text-{{calculateColor(color).text_color}}" style="pointer-events: none;" >
-                                                {{sideName()}}
-                                            </p>
-                                            <input #fileBackground type="file" (change)="fileChangeEvent($event)" style="display:none;" />
-                                            <!-- //text-wrap -->
-                                            <img [hidden]="shouldShowCanvas()" class="w-100 h-100" [src]="selectedImage()" style="object-fit:contain; pointer-events: auto;">
-                                        </a>
-                                    </div>
-                                    <a role="button"><img class="w-100 h-100" style="object-fit: contain; aspect-ratio: 1/1;" [src]='getColorSide(undefined, color)' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                                </div>
-                            </div>
-                        </drag-scroll>
-                    </div>
-                    <div class="p-3 bg-light d-flex justify-content-between align-items-center rounded-bottom" >
-
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="d-flex justify-content-between align-items-center">
-                                <a role="button" class="pt-1" style="text-shadow: 2px 2px 4px #42424281;" style.color= "{{getProductColor('prev')}}" (click)="moveLeft()">
-                                    <mat-icon class="fw-bolder" [hidden]="ds?.currIndex == 0" >arrow_back_ios</mat-icon>
-                                </a>
-    
-    
-                                <div [hidden]="ds?.currIndex == 0" class="p-1 rounded-circle shadow" style.background-color= "{{getProductColor('prev')}}" [style.width.px]="40" [style.height.px]="40" >
-                                    <a role="button" style="text-shadow: 2px 2px 4px #42424281;" (click)="moveLeft()">
-                                        <img [src]='getProductImages("prev")' class="rounded-circle img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+        <div [hidden]="step != 0" class="w-100 h-100" style="position: relative;">
+            <div class="w-100 h-100"  style="position: absolute;">
+                <div class="w-100 h-100" id="capture">
+                    <drag-scroll #carousel class="w-100 h-100" [indexChanged]="didMove()" [scrollbar-hidden]="true">
+                        <div drag-scroll-item class="w-100 h-100 bg-light" *ngFor="let color of templates![templateNum()!].colors" >
+                            <div id="back" style="background-color:#cdf4fc; position: relative; aspect-ratio: 1/1;">
+                                
+                                <div class="w-100 h-100 d-flex justify-content-center" style="position: absolute;">
+                                    <a role="button" (click)="fileBackground.click()" class="d-flex align-items-center justify-content-center" style="position: absolute; pointer-events: auto;  text-decoration: none;" [class.noDesign]="shouldShowCanvas() && !hideCanvas" [style.borderColor] = "calculateColor(color).border_color" [style.height.px]="calculateHeight()" [style.top.px]="calculateCenterY()" [style.width.px]="calculateWidth()">
+                                        
+                                        <p *ngIf='!hideCanvas' [hidden]="!shouldShowCanvas()" class="fw-bolder text-center text-wrap text-{{calculateColor(color).text_color}}" style="pointer-events: none;" >
+                                            {{sideName()}}
+                                        </p>
+                                        <input #fileBackground type="file" (change)="fileChangeEvent($event)" style="display:none;" />
+                                        <!-- //text-wrap -->
+                                        <img [hidden]="shouldShowCanvas()" class="w-100 h-100" [src]="selectedImage()" style="object-fit:contain; pointer-events: auto;">
                                     </a>
                                 </div>
-                            </div>
-
-                            <div [hidden]="ds?.currIndex != 0" style="width: 40px; height: 40px">
-                            </div>
-
-
-                            <div class="fw-bolder" [hidden]="ds?.currIndex != 0">
-                                <mat-icon ></mat-icon>
-                            </div>
-
-                        </div>
-
-                        <div class="h-100 d-flex justify-content-center align-items-center">
-                            <div class="rounded-pill px-3 py-3 d-flex align-items-center justify-content-center shadow" style="background-color: #57b846;" [style.height.px]="40">
-                                <a role="button" (click)="nextStep()" class=" text-light d-flex align-items-center justify-content-center" style="font-size: 18px; text-decoration: none;" >
-                                    Done
-                                    <mat-icon class="ms-1">check_circle</mat-icon>
-                                </a>
+                                <a role="button"><img class="w-100 h-100" style="object-fit: contain; aspect-ratio: 1/1;" [src]='getColorSide(undefined, color)' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-between align-items-center">
-    
-
-                            <div [hidden]="ds?.currIndex == (this.selectedTemplate?.colors!.length) - 1" class="p-1 rounded-circle shadow" style.background-color= "{{getProductColor('next')}}" [style.width.px]="40" [style.height.px]="40" >
-                                <a role="button" style="text-shadow: 2px 2px 4px #42424281;" (click)="moveRight()">
-                                    <img [src]='getProductImages("next")' class="rounded-circle img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
-                                </a>
-                            </div>
-                            
-
-                            <a role="button" class="pt-1" style="text-shadow: 2px 2px 4px #42424281;" style.color= "{{getProductColor('next')}}" (click)="moveRight()">
-                                <mat-icon  class="fw-bolder" [hidden]="ds?.currIndex == (this.selectedTemplate?.colors!.length) - 1" >arrow_forward_ios</mat-icon>
-                            </a>
-
-
-                            <div [hidden]="ds?.currIndex != (this.selectedTemplate?.colors!.length) - 1" style="width: 40px; height: 40px;">
-                            </div>
-
-
-                            <div class="fw-bolder" [hidden]="ds?.currIndex != (this.selectedTemplate?.colors!.length) - 1">
-                                <mat-icon ></mat-icon>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <ngx-spinner
-                        bdColor = '{{selectedIndicator().bg_color}}'
-                        size = "medium"
-                        color = '{{selectedIndicator().color}}'
-                        type = {{selectedIndicator().name}} 
-                        [fullScreen] = "false"
-                        style.color = "{{selectedIndicator()!.color}}"
-                        [name]="'designSpinner'"
-                        [disableAnimation] = "true"
-                    >
-                    <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">GENERATING PRODUCT...</h3>
-                    </ngx-spinner>
+                    </drag-scroll>
                 </div>
-                <div class="d-flex justify-content-between w-100" style="position: absolute; pointer-events: none;">
-                    <div class="px-2 py-2"  [style.height.px]="myInnerHeight()" style="overflow: scroll; " >
-                        <a role="button" class="d-flex align-items-center justify-content-center" style=" font-size:smaller; width: 60px; text-decoration: none;">
-                            <p class="fw-bolder text-center text-dark"  >
-                                TYPE
-                            </p>
-                        </a>
-                        <div >
-                            <div class="mx-auto mb-2 p-1 rounded-circle" style="pointer-events: auto;" *ngFor="let template of templates" [class.productTypeBtn] = "selectedTemplate != template" [class.selected] = "selectedTemplate == template" >
-                                <a style="pointer-events: auto;" role="button" (click)="selectTemplate(template)" ><img class="rounded-circle img-responsive h-100 w-100" style="object-fit:contain; background-color: #cdf4fc; " [src]='getTypeImages(template)' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                            </div>
+                <ngx-spinner
+                    bdColor = '{{selectedIndicator().bg_color}}'
+                    size = "medium"
+                    color = '{{selectedIndicator().color}}'
+                    type = {{selectedIndicator().name}} 
+                    [fullScreen] = "false"
+                    style.color = "{{selectedIndicator()!.color}}"
+                    [name]="'designSpinner'"
+                    [disableAnimation] = "true"
+                >
+                <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">GENERATING PRODUCT...</h3>
+                </ngx-spinner>
+            </div>
+            <div class="d-flex justify-content-between w-100" style="position: absolute; pointer-events: none;">
+                <div class="px-2 py-2"  [style.height.px]="myInnerHeight()" style="overflow: scroll; " >
+                    <a role="button" class="d-flex align-items-center justify-content-center" style=" font-size:smaller; width: 60px; text-decoration: none;">
+                        <p class="fw-bolder text-center text-dark"  >
+                            TYPE
+                        </p>
+                    </a>
+                    <div >
+                        <div class="mx-auto mb-2 p-1 rounded-circle" style="pointer-events: auto;" *ngFor="let template of templates" [class.productTypeBtn] = "selectedTemplate != template" [class.selected] = "selectedTemplate == template" >
+                            <a style="pointer-events: auto;" role="button" (click)="selectTemplate(template)" ><img class="rounded-circle img-responsive h-100 w-100" style="object-fit:contain; background-color: #cdf4fc; " [src]='getTypeImages(template)' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
                         </div>
                     </div>
-                    <div class="px-2 py-2"  [style.height.px]="myInnerHeight()" style="overflow: scroll; " >
-                        <a role="button" class="d-flex align-items-center justify-content-center" style=" font-size:smaller; width: 60px; text-decoration: none;">
-                            <p class="fw-bolder text-center text-dark"  >
-                                SIDE
-                            </p>
-                        </a>
-                        <div >
-                            <div class="mx-auto mb-2 p-1 rounded" style="pointer-events: auto;" *ngFor="let side of selectedTemplate?.supportedSides ?? []; index as i" [class.productTypeBtn] = "selectedSide != i" [class.selected] = "selectedSide == i" >
-                                <a style="pointer-events: auto;" role="button" (click)="selectSide(i)" ><img class="img-responsive h-100 w-100" style="object-fit:contain; background-color: #cdf4fc; " [src]='getColorSide(i)' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                            </div>
+                </div>
+                <div class="px-2 py-2"  [style.height.px]="myInnerHeight()" style="overflow: scroll; " >
+                    <a role="button" class="d-flex align-items-center justify-content-center" style=" font-size:smaller; width: 60px; text-decoration: none;">
+                        <p class="fw-bolder text-center text-dark"  >
+                            SIDE
+                        </p>
+                    </a>
+                    <div >
+                        <div class="mx-auto mb-2 p-1 rounded" style="pointer-events: auto;" *ngFor="let side of selectedTemplate?.supportedSides ?? []; index as i" [class.productTypeBtn] = "selectedSide != i" [class.selected] = "selectedSide == i" >
+                            <a style="pointer-events: auto;" role="button" (click)="selectSide(i)" ><img class="img-responsive h-100 w-100" style="object-fit:contain; background-color: #cdf4fc; " [src]='getColorSide(i)' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+</div>
+</mat-dialog-content>
+<div mat-dialog-actions class="mb-1 p-3 bg-light d-flex justify-content-between align-items-center rounded-bottom" >
+
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <a role="button" class="pt-1" style="text-shadow: 2px 2px 4px #42424281;" style.color= "{{getProductColor('prev')}}" (click)="moveLeft()">
+                <mat-icon class="fw-bolder" [hidden]="ds?.currIndex == 0" >arrow_back_ios</mat-icon>
+            </a>
+
+
+            <div [hidden]="ds?.currIndex == 0" class="p-1 rounded-circle shadow" style.background-color= "{{getProductColor('prev')}}" [style.width.px]="40" [style.height.px]="40" >
+                <a role="button" style="text-shadow: 2px 2px 4px #42424281;" (click)="moveLeft()">
+                    <img [src]='getProductImages("prev")' class="rounded-circle img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+                </a>
+            </div>
+        </div>
+
+        <div [hidden]="ds?.currIndex != 0" style="width: 40px; height: 40px">
+        </div>
+
+
+        <div class="fw-bolder" [hidden]="ds?.currIndex != 0">
+            <mat-icon ></mat-icon>
+        </div>
+
     </div>
+
+    <div class="h-100 d-flex justify-content-center align-items-center">
+        <div class="rounded-pill px-3 py-3 d-flex align-items-center justify-content-center shadow" style="background-color: #57b846;" [style.height.px]="40">
+            <a role="button" (click)="nextStep()" class=" text-light d-flex align-items-center justify-content-center" style="font-size: 18px; text-decoration: none;" >
+                Done
+                <mat-icon class="ms-1">check_circle</mat-icon>
+            </a>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+
+
+        <div [hidden]="ds?.currIndex == (this.selectedTemplate?.colors!.length) - 1" class="p-1 rounded-circle shadow" style.background-color= "{{getProductColor('next')}}" [style.width.px]="40" [style.height.px]="40" >
+            <a role="button" style="text-shadow: 2px 2px 4px #42424281;" (click)="moveRight()">
+                <img [src]='getProductImages("next")' class="rounded-circle img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+            </a>
+        </div>
+        
+
+        <a role="button" class="pt-1" style="text-shadow: 2px 2px 4px #42424281;" style.color= "{{getProductColor('next')}}" (click)="moveRight()">
+            <mat-icon  class="fw-bolder" [hidden]="ds?.currIndex == (this.selectedTemplate?.colors!.length) - 1" >arrow_forward_ios</mat-icon>
+        </a>
+
+
+        <div [hidden]="ds?.currIndex != (this.selectedTemplate?.colors!.length) - 1" style="width: 40px; height: 40px;">
+        </div>
+
+
+        <div class="fw-bolder" [hidden]="ds?.currIndex != (this.selectedTemplate?.colors!.length) - 1">
+            <mat-icon ></mat-icon>
+        </div>
+        
+    </div>
+</div>

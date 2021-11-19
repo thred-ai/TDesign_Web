@@ -1958,18 +1958,20 @@ isSpinning = false
     productDetails: any 
 
     createNewProduct(){
-      let ngbModalOptions: NgbModalOptions = {
-        backdrop : 'static',
-        keyboard : false,
-        size : "md"
-      };
-      const modalRef = this.modalService.open(DesignComponent, ngbModalOptions);
-      modalRef.componentInstance.inventory = this.inventory ?? []
-      modalRef.componentInstance.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0})
 
-      let sub = modalRef.dismissed.subscribe((resp: any) => {
+      const modalRef = this.dialog.open(DesignComponent, {
+        width: '' + this.myInnerHeight() + "px",
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        data: {
+          inventory: this.inventory ?? [], 
+          templates: this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0})
+        },
+      });
+    
+      let sub = modalRef.afterClosed().subscribe(resp => {
+        console.log('The dialog was closed');
         sub.unsubscribe()
-        console.log(resp)
         if (resp){
           this.productDetailsMode = true
           resp.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0}),
@@ -1981,7 +1983,19 @@ isSpinning = false
           this.productDetailsMode = false
           this.productDetails = undefined
         }
-      })
+      });
+    }
+
+    myInnerHeight(){
+      let height = window.innerHeight
+      let width = window.innerWidth
+  
+      if (width < height){
+        return width * 0.98
+      }
+      else{
+        return height * 0.70
+      }
     }
 
     finish(success: boolean){
