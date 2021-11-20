@@ -1238,7 +1238,7 @@ isSpinning = false
         full_name: this.userForm.controls.full_name.value,
         bio: this.userForm.controls.bio.value,
         socials: this.userForm.controls.socials.value,
-        custom_url: this.userForm.controls.custom_url.value.trim(),
+        custom_url: this.userForm.controls.custom_url.value?.trim(),
         profile_pic: this.userForm.controls.profile_pic.value
       }
       this.loadService.checkUsername(data.username, err => {
