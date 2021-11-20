@@ -2252,7 +2252,7 @@ export class LoadService {
 
   async checkURL(url: string, callback: (err?: string) => any){
 
-    if (url.replace(" ", "") == ""){
+    if (url?.replace(" ", "") == ""){
       callback()
     }
 
