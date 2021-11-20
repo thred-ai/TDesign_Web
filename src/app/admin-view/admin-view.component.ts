@@ -1324,7 +1324,7 @@ isSpinning = false
 
   joinColor(color: string){
 
-    let c = color.replace("rgb", "").replace("a", "").replace("(", "").replace(")", "").split(",")
+    let c = color?.replace("rgb", "")?.replace("a", "")?.replace("(", "")?.replace(")", "")?.split(",")
     var returnArr = new Array<string>()
     c.forEach(element => {
       returnArr.push(element.trim())
@@ -1612,9 +1612,9 @@ isSpinning = false
     let bio = this.storeInfo().bio
 
     if (bio == "" || bio == undefined){
-      return this.defaultBio.replace(/FULL9NAME/g, this.storeInfo().fullName?.trim() ?? "This brand")
+      return this.defaultBio?.replace(/FULL9NAME/g, this.storeInfo().fullName?.trim() ?? "This brand")
     }
-    return bio.replace(/\n/g, "<br>") ?? "";
+    return bio?.replace(/\n/g, "<br>") ?? "";
   }
 
   planEndDate(){

@@ -2230,6 +2230,7 @@ export class LoadService {
 
   async checkUsername(username: string, callback: (err?: string) => any, myUID?: string){
 
+    console.log(username)
 
 
     let sub = this.db.collection("Users", ref => ref.where("Username",'==', username)).valueChanges({idField: 'UID'}).subscribe((docs) => {
@@ -2250,7 +2251,7 @@ export class LoadService {
     });
   }
 
-  async checkURL(url: string, callback: (err?: string) => any){
+  async checkURL(url: string = "", callback: (err?: string) => any){
 
     if (url?.replace(" ", "") == ""){
       callback()
