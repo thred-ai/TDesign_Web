@@ -1615,7 +1615,7 @@ isSpinning = false
       return this.defaultBio?.replace(/FULL9NAME/g, this.storeInfo().fullName?.trim() ?? "This brand")
     }
     return bio?.replace(/\n/g, "<br>") ?? "";
-  }
+  } 
 
   planEndDate(){
     return new Date(this.subInfo.cancel_at * 1000).toDateString();

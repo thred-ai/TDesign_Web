@@ -1825,7 +1825,7 @@ export class LoadService {
     Globals.userInfo!.dpID = picID
     Globals.userInfo!.profileLink = url
 
-    console.log(url)
+    console.log(url) 
 
 
     if (Globals.storeInfo.uid == Globals.userInfo?.uid){
