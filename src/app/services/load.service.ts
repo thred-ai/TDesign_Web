@@ -1427,12 +1427,12 @@ export class LoadService {
     // });
   }
 
-  async saveUser(mappedData: Dict<any>){
+  async saveUser(mappedData: Dict<any>, callback: (success: boolean) => any){
 
     
     let uid = (await this.isLoggedIn())?.uid
 
-    console.log(mappedData.profile_pic, uid)
+    console.log(uid)
 
     if (mappedData.profile_pic){
       let picID = await this.uploadFile(mappedData, uid)
@@ -1440,6 +1440,7 @@ export class LoadService {
     }
     
     await this.saveUsername(mappedData, uid)
+    callback(true)
   }
 
   async saveEmail(mappedData: Dict<any>, callback: (success: boolean) => any){
@@ -1811,8 +1812,19 @@ export class LoadService {
       this.myCallback()
   }
 
+  getRandomInt(max: 100, oldVal: string) {
+    let k = Math.floor(Math.random() * max)
+
+    if (k.toString() == oldVal){
+      this.getRandomInt(max, oldVal)
+    }
+    return k.toString();
+  }
+
   private async uploadFile(mappedData: Dict<any>, uid?: string) {
-    let picID = uuid().toString().replace("-", "")
+
+    
+    let picID = this.getRandomInt(100, Globals.storeInfo!.dpID ?? "").toString()
     console.log(picID)
     const filePath = 'Users/' + uid + '/profile_pic-' + picID + '.jpeg';
     let ref = this.storage.ref(filePath);
@@ -1961,8 +1973,6 @@ export class LoadService {
         Globals.storeInfo!.fullName = mappedData.full_name
       }
     }
-    if (this.myCallback)
-      this.myCallback()
   }
 
 
@@ -2260,6 +2270,7 @@ export class LoadService {
 
     if (url?.replace(" ", "") == ""){
       callback()
+      return
     }
 
     let sub = this.db.collection("Users", ref => ref.where("Custom_URL",'==', url)).valueChanges().subscribe((doc) => {

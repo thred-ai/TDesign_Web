@@ -1241,6 +1241,7 @@ isSpinning = false
         custom_url: this.userForm.controls.custom_url.value?.trim(),
         profile_pic: this.userForm.controls.profile_pic.value
       }
+
       this.loadService.checkUsername(data.username, err => {
         if (err){
           this.toast("A store with this name already exists!")
@@ -1251,8 +1252,14 @@ isSpinning = false
               this.toast(error)
             }
             else{
-              this.loadService.myCallback = () => this.toast("Profile Information Updated!")
-              this.loadService.saveUser(data)
+              console.log(',')
+
+              this.loadService.saveUser(data, success => {
+                if (success){
+                  console.log(success)
+                  this.toast("Profile Information Updated!")
+                }
+              })
             }
           })
         }
