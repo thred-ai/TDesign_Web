@@ -1432,6 +1432,8 @@ export class LoadService {
     
     let uid = (await this.isLoggedIn())?.uid
 
+    console.log(mappedData.profile_pic, uid)
+
     if (mappedData.profile_pic){
       let picID = await this.uploadFile(mappedData, uid)
       mappedData.picID = picID
@@ -1811,6 +1813,7 @@ export class LoadService {
 
   private async uploadFile(mappedData: Dict<any>, uid?: string) {
     let picID = uuid().toString().replace("-", "")
+    console.log(picID)
     const filePath = 'Users/' + uid + '/profile_pic-' + picID + '.jpeg';
     let ref = this.storage.ref(filePath);
     const byteArray = new Buffer(mappedData.profile_pic.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
@@ -1821,6 +1824,9 @@ export class LoadService {
     const url = await task.ref.getDownloadURL();
     Globals.userInfo!.dpID = picID
     Globals.userInfo!.profileLink = url
+
+    console.log(url)
+
 
     if (Globals.storeInfo.uid == Globals.userInfo?.uid){
       Globals.storeInfo!.dpID = picID
@@ -1943,7 +1949,6 @@ export class LoadService {
     if (mappedData.socials){
       data["Socials"] = mappedData.socials ?? []
     }
-    console.log(mappedData.custom_url)
 
     if (uid){
       await this.db.collection("Users").doc(uid).update(data)
