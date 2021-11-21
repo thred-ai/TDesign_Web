@@ -44,7 +44,7 @@ export function app(): express.Express {
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
-    Globals.URL = req.get('x-forwarded-host') ?? ""
+    Globals.URL = (req.get('x-forwarded-host') ?? "")
     res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
   });
 

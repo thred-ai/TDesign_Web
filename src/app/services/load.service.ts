@@ -317,7 +317,7 @@ export class LoadService {
       query = this.db.collection("Users", ref => ref.where(firebase.firestore.FieldPath.documentId(),'==', uid))
     }
     if (isCustom){
-      query = this.db.collection("Users", ref => ref.where("Custom_URL.host",'==', username).where("Custom_URL.status",'==', 2))
+      query = this.db.collection("Users", ref => ref.where("Custom_URL.host",'==', username?.replace('www.', '')).where("Custom_URL.status",'==', 2))
     }
 
 
@@ -1440,6 +1440,10 @@ export class LoadService {
     }
     
     await this.saveUsername(mappedData, uid)
+
+    if (Globals.storeInfo.profileLink){
+      this.rootComponent?.setFavIcon(Globals.storeInfo.profileLink.toString())
+    }
     callback(true)
   }
 
@@ -2305,8 +2309,7 @@ export class LoadService {
 
     console.log("moooooo")
     if (!(storeUID) || !(uid)){
-      if (this.myCallback)
-      this.myCallback()
+      callback([])
       return
     }
 
