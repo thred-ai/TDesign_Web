@@ -3,7 +3,7 @@ import { AngularFaviconService } from 'angular-favicon';
 import { Country } from './models/shipping-country.model';
 import { Template } from './models/template.model';
 import { Globals } from './globals';
-import { ActivatedRoute, Router, NavigationEnd, Event as NavigationEvent, RoutesRecognized, ActivationStart, NavigationStart } from '@angular/router';
+import { ActivatedRoute, Router, NavigationEnd, Event as NavigationEvent, RoutesRecognized, ActivationStart, NavigationStart, RouterEvent } from '@angular/router';
 import { LoadService, Dict } from './services/load.service';
 import { ShopComponent } from './shop/shop.component';
 import { HomeComponent } from './home/home.component';
@@ -483,6 +483,23 @@ export class AppComponent implements OnInit {
   setFavIcon(link: string){
     if (isPlatformBrowser(this.platformID)){
       this.createLinkForFavURL(link)
+      this.setBodyColor()
+    }
+  }
+
+  setBodyColor(){
+    if (document.getElementById('body')){
+      document.getElementById('body')?.classList.add('bg-' + this.storeInfo().colorStyle.back_code)
+    }
+  }
+
+  activateComponent(event: any){
+    console.log()
+
+    console.log(event)
+
+    if (event.constructor.name == 'LandingComponent'){
+      event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, free.", "shopmythred.com")
     }
   }
 

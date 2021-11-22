@@ -120,6 +120,11 @@ a[data-toggle="collapse"] {
     color: gold;
 }
 
+[label]
+{
+color: red;
+}
+
 .old-price {
     text-decoration: line-through;
     text-decoration-style: solid;

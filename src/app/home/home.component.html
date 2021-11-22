@@ -59,7 +59,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
                         <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                            <mat-icon
+                            <!-- <mat-icon
                              class="mt-2" 
                              style="font-size:15px" 
                              [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
@@ -67,7 +67,7 @@ style.color = "{{selectedIndicator()!.color}}"
                              [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
                             >
                                 loyalty
-                            </mat-icon>
+                            </mat-icon> -->
                             <b class="old-price">
                                 {{formatPrice((product.price ?? 0) / 100)}}
                             </b>
@@ -125,7 +125,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
                         <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                            <mat-icon
+                            <!-- <mat-icon
                              class="mt-2" 
                              style="font-size:15px" 
                              [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
@@ -133,7 +133,7 @@ style.color = "{{selectedIndicator()!.color}}"
                              [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
                             >
                                 loyalty
-                            </mat-icon>
+                            </mat-icon> -->
                             <b class="old-price">
                                 {{formatPrice((product.price ?? 0) / 100)}}
                             </b>

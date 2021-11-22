@@ -1,5 +1,5 @@
 
-<nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.back_code}} bg-{{storeInfo().colorStyle!.back_code}}">
+<nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.nav_code}} bg-{{storeInfo().colorStyle!.back_code}}">
     <div class="container px-4 px-lg-5">
         <img class="set-img" src='{{storeInfo().profileLink}}'/>
         <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
@@ -55,7 +55,7 @@
         </div>
     </div>
   </nav>
-  <router-outlet></router-outlet>
+  <router-outlet (activate)='activateComponent($event)'></router-outlet>
   
   <footer 
     *ngIf="

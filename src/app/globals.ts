@@ -73,7 +73,10 @@ export class Globals {
 
   public static billingInfo?: BillingInfo = new BillingInfo()
 
-  public static themes?: Array<StoreTheme> = []
+  public static themes?: Array<{
+    name: string,
+    themes: Array<StoreTheme>
+  }> = []
 
   public static shippingTax? = 0
 

@@ -1406,7 +1406,8 @@ isSpinning = false
 
       var selectedTheme = this.storeForm.controls.storeTheme.value as string
 
-      let matchingTheme = this.themes()?.filter(theme => theme?.name == selectedTheme)[0]
+
+      let matchingTheme = Globals.themes?.find(theme => { return theme.themes.find(theme => { return theme.name == selectedTheme})})?.themes.find(theme => { return theme.name == selectedTheme})
 
       if (matchingTheme){
         var color = this.numToColor(matchingTheme.btn_color)
@@ -1415,6 +1416,8 @@ isSpinning = false
         data.theme = {
           back_code: matchingTheme.back_code,
           text_code: matchingTheme.text_code,
+          nav_code: matchingTheme.nav_code,
+          class: matchingTheme.style,
           bg_color: bg_color,
           btn_color: color,
           name: matchingTheme?.name
@@ -1453,6 +1456,17 @@ isSpinning = false
 
     }
   }
+
+  titleCase(str: string = '') {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        // You do not need to check if i is larger than splitStr length, as your for does that for you
+        // Assign it back to the array
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+    }
+    // Directly return the joined string
+    return splitStr.join(' '); 
+ }
 
   toast(message: string){
 

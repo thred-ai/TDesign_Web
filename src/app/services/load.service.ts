@@ -432,7 +432,7 @@ export class LoadService {
           }
 
           if (style){
-            Globals.storeInfo.colorStyle = new StoreTheme(style?.name, style?.back_code, style?.text_code, this.parseColor(style?.bg_color), this.parseColor(style?.btn_color))
+            Globals.storeInfo.colorStyle = new StoreTheme(style?.name, style?.back_code, style?.text_code, style?.nav_code, style?.class, this.parseColor(style?.bg_color), this.parseColor(style?.btn_color))
           }
         }
         else{
@@ -573,7 +573,7 @@ export class LoadService {
           }
 
           if (style){
-            Globals.userInfo.colorStyle = new StoreTheme(style?.name, style?.back_code, style?.text_code, this.parseColor(style?.bg_color), this.parseColor(style?.btn_color))
+            Globals.userInfo.colorStyle = new StoreTheme(style?.name, style?.back_code, style?.text_code, style?.nav_code, style?.class, this.parseColor(style?.bg_color), this.parseColor(style?.btn_color))
           }
 
           if (this.myCallback)
@@ -608,16 +608,26 @@ export class LoadService {
           let bg_color = docData.bg_color as string
           let back_code = docData.back_code as string
           let text_code = docData.text_code as string
+          let nav_code = docData.nav_code as string
+          let style = docData.class as string
 
           let theme = new StoreTheme(
             name,
             back_code,
             text_code,
+            nav_code,
+            style,
             this.parseColor(bg_color),
             this.parseColor(btn_color)
           )
 
-          Globals.themes?.push(theme);
+          let same = Globals.themes?.find(t => { return t.name == style})
+          if (same){
+            same.themes.push(theme);
+          }
+          else{
+            Globals.themes?.push({name: style, themes: [theme]})
+          }
         }
       });
       if (this.myCallback)
@@ -1797,8 +1807,9 @@ export class LoadService {
     if (uid){
       await this.db.collection("Users").doc(uid).update(data)
       Globals.userInfo!.slogan = mappedData.slogan
-      let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
+      let matchingTheme = Globals.themes?.find(theme => theme.name == mappedData.theme.class)?.themes.find(theme => { return theme.name == mappedData.theme.name})
 
+      console.log(matchingTheme)
       if (matchingTheme){
         Globals.userInfo!.colorStyle = matchingTheme
       }
