@@ -2,6 +2,25 @@
 
 The Ultimate Store Builder - SHOPMYTHRED
 
+Build your online store and start selling in seconds. SHOPMYTHRED gives you powerful tools to instantly build an online print-on-demand store. 
+
+![DisplayImage](https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/display.png)
+
+
+Use SHOPMYTHRED to grow massive brands --> Create and Sell Products, We Handle the Rest.
+
+Bulk Buying and Inventory Management
+Unlimited number of product designs
+Mockup generator
+Manual order creation
+24/7 merchant support.
+
+The Future of E-Commerce is here.
+
+
+
+https://shopmythred.com
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
