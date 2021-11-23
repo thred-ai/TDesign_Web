@@ -1,8 +1,8 @@
 <div style="height: 100vh; position: relative; top: -30px;">
-    <div *ngIf="isBrowser()" class="animation-area" >
+    <div *ngIf="isBrowser()" class="animation-area" style="pointer-events: none;" >
 
         <ul class="box-area">
-            <li>
+            <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent1">
                     <ng-template #tipContent1>
                         <p class="fw-bolder">
@@ -13,7 +13,7 @@
                     <img class="bubble1 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain; opacity: 0.5; background-color: rgb(5, 224, 97)">
                 </a>
             </li>
-            <li>
+            <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent2">
                     <ng-template #tipContent2>
                         <p class="fw-bolder">
@@ -25,7 +25,7 @@
 
                 </a>
             </li>
-            <li>
+            <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent3">
                     <ng-template #tipContent3>
                         
@@ -37,7 +37,7 @@
                     <img class="bubble3 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.8; background-color: rgb(231, 213, 44);">
                 </a>
             </li>
-            <li>
+            <li style="pointer-events: auto">
                 <a class="w-100 h-100"role="button" [ngbTooltip]="tipContent4">
                     <ng-template #tipContent4>
                         <p class="fw-bolder">
@@ -48,7 +48,7 @@
                     <img class="bubble4 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.5; background-color: rgb(130, 93, 204);">
                 </a>
             </li>
-            <li>
+            <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent5">
                     <ng-template #tipContent5>
                         <p class="fw-bolder">
@@ -59,7 +59,7 @@
                     <img class="bubble5 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.7; background-color: white;">
                 </a>
             </li>
-            <li>
+            <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent6">
                     <ng-template #tipContent6>
                         <p class="fw-bolder">
@@ -73,7 +73,7 @@
         </ul>
         
         <div *ngIf="signedIn != undefined && affiliate != undefined" class="mx-0 row h-100">
-            <div class="row row-cols-1 justify-content-center pb-2 h-100 w-100 mx-0">
+            <div class="row row-cols-1 justify-content-center pb-2 h-100 w-100 mx-0" style="pointer-events: auto">
                 <h1 *ngIf="signedIn == false" class="text-center text-light fw-bolder col mt-5 mx-0 w-100" style="font-size: xx-large; line-height: 1.2em; text-shadow: 2px 2px 4px #42424281;">Join Thred,
                     The ultimate online store builder
                 </h1>
@@ -105,7 +105,7 @@
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light">
                                 <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
-                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-danger rounded w-100" >View My Store</h2> 
+                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center rounded w-100" style="background-color: rgb(224, 30, 30); font-size: 25px;">VIEW MY STORE</h2> 
                                 </a>
                             </div>
                         </div>
@@ -113,16 +113,32 @@
                 </div>
             </div>
             
-            <div class="row row-cols-1 justify-content-start pb-2 mx-auto px-0 px-sm-5 h-100">
-                <div class="col mb-5" style="width: fit-content; max-width: 800px;">
+            <div class="row row-cols-1 justify-content-start pb-2 mx-auto mt-2 px-0 px-sm-5 h-100">
+                <div class="col mb-5" style="width: fit-content; max-width: 100%">
                     <div class="h-100 mx-auto w-100 bg-transparent"  data-aos="fade-up-right" data-aos-duration="1500">
                         <!-- Product image-->
                         <!-- Product details-->
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center" >Sell online in 30 seconds</h1>
-                                <div class="rounded w-100" style="overflow: hidden;" >
-                                    <img class="rounded w-100" [src]="'assets/landing_1.png'" style="object-fit: contain;">
+                                <div class="d-md-flex justify-content-between align-items-top">
+                                    <div class="rounded w-100" style="overflow: hidden;" >
+                                        <img class="rounded w-100" [src]="'assets/landing_1.png'" style="object-fit: contain;">
+                                    </div>
+                                    <p class="text-start mt-3" style="font-size: large;">
+                                        <b class="h1">
+                                            Quickly start & scale your store
+                                        </b>
+                                        <br>
+                                        <br>
+                                        Choose between a wide selection of templates that best reflects your brand identity.
+                                        <br>
+                                        <br>
+                                        Tell each piece’s story in the product description and ‘about' page.
+                                        <br>
+                                        <br>
+                                        You owe your customers an unforgettable experience. 
+                                    </p>
                                 </div>
                             </div>
                             <!-- <div class="text-start text-light px-2">
@@ -136,15 +152,33 @@
                 </div>
             </div>
             <div class="row row-cols-1 justify-content-end pb-2 mx-auto px-0 px-sm-5 h-100">
-                <div class="col mb-5" style="width: fit-content; max-width: 800px;">
+                <div class="col mb-5" style="width: fit-content; max-width: 100%;">
                     <div class="h-100 mx-auto w-100 bg-transparent"  data-aos="fade-up" data-aos-duration="1500">
                         <!-- Product image-->
                         <!-- Product details-->
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
-                                <h1 class="text-center">Direct traffic to your online store</h1>
-                                <div class="rounded w-100" style="overflow: hidden;" >
-                                    <img class="rounded w-100" [src]="'assets/landing_2.png'" style="object-fit: contain;">
+                                <h1 class="text-center">Direct traffic to your store</h1>
+                                <div class="row row-cols-1 row-cols-md-2 d-md-flex">
+                                    <div class="col mt-3 order-2 order-md-1 w-sm-50 w-md-100">
+                                        <p class="text-start" style="font-size: large;">
+                                            <b class="h1">
+                                                Share your brand
+                                            </b>
+                                            <br>
+                                            <br>
+                                            Use social media posts on Facebook, Instagram, Twitter, Tiktok & Etsy to grow your brand presence on the internet.
+                                            <br>
+                                            <br>
+                                            You can either grow a brand organically by posting daily, engaging your audience OR via paid ads on these platforms. 
+                                            <br>
+                                            <br>
+                                            We give you the mansion on the internet, it’s your turn to throw the party.
+                                        </p>
+                                    </div>
+                                    <div class="col rounded order-1 order-md-2 w-sm-50 w-md-100" style="overflow: hidden;" >
+                                        <img class="rounded w-100" [src]="'assets/landing_2.png'" style="object-fit: contain;">
+                                    </div>
                                 </div>
                             </div>
                             <!-- <div class="text-end text-light px-2">
@@ -158,15 +192,28 @@
                 </div>
             </div>
             <div class="row row-cols-1 justify-content-start pb-2 mx-auto px-0 px-sm-5 h-100">
-                <div class="col mb-5" style="width: fit-content; max-width: 800px;">
+                <div class="col mb-5" style="width: fit-content; max-width: 100%;">
                     <div class="h-100 mx-auto w-100 bg-transparent"  data-aos="fade-up-right" data-aos-duration="1500">
                         <!-- Product image-->
                         <!-- Product details-->
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">Built in Design Tools</h1>
-                                <div class="rounded w-100" style="overflow: hidden;" >
-                                    <img class="rounded w-100" [src]="'assets/landing_3.png'" style="object-fit: contain;">
+                                <div class="d-md-flex justify-content-between align-items-top">
+                                    <div class="rounded w-100" style="overflow: hidden;" >
+                                        <img class="rounded w-100" [src]="'assets/landing_3.png'" style="object-fit: contain;">
+                                    </div>
+                                    <p class="text-start mt-3" style="font-size: large;">
+                                        <b class="h1">
+                                            Designed to sell.
+                                        </b>
+                                        <br>
+                                        <br>
+                                        Use our online design tools or the more expansive Thred App design tools to create masterful pieces of work for you to display on your store.
+                                        <br>
+                                        <br>
+                                        Thred makes it easy to create, design and sell.
+                                    </p>
                                 </div>
                             </div>
                             <!-- <div class="text-end text-light px-2">
@@ -180,18 +227,34 @@
                 </div>
             </div>
             <div class="row row-cols-1 justify-content-end pb-2 mx-auto px-0 px-sm-5 h-100">
-                <div class="col mb-5" style="width: fit-content;max-width: 800px;">
+                <div class="col mb-5" style="width: fit-content;max-width: 100%;">
                     <div class="h-100 mx-auto w-100" data-aos="fade-up" data-aos-duration="1500">
                         <!-- Product image-->
                         <!-- Product details-->
                         <div class="card-body p-2 pb-0 bg-transparent">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">A range of converting templates to choose from</h1>
-                                <div class="rounded w-100" style="overflow: hidden;" >
-                                    <img class="rounded w-100" [src]="'assets/landing_4a.png'" style="object-fit: contain;">
-                                </div>
-                                <div class="rounded w-100" style="overflow: hidden;" >
-                                    <img class="rounded w-100" [src]="'assets/landing_4b.png'" style="object-fit: contain;">
+                                <div class="row row-cols-1 row-cols-md-2 d-md-flex justify-content-end">
+                                    <div class="col mt-3 order-3 order-md-1 w-sm-50 w-md-100">
+                                        <p class="text-start" style="font-size: large;">
+                                            <b class="h1">
+                                                Catered to success
+                                            </b>
+                                            <br>
+                                            <br>
+                                            Choose from a list of 20 themes to best compliment your store.
+                                            <br>
+                                            <br>
+                                            We’ve re-engineered the top converting shopify stores and made their structures, color ways and apps available to you at no additional cost.
+                                            Enjoy!
+                                        </p>
+                                    </div>
+                                    <div class="col rounded order-1 order-md-2 w-sm-50 w-md-100" style="overflow: hidden;" >
+                                        <img class="rounded w-100" [src]="'assets/landing_4a.png'" style="object-fit: contain;">
+                                    </div>
+                                    <div class="col rounded order-2 order-md-3 w-sm-50 w-md-100" style="overflow: hidden;" >
+                                        <img class="rounded w-100" [src]="'assets/landing_4b.png'" style="object-fit: contain;">
+                                    </div>
                                 </div>
                             </div>
                             <!-- <div class="text-start text-light px-2">
@@ -212,8 +275,21 @@
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">Full control over margins without storage costs.</h1>
-                                <div class="rounded w-100" style="overflow: hidden;" >
-                                    <img class="rounded w-100" [src]="'assets/landing_5.png'" style="object-fit: contain;">
+                                <div class="d-md-flex justify-content-between align-items-top">
+                                    <div class="rounded w-100" style="overflow: hidden;" >
+                                        <img class="rounded w-100" [src]="'assets/landing_5.png'" style="object-fit: contain;">
+                                    </div>
+                                    <p class="text-start mt-3" style="font-size: large;">
+                                        <b class="h1">
+                                            Pricing, your way.
+                                        </b>
+                                        <br>
+                                        <br>
+                                        Purchase in bulk and have full control over your margins. Don’t worry about storage or fulfillment ever again!
+                                        <br>
+                                        <br>
+                                        3x your starting margins on most products.
+                                    </p>
                                 </div>
                             </div>
                             <!-- <div class="text-end text-light px-2">
@@ -228,17 +304,17 @@
             </div>
             <div class="row row-cols-1 justify-content-center pb-2 px-0 px-sm-5 mx-auto h-100">
                 <div class="col mb-5" style="width: fit-content;max-width: 100%">
-                    <div class="h-100 mx-auto w-100 bg-transparent" data-aos="fade-up" data-aos-duration="1500">
+                    <div class="h-100 mx-auto w-100 bg-transparent" data-aos="fade-up" data-aos-duration="1500" style="pointer-events: auto">
                         <!-- Product image-->
                         <!-- Product details-->
                             <div *ngIf="signedIn == false" class="text-center text-light">
                                 <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
-                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-danger rounded w-100" >Get Started</h2> 
+                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center rounded w-100" style="background-color: rgb(224, 30, 30); font-size: 25px;">LAUNCH STORE</h2> 
                                 </a>
                             </div>
                             <div *ngIf="signedIn == true" class="text-center text-light">
                                 <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
-                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center bg-danger rounded w-100" >View My Store</h2> 
+                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center rounded w-100" style="background-color: rgb(224, 30, 30); font-size: 25px;">VIEW MY STORE</h2> 
                                 </a>
                             </div>
                             <!-- <div class="text-end text-light px-2">

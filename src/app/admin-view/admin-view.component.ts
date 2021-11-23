@@ -794,29 +794,20 @@ showSocialModal(logo: {
 
   getTypeImages(templateCode: string) {
 
-    let template = Globals.templates.filter(obj => {
+    let template = Globals.templates.find(obj => {
       return obj.productCode == templateCode
-    })[0]
-
-    var len = template.colors.filter(obj => {
-      return obj.code == "black"
     })
-    var img: any
-    if (len.length == 0){
-      img = template.colors.filter(obj => {
-        return obj.code == "white"
-      })[0].img
-    }
-    else{
-      img = len[0].img
-    }
-    return this.sanitizer!.bypassSecurityTrustResourceUrl("data:image/jpeg;base64," + img)
+
+
+
+    return "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Templates%2F" + template?.templateID + "%2Fdisplay1.jpg?alt=media"
+    
+
   }
 
   buyMore(inventory: Inventory){
     const modalRef = this.modalService.open(InventoryBuyComponent, {size : "lg"});
     modalRef.componentInstance.inventory = inventory
-
 
 
     let sub = modalRef.dismissed.subscribe((inv?: Inventory) => {
@@ -936,6 +927,20 @@ showSocialModal(logo: {
 
   availableToBuyTemplates(){
     return this.templates()?.filter(template => { return !this.hasInventory(template)})
+  }
+
+  matchTemplate(inv: Inventory){
+    return this.templates()?.find(obj => { return inv.code == obj.productCode })
+  }
+
+  
+  invUsed(inv: Inventory){
+    let num = (this.matchTemplate(inv)?.bulkUnit ?? 0) - inv.amount
+
+    if (num == 0){
+      return 'No sales on this product'
+    }
+    return num + " sales on this product"
   }
 
   matchInventory(template: Template){
