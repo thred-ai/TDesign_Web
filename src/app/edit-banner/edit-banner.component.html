@@ -1,0 +1,91 @@
+<h2 mat-dialog-title>
+    BANNER DETAILS
+</h2>
+<mat-dialog-content>
+    <form [formGroup]="bannerForm" novalidate>
+        <mat-form-field class="mt-3 w-100">
+            <input type="text"
+                   placeholder="Banner Text"
+                   matInput
+                   formControlName="text"
+            >
+        </mat-form-field>
+
+        <label class = "fw-bold mt-3 mb-1 me-1" for="inputUsername">Banner Color</label>
+        <div class="card w-100">
+            <a role="button"
+            role="button" 
+            class="btn w-100"
+            [cpPosition]="'top'"
+            [cpPositionRelativeToArrow]="true"
+            [style.background]="bannerForm.controls.bannerColor.value"
+            (colorPickerSelect)="selectBannerColor($event, false)"
+            [cpOutputFormat]="'rgba'"
+            [cpOKButton]="true"
+            [cpOKButtonText]="'SET COLOR'"
+            [cpOKButtonClass]= "'btn btn-dark'"
+            [cpSaveClickOutside]="false"
+            [(colorPicker)]="bannerTheme(banner!)!.bg_color"
+            >
+                <mat-icon class="mt-1">colorize</mat-icon>
+            </a>
+        </div>
+
+        <label class = "fw-bold mt-4 mb-1 me-1" for="input2">Banner Text Color</label>
+        <div class="card w-100">
+            <a role="button"
+            role="button" 
+            class="btn w-100"
+            [cpPosition]="'top'"
+            [style.background]="bannerForm.controls.bannerTextColor.value"
+            [cpPositionRelativeToArrow]="true"
+            (colorPickerSelect)="selectBannerColor($event, true)"
+            [cpOutputFormat]="'rgba'"
+            [cpOKButton]="true"
+            [cpOKButtonText]="'SET COLOR'"
+            [cpOKButtonClass]= "'btn btn-dark'"
+            [cpSaveClickOutside]="false"
+            [(colorPicker)]="bannerTheme(banner!)!.color"
+            >
+                <mat-icon class="mt-1">colorize</mat-icon>
+            </a>
+        </div>
+        <mat-form-field class="w-100 mt-4">
+            <input type="text"
+                   placeholder="Select Icon"
+                   matInput
+                   [formControl]="filteredCodeCtrl"
+                   [matAutocomplete]="auto">
+                   
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]='formattedName.bind(this)'>
+              <cdk-virtual-scroll-viewport class="autocomplete-test-viewport" 
+              [ngStyle]="{'height': height}"
+              itemSize="35" >
+              <mat-optgroup style="display: block" *cdkVirtualFor="let iconGroup of filteredIcons | async" [label]="iconGroup.category.toUpperCase()">
+                <mat-option  
+                class="not-empty-select autocomplete-item" 
+                *ngFor="let icon of iconGroup.icons" 
+                [value]="icon"
+                (click)="selectIcon(icon)"
+                >
+                    <mat-icon class="me-2">{{icon}}</mat-icon>
+                    {{ formattedName(icon) }}
+                </mat-option>
+                <!-- [selected]="icon == theme" -->
+              </mat-optgroup>
+            </cdk-virtual-scroll-viewport>
+
+              <!-- <mat-option
+                *ngFor="let feeCode of filteredFeeCodes | async"
+                [value]="feeCode.code"
+                >{{ feeCode.code }}
+              </mat-option> -->
+
+
+            </mat-autocomplete>
+            <mat-icon matSuffix class="me-2">{{this.bannerForm.controls.icon.value}}</mat-icon>
+        </mat-form-field>
+    </form>
+    <button (click)="save()" class="btn btn-dark mx-auto d-flex mt-4">Save Banner</button>
+
+</mat-dialog-content>

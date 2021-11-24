@@ -19,6 +19,7 @@ import { PopupDialogComponent } from './popup-dialog/popup-dialog.component';
 import { Router } from '@angular/router';
 import { PixelModule } from 'ngx-pixel'
 import { ModelViewerComponent } from './model-viewer/model-viewer.component';
+import { DragScrollModule } from 'ngx-drag-scroll';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ModelViewerComponent } from './model-viewer/model-viewer.component';
     BrowserAnimationsModule,
     NgbModule,
     NgxSpinnerModule,
+    DragScrollModule,
     MatSnackBarModule,
     LoginModule,
     PixelModule.forRoot({pixelId: '646165189889348'}),

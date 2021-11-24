@@ -37,6 +37,7 @@ import { AppComponent } from '../app.component';
 import { StoreDomain } from '../models/store-domain.model';
 import { PixelService } from 'ngx-pixel';
 import { Coupon } from '../models/coupon.model';
+import { Banner } from '../models/banner.model';
 
 
 
@@ -186,6 +187,33 @@ export class LoadService {
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
     })
+  }
+
+  getBanners(callback: (data: any) => any){
+    fetch('https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ficons.txt?alt=media')
+      .then(function(response) {
+        response.json().then(function(text) {
+          var docs = text.icons as Array<Dict<any>>
+          var data = new Array<Dict<any>>()
+          docs.forEach((t) => {
+            let same = data?.find(d => { return d.category == t.categories[0]})
+            if (same){
+              same.icons.push(
+                t.name
+              );
+            }
+            else{
+              data.push({
+                category: t.categories[0],
+                icons: [t.name]
+              })
+            }
+          })
+          callback(data)
+        }).catch( (error: Error) => {
+          callback([])
+        })
+    });
   }
 
 
@@ -350,10 +378,17 @@ export class LoadService {
           let custom_url = docData["Custom_URL"] as Dict<any> ?? {}
           let active = docData["Active"] as boolean
           let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
+          let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
             coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
+          })
+
+          var banners = new Array<Banner>()
+          bannerFields.forEach(banner => {
+            console.log(banner)
+            banners.push(new Banner(banner.text, banner.icon, this.parseColor(banner.bg_color), this.parseColor(banner.color)))
           })
 
           let host = custom_url.host as string
@@ -368,8 +403,6 @@ export class LoadService {
             status,
             txt
           )
-
-          
 
           Globals.storeInfo = new Store(
             uid, 
@@ -399,8 +432,14 @@ export class LoadService {
             finalURL, 
             pixelID,
             active,
-            coupons
+            coupons,
+            banners
           )
+
+          if (banners.length > 0){
+            this.rootComponent?.setInterval()
+          }
+          
 
           this.rootComponent?.initializePixel(pixelID)
 
@@ -494,10 +533,22 @@ export class LoadService {
           let active = docData["Active"] as boolean
 
           let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
+          let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
+
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
             coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
           })
+
+          var banners = new Array<Banner>()
+          bannerFields.forEach(banner => {
+            banners.push(new Banner(banner.text, banner.icon, this.parseColor(banner.bg_color), this.parseColor(banner.color)))
+          })
+
+          if (banners.length > 0){
+            this.rootComponent?.setInterval()
+          }
+
           
           let host = custom_url.host as string
           let protocol = custom_url.protocol as string
@@ -542,7 +593,8 @@ export class LoadService {
             finalURL, 
             pixelID, 
             active,
-            coupons
+            coupons,
+            banners
           )
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -1452,7 +1504,7 @@ export class LoadService {
     await this.saveUsername(mappedData, uid)
 
     if (Globals.storeInfo.profileLink){
-      this.rootComponent?.setFavIcon(Globals.storeInfo.profileLink.toString())
+      this.rootComponent?.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
     }
     callback(true)
   }
@@ -1651,7 +1703,6 @@ export class LoadService {
         mappedData.image_list.push(image.type)
         let url = await this.uploadStoreImages(image.img, image.type, uid)
       });
-
     }
     
     await this.saveStoreInfo(mappedData, uid)
@@ -1785,7 +1836,11 @@ export class LoadService {
 
 
     var data: Dict<any> = {
-      "Slogan" : mappedData.slogan ?? "",
+
+    }
+
+    if (mappedData.slogan){
+      data["Slogan"] = mappedData.slogan ?? ""
     }
 
     if (mappedData.indicator){
@@ -1804,24 +1859,51 @@ export class LoadService {
       data["image_list"] = firebase.firestore.FieldValue.arrayUnion(...mappedData.image_list)
     }
 
+    if (mappedData.banners){
+      data["banners"] = mappedData.banners
+    }
+
     if (uid){
       await this.db.collection("Users").doc(uid).update(data)
-      Globals.userInfo!.slogan = mappedData.slogan
-      let matchingTheme = Globals.themes?.find(theme => theme.name == mappedData.theme.class)?.themes.find(theme => { return theme.name == mappedData.theme.name})
 
-      console.log(matchingTheme)
-      if (matchingTheme){
-        Globals.userInfo!.colorStyle = matchingTheme
+      if (mappedData.slogan){
+        Globals.userInfo!.slogan = mappedData.slogan
       }
-      Globals.userInfo!.slogan = mappedData.slogan
-      Globals.userInfo!.fontName = mappedData.font
+  
+      if (mappedData.theme){
+        let matchingTheme = Globals.themes?.find(theme => theme.name == mappedData.theme?.class)?.themes.find(theme => { return theme.name == mappedData.theme?.name})
 
-      if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+        console.log(matchingTheme)
         if (matchingTheme){
-          Globals.storeInfo!.colorStyle = matchingTheme
-          Globals.storeInfo!.fontName = mappedData.font
+          Globals.userInfo!.colorStyle = matchingTheme
+        }  
+        if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+          if (matchingTheme){
+            Globals.storeInfo!.colorStyle = matchingTheme
+            Globals.storeInfo!.fontName = mappedData.font
+          }
         }
       }
+  
+      if (mappedData.font){
+        Globals.userInfo!.fontName = mappedData.font
+      }
+  
+      // if (mappedData.image_list){
+      //   data["image_list"] = firebase.firestore.FieldValue.arrayUnion(...mappedData.image_list)
+      // }
+  
+      if (mappedData.banners){
+        Globals.userInfo!.banners = mappedData.banners
+      }
+
+
+
+      // Globals.userInfo!.themeLink = mappedData.banners
+      // Globals.userInfo!.banners = mappedData.banners
+      // Globals.userInfo!.banners = mappedData.banners
+
+      Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
     }
     if (this.myCallback)
       this.myCallback()

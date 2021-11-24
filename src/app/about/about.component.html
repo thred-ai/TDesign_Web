@@ -15,7 +15,7 @@ style.color = "{{selectedIndicator()!.color}}"
 </ngx-spinner>
 
 <header *ngIf="isBrowser() && storeInfo()?.username != undefined" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-    <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
+    <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
         <div class="d-flex align-items-center justify-content-center" style="height: 300px; font-weight: bold;font-size:35px">
             <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">
               ABOUT US

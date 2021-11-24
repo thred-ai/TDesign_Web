@@ -225,8 +225,8 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
       this.cardOptions.style!.base!['::placeholder']!.color = this.selectedTheme().color
 
       if (Globals.storeInfo.username){
-        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
-        this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
+        this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com"))?.toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
         if (Globals.billingInfo == undefined && isPlatformBrowser(this.platformID)){
           this.loadService.getBillingAddress()
         }

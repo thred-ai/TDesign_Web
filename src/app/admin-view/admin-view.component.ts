@@ -27,6 +27,9 @@ import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
 import { Coupon } from '../models/coupon.model';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Banner } from '../models/banner.model';
+import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 
 
 @Component({
@@ -1054,7 +1057,8 @@ isSpinning = false
     homeImg: [null],
     actionImg: [null],
     storeTheme: [null, Validators.required],
-    font: [null, Validators.required]
+    font: [null, Validators.required],
+    banners: [[[]]]
   });
 
   changeEmailForm = this.fb.group({
@@ -1121,9 +1125,11 @@ isSpinning = false
 
     this.marketingForm.controls.pixel.setValue(Globals.userInfo?.fb_pixel)
 
-    this.storeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name.toString())
-    this.theme = Globals.userInfo?.colorStyle?.name.toString() ?? 'Light'
+    this.storeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name?.toString())
 
+    this.storeForm.controls.banners.setValue(Globals.userInfo?.banners ?? [])
+
+    this.theme = Globals.userInfo?.colorStyle?.name?.toString() ?? 'Light'
 
     let co = Globals.userInfo?.loading?.color
     let bco = Globals.userInfo?.loading?.bg_color
@@ -1145,6 +1151,8 @@ isSpinning = false
         return false;
     }
   }
+
+  
 
   selectColor(value: string, isPrimary: boolean){
 
@@ -1362,6 +1370,123 @@ isSpinning = false
     return returnArr.join(",")
   }
 
+  bannerTheme(banner: Banner){
+    
+    let co = banner.color
+    let bco = banner.bg_color
+    let text = banner.text
+
+
+    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
+
+    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+
+    var theme: Dict<string> = {
+      "text": text,
+      "color": color,
+      "bg_color": bg_color
+    }
+    return theme
+  }
+
+  editBanner(banner: Banner){
+    const modalRef = this.dialog.open(EditBannerComponent, {
+      width: '' + this.myInnerHeight() + "px",
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      data: {
+        banner: banner, 
+      },
+    });
+  
+    let sub = modalRef.afterClosed().subscribe(resp => {
+      console.log('The dialog was closed');
+      sub.unsubscribe()
+      if (resp){
+        banner.bg_color = resp.bg_color
+        banner.color = resp.color
+        banner.icon = resp.icon
+        banner.text = resp.text
+      }
+      else{
+        
+      }
+    });
+  }
+
+  addBanner(){
+    let banner = new Banner('', '', [], [])
+    const modalRef = this.dialog.open(EditBannerComponent, {
+      width: '' + this.myInnerHeight() + "px",
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      data: {
+        banner: banner, 
+      },
+    });
+  
+    let sub = modalRef.afterClosed().subscribe(resp => {
+      console.log('The dialog was closed');
+      sub.unsubscribe()
+      if (resp){
+        banner.bg_color = resp.bg_color
+        banner.color = resp.color
+        banner.icon = resp.icon
+        banner.text = resp.text
+        let curr = this.storeForm.controls.banners.value ?? []
+        curr.push(banner)
+        this.storeForm.controls.banners.setValue(curr)
+      }
+      else{
+        
+      }
+    });
+  }
+
+  async deleteBanner(banner: Banner){
+
+
+    var banners = new Array<Dict<any>>()
+      
+
+
+      let bannerVals = this.storeForm.controls.banners.value as Array<Dict<any>>
+
+  
+      bannerVals.forEach(b => {
+        if (b != banner){
+          banners.push({
+            text: b.text,
+            icon: b.icon,
+            bg_color: this.numToColor(b.bg_color ?? []),
+            color: this.numToColor(b.color ?? [])
+          })
+        }
+      })
+
+      var data: Dict<any> = {
+        banners: banners,
+      }
+
+      this.loadService.myCallback = () => {
+        let index = bannerVals.indexOf(banner)
+
+        bannerVals.splice(index, 1)
+
+        this.storeForm.controls.banners.setValue(bannerVals)
+
+        this.toast("Banner Removed!")
+      }
+      await this.loadService.saveStore(data)
+  }
+  
+
+  drop(event: CdkDragDrop<string[]>) {
+    let arr = this.storeForm.controls.banners.value
+    moveItemInArray(arr, event.previousIndex, event.currentIndex);
+    this.storeForm.controls.banners.setValue(arr)
+  }
+
   selectedTheme(){
     
     let co = Globals.storeInfo?.colorStyle?.btn_color
@@ -1392,9 +1517,21 @@ isSpinning = false
       var bg_color = this.joinColor(this.storeForm.controls.loadingIndicatorBgColor.value)
 
 
+      var banners = new Array<Dict<any>>()
       
 
+
+      let bannerVals = this.storeForm.controls.banners.value as Array<Dict<any>>
+
   
+      bannerVals.forEach(b => {
+        banners.push({
+          text: b.text,
+          icon: b.icon,
+          bg_color: this.numToColor(b.bg_color ?? []),
+          color: this.numToColor(b.color ?? [])
+        })
+      })
 
 
       var data: Dict<any> = {
@@ -1406,6 +1543,7 @@ isSpinning = false
         },
         loadingIndicatorColor: color,
         loadingIndicatorBgColor: bg_color,
+        banners: banners,
         font: this.storeForm.controls.font.value
       }
 
@@ -1734,7 +1872,7 @@ isSpinning = false
       if (Globals.storeInfo.username){
         this.showSpinner()
         this.rootComponent.setOptions()
-        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
+        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
 
         this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
 

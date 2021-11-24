@@ -172,7 +172,7 @@ export class CartComponent implements OnInit {
           this.showSpinner()
       }
       this.rootComponent.setOptions()
-      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
+      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
 
       this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
       if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){

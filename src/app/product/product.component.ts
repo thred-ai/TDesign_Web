@@ -291,7 +291,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
           }
           else{
             this.showSpinner()
-            this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
+            this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
 
             if (Globals.storeInfo.uid != this.productToBuy.product.uid){
               this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
@@ -354,10 +354,23 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   }
 
+  adding = false
+  shake = false
+
   async addToCart(){
         
-    if (this.productToBuy.product! == undefined)return;
+    if (this.productToBuy.product == undefined)return;
 
+    this.adding = true
+    this.shake = true
+
+    setTimeout(() => {
+      this.shake = false
+    }, 100);
+
+    setTimeout(() => {
+      this.adding = false
+    }, 1500);
 
     this.productToBuy.product = JSON.parse(JSON.stringify(this.productToBuy.product))
 

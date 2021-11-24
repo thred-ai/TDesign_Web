@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Inject, PLATFORM_ID, ViewChild, AfterViewInit } from '@angular/core';
 import { AngularFaviconService } from 'angular-favicon';
 import { Country } from './models/shipping-country.model';
 import { Template } from './models/template.model';
@@ -24,13 +24,15 @@ import { Store } from './models/store.model';
 import { ProductInCart } from './models/product-in-cart.model';
 import { RoutingService } from './services/routing.service';
 import { PixelService } from 'ngx-pixel';
+import { DragScrollComponent } from 'ngx-drag-scroll';
+import { Banner } from './models/banner.model';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'thred-web';
 
   mode = "All Products"
@@ -53,6 +55,25 @@ export class AppComponent implements OnInit {
 
   profileSettings: Array<Dict<any>> = []
 
+
+  @ViewChild('carousel', {read: DragScrollComponent}) ds?: DragScrollComponent;
+
+  moveLeft() {
+    this.ds!.moveLeft();
+  }
+
+  moveRight() {
+    if (this.ds?.currIndex == (this.storeInfo().banners?.length ?? 0) - 1){
+      this.ds?.moveTo(0);
+    }
+    else{
+      this.ds?.moveRight();
+    }
+  }
+
+  didMove() {
+    // this.selectedColor = this.selectedTemplate?.colors[this.ds?.currIndex ?? 0]
+  }
 
 
   changeIcon() {
@@ -145,6 +166,31 @@ export class AppComponent implements OnInit {
 
     var theme: Dict<string> = {
       "name": name,
+      "color": color,
+      "bg_color": bg_color
+    }
+    return theme
+  }
+  
+
+  bannerTheme(banner?: Banner){
+    
+    if (!banner){
+      banner = this.storeInfo().banners[this.ds?.currIndex ?? 0]
+    }
+
+
+    let co = banner.color
+    let bco = banner.bg_color
+    let text = banner.text
+
+
+    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
+
+    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+
+    var theme: Dict<string> = {
+      "text": text,
       "color": color,
       "bg_color": bg_color
     }
@@ -480,6 +526,12 @@ export class AppComponent implements OnInit {
     }
 
 
+  ngAfterViewInit(): void {
+    this.ds!.displayType = 'flex'
+  }
+
+
+
   setFavIcon(link: string){
     if (isPlatformBrowser(this.platformID)){
       this.createLinkForFavURL(link)
@@ -487,25 +539,28 @@ export class AppComponent implements OnInit {
     }
   }
 
-  setBodyColor(){
+  setBodyColor(color?: string){
     if (document.getElementById('body')){
-      document.getElementById('body')?.classList.add('bg-' + this.storeInfo().colorStyle.back_code)
+      document.getElementById('body')?.classList.add('bg-' + (color ?? this.storeInfo().colorStyle.back_code))
     }
   }
 
   activateComponent(event: any){
     console.log()
 
-    console.log(event)
 
     if (event.constructor.name == 'LandingComponent'){
+      this.setBodyColor('dark')
+      if (this.interval){
+        clearInterval(this.interval)
+      }
       event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, free.", "shopmythred.com")
     }
   }
 
+  shake = false
+
   createLinkForFavURL(url: string) {
-    
-    console.log(url)
     if (document.getElementById('appIcon')){
       document.getElementById('appIcon')!.setAttribute('href', url)
     }
@@ -558,6 +613,15 @@ export class AppComponent implements OnInit {
     
   signedIn = false
 
+  interval: any
+
+  setInterval(){
+    if (this.interval) { return }
+    this.interval = setInterval(()=>{
+      this.moveRight()
+    }, 3000);
+  }
+
   async ngOnInit() {
     
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
@@ -566,6 +630,8 @@ export class AppComponent implements OnInit {
     
     this.loadService.rootComponent = this
     this.setOptions()
+
+
 
     // this._router.events
     //       .subscribe(

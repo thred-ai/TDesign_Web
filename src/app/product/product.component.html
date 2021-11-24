@@ -119,7 +119,11 @@ style.color = "{{selectedIndicator()!.color}}"
                             </div>
                             <div class="card-footer p-4 pt-sm-5 pb-3 border-top-0 bg-transparent order-2 order-sm-4">
                                
-                                <a (click)="addToCart()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-flex btn rounded-pill mb-2 align-items-center justify-content-center fw-bold" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" style="font-size: 25px;">
+                                <a (click)="addToCart()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-flex btn mb-2 align-items-center justify-content-center fw-bold" [class.anim]='adding' [class.shake]='shake' style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" style="font-size: 25px;">
+                                    <span class="anim-border"></span>
+                                    <span class="anim-border"></span>
+                                    <span class="anim-border"></span>
+                                    <span class="anim-border"></span>
                                     ADD TO BAG
                                     <mat-icon class="ms-2 mb-2" style.color="{{selectedTheme()!.bg_color}}">
                                         <span class="material-icons-outlined" style="font-size: 30px;">

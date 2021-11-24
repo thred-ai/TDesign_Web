@@ -16,7 +16,7 @@ style.color = "{{selectedIndicator()!.color}}"
   <!-- Header-->
 
   <header *ngIf="isBrowser() && storeInfo().username != undefined" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-    <div class="cover" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
+    <div class="cover" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
         <div class="d-flex align-items-center justify-content-center" style="height: 200px; font-weight: bold;font-size:35px">
           <div class="px-2">
             <p [style.font-family]="storeInfo().fontName!" class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">

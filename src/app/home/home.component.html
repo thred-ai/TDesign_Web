@@ -35,7 +35,7 @@ style.color = "{{selectedIndicator()!.color}}"
   <section *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
      
     
-    <div class="container mt-5">
+    <div class=" mt-5">
 
         <div class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
             <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
@@ -43,47 +43,49 @@ style.color = "{{selectedIndicator()!.color}}"
             </p>
         </div>
         
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center mb-2 pb-2">
-            <div class="col mb-5" *ngFor="let product of newArrivalProducts()">
-                <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}"  [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                    <!-- Product image-->
-                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                    <!-- Product details-->
-                    <div class="card-body p-2 pb-0">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!"><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
-                            <!-- Product price-->
+        <div class="px-4">
+            <div class="row gx-3 gx-lg-3 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center mb-2 pb-2">
+                <div class="col mb-5" *ngFor="let product of newArrivalProducts()">
+                    <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}"  [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                        <!-- Product image-->
+                        <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
+                        <!-- Product details-->
+                        <div class="card-body p-2 pb-0">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!"><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
+                                <!-- Product price-->
+                            </div>
                         </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
-                        <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                            <!-- <mat-icon
-                             class="mt-2" 
-                             style="font-size:15px" 
-                             [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
-                             [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
-                             [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
-                            >
-                                loyalty
-                            </mat-icon> -->
-                            <b class="old-price">
-                                {{formatPrice((product.price ?? 0) / 100)}}
-                            </b>
-                        </p>
-                        <div class="text-center" >
-                            <a 
-                            [style.font-family]="storeInfo().fontName!" 
-                            class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
-                            [class.new-price]='autoCoupon(product)' 
-                            style="font-weight:bold;" 
-                            role="button" 
-                            (click)="routeToProduct(product.productID)"
-                            >
-                            {{formatPrice(mainPrice(product))}}
-                            </a>
-                        </div>                    
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
+                            <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
+                                <!-- <mat-icon
+                                 class="mt-2" 
+                                 style="font-size:15px" 
+                                 [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
+                                 [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
+                                 [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
+                                >
+                                    loyalty
+                                </mat-icon> -->
+                                <b class="old-price">
+                                    {{formatPrice((product.price ?? 0) / 100)}}
+                                </b>
+                            </p>
+                            <div class="text-center" >
+                                <a 
+                                [style.font-family]="storeInfo().fontName!" 
+                                class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
+                                [class.new-price]='autoCoupon(product)' 
+                                style="font-weight:bold;" 
+                                role="button" 
+                                (click)="routeToProduct(product.productID)"
+                                >
+                                {{formatPrice(mainPrice(product))}}
+                                </a>
+                            </div>                    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -96,7 +98,7 @@ style.color = "{{selectedIndicator()!.color}}"
             </div>
         </div> -->
 
-        <div>
+        <div class="bg-info w-100">
             <div class="d-block align-items-center pt-0">
                 <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{(storeInfo()!.homeLink?.toString() ?? '')}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
                 </div>
@@ -109,53 +111,54 @@ style.color = "{{selectedIndicator()!.color}}"
               FEATURED
             </p>
         </div>
-        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center mb-2 pb-2">
-            <div class="col mb-5" *ngFor="let product of featuredProducts()">
-                <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                    <!-- Product image-->
-                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                    <!-- Product details-->
-                    <div class="card-body p-2 pb-0">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
-                            <!-- Product price-->
+
+        <div class="px-4">
+            <div class="row gx-3 gx-lg-3 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center mb-2 pb-2">
+                <div class="col mb-5" *ngFor="let product of featuredProducts()">
+                    <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                        <!-- Product image-->
+                        <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
+                        <!-- Product details-->
+                        <div class="card-body p-2 pb-0">
+                            <div class="text-center">
+                                <!-- Product name-->
+                                <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
+                                <!-- Product price-->
+                            </div>
                         </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
-                        <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                            <!-- <mat-icon
-                             class="mt-2" 
-                             style="font-size:15px" 
-                             [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
-                             [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
-                             [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
-                            >
-                                loyalty
-                            </mat-icon> -->
-                            <b class="old-price">
-                                {{formatPrice((product.price ?? 0) / 100)}}
-                            </b>
-                        </p>
-                        <div class="text-center" >
-                            <a 
-                            [style.font-family]="storeInfo().fontName!" 
-                            class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
-                            [class.new-price]='autoCoupon(product)' 
-                            style="font-weight:bold;" 
-                            role="button" 
-                            (click)="routeToProduct(product.productID)"
-                            >
-                            {{formatPrice(mainPrice(product))}}
-                            </a>
-                        </div>                    
+                        <!-- Product actions-->
+                        <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
+                            <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
+                                <!-- <mat-icon
+                                 class="mt-2" 
+                                 style="font-size:15px" 
+                                 [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
+                                 [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
+                                 [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
+                                >
+                                    loyalty
+                                </mat-icon> -->
+                                <b class="old-price">
+                                    {{formatPrice((product.price ?? 0) / 100)}}
+                                </b>
+                            </p>
+                            <div class="text-center" >
+                                <a 
+                                [style.font-family]="storeInfo().fontName!" 
+                                class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
+                                [class.new-price]='autoCoupon(product)' 
+                                style="font-weight:bold;" 
+                                role="button" 
+                                (click)="routeToProduct(product.productID)"
+                                >
+                                {{formatPrice(mainPrice(product))}}
+                                </a>
+                            </div>                    
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        
     </div>
   </section>
   <section *ngIf="isBrowser() && storeInfo()?.username && (!storeInfo()?.active || storeProducts?.length == 0)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">

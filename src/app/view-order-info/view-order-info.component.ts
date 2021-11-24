@@ -176,7 +176,7 @@ export class ViewOrderInfoComponent implements OnInit {
   async callback(orderID: string){
     if (Globals.storeInfo.username){
       this.rootComponent.setOptions()
-      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
+      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
 
       this.showSpinner()
       

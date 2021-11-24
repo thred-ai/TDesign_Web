@@ -268,6 +268,7 @@ export class DesignComponent implements OnInit {
     return this.backImg
   }
 
+  
   moveLeft() {
     if (this.ds?.currIndex != 0){
       this.ds?.moveLeft();

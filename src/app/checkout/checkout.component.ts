@@ -262,7 +262,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
         this.loadingName = this.storeInfo()?.fullName ?? ''
         this.showSpinner()
-        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
+        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
 
         this.rootComponent.setOptions()
         this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)

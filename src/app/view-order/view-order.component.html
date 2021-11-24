@@ -14,7 +14,7 @@ style.color = "{{selectedIndicator()!.color}}"
 </ngx-spinner>
   <!-- Header-->
   <header *ngIf="isBrowser();" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-    <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
+    <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
       <div class="d-flex align-items-center justify-content-center" style="height: 100px; font-weight: bold;font-size:35px">
             <p class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;">
               MY ORDERS
@@ -65,7 +65,7 @@ style.color = "{{selectedIndicator()!.color}}"
                 <h2 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="h6 ps-3 mt-2 text-center" style="font-weight: bolder;">Your Order History is Empty</h2>
                 <div class="py-2 px-xl-2">
                     <div class="d-block align-items-center pt-2">
-                        <div class="d-block align-items-center text-center text-sm-start"><a role="button" (click)='routeToProducts()' class="mx-auto me-sm-4"><img style="border-radius: 2.5%;" src="{{storeInfo()!.actionLink!.toString()}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
+                        <div class="d-block align-items-center text-center text-sm-start"><a role="button" (click)='routeToProducts()' class="mx-auto me-sm-4"><img style="border-radius: 2.5%;" src="{{storeInfo()?.actionLink?.toString() ?? ''}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
                           <div class="pt-2">
                               <h2 class="h6 ps-3 mt-2 text-center"><a [style.font-family]="storeInfo().fontName!" role="button" (click)='routeToProducts()' class="text-{{storeInfo().colorStyle!.text_code}} text-decoration-underline" style="font-weight: bold;">Shop More Products</a></h2>
                           </div>

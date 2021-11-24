@@ -2,6 +2,7 @@ import { Dict } from '../services/load.service'
 import { StoreTheme } from './theme.model'
 import { StoreDomain } from './store-domain.model'
 import { Coupon } from './coupon.model'
+import { Banner } from './banner.model'
 
 import { Globals } from '../globals'
 
@@ -25,9 +26,9 @@ export class Store {
     postNotifsList: Array<string>
     slogan?: string
     loading?: Dict<any>
-    themeLink?: URL
-    homeLink?: URL
-    actionLink?: URL
+    themeLink?: URL = new URL('https://shopmythred.com')
+    homeLink?: URL = new URL('https://shopmythred.com')
+    actionLink?: URL = new URL('https://shopmythred.com')
     colorStyle: StoreTheme
     fontName?: string
     socials?: Array<{
@@ -38,6 +39,7 @@ export class Store {
     fb_pixel?: string
     active?: boolean
     coupons?: Array<Coupon>
+    banners: Array<Banner> = []
 
 
     constructor(
@@ -72,6 +74,7 @@ export class Store {
       fb_pixel?: string,
       active?: boolean,
       coupons?: Array<Coupon>,
+      banners?: Array<Banner>
       ) {
 
       this.uid = uid
@@ -140,5 +143,7 @@ export class Store {
       this.active = (active ?? false) && ((postCount ?? 0) > 0)
 
       this.coupons = coupons ?? []
+      this.banners = banners ?? []
+
     }
 }

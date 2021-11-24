@@ -246,7 +246,7 @@ style.color = "{{selectedIndicator()!.color}}"
             </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'MARKETING'" class="py-3">
-                <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
+                <div class="row gx-0 gx-md-2 gx-lg-2 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
                     <form [formGroup]="marketingForm" novalidate>
                         <div class="col mb-2">
                             <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
@@ -317,6 +317,39 @@ style.color = "{{selectedIndicator()!.color}}"
                                                 Theme is <strong>required</strong>
                                             </mat-error>
                                         </mat-form-field>
+
+                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Promotional Banners</label>
+                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;"> (Drag & Drop to Rearrange)</i></mat-hint>
+                                        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" style.background-color="{{selectedTheme()!.bg_color}}">
+                                            <div class="example-box" *ngFor="let banner of this.storeForm.controls.banners.value ?? []" [style.font-family]="storeInfo().fontName!" style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" cdkDrag>
+                                              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                                              <div class="w-100 d-flex justify-content-between align-items-center">
+                                                <div class="d-flex justify-content-between align-items-center me-2" style="text-overflow: ellipsis;">
+                                                    {{banner.text}}
+                                                    <mat-icon class="ms-1 mt-1" style="font-size: 20px;">{{banner.icon}}</mat-icon>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <a role="button">
+                                                        <mat-icon class="me-2" (click)='editBanner(banner)' style.color="{{bannerTheme(banner)!.color}}">edit</mat-icon>
+                                                    </a>
+                                                    <a role="button">
+                                                        <mat-icon class="me-2" (click)='deleteBanner(banner)' style.color="{{bannerTheme(banner)!.color}}">delete</mat-icon>
+                                                    </a>
+                                                    <a role="button">
+                                                        <mat-icon class="example-handle me-2" cdkDragHandle style.color="{{bannerTheme(banner)!.color}}">drag_handle</mat-icon>
+                                                    </a>
+                                                </div>
+                                              </div>
+                                            </div>
+                                        </div>
+                                        <div [style.font-family]="storeInfo().fontName!">
+                                            <a class="side" role="button" (click)='addBanner()' style.color="{{selectedTheme()!.color}}">
+                                                <div class="w-100 d-inline-flex justify-content-start align-items-center">
+                                                    ADD BANNER
+                                                    <mat-icon class="ms-1 mt-1" style="font-size: 20px;">add_circle_outline</mat-icon>
+                                                </div>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mb-3 mt-3 mx-auto d-block">

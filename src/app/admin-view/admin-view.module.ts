@@ -5,7 +5,6 @@ import { Globals } from '../globals';
 import { MatCardModule } from '@angular/material/card';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { ReactiveFormsModule } from '@angular/forms';
-import { DragScrollModule } from 'ngx-drag-scroll';
 import { DesignComponent } from '../design/design.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { CropperComponent } from '../cropper/cropper.component';
@@ -33,6 +32,8 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {MatDialogModule} from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { EditBannerComponent } from '../edit-banner/edit-banner.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const routes: Routes = [
   {
@@ -54,6 +55,7 @@ const routes: Routes = [
     StoreSetupComponent,
     ProductDetailsComponent,
     CouponInfoComponent,
+    EditBannerComponent,
   ],
   imports: [
     CommonModule,
@@ -64,7 +66,6 @@ const routes: Routes = [
     MatSelectModule,
     NgxSpinnerModule,
     ReactiveFormsModule,
-    DragScrollModule,
     ImageCropperModule,
     ColorPickerModule,
     NgbModule,
@@ -76,6 +77,7 @@ const routes: Routes = [
     NgxCurrencyModule,
     DragDropModule,
     MatChipsModule,
+    ScrollingModule,
     MatAutocompleteModule,
     MatDialogModule,
     RouterModule.forChild(routes),

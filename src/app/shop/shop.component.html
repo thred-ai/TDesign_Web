@@ -15,7 +15,7 @@
   </ngx-spinner>
 
   <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-    <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + storeInfo()!.themeLink!.toString() + ")"'>
+    <div class="cover" style="background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
         <div class="d-flex align-items-center justify-content-center" style="height: 300px; font-weight: bold;font-size:35px">
             <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;" [style.font-family]="storeInfo().fontName!">
                 {{storeInfo().fullName}}
@@ -26,8 +26,8 @@
   <!-- Section-->
   <section *ngIf="isBrowser() && (storeInfo()?.active && storeProducts?.length != 0)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
     <h1 class="display-4 fw-bolder text-center" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{mode()}}</h1>
-    <div [hidden]="storeProducts == []" class="container px-4 px-lg-5 mt-5">
-        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-center">
+    <div [hidden]="storeProducts == []" class="px-4 px-lg-4 mt-5">
+        <div class="row gx-3 gx-lg-3 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-center">
             <div class="col mb-5" *ngFor="let product of storeProducts">
                 <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                     <!-- Product image-->

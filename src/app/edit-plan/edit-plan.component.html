@@ -62,8 +62,8 @@
                     <div class="card bg-{{storeInfo().colorStyle!.back_code}} p-3 shadow" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                         <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
                             <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Price: </label>
-                            <mat-hint *ngIf="canTrial!" [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice(35.00)}}/month after trial</a></mat-hint>
-                            <mat-hint *ngIf="!canTrial!" [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice(35.00)}}/month</a></mat-hint>
+                            <mat-hint *ngIf="canTrial!" [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice(37.00)}}/month after trial</a></mat-hint>
+                            <mat-hint *ngIf="!canTrial!" [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice(37.00)}}/month</a></mat-hint>
                         </div>
                     </div>
                     

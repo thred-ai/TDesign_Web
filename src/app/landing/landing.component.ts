@@ -72,7 +72,6 @@ export class LandingComponent implements OnInit {
   async route(signedIn: boolean){
     if (signedIn){
       if (await this.loadService.authenticated() && !((await this.loadService.isLoggedIn())?.isAnonymous)){
-        // this.routeToProfile()
         this.loadService.myCallback = () => {
 
           Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
