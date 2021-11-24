@@ -47,7 +47,7 @@ style.color = "{{selectedIndicator()!.color}}"
             <div class="col mb-5" *ngFor="let product of newArrivalProducts()">
                 <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}"  [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                     <!-- Product image-->
-                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
+                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok'/></a>
                     <!-- Product details-->
                     <div class="card-body p-2 pb-0">
                         <div class="text-center">
@@ -113,7 +113,7 @@ style.color = "{{selectedIndicator()!.color}}"
             <div class="col mb-5" *ngFor="let product of featuredProducts()">
                 <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                     <!-- Product image-->
-                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
+                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok'/></a>
                     <!-- Product details-->
                     <div class="card-body p-2 pb-0">
                         <div class="text-center">
