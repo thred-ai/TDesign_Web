@@ -24,3 +24,17 @@ font-size: 1.25vw;
 .footer-link :hover{
   color: #a2a4a5;
 }
+
+@keyframes ticker-kf {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-108rem, 0, 0);
+  }
+}
+
+.ticker {
+  animation: ticker-kf 18s linear infinite;
+}

@@ -32,7 +32,7 @@ import { Banner } from './models/banner.model';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements OnInit {
   title = 'thred-web';
 
   mode = "All Products"
@@ -526,9 +526,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
 
 
-  ngAfterViewInit(): void {
-    this.ds!.displayType = 'flex'
-  }
+  // ngAfterViewInit(): void {
+  // }
 
 
 
