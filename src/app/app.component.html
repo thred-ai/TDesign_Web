@@ -60,7 +60,7 @@
         <div class="w-100 h-100">
             <drag-scroll #carousel class="w-100 h-100" [scrollbar-hidden]="true" [indexChanged]="didMove()">
                 <div drag-scroll-item class="w-100 h-100 d-inline-flex justify-content-start align-items-center" *ngFor="let banner of storeInfo().banners">
-                    <h2 style.color="{{bannerTheme(banner)!.color}}" class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center" style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
+                    <h2 style.color="{{bannerTheme(banner)!.color}}" class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center" [class.my-auto]='(storeInfo().banners?.length ?? 0) == 1' style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
                         <div *ngIf='banner.text != ""' class="mb-1">
                             {{(banner.text ?? 'fs')}}
                         </div>
