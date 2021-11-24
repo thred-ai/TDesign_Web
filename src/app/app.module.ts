@@ -32,12 +32,15 @@ import { DragScrollModule } from 'ngx-drag-scroll';
     ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
+
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
+
     AngularFireModule.initializeApp(environment.firebase),
-    BrowserAnimationsModule,
+
     NgbModule,
+
     NgxSpinnerModule,
     DragScrollModule,
     MatSnackBarModule,

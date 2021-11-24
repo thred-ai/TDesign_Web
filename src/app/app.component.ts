@@ -244,6 +244,7 @@ export class AppComponent implements OnInit {
   getCart(){
     if (this.cart == undefined && isPlatformBrowser(this.platformID)){
       console.log("Getting Cart")
+      this.cart = []
       this.loadService.getCart(false, cart => {
         this.cart = cart
         console.log(cart)

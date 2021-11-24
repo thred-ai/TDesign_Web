@@ -2405,6 +2405,7 @@ export class LoadService {
       callback([])
       return
     }
+    
 
     var cart = new Array<ProductInCart>()
 
