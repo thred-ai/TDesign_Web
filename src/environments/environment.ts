@@ -8,7 +8,7 @@ export const environment = {
 
   firebase: {
     apiKey: "AIzaSyD3Ec_FWZrlbTBWdgBWRrsBwMmXQ4aniWU",
-    authDomain: "shopmythred.com",
+    // authDomain: "shopmythred.com",
     databaseURL: "https://clothingapp-ed125.firebaseio.com",
     projectId: "clothingapp-ed125",
     storageBucket: "clothingapp-ed125.appspot.com",
