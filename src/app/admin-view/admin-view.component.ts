@@ -1058,7 +1058,8 @@ isSpinning = false
     actionImg: [null],
     storeTheme: [null, Validators.required],
     font: [null, Validators.required],
-    banners: [[[]]]
+    banners: [[[]]],
+    style: [null, Validators.required]
   });
 
   changeEmailForm = this.fb.group({
@@ -1128,6 +1129,9 @@ isSpinning = false
     this.storeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name?.toString())
 
     this.storeForm.controls.banners.setValue(Globals.userInfo?.banners ?? [])
+
+    this.storeForm.controls.style.setValue(Globals.userInfo?.bannerStyle ?? 0)
+
 
     this.theme = Globals.userInfo?.colorStyle?.name?.toString() ?? 'Light'
 
@@ -1443,6 +1447,21 @@ isSpinning = false
     });
   }
 
+  styles = [
+    {
+      name: 'Scroll & Stop',
+      code: 0
+    },
+    {
+      name: 'Infinite Scroll',
+      code: 1
+    }
+  ]
+
+  matchingStyle(s?: any){
+    return this.styles.find(style => { style.code == s})
+  }
+
   async deleteBanner(banner: Banner){
 
 
@@ -1544,8 +1563,11 @@ isSpinning = false
         loadingIndicatorColor: color,
         loadingIndicatorBgColor: bg_color,
         banners: banners,
+        banner_style: this.storeForm.controls.style.value ?? 0,
         font: this.storeForm.controls.font.value
       }
+
+      console.log(data.banner_style)
 
       var selectedTheme = this.storeForm.controls.storeTheme.value as string
 

@@ -617,9 +617,47 @@ export class AppComponent implements OnInit {
 
   setInterval(){
     if (this.interval) { return }
-    this.interval = setInterval(()=>{
-      this.moveRight()
-    }, 3000);
+    if (Globals.storeInfo.bannerStyle == 0){
+      this.interval = setInterval(()=>{
+        this.moveRight()
+      }, 3000);
+    }
+    else{
+      this.initScroll()
+    }
+  }
+
+  initScroll(){
+    this.interval = 0
+    let outer = document.querySelector("#outer") as HTMLElement;
+
+    if (outer){
+      let content = outer.querySelector('#content') as HTMLElement
+
+      this.repeatContent(content, outer.offsetWidth);
+  
+      let el = outer.querySelector('#loop')!;
+      el.innerHTML = el.innerHTML + el.innerHTML;
+    }
+  }
+
+
+repeatContent(el: HTMLElement, till: number) {
+    let html = el.innerHTML;
+    let counter = 0; // prevents infinite loop
+    
+    while (el.offsetWidth < till && counter < 100) {
+        el.innerHTML += html;
+        counter += 1;
+    }
+}
+
+  arrLength(){
+    if (this.storeInfo().banners.length == 0){
+      return []
+    }
+  
+    return Array(12 / this.storeInfo().banners.length).fill(0)
   }
 
   async ngOnInit() {
@@ -627,7 +665,6 @@ export class AppComponent implements OnInit {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR 
 
-    
     this.loadService.rootComponent = this
     this.setOptions()
 

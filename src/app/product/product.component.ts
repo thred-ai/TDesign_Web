@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, Inject, AfterViewInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, Inject, AfterViewInit, ViewChild, HostListener } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { Country } from '../models/shipping-country.model';
@@ -82,8 +82,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
     //     return 0;
     //   })[0]
     // }
-
-    console.log(autoCoupon?.code)
 
     return autoCoupon
   }
@@ -341,6 +339,35 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.productToBuy.quantity = Number(qty)
   }
 
+  isZoom = false
+
+  url(){
+    return 'url(' + this.selectedProduct()!.images[this.selectedIndex].img + ')'
+  }
+
+  zoomIn(event: any) {
+    var pre = document.getElementById("preview")!;
+    pre.style.visibility = "visible";
+
+    console.log('zoom')
+    this.isZoom = true
+
+    var posX = event.offsetX;
+    var posY = event.offsetY;
+    pre.style.backgroundPosition=(-posX)+"px "+(-posY)+"px";
+  
+  }
+  
+  zoomOut() {
+    var pre = document.getElementById("preview")!;
+
+    pre.style.backgroundPosition=(0)+"px "+(0)+"px";
+
+    console.log('no zoom')
+    this.isZoom = false
+  }
+  
+
   quantity(){
 
     return this.productToBuy.quantity ?? "1"
@@ -356,6 +383,15 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   adding = false
   shake = false
+
+  isMobile(){
+    if (isPlatformBrowser(this.platformID)){
+      let height = window.innerHeight
+      let width = window.innerWidth
+      return width < height
+    }
+    return false
+  }
 
   async addToCart(){
         

@@ -1,6 +1,6 @@
 
 <nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.nav_code}} bg-{{storeInfo().colorStyle!.back_code}}">
-    <div class="container px-4 px-lg-5">
+    <div class="container-fluid px-3 px-md-5 w-100">
         <img class="set-img" [src]='storeInfo().profileLink'/>
         <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
         <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -55,71 +55,70 @@
         </div>
     </div>
   </nav>
-  <div class="w-100" *ngIf='storeInfo().banners && (storeInfo().banners?.length ?? 0) > 0 && !isAdmin()' style="height: 55px;" style.background-color="{{bannerTheme()!.bg_color}}">
-    <div class="h-100 w-100 d-flex justify-content-between align-items-center" style="position: relative;">
+
+  <div *ngIf='storeInfo().banners && (storeInfo().banners?.length ?? 0) > 0 && !isAdmin()' class="w-100" style="height: 55px;">
+
+
+    <div *ngIf='storeInfo().bannerStyle == 1' class="w-100 h-100" id="outer">
         <div class="w-100 h-100">
-            <drag-scroll #carousel class="w-100 h-100" [scrollbar-hidden]="true" [indexChanged]="didMove()">
-                <div drag-scroll-item class="w-100 h-100 d-inline-flex justify-content-start align-items-center" *ngFor="let banner of storeInfo().banners">
-                    <h2 style.color="{{bannerTheme(banner)!.color}}" class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center" [class.my-auto]='(storeInfo().banners?.length ?? 0) == 1' style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
-                        <div *ngIf='banner.text != ""' class="mb-1">
-                            {{(banner.text ?? 'fs')}}
-                        </div>
-                        <mat-icon *ngIf='banner.icon != ""' style="font-size: inherit">
-                            <span class="ms-1 material-icons-outlined">
-                                {{banner.icon}}
-                            </span>
-                        </mat-icon>
-                    </h2>
+            <div class="w-100 h-100" id="loop">
+                <div class="d-flex w-100 h-100 align-items-center" id="content">
+                    <div class="d-flex h-100 align-items-center" *ngFor='let _ of arrLength()'>
+                        <h2 *ngFor="let banner of storeInfo().banners" style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" class="h-100 px-5 d-flex justify-content-center align-items-center my-auto" style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
+                            <div *ngIf='banner.text != ""' class="mb-1">
+                                {{(banner.text ?? '')}}
+                            </div>
+                            <mat-icon *ngIf='banner.icon != ""' style="font-size: inherit">
+                                <span class="ms-1 material-icons-outlined">
+                                    {{banner.icon}}
+                                </span>
+                            </mat-icon>
+                        </h2>
+                    </div>
                 </div>
-            </drag-scroll>
-
-            <!-- <div class="marquee w-100">
-                <h2 style.color="{{bannerTheme(banner)!.color}}" *ngFor="let banner of storeInfo().banners" class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center" [class.my-auto]='(storeInfo().banners?.length ?? 0) == 1' style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
-                    <div *ngIf='banner.text != ""' class="mb-1">
-                        {{(banner.text ?? 'fs')}}
-                    </div>
-                    <mat-icon *ngIf='banner.icon != ""' style="font-size: inherit">
-                        <span class="ms-1 material-icons-outlined">
-                            {{banner.icon}}
-                        </span>
-                    </mat-icon>
-                </h2>
             </div>
-            <div class="marquee marquee2 w-100">
-                <h2 style.color="{{bannerTheme(banner)!.color}}" *ngFor="let banner of storeInfo().banners" class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center" [class.my-auto]='(storeInfo().banners?.length ?? 0) == 1' style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
-                    <div *ngIf='banner.text != ""' class="mb-1">
-                        {{(banner.text ?? 'fs')}}
+        </div>
+    </div>
+
+
+    <div *ngIf='storeInfo().bannerStyle == 0' class="w-100 h-100" style.background-color="{{bannerTheme()!.bg_color}}">
+        <div class="h-100 w-100 d-flex justify-content-between align-items-center" style="position: relative;">
+            <div class="w-100 h-100 d-flex">
+                <drag-scroll #carousel class="w-100 h-100" [scrollbar-hidden]="true" [indexChanged]="didMove()">
+                    <div drag-scroll-item class="w-100 h-100 d-inline-flex justify-content-start align-items-center" *ngFor="let banner of storeInfo().banners">
+                        <h2 style.color="{{bannerTheme(banner)!.color}}" class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center" [class.my-auto]='(storeInfo().banners?.length ?? 0) == 1' style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
+                            <div *ngIf='banner.text != ""' class="mb-1">
+                                {{(banner.text ?? 'fs')}}
+                            </div>
+                            <mat-icon *ngIf='banner.icon != ""' style="font-size: inherit">
+                                <span class="ms-1 material-icons-outlined">
+                                    {{banner.icon}}
+                                </span>
+                            </mat-icon>
+                        </h2>
                     </div>
-                    <mat-icon *ngIf='banner.icon != ""' style="font-size: inherit">
-                        <span class="ms-1 material-icons-outlined">
-                            {{banner.icon}}
+                </drag-scroll>
+            </div>
+            <div class="w-100  d-flex justify-content-between align-items-center" style="position: absolute;">
+                <a *ngIf='(storeInfo().banners?.length ?? 0) > 1' class="d-none d-md-block" role="button" (click)='moveLeft()'>
+                    <mat-icon class="ms-3 ms-md-5 mt-1" style.color="{{bannerTheme()!.color}}">
+                        <span class="material-icons-outlined" style="font-size: 30px;">
+                            chevron_left
                         </span>
                     </mat-icon>
-                </h2>
-            </div> -->
-            
-        </div>
-
-        <div class="w-100  d-flex justify-content-between align-items-center" style="position: absolute;">
-            <a *ngIf='(storeInfo().banners?.length ?? 0) > 1' class="d-none d-md-block" role="button" (click)='moveLeft()'>
-                <mat-icon class="ms-3 ms-md-5 mt-1" style.color="{{bannerTheme()!.color}}">
+                </a>
+                 <a *ngIf='(storeInfo().banners?.length ?? 0) > 1' class="d-none d-md-block" role="button" (click)='moveRight()'>
+                <mat-icon class="me-3 me-md-5 mt-1" style.color="{{bannerTheme()!.color}}">
                     <span class="material-icons-outlined" style="font-size: 30px;">
-                        chevron_left
+                        chevron_right
                     </span>
                 </mat-icon>
-            </a>
-             <a *ngIf='(storeInfo().banners?.length ?? 0) > 1' class="d-none d-md-block" role="button" (click)='moveRight()'>
-            <mat-icon class="me-3 me-md-5 mt-1" style.color="{{bannerTheme()!.color}}">
-                <span class="material-icons-outlined" style="font-size: 30px;">
-                    chevron_right
-                </span>
-            </mat-icon>
-            </a>
+                </a>
+            </div>
         </div>
-        
-       
-    </div>
+      </div>
   </div>
+
   <router-outlet (activate)='activateComponent($event)'></router-outlet>
   
   <footer 
@@ -129,45 +128,58 @@
     !router.snapshot.firstChild?.routeConfig?.path?.includes('my-store')
     " 
     class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
-    <div class="container w-100 d-block justify-content-center">
-        <div class="d-block d-sm-flex justify-content-center justify-content-sm-between ">
-            <div class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-sm-start mb-5">
+    <div class="container-fluid px-3 w-100 d-block justify-content-center">
+        <div class="d-block d-md-flex justify-content-between">
+            <div class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5">
                 <div class="col mb-2 mx-2" [style.width.px]="50">
                     <a role="button">
-                        <img class="bg-info" style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/visacard.png"/>
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/visacard.png"/>
                     </a>
                 </div>
                 <div class="col mb-2 mx-2" [style.width.px]="50">
                     <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/mastercard.png"/>
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/mastercard.png"/>
                     </a>
                 </div>
                 <div class="col mb-2 mx-2" [style.width.px]="50">
                     <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/amexcard.png"/>
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/amexcard.png"/>
                     </a>
                 </div>
                 <div class="col mb-2 mx-2" [style.width.px]="50">
                     <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/applecard.png"/>
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/thredcard.png"/>
                     </a>
                 </div>
                 <div class="col mb-2 mx-2" [style.width.px]="50">
                     <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/googlecard.png"/>
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/applecard.png"/>
                     </a>
                 </div>
                 <div class="col mb-2 mx-2" [style.width.px]="50">
                     <a role="button">
-                        <img style="object-fit: contain;" [style.width.px]="50"  alt='ok' src="assets/microsoftcard.png"/>
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/googlecard.png"/>
                     </a>
                 </div>
-    
-                
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                        <img style="object-fit: contain; height: 25px;" [style.width.px]="50"  alt='ok' src="assets/microsoftcard.png"/>
+                    </a>
+                </div>
             </div>
-            <div class="d-sm-block d-none">
-                <div class="row row-cols-3 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-sm-end">
-                    <div class="col mb-4 px-5">
+
+
+            <div class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center">
+                <div class="col mb-4 mx-3" *ngFor="let social of storeInfo().socials" [style.width.px]="45">
+                    <a role="button" (click)="openSocial(social.link)">
+                        <img class="rounded-circle" style="object-fit: contain;" [style.width.px]="45"  alt='ok' [src]="getLinkImg(social.name)"/>
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-100 d-none d-md-block">
+                <div class="w-100 row row-cols-3 justify-content-end">
+                    <div class="col m-0 mx-2" style="width: fit-content;">
                         <a>
                             <h4 class = "fw-bold text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
                                 HELP
@@ -189,7 +201,7 @@
                             </p>
                         </a>
                     </div>
-                    <div class="col mb-4 px-5">
+                    <div class="col m-0 mx-2" style="width: fit-content;">
                         <a>
                             <h4 class = " fw-bolder text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
                                 ACCOUNT
@@ -206,7 +218,7 @@
                             </p>
                         </a>
                     </div>
-                    <div class="col mb-4 px-5">
+                    <div class="col m-0 ms-2" style="width: fit-content;">
                         <a>
                             <h4 class = " fw-bold text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
                                 PAGES
@@ -231,14 +243,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-100 row row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center">
-            <div class="col mb-4 mx-3" *ngFor="let social of storeInfo().socials" [style.width.px]="45">
-                <a role="button" (click)="openSocial(social.link)">
-                    <img class="rounded-circle" style="object-fit: contain;" [style.width.px]="45"  alt='ok' [src]="getLinkImg(social.name)"/>
-                </a>
-            </div>
-        </div>
-        <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
+        <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
             <div class="col mb-4 mx-2" [style.width.px]="50">
                 
             </div>
@@ -254,7 +259,7 @@
             <div class="col mb-4 mx-2" [style.width.px]="50">
                 
             </div>
-        </div>
+        </div> -->
     </div>
     <div class="container"><p class="m-0 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">&copy; {{storeInfo().fullName}} 2021</p></div>
     <div class="container"><p class="m-0 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">Powered by Thred</p></div>

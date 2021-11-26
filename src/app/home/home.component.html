@@ -17,7 +17,7 @@ style.color = "{{selectedIndicator()!.color}}"
   <!-- Header-->
   <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
     <div class="cover" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
-        <div class="d-flex align-items-center justify-content-center" style="height: 600px; font-weight: bold;font-size:40px">
+        <div class="d-flex align-items-center justify-content-center" style="height: 750px; font-weight: bold;font-size:40px">
             
               <div>
                 <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}"  style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;" [style.font-family]="storeInfo().fontName!">
@@ -96,8 +96,8 @@ style.color = "{{selectedIndicator()!.color}}"
             </div>
         </div> -->
 
-        <div class="bg-info w-100">
-            <div class="d-block align-items-center pt-0">
+        <div class="w-100">
+            <div class="d-block align-items-center pt-0 w-100">
                 <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{(storeInfo()!.homeLink?.toString() ?? '')}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
                 </div>
             </div>

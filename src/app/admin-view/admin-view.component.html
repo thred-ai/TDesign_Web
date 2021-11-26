@@ -350,6 +350,21 @@ style.color = "{{selectedIndicator()!.color}}"
                                                 </div>
                                             </a>
                                         </div>
+
+                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Banner Style</label>
+                                        <mat-form-field class="w-100">
+                                            <mat-label>Banner Style</mat-label>
+                                            <mat-select formControlName="style">
+                                            <mat-select-trigger class="d-flex align-items-center" *ngIf='matchingStyle(storeForm.controls.style.value)'>
+                                                <!-- <mat-icon class="me-2">{{matchingStyle(bannerForm.controls.style.value)!.icon}}</mat-icon> -->
+                                                {{matchingStyle(storeForm.controls.style.value)!.name}}
+                                            </mat-select-trigger>
+                                              <mat-option *ngFor="let style of styles" [value]="style.code">
+                                                <!-- <mat-icon >{{type.icon}}</mat-icon> -->
+                                                {{style.name}}
+                                              </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mb-3 mt-3 mx-auto d-block">

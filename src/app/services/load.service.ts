@@ -379,6 +379,7 @@ export class LoadService {
           let active = docData["Active"] as boolean
           let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
           let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
+          let bannerStyle = docData["banner_style"] as number ?? 0
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
@@ -433,7 +434,8 @@ export class LoadService {
             pixelID,
             active,
             coupons,
-            banners
+            banners,
+            bannerStyle
           )
 
           if (banners.length > 0){
@@ -534,6 +536,7 @@ export class LoadService {
 
           let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
           let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
+          let bannerStyle = docData["banner_style"] as number ?? 0
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
@@ -594,7 +597,8 @@ export class LoadService {
             pixelID, 
             active,
             coupons,
-            banners
+            banners,
+            bannerStyle
           )
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -1835,6 +1839,9 @@ export class LoadService {
   async saveStoreInfo(mappedData: Dict<any>, uid?: string){
 
 
+    console.log(mappedData)
+
+
     var data: Dict<any> = {
 
     }
@@ -1861,6 +1868,10 @@ export class LoadService {
 
     if (mappedData.banners){
       data["banners"] = mappedData.banners
+    }
+    if (mappedData.banner_style != undefined){
+      console.log(mappedData.banner_style)
+      data["banner_style"] = mappedData.banner_style ?? 0
     }
 
     if (uid){
@@ -1897,6 +1908,9 @@ export class LoadService {
         Globals.userInfo!.banners = mappedData.banners
       }
 
+      if (mappedData.banner_style){
+        Globals.userInfo!.bannerStyle = mappedData.banner_style ?? 0
+      }
 
 
       // Globals.userInfo!.themeLink = mappedData.banners

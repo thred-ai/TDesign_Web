@@ -40,6 +40,7 @@ export class Store {
     active?: boolean
     coupons?: Array<Coupon>
     banners: Array<Banner> = []
+    bannerStyle?: number = 0
 
 
     constructor(
@@ -74,7 +75,8 @@ export class Store {
       fb_pixel?: string,
       active?: boolean,
       coupons?: Array<Coupon>,
-      banners?: Array<Banner>
+      banners?: Array<Banner>,
+      bannerStyle?: number,
       ) {
 
       this.uid = uid
@@ -144,6 +146,6 @@ export class Store {
 
       this.coupons = coupons ?? []
       this.banners = banners ?? []
-
+      this.bannerStyle = bannerStyle ?? 0
     }
 }

@@ -150,3 +150,15 @@ apple-pay-button {
       bottom: 100%;
   }
 }
+
+.stayFixed{
+  position: fixed; 
+  left: 0; 
+  right: 0; 
+  bottom: 0px; 
+  width: 100%;
+}
+
+.bottom{
+  margin-bottom: 0px;
+}
