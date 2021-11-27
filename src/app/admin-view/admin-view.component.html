@@ -245,7 +245,93 @@ style.color = "{{selectedIndicator()!.color}}"
                 </form>
             </div>
 
-            <div *ngIf="getSelectedPanel()?.Title == 'MARKETING'" class="py-3">
+            <div *ngIf="getSelectedPanel()?.Title == 'MARKETING'" class="py-3 w-100">
+                <!-- <div 
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-1 row-cols-xl-1 justify-content-center m-2 m-md-5 m-lg-5"
+                > 
+                <h2 class="w-100 text-start fw-bolder">Email Subscribers</h2>
+                    <div class="w-100">
+                        <table class="w-100 h-100 table table-hover bg-light">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Date Subscribed</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let contact of emails(); index as i;">
+                        
+                                <td >{{ i + (selectedEmailPageIndex * 10) + 1 }}</td>
+                                <td> {{ contact.name ?? 'Not Provided' }}</td>
+                                <td> {{ contact.email }}</td>
+                                <td> {{ contact.timestamp }}</td>
+                                <td>
+                                  <button class="btn btn-primary"> Show details</button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <mat-paginator #paginator [length]="emailLengthTotal()" hidePageSize="false" (page)="changeEmailDisplayColumns($event)"
+                            [pageSize]="10">
+                        </mat-paginator>
+                    </div>                    
+                </div>
+                <div 
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-1 row-cols-xl-1 justify-content-center m-2 m-md-5 m-lg-5"
+                > 
+                <h2 class="w-100 text-start fw-bolder">SMS Subscribers</h2>
+                    <div class="w-100">
+                        <table class="w-100 h-100 table table-hover bg-light">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Phone #</th>
+                                <th>Date Subscribed</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let contact of numbers(); index as i;">
+                        
+                                <td >{{ i + (selectedPhonePageIndex * 10) + 1 }}</td>
+                                <td> {{ contact.name ?? 'Not Provided' }}</td>
+                                <td> {{ contact.phone }}</td>
+                                <td> {{ contact.timestamp }}</td>
+                                <td>
+                                  <button class="btn btn-primary"> Show details</button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <mat-paginator #paginator [length]="phoneLengthTotal()" hidePageSize="false" (page)="changePhoneDisplayColumns($event)"
+                            [pageSize]="10">
+                        </mat-paginator>
+                    </div>                    
+                </div> -->
+                
+                  <!-- <div class="card text-center" *ngIf="selectedContact">
+                      <div class="card-header">
+                        # {{selectedContact.name}}
+                      </div>
+                      <div class="card-block">
+                        <h4 class="card-title">{{selectedContact.name}}</h4>
+                        <p class="card-text">
+                          {{selectedContact.description}}
+                        </p>    
+                      </div>
+                
+                </div> -->
+
+
+
+
+
+
+
                 <div class="row gx-0 gx-md-2 gx-lg-2 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
                     <form [formGroup]="marketingForm" novalidate>
                         <div class="col mb-2">
@@ -267,6 +353,14 @@ style.color = "{{selectedIndicator()!.color}}"
                         </div>
                     </form>
                 </div>
+
+
+
+
+
+
+
+
                 <!-- <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
                     <form [formGroup]="marketingForm" novalidate>
                         <div class="col mb-2">
@@ -525,6 +619,55 @@ style.color = "{{selectedIndicator()!.color}}"
                             </div>
                         </form>
                         <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark mx-auto d-flex">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="getSelectedPanel()?.Title == 'POPUPS'">
+                <div class="container px-4 px-lg-5 mt-0 pt-0">
+                    <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                        <div class="d-flex justify-content-center align-items-center w-100">
+                            <a role="button" [style.font-family]="storeInfo().fontName!" (click)="showPopupModal()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
+                                <mat-icon class="mx-2"><span style="font-size: 25px;">
+                                    wysiwyg
+                                    </span></mat-icon>
+                                    CREATE POPUP
+                            </a> 
+                        </div>
+                        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start">
+                            <div class="col mb-5" *ngFor="let popup of storeInfo()?.popups ?? [], index as i">
+                                <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                    <!-- Product image-->
+                                    <!-- Product details-->
+                                    <div class="card-body pb-0">
+                                        <div class="text-center">
+                                            <!-- Product name-->
+                                            <mat-icon class="mx-auto p-4 d-flex justify-content-center align-items-center rounded-circle border shadow mt-3 mb-4" style="font-size: xx-large; width: fit-content; height: fit-content;"
+                                            >
+                                                <span class="w-100 h-100">
+                                                    wysiwyg
+                                                </span>
+                                            </mat-icon>
+                                            <h1 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" [style.font-family]="storeInfo().fontName!">{{popup.title}}</a></h1>
+
+                                            <div class="d-flex align-items-center justify-content-center  my-2 mx-auto">
+                                                <!-- <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Discount:</label> -->
+                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{popup.description ?? ''}}</a></mat-hint>
+                                            </div>
+                                            <p class="" ><a style="text-decoration: none; font-size: x-small; color: #6c757d;"  role="button" [style.font-family]="storeInfo().fontName!">{{popupHeader(popup)}}</a></p>
+                                            <div class="d-flex align-items-center justify-content-center w-100">
+                                                <a role="button" class="btn">
+                                                    <mat-icon (click)='showPopupModal(popup)' style.color="{{selectedTheme()!.color}}">edit</mat-icon>
+                                                </a>
+                                                <a role="button" class="btn" (click)='deletePopup(popup, i)'>
+                                                    <mat-icon style.color="{{selectedTheme()!.color}}">delete</mat-icon>
+                                                </a> 
+                                            </div>
+                                            <!-- Product price-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

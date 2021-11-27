@@ -1,0 +1,18 @@
+{
+  "applinks": {
+      "details": [
+           {
+             "appIDs": [ "thred.Thred" ],
+             "components": [
+             ]
+           }
+       ]
+   },
+   "webcredentials": {
+      "apps": [ "thred.Thred" ]
+   },
+
+    "appclips": {
+        "apps": ["thred.Thred"]
+    }
+}

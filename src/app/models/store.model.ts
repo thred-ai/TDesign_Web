@@ -3,6 +3,7 @@ import { StoreTheme } from './theme.model'
 import { StoreDomain } from './store-domain.model'
 import { Coupon } from './coupon.model'
 import { Banner } from './banner.model'
+import { Popup } from './popup.model'
 
 import { Globals } from '../globals'
 
@@ -41,6 +42,7 @@ export class Store {
     coupons?: Array<Coupon>
     banners: Array<Banner> = []
     bannerStyle?: number = 0
+    popups?: Array<Popup>
 
 
     constructor(
@@ -77,6 +79,7 @@ export class Store {
       coupons?: Array<Coupon>,
       banners?: Array<Banner>,
       bannerStyle?: number,
+      popups?: Array<Popup>
       ) {
 
       this.uid = uid
@@ -147,5 +150,7 @@ export class Store {
       this.coupons = coupons ?? []
       this.banners = banners ?? []
       this.bannerStyle = bannerStyle ?? 0
+
+      this.popups = popups ?? []
     }
 }

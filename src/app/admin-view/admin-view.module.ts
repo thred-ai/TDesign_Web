@@ -34,6 +34,8 @@ import { FormsModule } from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { EditPopupComponent } from '../edit-popup/edit-popup.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 const routes: Routes = [
   {
@@ -56,6 +58,7 @@ const routes: Routes = [
     ProductDetailsComponent,
     CouponInfoComponent,
     EditBannerComponent,
+    EditPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -71,6 +74,7 @@ const routes: Routes = [
     NgbModule,
     FormsModule,
     MatCheckboxModule,
+    MatPaginatorModule,
     HttpClientModule,
     NgxChartsModule,
     ClipboardModule,

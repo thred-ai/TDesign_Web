@@ -30,6 +30,9 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Banner } from '../models/banner.model';
 import { EditBannerComponent } from '../edit-banner/edit-banner.component';
+import { Popup } from '../models/popup.model';
+import { EditPopupComponent } from '../edit-popup/edit-popup.component';
+import {PageEvent} from '@angular/material/paginator'
 
 
 @Component({
@@ -103,6 +106,21 @@ couponHeader(coupon: Coupon){
   return ''
 }
 
+
+
+popupHeader(popup: Popup){
+  if (popup.trigger == 0){
+    return 'Presents on initial store visit'
+  }
+  else if (popup.trigger == 1){
+    return 'Presents when "Add to Cart" pressed'
+  }
+  // else if (coupon.type == 'order_qty'){
+  //   return 'Order ≥ ' + coupon.threshold + " products"
+  // }
+  return ''
+}
+
 matchingType(id: string){
   console.log(id)
   return Globals.types.find(type => { return type.id == id})
@@ -159,6 +177,98 @@ mainPrice(product: Product){
     return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
   }
   return (product.price ?? 0) / 100
+}
+
+showPopupModal(popup?: Popup){
+
+
+  const modalRef = this.dialog.open(EditPopupComponent, {
+    width: '800px',
+    data: {
+      editPopup: popup, 
+    },
+  });
+
+  let sub = modalRef.afterClosed().subscribe(popup => {
+    console.log('The dialog was closed');
+    sub.unsubscribe()
+    if (popup != '0'){
+      this.loadService.addPopup(popup, success => {
+        if (success){
+          this.toast("Popup Saved!")
+        } 
+      }, Globals.storeInfo.uid)
+    }
+  });
+}
+
+
+
+emailSubs?: Array<{
+  email: string,
+  name: string,
+  timestamp: string,
+}>
+
+phoneSubs?: Array<{
+  phone: string,
+  name: string,
+  timestamp: string,
+}>
+
+
+emails(){
+  return this.emailSubs?.slice(this.selectedEmailPageIndex*10, this.selectedEmailPageIndex*10+10)
+}
+
+numbers(){
+  return this.phoneSubs?.slice(this.selectedPhonePageIndex*10, this.selectedPhonePageIndex*10+10)
+}
+
+
+
+emailLength(){
+  return Math.ceil((this.emailSubs?.length ?? 0) / 10)
+}
+
+emailLengthTotal(){
+  return Math.ceil(this.emailSubs?.length ?? 0)
+}
+
+phoneLength(){
+  return Math.ceil((this.phoneSubs?.length ?? 0) / 10)
+}
+
+phoneLengthTotal(){
+  return Math.ceil(this.phoneSubs?.length ?? 0)
+}
+
+
+selectedEmailPageIndex = 0
+selectedPhonePageIndex = 0
+
+changePhoneDisplayColumns(page:PageEvent)
+  {
+    this.selectedPhonePageIndex = page.pageIndex
+    this.cdr.detectChanges()
+}
+
+changeEmailDisplayColumns(page:PageEvent)
+  {
+
+    this.selectedEmailPageIndex = page.pageIndex
+    this.cdr.detectChanges()
+}
+
+async deletePopup(popup: Popup, i: number){
+  
+
+
+  this.openPopup("Are you sure?", "Your popup '" + popup.title +  "' will be removed forever.", 'MATICON:wysiwyg:', 'Yes, Remove', 'Never Mind', async () => {
+    await this.loadService.removePopup(popup, success => {
+      this.toast("Popup Removed")
+    }, Globals.storeInfo.uid)
+  })
 }
 
 showCouponModal(coupon?: Coupon){
@@ -685,6 +795,11 @@ showSocialModal(logo: {
           "Icon": "local_offer",
           "Active": false
         },
+        // {
+        //   "Title": "POPUPS",
+        //   "Icon": "wysiwyg",
+        //   "Active": false
+        // },
       ]
     },
     {
@@ -2010,6 +2125,29 @@ isSpinning = false
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
           this.subInfo = subInfo ?? ''
           this.canTrial = canTrial
+          this.cdr.detectChanges()
+        })
+      }
+      if (!this.emailSubs){
+        this.loadService.getEmailSubs(uid, async (arr: Array<Dict<any>>) => {
+          console.log(arr)
+          this.emailSubs = arr as Array<{
+            email: string,
+            name: string,
+            timestamp: string
+          }> ?? []
+          this.cdr.detectChanges()
+        })
+      }
+      if (!this.phoneSubs){
+        this.loadService.getNumSubs(uid, async (arr: Array<Dict<any>>) => {
+          console.log(arr)
+
+          this.phoneSubs = arr as Array<{
+            phone: string,
+            name: string,
+            timestamp: string
+          }> ?? []
           this.cdr.detectChanges()
         })
       }

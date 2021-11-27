@@ -38,6 +38,7 @@ import { StoreDomain } from '../models/store-domain.model';
 import { PixelService } from 'ngx-pixel';
 import { Coupon } from '../models/coupon.model';
 import { Banner } from '../models/banner.model';
+import { Popup } from '../models/popup.model';
 
 
 
@@ -380,7 +381,9 @@ export class LoadService {
           let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
           let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
           let bannerStyle = docData["banner_style"] as number ?? 0
+          let popups = docData["Popups"] as Array<Popup> ?? []
 
+          console.log(popups)
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
             coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
@@ -397,7 +400,6 @@ export class LoadService {
           let status = custom_url.status as number
           let txt = custom_url.txt as string
           
-
           let finalURL = new StoreDomain(
             host,
             protocol,
@@ -435,11 +437,19 @@ export class LoadService {
             active,
             coupons,
             banners,
-            bannerStyle
+            bannerStyle,
+            popups,
           )
 
           if (banners.length > 0){
             this.rootComponent?.setInterval()
+          }
+
+          let homePopup = popups.find(popup => { return popup.trigger == 0})
+          if (homePopup){
+            this.checkPopup(homePopup, uid, () => {
+              this.rootComponent?.showPopUp(homePopup!)
+            })
           }
           
 
@@ -487,6 +497,89 @@ export class LoadService {
           sub.unsubscribe();
         }
     });
+  }
+
+
+  async checkPopup(popup: Popup, uid: string, callback: () => any){
+    if (popup.trigger == 0 && isPlatformBrowser(this.platformID)){
+      let user = (await this.isLoggedIn())
+      if (!user) { return }
+
+      if (popup.type == 0 || popup.type == 2){
+        var query = this.db.collection("Users/" + uid + "/Emails", ref => ref.where("uid",'==', user?.uid ?? ''))
+      
+        let sub = query.get().subscribe(docDatas => {  
+          console.log(docDatas)
+          if (docDatas.size == 0){
+            callback()
+          }
+          if (isPlatformBrowser(this.platformID)){
+            sub.unsubscribe()
+          }
+        })
+      }
+      else if (popup.type == 1 || popup.type == 3){
+        var query = this.db.collection("Users/" + uid + "/Numbers", ref => ref.where("uid",'==', user?.uid ?? ''))
+      
+        let sub = query.get().subscribe(docDatas => {  
+          console.log(docDatas)
+          if (docDatas.size == 0){
+            callback()
+          }
+          if (isPlatformBrowser(this.platformID)){
+            sub.unsubscribe()
+          }
+        })
+      }
+    }
+  }
+
+  async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any){
+    var query = this.db.collection("Users/" + uid + "/Numbers")
+    var arr = new Array<Dict<any>>()
+    let sub = query.get().subscribe(docDatas => {  
+      console.log(docDatas)
+      docDatas.docs.forEach(doc => {
+        let data = doc.data() as DocumentData
+        let phone = data.phone ?? 'N/A'
+        let name = data.name
+        let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
+
+        arr.push({
+          phone: phone,
+          name: name,
+          timestamp: timestamp.toDateString()
+        })
+      })
+      callback(arr)
+      if (isPlatformBrowser(this.platformID)){
+        sub.unsubscribe()
+      }
+    })
+  }
+
+  async getEmailSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any){
+    var query = this.db.collection("Users/" + uid + "/Emails")
+    var arr = new Array<Dict<any>>()
+    let sub = query.get().subscribe(docDatas => {  
+      console.log(docDatas)
+      docDatas.docs.forEach(doc => {
+        let data = doc.data() as DocumentData
+        let email = data.email ?? 'N/A'
+        let name = data.name
+        let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
+
+        arr.push({
+          email: email,
+          name: name,
+          timestamp: timestamp.toDateString()
+        })
+      })
+      callback(arr)
+      if (isPlatformBrowser(this.platformID)){
+        sub.unsubscribe()
+      }
+    })
   }
 
   parseColor(color?: string){
@@ -537,6 +630,7 @@ export class LoadService {
           let discounts = docData["Coupons"] as Array<Dict<any>> ?? []
           let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
           let bannerStyle = docData["banner_style"] as number ?? 0
+          let popups = docData["Popups"] as Array<Popup> ?? []
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
@@ -598,7 +692,8 @@ export class LoadService {
             active,
             coupons,
             banners,
-            bannerStyle
+            bannerStyle,
+            popups
           )
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -2002,6 +2097,65 @@ export class LoadService {
     callback(true)
   }
 
+  async addPopup(popup: Popup, callback: (success: boolean) => any, uid?: string){
+
+    var popups = new Array<Popup>()
+    Globals.storeInfo.popups?.forEach(p => {
+      popups.push(p)
+    });
+    let same = popups.find(c => { return c.trigger == popup.trigger})
+    if (same){
+      same.ctaBtnTitle = popup.ctaBtnTitle
+      same.description = popup.description
+      same.exitBtnTitle = popup.exitBtnTitle
+      same.fields = popup.fields
+      same.title = popup.title
+      same.trigger = popup.trigger
+      same.type = popup.type
+    }
+    else{
+      popups.push(popup)
+    }
+
+    var data = {
+      Popups: JSON.parse(JSON.stringify(popups))
+    }
+
+    if (uid && data){
+      await this.db.collection("Users").doc(uid).update(data)
+      if (data.Popups){
+        Globals.userInfo!.popups = data.Popups
+        Globals.storeInfo = Globals.userInfo!
+      }
+    }
+    callback(true)
+  }
+
+  async saveData(type: number, info: string, callback: (success: boolean) => any, name?: string, uid?: string){
+
+    let data = {
+      "uid" : uid,
+      "name" : name,
+      "info" : info,
+      'type' : type
+    }
+    this.functions.httpsCallable('emailOrPhone')(data)
+    .pipe(first())
+    .subscribe(async resp => {
+      if (resp as boolean && resp == true){
+        callback(true)
+      }
+      else{
+        callback(false)
+      }
+    }, err => {
+      var errorCode = err.code;
+      var errorMessage = err.message;
+      callback(false)
+      console.log(errorCode)
+    });
+  }
+
   async addDiscount(coupon: Coupon, callback: (success: boolean) => any, uid?: string){
 
     var coupons = new Array<Coupon>()
@@ -2047,6 +2201,29 @@ export class LoadService {
         if (p){
           let index = Globals.storeInfo.coupons?.indexOf(p)
           Globals.storeInfo.coupons?.splice(index!, 1)
+        }
+      }
+      await this.db.collection("Users").doc(uid).update(data)
+    }
+    else{
+      console.log("shaymus")
+    }
+    callback(true)
+  }
+
+  async removePopup(popup: Popup, callback: (success: boolean) => any, uid?: string){
+
+    var data = {
+      Popups: firebase.firestore.FieldValue.arrayRemove(JSON.parse(JSON.stringify(popup)))
+    }
+    if (uid && data){
+      if (data.Popups){
+        let p = Globals.storeInfo.popups?.find(obj => {
+          return obj.trigger == popup.trigger
+        })
+        if (p){
+          let index = Globals.storeInfo.popups?.indexOf(p)
+          Globals.storeInfo.popups?.splice(index!, 1)
         }
       }
       await this.db.collection("Users").doc(uid).update(data)

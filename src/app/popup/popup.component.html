@@ -1,0 +1,63 @@
+
+<div class="w-100 h-100 p-5 bg-{{storeInfo().colorStyle!.back_code}}" style="position: relative;">
+    <ngx-spinner
+bdColor = '{{selectedIndicator().bg_color}}'
+size = "medium"
+color = '{{selectedIndicator().color}}'
+type = {{selectedIndicator().name}} 
+[fullScreen] = "false"
+style.color = "{{selectedIndicator()!.color}}"
+[name]="'popupSpinner'"
+[disableAnimation] = "true"
+>
+<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">ONE MOMENT...</h3>
+</ngx-spinner>
+    <h2 mat-dialog-title class="text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
+        {{popup?.title ?? ""}}
+    </h2>
+    <mat-dialog-content>
+        <p class="w-100 text-{{storeInfo().colorStyle!.text_code}} text-center fw-bold mb-2" [style.font-family]="storeInfo().fontName!">
+            {{popup?.description ?? ""}}
+        </p>
+        <form class="w-100" [formGroup]="popupForm" novalidate>
+            <div *ngFor='let field of popup?.fields ?? []' class="w-100 mt-3">
+                <mat-form-field *ngIf='field.type == 1' class="h-100 w-100">
+                    <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Name</mat-placeholder>
+                    <input type="text"
+                           matInput
+                           formControlName="name"
+                           class="text-{{storeInfo().colorStyle!.text_code}}"
+                           style.color="{{selectedTheme()!.color}}"
+                    >
+                </mat-form-field>
+                <mat-form-field *ngIf='field.type == 0' class="h-100 w-100">
+                    <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Email</mat-placeholder>
+                    <input type="email"
+                           matInput
+                           formControlName="email"
+                           class="text-{{storeInfo().colorStyle!.text_code}}"
+                           style.color="{{selectedTheme()!.color}}"
+                    >
+                </mat-form-field>
+                <mat-form-field *ngIf='field.type == 2' class="h-100 w-100">
+                    <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Phone Number</mat-placeholder>
+                    <input
+                           matInput
+                           phoneMask 
+                           [preValue]="popupForm.controls.sms.value" 
+                           formControlName="sms"
+                           class="text-{{storeInfo().colorStyle!.text_code}}"
+                           style.color="{{selectedTheme()!.color}}"
+                    >
+                </mat-form-field>
+            </div>
+        </form>
+        <p *ngIf='err' class="w-100 text-danger text-center fw-bold" [style.font-family]="storeInfo().fontName!">
+            {{err}}
+        </p>
+        <div class="d-flex justify-content-center mt-3">
+            <button (click)="save()" class="btn btn-dark d-flex" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{popup?.ctaBtnTitle ?? 'OK'}}</button>
+            <button (click)="close()" class="btn btn-dark d-flex mx-1" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{popup?.exitBtnTitle ?? 'NO'}}</button>
+        </div>
+    </mat-dialog-content>
+</div>

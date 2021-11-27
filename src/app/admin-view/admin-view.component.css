@@ -145,6 +145,33 @@ color: red;
     font-size: 14px;
   }
 
+  .list-group li {
+    margin-bottom: 12px
+}
+
+
+.list li {
+    list-style: none;
+    padding: 10px;
+    border: 1px solid #e3dada;
+    margin-top: 12px;
+    border-radius: 5px;
+    background: #fff
+}
+
+.checkicon {
+    color: green;
+    font-size: 19px
+}
+
+.date-time {
+    font-size: 12px
+}
+
+.profile-image img {
+    margin-left: 3px
+}
+
   .example-handle {
     cursor: move;
   }

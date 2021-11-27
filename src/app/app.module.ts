@@ -9,6 +9,8 @@ import { CommonModule } from "@angular/common";
 import { AngularFireModule } from '@angular/fire';
 import { environment } from '../environments/environment';
 import { Globals } from './globals';
+import { PhoneMaskDirective } from './phone-mask.directive'
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginModule } from './login/login.module';
@@ -20,12 +22,17 @@ import { Router } from '@angular/router';
 import { PixelModule } from 'ngx-pixel'
 import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 import { DragScrollModule } from 'ngx-drag-scroll';
+import { MatDialogModule } from '@angular/material/dialog';
+import { PopupComponent } from './popup/popup.component';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
     AppComponent,
     PopupDialogComponent,
     ModelViewerComponent,
+    PopupComponent,
+    PhoneMaskDirective
   ],
   imports: [
     CommonModule,
@@ -40,10 +47,12 @@ import { DragScrollModule } from 'ngx-drag-scroll';
     AngularFireModule.initializeApp(environment.firebase),
 
     NgbModule,
+    MatInputModule,
 
     NgxSpinnerModule,
     DragScrollModule,
     MatSnackBarModule,
+    MatDialogModule,
     LoginModule,
     PixelModule.forRoot({pixelId: '646165189889348'}),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),

@@ -54,6 +54,7 @@
   }
 }
 
+
 body {
   margin: 0;
   font-family: var(--bs-font-sans-serif);
@@ -611,6 +612,10 @@ progress {
   padding-left: var(--bs-gutter-x, 0.75rem);
   margin-right: auto;
   margin-left: auto;
+}
+
+.app-full-bleed-dialog .mat-dialog-container {
+  padding: 0;
 }
 
 @media (min-width: 576px) {

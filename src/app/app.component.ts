@@ -26,6 +26,9 @@ import { RoutingService } from './services/routing.service';
 import { PixelService } from 'ngx-pixel';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Banner } from './models/banner.model';
+import { Popup } from './models/popup.model';
+import { MatDialog } from '@angular/material/dialog';
+import { PopupComponent } from './popup/popup.component';
 
 @Component({
   selector: 'app-root',
@@ -440,6 +443,47 @@ export class AppComponent implements OnInit {
     return returnItem
   }
 
+  myInnerHeight(){
+    let height = window.innerHeight
+    let width = window.innerWidth
+
+    if (width < height){
+      return width * 0.98
+    }
+    else{
+      return height * 0.70
+    }
+  }
+
+
+  showPopUp(homePopup: Popup){
+    setTimeout(() => {
+      const modalRef = this.dialog.open(PopupComponent, {
+        width: '' + this.myInnerHeight() + "px",
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        data: {
+          popup: homePopup, 
+        },
+        panelClass: 'app-full-bleed-dialog', 
+      });
+    }, 5000);
+  
+    // let sub = modalRef.afterClosed().subscribe(resp => {
+    //   console.log('The dialog was closed');
+    //   sub.unsubscribe()
+    //   if (resp){
+    //     banner.bg_color = resp.bg_color
+    //     banner.color = resp.color
+    //     banner.icon = resp.icon
+    //     banner.text = resp.text
+    //   }
+    //   else{
+        
+    //   }
+    // });
+  }
+
   
 
   applyProductFilter(template?: Template){
@@ -523,6 +567,7 @@ export class AppComponent implements OnInit {
     private pixelService: PixelService,
     private modalService: NgbModal,
     private _router: Router,
+    private dialog: MatDialog,
     ) {
     }
 
