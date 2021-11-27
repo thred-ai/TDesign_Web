@@ -29,6 +29,7 @@
               "src/favicon.png",
               "src/assets",
               "src/.well-known/apple-developer-merchantid-domain-association",
+              "src/.well-known/apple-app-site-association",
               {
                 "glob": "**/*.js",
                 "input": "node_modules/@webcomponents/webcomponentsjs",
@@ -110,7 +111,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/.well-known/apple-developer-merchantid-domain-association"
+              "src/.well-known/apple-developer-merchantid-domain-association",
+              "src/.well-known/apple-app-site-association"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

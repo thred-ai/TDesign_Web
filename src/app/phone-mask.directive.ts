@@ -37,13 +37,14 @@ export class PhoneMaskDirective implements OnInit, OnDestroy{
       /**we remove from input but: 
          @preInputValue still keep the previous value because of not setting.
       */
-      let preInputValue:string = this._preValue ?? '';
+      var preInputValue:string = this._preValue ?? '';
       var lastChar:string = preInputValue.substr(preInputValue.length - 1);
       // remove all mask characters (keep only numeric)
       var newVal = data.replace(/\D/g, '');
 
-      let start=this.el.nativeElement.selectionStart;
-      let end = this.el.nativeElement.selectionEnd;
+
+      var start=this.el.nativeElement.selectionStart;
+      var end = this.el.nativeElement.selectionEnd;
       
       //when removed value from input
       if (data.length < preInputValue.length) {

@@ -101,7 +101,7 @@ export class PopupComponent implements OnInit {
 
     this.spinner.show('popupSpinner')
 
-    let data = (this.popup?.type == 0 || this.popup?.type == 2) ? 0 : 1
+    const data = (this.popup?.type == 0 || this.popup?.type == 2) ? 0 : 1
     var info = (this.popup?.type == 0 || this.popup?.type == 2) ? this.popupForm.controls.email.value : this.popupForm.controls.sms.value
 
     this.loadService.saveData(data, info, success => {

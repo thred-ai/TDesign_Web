@@ -503,12 +503,14 @@ export class LoadService {
   async checkPopup(popup: Popup, uid: string, callback: () => any){
     if (popup.trigger == 0 && isPlatformBrowser(this.platformID)){
       let user = (await this.isLoggedIn())
-      if (!user) { return }
+      if (!user) {
+         return 
+      }
 
       if (popup.type == 0 || popup.type == 2){
         var query = this.db.collection("Users/" + uid + "/Emails", ref => ref.where("uid",'==', user?.uid ?? ''))
       
-        let sub = query.get().subscribe(docDatas => {  
+        var sub = query.get().subscribe(docDatas => {  
           console.log(docDatas)
           if (docDatas.size == 0){
             callback()
@@ -521,7 +523,7 @@ export class LoadService {
       else if (popup.type == 1 || popup.type == 3){
         var query = this.db.collection("Users/" + uid + "/Numbers", ref => ref.where("uid",'==', user?.uid ?? ''))
       
-        let sub = query.get().subscribe(docDatas => {  
+        var sub = query.get().subscribe(docDatas => {  
           console.log(docDatas)
           if (docDatas.size == 0){
             callback()
@@ -540,16 +542,18 @@ export class LoadService {
     let sub = query.get().subscribe(docDatas => {  
       console.log(docDatas)
       docDatas.docs.forEach(doc => {
-        let data = doc.data() as DocumentData
-        let phone = data.phone ?? 'N/A'
-        let name = data.name
-        let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
-
-        arr.push({
-          phone: phone,
-          name: name,
-          timestamp: timestamp.toDateString()
-        })
+        const data = doc.data() as DocumentData
+        if (data){
+          let phone = data.phone ?? 'N/A'
+          let name = data.name
+          let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
+  
+          arr.push({
+            phone: phone,
+            name: name,
+            timestamp: timestamp.toDateString()
+          })
+        }
       })
       callback(arr)
       if (isPlatformBrowser(this.platformID)){
@@ -564,16 +568,19 @@ export class LoadService {
     let sub = query.get().subscribe(docDatas => {  
       console.log(docDatas)
       docDatas.docs.forEach(doc => {
-        let data = doc.data() as DocumentData
-        let email = data.email ?? 'N/A'
-        let name = data.name
-        let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
+        const data = doc.data() as DocumentData
 
-        arr.push({
-          email: email,
-          name: name,
-          timestamp: timestamp.toDateString()
-        })
+        if (data){
+          let email = data.email ?? 'N/A'
+          let name = data.name
+          let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
+  
+          arr.push({
+            email: email,
+            name: name,
+            timestamp: timestamp.toDateString()
+          })
+        }
       })
       callback(arr)
       if (isPlatformBrowser(this.platformID)){
@@ -2103,7 +2110,7 @@ export class LoadService {
     Globals.storeInfo.popups?.forEach(p => {
       popups.push(p)
     });
-    let same = popups.find(c => { return c.trigger == popup.trigger})
+    var same = popups.find(c => { return c.trigger == popup.trigger})
     if (same){
       same.ctaBtnTitle = popup.ctaBtnTitle
       same.description = popup.description
