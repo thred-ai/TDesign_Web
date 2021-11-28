@@ -1,18 +1,11 @@
 {
-  "applinks": {
-      "details": [
-           {
-             "appIDs": [ "thred.Thred" ],
-             "components": [
-             ]
-           }
-       ]
-   },
-   "webcredentials": {
-      "apps": [ "thred.Thred" ]
-   },
-
-    "appclips": {
-        "apps": ["thred.Thred"]
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "S8M4283SLD.thred.Thred",
+                "paths": ["*"]
+            },
+        ]
     }
 }
