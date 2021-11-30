@@ -2546,7 +2546,8 @@ export class LoadService {
       'Following_Count' : 0,
       'Followers_Count' : 0,
       'Posts_Count' : 0,
-      'Platform' : "WEB"
+      'Platform' : "WEB",
+      'Timestamp' : new Date()
     }
 
     if (hasUsername ?? false){
