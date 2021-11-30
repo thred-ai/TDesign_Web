@@ -23,6 +23,7 @@ export class InventoryBuyComponent implements OnInit {
 
 
   mode = "new"
+  err = ''
 
   calculateMarginPercent(template: Template){
     return Math.round(this.calculateMargin(true, template) / (template.bulkSuggestPrice / 100) * 100)
@@ -86,13 +87,19 @@ getCurrencyForCountry(country: Country, shouldShowName: boolean){
   async buyMore(inventory: Inventory){
     this.spinner.show("invSpinner")
 
-    await this.loadService.createBulkPayment(inventory.code, id => {
-      if (this.inventory){
-        this.inventory.amount += this.matchTemplate(inventory).bulkUnit
+    await this.loadService.createBulkPayment(inventory.code, (id: string, err?: string) => {
+      if (err || err != ''){
+        this.err = err!
+        this.spinner.hide("invSpinner")
       }
-      this.spinner.hide("invSpinner")
-      this.activeModal.dismiss(this.inventory)
-      this.toast(this.matchTemplate(inventory).bulkUnit + " " + inventory.name.toLowerCase() + " added to inventory!")
+      else{
+        if (this.inventory){
+          this.inventory.amount += this.matchTemplate(inventory).bulkUnit
+        }
+        this.spinner.hide("invSpinner")
+        this.activeModal.dismiss(this.inventory)
+        this.toast(this.matchTemplate(inventory).bulkUnit + " " + inventory.name.toLowerCase() + " added to inventory!")
+      }
     })
   }
 
@@ -119,12 +126,18 @@ getCurrencyForCountry(country: Country, shouldShowName: boolean){
   async buyNew(template: Template){
 
     this.spinner.show("invSpinner")
-    await this.loadService.createBulkPayment(template.productCode, id => {
-      this.inventory = new Inventory(template.productCode, template.templateDisplayName, template.bulkUnit, new Date(), id, true)
-      this.mode = "add"
-      this.spinner.hide("invSpinner")
-      this.activeModal.dismiss(this.inventory)
-      this.toast(template.bulkUnit + " " + template.templateDisplayName.toLowerCase() + " added to inventory!")
+    await this.loadService.createBulkPayment(template.productCode, (id: string, err?: string) => {
+      if (err || err != ''){
+        this.err = err!
+        this.spinner.hide("invSpinner")
+      }
+      else{
+        this.inventory = new Inventory(template.productCode, template.templateDisplayName, template.bulkUnit, new Date(), id, true)
+        this.mode = "add"
+        this.spinner.hide("invSpinner")
+        this.activeModal.dismiss(this.inventory)
+        this.toast(template.bulkUnit + " " + template.templateDisplayName.toLowerCase() + " added to inventory!")
+      }
     })
   }
 
@@ -173,23 +186,13 @@ getCurrencyForCountry(country: Country, shouldShowName: boolean){
 
   getTypeImages(templateName: string) {
 
-    let template = Globals.templates.filter(obj => {
+    let template = Globals.templates.find(obj => {
       return obj.templateDisplayName == templateName
-    })[0]
-
-    var len = template.colors.filter(obj => {
-      return obj.code == "black"
     })
-    var img: any
-    if (len.length == 0){
-      img = template.colors.filter(obj => {
-        return obj.code == "white"
-      })[0].img
-    }
-    else{
-      img = len[0].img
-    }
-    return this.sanitizer!.bypassSecurityTrustResourceUrl("data:image/jpeg;base64," + img)
+
+
+
+    return "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Templates%2F" + template?.templateID + "%2Fdisplay1.jpg?alt=media"
   }
 
   ngOnInit(): void {

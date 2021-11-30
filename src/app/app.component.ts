@@ -452,7 +452,7 @@ export class AppComponent implements OnInit {
   }
 
 
-  showPopUp(homePopup: Popup){
+  showPopUp(homePopup: Popup, duration = 0){
     if (this.isAdmin()){
       return
     }
@@ -466,7 +466,7 @@ export class AppComponent implements OnInit {
         },
         panelClass: 'app-full-bleed-dialog', 
       });
-    }, 5000);
+    }, duration);
   
     // let sub = modalRef.afterClosed().subscribe(resp => {
     //   console.log('The dialog was closed');

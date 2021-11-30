@@ -34,13 +34,41 @@ export class EditPlanComponent implements OnInit {
     return theme
   }
 
+  err = ''
+
+  planInfo(){
+    var urlLink = "thredapps.com"
+
+      const link = document.createElement('a');
+          link.target = '_blank';
+  
+          let url: string = '';
+          if (!/^http[s]?:\/\//.test(urlLink)) {
+            url += 'http://';
+          }
+      
+          url += urlLink
+      
+          link.href = url
+          this.spinner.hide("adminSpinner")
+  
+          link.setAttribute('visibility', 'hidden')
+          link.click()
+          link.remove()
+  }
+
   storeInfo(){return Globals.storeInfo}
 
   startSubscription(){
     this.spinner.show('subSpinner')
-    this.loadService.startSubscription((id: any) => { 
-      this.subInfo = id
-      this.done()
+    this.loadService.startSubscription((id: any, err?: string) => { 
+      if (err || err != ''){
+        this.err = err!
+      }
+      else{
+        this.subInfo = id
+        this.done()
+      }
     })
   }
 
@@ -116,9 +144,14 @@ selectedIndicator(){
 
 reactivateSubscription(){
   this.spinner.show('subSpinner')
-  this.loadService.reactivateSubscription((id: any) => {
-    this.subInfo = id
-    this.done()
+  this.loadService.reactivateSubscription((id: any, err?: string) => {
+    if (err || err != ''){
+      this.err = err!
+    }
+    else{
+      this.subInfo = id
+      this.done()
+    }
   })
 }
 

@@ -116,6 +116,11 @@ a[data-toggle="collapse"] {
     color: silver;
 }
 
+.no-data {
+    height: 220px;
+    display: flex;
+}
+
 .high{
     color: gold;
 }

@@ -144,23 +144,20 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Username</label>
+                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Handle</label>
                                         <input [style.font-family]="storeInfo().fontName!" type="text" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputUsername" placeholder="ex: 'brianstees'" formControlName="username" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;" >This will also be your store's handle</i></mat-hint>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Display Name</label>
+                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Name</label>
                                         <input [style.font-family]="storeInfo().fontName!" type="text" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputUsername" placeholder="ex: '{{getUsername()}}'" formControlName="full_name" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"> <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will also be your store's name</i></mat-hint>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Biography</label>
+                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Description</label>
                                         <textarea [style.font-family]="storeInfo().fontName!" rows="5" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputBio" placeholder="Describe your store..." formControlName="bio" style.color="{{selectedTheme()!.color}}"></textarea>
-                                        <mat-hint align="start"> <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will show up on your store's 'About' page</i></mat-hint>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto mt-3 d-block">
@@ -253,24 +250,28 @@ style.color = "{{selectedIndicator()!.color}}"
                             <thead>
                               <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Date Subscribed</th>
-                                <th>Actions</th>
+                                <th *ngIf='(emails()?.length ?? 0) > 0'>Name</th>
+                                <th *ngIf='(emails()?.length ?? 0) > 0'>Email</th>
+                                <th *ngIf='(emails()?.length ?? 0) > 0'>Date Subscribed</th>
+                                <!-- <th *ngIf='(emails()?.length ?? 0) > 0'>Actions</th> -->
                               </tr>
                             </thead>
-                            <tbody>
+                            <tbody *ngIf='(emails()?.length ?? 0) > 0'>
                               <tr *ngFor="let contact of emails(); index as i;">
                         
                                 <td >{{ i + (selectedEmailPageIndex * 10) + 1 }}</td>
                                 <td> {{ contact.name ?? 'Not Provided' }}</td>
                                 <td> {{ contact.email }}</td>
                                 <td> {{ contact.timestamp }}</td>
-                                <td>
+                                <!-- <td>
                                   <button class="btn btn-primary"> Show details</button>
-                                </td>
+                                </td> -->
                               </tr>
+                              
                             </tbody>
+                            <div *ngIf='(emails()?.length ?? 0) == 0' class="w-100 text-center h-100 d-flex justify-content-center align-items-center">
+                                <span class="text-center fw-bolder" style="font-size: large;">No Emails Collected</span>
+                            </div>
                           </table>
                           <mat-paginator #paginator [length]="emailLengthTotal()" hidePageSize="false" (page)="changeEmailDisplayColumns($event)"
                             [pageSize]="10">
@@ -286,24 +287,27 @@ style.color = "{{selectedIndicator()!.color}}"
                             <thead>
                               <tr>
                                 <th>#</th>
-                                <th>Name</th>
-                                <th>Phone #</th>
-                                <th>Date Subscribed</th>
-                                <th>Actions</th>
+                                <th *ngIf='(numbers()?.length ?? 0) > 0'>Name</th>
+                                <th *ngIf='(numbers()?.length ?? 0) > 0'>Phone #</th>
+                                <th *ngIf='(numbers()?.length ?? 0) > 0'>Date Subscribed</th>
+                                <!-- <th *ngIf='(numbers()?.length ?? 0) > 0'>Actions</th> -->
                               </tr>
                             </thead>
-                            <tbody>
+                            <tbody *ngIf='(numbers()?.length ?? 0) > 0'>
                               <tr *ngFor="let contact of numbers(); index as i;">
                         
                                 <td >{{ i + (selectedPhonePageIndex * 10) + 1 }}</td>
                                 <td> {{ contact.name ?? 'Not Provided' }}</td>
                                 <td> {{ contact.phone }}</td>
                                 <td> {{ contact.timestamp }}</td>
-                                <td>
+                                <!-- <td>
                                   <button class="btn btn-primary">Show details</button>
-                                </td>
+                                </td> -->
                               </tr>
                             </tbody>
+                            <div *ngIf='(numbers()?.length ?? 0) == 0' class="w-100 text-center h-100 d-flex justify-content-center align-items-center">
+                                <span class="text-center fw-bolder" style="font-size: large;">No Phone Numbers Collected</span>
+                            </div>
                           </table>
                           <mat-paginator #paginator [length]="phoneLengthTotal()" hidePageSize="false" (page)="changePhoneDisplayColumns($event)"
                             [pageSize]="10">
@@ -364,143 +368,211 @@ style.color = "{{selectedIndicator()!.color}}"
 
             <div *ngIf="getSelectedPanel()?.Title == 'THEMES'" class="py-3">
                 <form [formGroup]="themeForm" novalidate>
-                    <div class="row">
-                        <div class="col-md-8 mb-3 mx-auto d-block">
-                            <mat-form-field class="w-100">
-                                <mat-select (change)="selectTheme()" formControlName="storeTheme">
-                                    <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
-                                      {{themeForm.controls['storeTheme'].value}}
-                                    </mat-select-trigger>
-                                    <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
-                                        <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
-                                            {{ cTheme.name }}
-                                        </mat-option>
-                                    </mat-optgroup>
-                                  </mat-select>
-                                  <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
-                                  <mat-error *ngIf="themeForm.controls['storeTheme'].hasError('required')">
-                                    Theme is <strong>required</strong>
-                                </mat-error>
-                            </mat-form-field>
+                    <mat-tab-group mat-stretch-tabs>
+                        <mat-tab>
+                      <!-- #docregion label-directive -->
+                          <ng-template mat-tab-label>
+                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">window</mat-icon>
+                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                EXPLORE THEMES
+                            </span>
+                          </ng-template>
+                          <div *ngFor="let sTheme of themes()">
+                            <h1 class="text-start mx-3 mx-md-4 mx-lg-4 fw-bolder text-{{storeInfo().colorStyle!.text_code}} pt-4 pb-2" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{titleCase(sTheme.name)}}</h1>
+        
+                            <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
+        
+                                <div class="col" *ngFor="let cTheme of sTheme.themes">
+                                    <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                        <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{cTheme.name}}</h2>
+                                        <div class="card-body">
+                                            <!-- <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
+                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Remaining: </label>
+                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">{{invUsed(inv)}}</label>
+                                            </div> -->
+                                            <div class="rounded mx-auto w-100" >
+                                                <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                    <img [src]='cTheme.img' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                                </a>
+                                            </div>
+            
+                                            <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
+                                                <button (click)='selectTheme(cTheme.name)' *ngIf='theme != cTheme.name' [style.font-family]="storeInfo().fontName!" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">
+                                                    Use Theme
+                                                    <mat-icon class="ms-2">
+                                                        <span class="material-icons-outlined">
+                                                            published_with_changes
+                                                        </span>
+                                                    </mat-icon>
+                                                </button>
+                                                <button *ngIf='theme == cTheme.name' [style.font-family]="storeInfo().fontName!" class="btn d-flex mx-1 text-light btn-success">
+                                                    Theme In Use
+                                                    <mat-icon class="ms-2">
+                                                        <span class="material-icons-outlined">
+                                                            check_circle
+                                                        </span>
+                                                    </mat-icon>
+                                                </button>
+                                                <!-- <button *ngIf="!inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button> -->
+                                                <!-- <button *ngIf="inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-8 mb-3 mt-3 mx-auto d-block">
-                            <div >
+                        </mat-tab>
+                      
+                        <mat-tab>
+                          <ng-template mat-tab-label>
+                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">tune</mat-icon>
+                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                MY THEME
+                            </span>
+                          </ng-template>
+                          <div class="row w-100">
+                            <!-- <div class="col-md-8 mb-3 mx-auto d-block">
                                 <mat-form-field class="w-100">
-                                <mat-select formControlName="font">
-                                    <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="themeForm.controls['font'].value">
-                                      {{themeForm.controls['font'].value}}
-                                    </mat-select-trigger>
-                                    <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="font" [selected]="font == userInfo()!.fontName" *ngFor="let font of fonts()"[value]="font">
-                                      {{ font }}
-                                    </mat-option>
-                                  </mat-select>
-                                  <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Font</mat-placeholder>
-                                  <mat-error *ngIf="themeForm.controls['font'].hasError('required')">
-                                    Font is <strong>required</strong>
-                                  </mat-error>
+                                    <mat-select (change)="selectTheme()" formControlName="storeTheme">
+                                        <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
+                                          {{themeForm.controls['storeTheme'].value}}
+                                        </mat-select-trigger>
+                                        <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
+                                            <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
+                                                {{ cTheme.name }}
+                                            </mat-option>
+                                        </mat-optgroup>
+                                      </mat-select>
+                                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
+                                      <mat-error *ngIf="themeForm.controls['storeTheme'].hasError('required')">
+                                        Theme is <strong>required</strong>
+                                    </mat-error>
                                 </mat-form-field>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
-                        <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Theme Background Image</label>
-    
-                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                <!-- Product image-->
-    
-                                <a role="button" class="btn" (click)="fileBackground.click()">
-                                    <img class="card-img-top"  alt='ok' src="{{themeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-                                </a>
-                                <!-- Product details-->
-                                
-                                <div class="card-body p-2 pb-1">
-                                    <div class="mt-2 text-center">
-    
-                                        <a role="button" class="btn" (click)="fileBackground.click()">
-                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                            <input #fileBackground type="file" (change)="fileChangeEvent($event, 'Background')" style="display:none;" />
-                                        </a>
-                                    </div>
+                            </div> -->
+                            <div class="col-md-8 mb-3 mt-3 mx-auto d-block">
+                                <div >
+                                    <mat-form-field class="w-100">
+                                    <mat-select formControlName="font">
+                                        <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="themeForm.controls['font'].value">
+                                          {{themeForm.controls['font'].value}}
+                                        </mat-select-trigger>
+                                        <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="font" [selected]="font == userInfo()!.fontName" *ngFor="let font of fonts()"[value]="font">
+                                          {{ font }}
+                                        </mat-option>
+                                      </mat-select>
+                                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Font</mat-placeholder>
+                                      <mat-error *ngIf="themeForm.controls['font'].hasError('required')">
+                                        Font is <strong>required</strong>
+                                      </mat-error>
+                                    </mat-form-field>
                                 </div>
                             </div>
-    
                         </div>
-                    </div>
-                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
-                        <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Theme CTA Image</label>
-    
-                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                <!-- Product image-->
-    
-                                <a role="button" class="btn" (click)="fileAction.click()">
-                                    <img class="card-img-top"  alt='ok' src="{{themeForm.controls['actionImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-    
-                                </a>
-                                <!-- Product details-->
-                                <div class="card-body p-2 pb-1">
-                                    <div class="mt-2 text-center">
-    
-                                        <a role="button" class="btn" (click)="fileAction.click()">
-                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                            <input #fileAction type="file" (change)="fileChangeEvent($event, 'Action')" style="display:none;" />
-                                        </a>
+                        <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center w-100">
+                            <div class="col-md-8 mb-3 mx-auto d-block">
+                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Theme Background Image</label>
+        
+                                <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                    <!-- Product image-->
+        
+                                    <a role="button" class="btn" (click)="fileBackground.click()">
+                                        <img class="card-img-top"  alt='ok' src="{{themeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+                                    </a>
+                                    <!-- Product details-->
+                                    
+                                    <div class="card-body p-2 pb-1">
+                                        <div class="mt-2 text-center">
+        
+                                            <a role="button" class="btn" (click)="fileBackground.click()">
+                                                <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                                <input #fileBackground type="file" (change)="fileChangeEvent($event, 'Background')" style="display:none;" />
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Store Loading Indicator</label>
-                            <div>
-                                <select [style.font-family]="storeInfo().fontName!" formControlName="loadingIndicator" class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required" (change) = "showSampleSpinner()">
-                                    <option *ngFor="let indicator of loaders()" [selected]="indicator == themeForm.controls['loadingIndicator'].value" >{{ indicator }}</option>
-                                </select>
+        
                             </div>
                         </div>
-                    </div>
-                    <div class="row gx-10 row-cols-1 justify-content-center">
-                        <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Color</label>
-                            <div class="card h-auto">
-                            <a
-                            role="button" 
-                            class="btn"
-                            [style.background]="selectedIndicator()!.color"
-                            [cpPosition]="'top'"
-                            [cpPositionRelativeToArrow]="true"
-                            (colorPickerSelect)="selectColor($event, true)"
-                            [cpOutputFormat]="'rgba'"
-                            [cpOKButton]="true"
-                            [cpOKButtonText]="'SET COLOR'"
-                            [cpOKButtonClass]= "'btn btn-dark'"
-                            [cpSaveClickOutside]="false"
-                            [(colorPicker)]="selectedIndicator()!.color"
-                            >
-                            <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
-                            </a>
+                        <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center w-100">
+                            <div class="col-md-8 mb-3 mx-auto d-block">
+                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Theme CTA Image</label>
+        
+                                <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                    <!-- Product image-->
+        
+                                    <a role="button" class="btn" (click)="fileAction.click()">
+                                        <img class="card-img-top"  alt='ok' src="{{themeForm.controls['actionImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+        
+                                    </a>
+                                    <!-- Product details-->
+                                    <div class="card-body p-2 pb-1">
+                                        <div class="mt-2 text-center">
+        
+                                            <a role="button" class="btn" (click)="fileAction.click()">
+                                                <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                                <input #fileAction type="file" (change)="fileChangeEvent($event, 'Action')" style="display:none;" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Store Loading Indicator</label>
+                                <div>
+                                    <select [style.font-family]="storeInfo().fontName!" formControlName="loadingIndicator" class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required" (change) = "showSampleSpinner()">
+                                        <option *ngFor="let indicator of loaders()" [selected]="indicator == themeForm.controls['loadingIndicator'].value" >{{ indicator }}</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Background Color</label>
-                            <div class="card h-auto">
-                            <a
-                            role="button" 
-                            class="btn"
-                            [style.background]="selectedIndicator()!.bg_color"
-                            [cpPosition]="'top'"
-                            [cpPositionRelativeToArrow]="true"
-                            (colorPickerSelect)="selectColor($event, false)"
-                            [cpOutputFormat]="'rgba'"
-                            [cpOKButton]="true"
-                            [cpOKButtonText]="'SET COLOR'"
-                            [cpOKButtonClass]= "'btn btn-dark'"
-                            [cpSaveClickOutside]="false"
-                            [(colorPicker)]="selectedIndicator()!.bg_color"
-                            >
-                            <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
-                            </a>
+                        <div class="row gx-10 row-cols-1 justify-content-center w-100">
+                            <div class="col-md-8 mb-3 mx-auto d-block">
+                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Color</label>
+                                <div class="card h-auto">
+                                <a
+                                role="button" 
+                                class="btn"
+                                [style.background]="selectedIndicator()!.color"
+                                [cpPosition]="'top'"
+                                [cpPositionRelativeToArrow]="true"
+                                (colorPickerSelect)="selectColor($event, true)"
+                                [cpOutputFormat]="'rgba'"
+                                [cpOKButton]="true"
+                                [cpOKButtonText]="'SET COLOR'"
+                                [cpOKButtonClass]= "'btn btn-dark'"
+                                [cpSaveClickOutside]="false"
+                                [(colorPicker)]="selectedIndicator()!.color"
+                                >
+                                <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
+                                </a>
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-3 mx-auto d-block">
+                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Background Color</label>
+                                <div class="card h-auto">
+                                <a
+                                role="button" 
+                                class="btn"
+                                [style.background]="selectedIndicator()!.bg_color"
+                                [cpPosition]="'top'"
+                                [cpPositionRelativeToArrow]="true"
+                                (colorPickerSelect)="selectColor($event, false)"
+                                [cpOutputFormat]="'rgba'"
+                                [cpOKButton]="true"
+                                [cpOKButtonText]="'SET COLOR'"
+                                [cpOKButtonClass]= "'btn btn-dark'"
+                                [cpSaveClickOutside]="false"
+                                [(colorPicker)]="selectedIndicator()!.bg_color"
+                                >
+                                <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
+                                </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        </mat-tab>
+            
+                      </mat-tab-group>
                 </form>
             </div>
 
@@ -542,8 +614,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                     </a>
                                 </div>
     
-                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Banner Style</label>
-                                <mat-form-field class="w-100">
+                                <mat-form-field class="w-100 mt-3">
                                     <mat-label>Banner Style</mat-label>
                                     <mat-select formControlName="style">
                                     <mat-select-trigger class="d-flex align-items-center" *ngIf='matchingStyle(bannerForm.controls.style.value)'>
@@ -950,12 +1021,6 @@ style.color = "{{selectedIndicator()!.color}}"
             </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'INVENTORY'">
-                <!-- <a role="button" [style.font-family]="storeInfo().fontName!" (click)="createNewProduct()" class="btn mx-2 mx-md-4 mx-lg-4 d-flex ps-0 mb-5 text-{{storeInfo().colorStyle!.text_code}}">
-                    <mat-icon class="me-2"><span style="font-size: 25px;">
-                        dashboard_customize
-                        </span></mat-icon>
-                        ADD NEW INVENTORY
-                </a>  -->
                 <div *ngIf="(inventory?.length ?? 0) > 0">
                     <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">MY INVENTORY</h1>
 
@@ -963,9 +1028,6 @@ style.color = "{{selectedIndicator()!.color}}"
 
                         <div class="col" *ngFor="let inv of inventory">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <!-- <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
-                                    {{item.series[0].name.toUpperCase()}}
-                                </p> -->
                                 <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{inv.name}}</h2>
                                 <div class="card-body mt-2">
                                     <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
@@ -975,21 +1037,6 @@ style.color = "{{selectedIndicator()!.color}}"
                                     <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
                                         <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">{{invUsed(inv)}}</label>
                                     </div>
-                                    <!-- <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Sold: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{100-inv.amount}}</a></mat-hint>
-                                    </div> -->
-                                    <!-- <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Country: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{bankInfo.external_accounts.data[0].country}}</a></mat-hint>
-                                    </div> -->
-                                    <!-- <div class="px-5 mt-4 d-flex align-items-center justify-content-center">
-                                        <div style="background-color:#cdf4fc;">
-                                            <a role="button"><img style="object-fit: contain; width: 25%;"  [src]="getTypeImages(inv.name)" alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                                        </div>
-    
-                                    </div> -->
-    
                                     <div class="rounded mx-auto w-100" >
                                         <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
                                             <img [src]='getTypeImages(inv.code)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
@@ -1002,16 +1049,13 @@ style.color = "{{selectedIndicator()!.color}}"
                                         <button *ngIf="inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button>
                                     </div>
                                 </div>
-                                <!-- <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
-                                    {{item.xAxisLabel.toUpperCase()}}
-                                </p> -->
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div *ngIf="availableToBuyTemplates().length > 0">
-                    <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{invTitle}} <br> <small>Buy your own inventory</small></h1>
+                    <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{invTitle}} <br> <small>Bulk-Buy your own inventory</small></h1>
                     <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3">
 
                         <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">

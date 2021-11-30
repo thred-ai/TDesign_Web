@@ -37,6 +37,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DragScrollModule } from 'ngx-drag-scroll';
+import {MatTabsModule} from '@angular/material/tabs';
 
 const routes: Routes = [
   {
@@ -86,6 +87,7 @@ const routes: Routes = [
     ScrollingModule,
     MatAutocompleteModule,
     MatDialogModule,
+    MatTabsModule,
     RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

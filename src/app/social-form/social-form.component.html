@@ -25,28 +25,45 @@
                         <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
                     </div>
                 </form>
-                <form *ngIf="step == 1" class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form" [formGroup]="socialForm" >
+                <form *ngIf="step == 1" class="mt-4 px-1 px-md-2 mb-2 px-lg-2 w-100 contact1-form" [formGroup]="socialForm" >
                     <span class="contact1-form-title mb-4 fw-bolder" style="font-size: 20px;">
                         Add these to your DNS records
                     </span>
                     <span *ngIf="copied" class="contact1-form-title mb-1 fw-bolder text-success" style="font-size: 12px;">
                         DNS record copied to clipboard
                     </span>
-                    <div class="wrap-input1 w-100 mb-3 d-flex justify-content-center align-items-center" style="font-size: 20px;">
-                        <span class="fw-bolder me-3" style="font-size: 20px;">
-                            A
-                        </span>
-                        <mat-form-field class="full-width ms-3">
-                            <input matInput readonly formControlName="dns">
-                            <button mat-icon-button matSuffix (click)="copyDNS()">
-                                <mat-icon>content_copy</mat-icon>
-                            </button>
-                            <!-- <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'></mat-placeholder> -->
-                            <mat-error *ngIf="socialForm.controls['dns'].hasError('required')">
-                              DNS is <strong>required</strong>
-                            </mat-error>
-                        </mat-form-field>
-                    </div>
+                    <table class="w-100 h-100 table table-hover bg-light">
+                        <thead>
+                          <tr>
+                            <th>Type</th>
+                            <th>Host/Name</th>
+                            <th>Value</th>
+                            <!-- <th *ngIf='(emails()?.length ?? 0) > 0'>Actions</th> -->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                    
+                            <td >A</td>
+                            <td>@</td>
+                            <td>75.2.60.5</td>
+                            <!-- <td>
+                              <button class="btn btn-primary"> Show details</button>
+                            </td> -->
+                          </tr>
+                          <tr>
+                    
+                            <td >CNAME</td>
+                            <td>www</td>
+                            <td>lucid-fermat-781486.netlify.app</td>
+                            <!-- <td>
+                              <button class="btn btn-primary"> Show details</button>
+                            </td> -->
+                          </tr>
+                          
+                        </tbody>
+                    </table>
+           
                 </form>
             </div>
         </div>

@@ -166,8 +166,9 @@ export class LoadService {
       let docData = doc as DocumentData
 
       if (docData){
+        console.log(docData)
         let plan_id = docData.plan_id as string
-        let can_trial = docData.canTrial as boolean ?? false
+        let can_trial = docData.canTrial as boolean ?? true
         if (plan_id && plan_id != ""){
           this.functions.httpsCallable('getSubInfo')({}).pipe(first()).subscribe(resp => {  
             callback(resp)
@@ -177,9 +178,7 @@ export class LoadService {
           });
         }
         else{
-          if (!can_trial){
-            callback(undefined, false)
-          }
+          callback(undefined, can_trial)
         }
       }
       else{
@@ -452,7 +451,7 @@ export class LoadService {
             this.checkPopup(homePopup, uid, () => {
               console.log(sessionStorage.getItem('home_popup'))
               if (!sessionStorage.getItem('home_popup')){
-                this.rootComponent?.showPopUp(homePopup!)
+                this.rootComponent?.showPopUp(homePopup!, 5000)
                 sessionStorage.setItem('home_popup', '1')
               }
             })
@@ -513,11 +512,14 @@ export class LoadService {
 
 
   async checkPopup(popup: Popup, uid: string, callback: () => any){
-    if (popup.trigger == 0 && isPlatformBrowser(this.platformID)){
+    if (isPlatformBrowser(this.platformID)){
       let user = (await this.isLoggedIn())
       if (!user) {
+        callback()
          return 
       }
+
+      console.log('mamamamn')
 
       if (popup.type == 0 || popup.type == 2){
         var query = this.db.collection("Users/" + uid + "/Emails", ref => ref.where("uid",'==', user?.uid ?? ''))
@@ -558,7 +560,7 @@ export class LoadService {
         if (data){
           let phone = data.phone ?? 'N/A'
           let name = data.name
-          let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate()
+          let timestamp = (data.timestamp as firebase.firestore.Timestamp)?.toDate() ?? new Date()
   
           arr.push({
             phone: phone,
@@ -789,6 +791,7 @@ export class LoadService {
           let text_code = docData.text_code as string
           let nav_code = docData.nav_code as string
           let style = docData.class as string
+          let img = docData.img as string
 
           let theme = new StoreTheme(
             name,
@@ -797,7 +800,8 @@ export class LoadService {
             nav_code,
             style,
             this.parseColor(bg_color),
-            this.parseColor(btn_color)
+            this.parseColor(btn_color),
+            img
           )
 
           let same = Globals.themes?.find(t => { return t.name == style})
@@ -1166,7 +1170,6 @@ export class LoadService {
       }, err => {
         callback("", "", err)
       });
-
   }
 
   async stopSubscription(callback: (id: any) => any){
@@ -1180,7 +1183,7 @@ export class LoadService {
       });
   }
 
-  async reactivateSubscription(callback: (id: any) => any){
+  async reactivateSubscription(callback: (id: any, err?: string) => any){
     this.functions.httpsCallable('reactivateSubIntent')({})
       .pipe(first())
       .subscribe(async resp => { 
@@ -1188,21 +1191,23 @@ export class LoadService {
         callback(resp)
       }, err => {
         console.error({ err });
+        callback(undefined, err)
       });
   }
 
-  async startSubscription(callback: (id: any) => any){
+  async startSubscription(callback: (id: any, err?: string) => any){
     this.functions.httpsCallable('createSubIntent')({})
       .pipe(first())
       .subscribe(async resp => { 
         console.log(resp)       
         callback(resp)
       }, err => {
+        callback(undefined, err)
         console.error({ err });
       });
   }
 
-  async createBulkPayment(type: string, callback: (id: string) => any){
+  async createBulkPayment(type: string, callback: (id: string, err?: string) => any){
 
     this.functions.httpsCallable('createBulkIntent')({type: type})
       .pipe(first())
@@ -1210,6 +1215,7 @@ export class LoadService {
         callback(resp)
       }, err => {
         console.error({ err });
+        callback('', err)
       });
 
   }
@@ -1606,14 +1612,20 @@ export class LoadService {
     this.rootComponent!.cart = undefined
     this.rootComponent?.getCart()
 
-    var ids = []
-
-    // mappedData
-    // this.pixel?.track('InitiateCheckout', {
-    //   content_ids: ['ABC123', 'XYZ456'],  // Item SKUs
-    //   value: 100,                         // Value of all items
-    //   currency: 'USD'                     // Currency of the value
-    // });
+    let homePopup = Globals.storeInfo.popups?.find(popup => { return popup.trigger == 1})
+    if (homePopup){
+      console.log(homePopup)
+      this.checkPopup(homePopup, uid!, () => {
+        console.log(sessionStorage.getItem('product_popup'))
+        if (!sessionStorage.getItem('product_popup')){
+          this.rootComponent?.showPopUp(homePopup!)
+          sessionStorage.setItem('product_popup', '1')
+        }
+        else{
+          console.log("shown")
+        }
+      })
+    }
   }
 
   async saveUser(mappedData: Dict<any>, callback: (success: boolean) => any){

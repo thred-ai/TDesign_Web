@@ -222,6 +222,7 @@ emails(){
 }
 
 numbers(){
+  console.log(this.phoneSubs)
   return this.phoneSubs?.slice(this.selectedPhonePageIndex*10, this.selectedPhonePageIndex*10+10)
 }
 
@@ -742,7 +743,13 @@ showSocialModal(logo: {
   availableTemplates(){return Globals.availableTemplates}
 
 
-  themes(){return Globals.themes}
+  themes(){
+  return Globals.themes?.sort(function(a, b){
+    if(a.themes.length < b.themes.length) { return 1; }
+    if(a.themes.length > b.themes.length) { return -1; }
+    return 0;
+  })
+  }
 
   fonts(){return Globals.fonts}
 
@@ -756,11 +763,11 @@ showSocialModal(logo: {
           "Icon": "trending_up",
           "Active": false
         },
-        // {
-        //   "Title": "AUDIENCE",
-        //   "Icon": "groups",
-        //   "Active": false
-        // },
+        {
+          "Title": "AUDIENCE",
+          "Icon": "groups",
+          "Active": false
+        },
       ]
     },  
     {
@@ -1714,8 +1721,12 @@ isSpinning = false
     return theme
   }
 
-  selectTheme(){
+
+  selectTheme(theme: string){
+    this.themeForm.controls.storeTheme.setValue(theme)
     this.theme = this.themeForm.controls.storeTheme.value
+
+    this.saveStore()
   }
 
 
@@ -2227,6 +2238,7 @@ isSpinning = false
       if (!this.subInfo){
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
           this.subInfo = subInfo ?? ''
+          console.log(subInfo)
           this.canTrial = canTrial
           this.cdr.detectChanges()
         })

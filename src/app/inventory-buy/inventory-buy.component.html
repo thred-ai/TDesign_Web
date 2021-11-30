@@ -15,9 +15,9 @@
         <label style="color: #6c757d;"  class = "mb-1 me-1 text-center fw-bold">Remaining: </label>
         <mat-hint  align="start"><a class="fw-bolder text-center text-dark" role="button" style="text-decoration: none;" > {{inventory!.amount ?? 0}}</a></mat-hint>
     </div>
-    <div class="rounded mx-auto" style="width: 35%; aspect-ratio: 1 / 1" >
+    <div class="rounded mx-auto w-100" >
         <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-            <img [src]='getTypeImages(inventory!.name)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+            <img [src]='getTypeImages(inventory!.name)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain;">
         </a>
     </div>
     <div class="d-block align-items-center justify-content-center mt-4 mb-5" style="font-size: 15px;">
@@ -33,13 +33,16 @@
         <!-- <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "mb-1 me-1 text-center">Remaining: </label>
         <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" > {{inventory!.amount ?? 0}}</a></mat-hint> -->
     </div>
-    <div class="rounded mx-auto" style="width: 35%; aspect-ratio: 1 / 1" >
+    <div class="rounded mx-auto w-100" >
         <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-            <img [src]='getTypeImages(template!.templateDisplayName)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain; background-color: #cdf4fc;">
+            <img [src]='getTypeImages(template!.templateDisplayName)' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain;">
         </a>
     </div>
     <div class="d-block align-items-center justify-content-center mt-4 mb-5" style="font-size: 15px;">
         <button (click)="buyNew(template!)" class="btn btn-dark d-flex my-2 align-items-center justify-content-between mx-auto fw-bolder" style="width: 35%;">Buy {{template!.bulkUnit}} Units for {{formatPrice((template!.bulkPrice / 100) * template!.bulkUnit, true)}}<mat-icon class="ms-1">check_circle</mat-icon></button>
+        <p class="text-center text-danger mt-3 fw-bolder" *ngIf='err && err != ""'>
+            {{err}}
+        </p>
     </div>
 
     <div class="d-flex align-items-center justify-content-center">
@@ -48,7 +51,7 @@
             <p class="text-start  m-2">• <b>{{calculateMarginPercent(template!)}}% margins</b> on every sale, giving you full control on pricing.  <br><p *ngIf="(template!.supportedSides.length ?? 0) > 1" style="color: #6c757d;">(-{{formatPrice((template?.extraCost ?? 0) / 100, true)}} per. <b>additional</b> side)</p></p>
             <p class="text-start  m-2"  >• <b>{{calculateMarginDifference(template!)}}x your current margins</b> when pricing at {{formatPrice((template?.bulkSuggestPrice ?? 0) / 100)}}. <br><p style="color: #6c757d;">(Profit: <b>{{formatPrice(calculateMargin(true, template!))}} per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}}</b>)</p></p>
             <p class="text-start  m-2"  >• When you pre-purchase your inventory, you have <b>full ownership</b>. <br><p style="color: #6c757d;">(You own your {{template!.bulkUnit}} {{template!.templateDisplayName.toLowerCase()}})</p></p>
-            <p class="text-start  m-2"  >• Thred will fulfill your orders/manage your inventory with <b>no added cost</b>. <br><p style="color: #6c757d;">(Sit back, and make money  🎨💰)</p></p>
+            <p class="text-start  m-2"  >• Thred will fulfill your orders/manage your inventory with <b>no added cost</b>. <br><p style="color: #6c757d;">(Thred takes only 5% off the sale)</p></p>
 
         </div>
     </div>

@@ -7,6 +7,7 @@ export class StoreTheme {
   style: string
   bg_color: Array<number>
   btn_color: Array<number> 
+  img?: URL
 
   constructor(
     name: string,
@@ -16,6 +17,7 @@ export class StoreTheme {
     style: string,
     bg_color: Array<number>,
     btn_color: Array<number>,
+    img?: string
     ) {
 
     this.name = name ?? ""
@@ -26,5 +28,8 @@ export class StoreTheme {
     this.bg_color = bg_color ?? [];
     this.btn_color = btn_color ?? [];
 
+    if (img){
+      this.img = new URL(img)
+    }
   }
 }
