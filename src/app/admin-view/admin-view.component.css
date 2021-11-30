@@ -145,6 +145,15 @@ color: red;
     font-size: 14px;
   }
 
+  .adminTitle{
+    font-size: 12px;
+}
+
+  .set-img {
+    max-width:30px;
+    height:auto;
+}
+
   .list-group li {
     margin-bottom: 12px
 }

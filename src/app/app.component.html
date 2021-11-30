@@ -1,8 +1,12 @@
 
-<nav *ngIf="isBrowser();" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.nav_code}} bg-{{storeInfo().colorStyle!.back_code}}">
-    <div class="container-fluid px-3 px-md-5 w-100">
-        <img class="set-img" [src]='storeInfo().profileLink'/>
-        <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
+<nav *ngIf="isBrowser() && !isAdmin()" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.nav_code}} bg-{{storeInfo().colorStyle!.back_code}} w-100">
+    <div class="container-fluid d-flex justify-content-between px-2 w-100 text-start" style="min-height: 50px;" [class.my-2]='isAdmin()'  [class.px-md-3]='isAdmin()' [class.px-md-5]='!isAdmin()'>
+
+        <div class="d-flex justify-content-start">
+            <img class="set-img" [src]='storeInfo().profileLink'/>
+            <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}}" role="button" (click)="routeToHome()" [class.smallTitle]="isMobile()" [class.bigTitle]="!isMobile()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
+        </div>        
+
         <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -29,7 +33,7 @@
                 </li>
             </ul>
 
-            <ul class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 " >
+            <ul *ngIf='!isAdmin()' class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 " >
                 <li *ngIf="!(hideCart())" class="d-flex">
                     <div class="nav-item dropdown">
                         <button id="navbarDropdown" data-bs-toggle="dropdown" aria-expanded="false" class="btn me-2">

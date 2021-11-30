@@ -428,7 +428,9 @@ export class LoadService {
             undefined, 
             this.getDefaultURL(), 
             this.getDefaultURL(), 
-            this.getDefaultURL(), 
+            this.getDefaultURL(),
+            undefined, 
+            undefined, 
             undefined, 
             font, 
             socials, 
@@ -448,7 +450,11 @@ export class LoadService {
           let homePopup = popups.find(popup => { return popup.trigger == 0})
           if (homePopup){
             this.checkPopup(homePopup, uid, () => {
-              this.rootComponent?.showPopUp(homePopup!)
+              console.log(sessionStorage.getItem('home_popup'))
+              if (!sessionStorage.getItem('home_popup')){
+                this.rootComponent?.showPopUp(homePopup!)
+                sessionStorage.setItem('home_popup', '1')
+              }
             })
           }
           
@@ -466,6 +472,12 @@ export class LoadService {
             }
             else if (type == 'action'){
               Globals.storeInfo!.actionLink = new URL(this.getActionURL(uid))
+            }
+            else if (type == 'home_top'){
+              Globals.storeInfo!.homeLinkTop = new URL(this.getHomeTopURL(uid))
+            }
+            else if (type == 'shop_top'){
+              Globals.storeInfo!.shopLinkTop = new URL(this.getShopTopURL(uid))
             }
           })
 
@@ -693,7 +705,10 @@ export class LoadService {
             this.getDefaultURL(), 
             this.getDefaultURL(), 
             undefined, 
-            font, socials, 
+            undefined, 
+            undefined, 
+            font, 
+            socials, 
             finalURL, 
             pixelID, 
             active,
@@ -714,6 +729,12 @@ export class LoadService {
             }
             else if (type == 'action'){
               Globals.userInfo!.actionLink = new URL(this.getActionURL(uid))
+            }
+            else if (type == 'home_top'){
+              Globals.userInfo!.homeLinkTop = new URL(this.getHomeTopURL(uid))
+            }
+            else if (type == 'shop_top'){
+              Globals.userInfo!.shopLinkTop = new URL(this.getShopTopURL(uid))
             }
           })
 
@@ -1875,6 +1896,20 @@ export class LoadService {
     
         if (Globals.storeInfo.uid == Globals.userInfo?.uid){
           Globals.storeInfo!.homeLink = url
+        }
+      }
+      else if (type == "home_top"){
+        Globals.userInfo!.homeLinkTop = url
+    
+        if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+          Globals.storeInfo!.homeLinkTop = url
+        }
+      }
+      else if (type == "shop_top"){
+        Globals.userInfo!.shopLinkTop = url
+    
+        if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+          Globals.storeInfo!.shopLinkTop = url
         }
       }
       else if (type == "action"){
@@ -3086,6 +3121,14 @@ export class LoadService {
 
   getHomeURL(uid: string){
     return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2FStore_Images%2F' + "home" + '.png?alt=media'
+  }
+
+  getHomeTopURL(uid: string){
+    return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2FStore_Images%2F' + "home_top" + '.png?alt=media'
+  }
+
+  getShopTopURL(uid: string){
+    return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2FStore_Images%2F' + "shop_top" + '.png?alt=media'
   }
 
   getActionURL(uid: string){

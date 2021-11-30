@@ -16,7 +16,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
   <!-- Header-->
   <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-    <div class="cover" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
+    <div class="cover" [style.background-image]='"url(" + (storeInfo()!.homeLinkTop?.toString() ?? storeInfo()!.themeLink?.toString() ?? "") + ")"'>
         <div class="d-flex align-items-center justify-content-center" style="height: 750px; font-weight: bold;font-size:40px">
             
               <div>

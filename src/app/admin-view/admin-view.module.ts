@@ -36,6 +36,7 @@ import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { DragScrollModule } from 'ngx-drag-scroll';
 
 const routes: Routes = [
   {
@@ -76,6 +77,7 @@ const routes: Routes = [
     MatCheckboxModule,
     MatPaginatorModule,
     HttpClientModule,
+    DragScrollModule,
     NgxChartsModule,
     ClipboardModule,
     NgxCurrencyModule,

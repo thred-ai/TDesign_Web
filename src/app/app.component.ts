@@ -402,10 +402,6 @@ export class AppComponent implements OnInit {
     this.cdr.detectChanges()
   }
 
-  viewCart(){
-    const modalRef = this.modalService.open(CartComponent, {size : "lg"});
-    // modalRef.componentInstance.authMode = 1
-  }
   // ?product_type=Dresses
 
   formatPrice(price: number){
@@ -457,6 +453,9 @@ export class AppComponent implements OnInit {
 
 
   showPopUp(homePopup: Popup){
+    if (this.isAdmin()){
+      return
+    }
     setTimeout(() => {
       const modalRef = this.dialog.open(PopupComponent, {
         width: '' + this.myInnerHeight() + "px",

@@ -261,7 +261,6 @@ export class DesignComponent implements OnInit {
   }
 
   selectedImage(){
-    console.log(this.selectedSide)
     if (this.selectedSide == 0){
       return this.frontImg
     }
@@ -387,7 +386,6 @@ export class DesignComponent implements OnInit {
     let sub = modalRef.dismissed.subscribe((img: string) => {
       sub.unsubscribe()
       this.openCrop = false
-      console.log(img)
       if (img != '0'){
         event.srcElement.value = ""
         event.target.value = ""

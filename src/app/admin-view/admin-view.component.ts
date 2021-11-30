@@ -63,8 +63,8 @@ activeAffiliates = new Array<{
 items: Array<Dict<any>> = []
 miscItems: Array<Dict<any>> = []
 signedIn = false
-bankInfo?: any = ''
-subInfo?: any = ''
+bankInfo?: any = undefined
+subInfo?: any = undefined
 canTrial?: boolean = true
 
 invTitle = 'SELL MORE'
@@ -79,7 +79,7 @@ toolTip(logo: {
   img: string;
 }){
 
-  let same = (this.userForm.controls.socials.value as Array<any>)?.filter(social => { return social.name == logo.name})
+  let same = (this.storeForm.controls.socials.value as Array<any>)?.filter(social => { return social.name == logo.name})
 
 
   if (same && same.length !== 0){
@@ -148,11 +148,11 @@ showLinkModal(){
         this.loadService.saveDomain(domain, success => {
           if (success){
             if (domain == ''){
-              this.userForm.controls.custom_url.setValue(null)
+              this.storeForm.controls.custom_url.setValue(null)
               this.toast("Custom Domain Removed!")
               return
             }
-            this.userForm.controls.custom_url.setValue(domain)
+            this.storeForm.controls.custom_url.setValue(domain)
             this.toast("Custom Domain Saved!")
           } 
         }, Globals.storeInfo.uid)
@@ -339,7 +339,7 @@ showSocialModal(logo: {
 
   const modalRef = this.modalService.open(SocialFormComponent);
 
-  let same = (this.userForm.controls.socials.value as Array<any>)?.filter(social => { return social.name == logo.name})
+  let same = (this.storeForm.controls.socials.value as Array<any>)?.filter(social => { return social.name == logo.name})
   var prefix = ""
   if (logo.name.toLowerCase() == "tiktok"){
     prefix = "@"
@@ -355,7 +355,7 @@ showSocialModal(logo: {
 
   let sub = modalRef.dismissed.subscribe((url: string) => {
     sub.unsubscribe()
-    let array = (this.userForm.controls.socials.value as Array<{
+    let array = (this.storeForm.controls.socials.value as Array<{
       name: string,
       link: string,
     }>)
@@ -387,7 +387,7 @@ showSocialModal(logo: {
         if(element.name == logo.name) array.splice(index,1);
      });
     }
-    this.userForm.controls.socials.setValue(array)
+    this.storeForm.controls.socials.setValue(array)
   })
 
 }
@@ -746,6 +746,7 @@ showSocialModal(logo: {
 
   fonts(){return Globals.fonts}
 
+
   panels = [
     {
       Category: "DASHBOARD",
@@ -755,19 +756,34 @@ showSocialModal(logo: {
           "Icon": "trending_up",
           "Active": false
         },
+        // {
+        //   "Title": "AUDIENCE",
+        //   "Icon": "groups",
+        //   "Active": false
+        // },
+      ]
+    },  
+    {
+      Category: "PAGES",
+      Options: [
         {
-          "Title": "AFFILIATE",
-          "Icon": "local_atm",
+          "Title": "HOME",
+          "Icon": "home",
+          "Active": false
+        },
+        {
+          "Title": "SHOP",
+          "Icon": "store",
           "Active": false
         },
       ]
-    },  
+    },
     {
       Category: "MANAGE",
       Options: [
         {
-          "Title": "STORE",
-          "Icon": "shopping_bag",
+          "Title": "THEMES",
+          "Icon": "backup_table",
           "Active": false
         },
         {
@@ -776,18 +792,23 @@ showSocialModal(logo: {
           "Active": false
         },
         {
+          "Title": "STORE",
+          "Icon": "shopping_bag",
+          "Active": false
+        },
+        {
           "Title": "INVENTORY",
           "Icon": "local_shipping",
           "Active": false
         },
         {
-          "Title": "PROFILE",
-          "Icon": "person_outline",
+          "Title": "POPUPS",
+          "Icon": "wysiwyg",
           "Active": false
         },
         {
-          "Title": "MARKETING",
-          "Icon": "share",
+          "Title": "BANNERS",
+          "Icon": "view_day",
           "Active": false
         },
         {
@@ -795,11 +816,6 @@ showSocialModal(logo: {
           "Icon": "local_offer",
           "Active": false
         },
-        // {
-        //   "Title": "POPUPS",
-        //   "Icon": "wysiwyg",
-        //   "Active": false
-        // },
       ]
     },
     {
@@ -821,6 +837,11 @@ showSocialModal(logo: {
           "Active": false
         },
         {
+          "Title": "ADVERTISE",
+          "Icon": "share",
+          "Active": false
+        },
+        {
           "Title": "SECURITY",
           "Icon": "admin_panel_settings",
           "Active": false
@@ -830,6 +851,11 @@ showSocialModal(logo: {
     {
       Category: "OTHER",
       Options: [
+        {
+          "Title": "AFFILIATE",
+          "Icon": "local_atm",
+          "Active": false
+        },
         {
           "Title": "PRIVACY",
           "Icon": "vpn_lock",
@@ -849,33 +875,7 @@ showSocialModal(logo: {
     },
   ]
 
-  shouldRed(panel: any){
-    if (this.shouldHideLiveBtn()){
-      return false
-    }
-    if (panel.Title == "BILLING"){
-      if (Globals.billingInfo?.name?.replace(" ", "") == ''){
-        return true
-      }
-    }
-    else if (panel.Title == "PAYMENTS"){
-      if (this.bankInfo == ''){
-        return true
-      }
-    }
-    else if (panel.Title == "PLAN"){
-      if (this.subInfo == ''){
-        
-        return true
-      }
-    }
-    else if (panel.Title == "PRODUCTS"){
-      if (this.storeProducts?.length == 0){
-        return true
-      }
-    }
-    return false
-  }
+  
 
 
   getBillingAddressFirst(){
@@ -897,11 +897,11 @@ showSocialModal(logo: {
     let bco = Globals.storeInfo?.loading?.bg_color
     let name = Globals.storeInfo?.loading?.name
 
-    let color = this.storeForm.controls.loadingIndicatorColor.value as string ?? "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
-    let bg_color = this.storeForm.controls.loadingIndicatorBgColor.value as string ?? "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+    let color = this.themeForm.controls.loadingIndicatorColor.value as string ?? "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
+    let bg_color = this.themeForm.controls.loadingIndicatorBgColor.value as string ?? "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
 
     let indicator: Dict<string> = {
-      "name": this.storeForm.controls.loadingIndicator.value ?? name,
+      "name": this.themeForm.controls.loadingIndicator.value ?? name,
       "color": color,
       "bg_color": bg_color
     }
@@ -926,7 +926,6 @@ showSocialModal(logo: {
   buyMore(inventory: Inventory){
     const modalRef = this.modalService.open(InventoryBuyComponent, {size : "lg"});
     modalRef.componentInstance.inventory = inventory
-
 
     let sub = modalRef.dismissed.subscribe((inv?: Inventory) => {
       sub.unsubscribe()
@@ -962,12 +961,42 @@ showSocialModal(logo: {
     }
   }
 
+
   shouldHideLiveBtn(){
     return (this.storeProducts == undefined || Globals.billingInfo == undefined || this.bankInfo == undefined || this.subInfo == undefined)
   }
 
+
   storeLive(){
     return (this.storeProducts?.length ?? 0) != 0 && Globals.billingInfo?.name && this.bankInfo != '' && this.subInfo != ''
+  }
+
+  shouldRed(panel: any){
+    if (this.shouldHideLiveBtn()){
+      return false
+    }
+    if (panel.Title == "BILLING"){
+      if (Globals.billingInfo?.name?.replace(" ", "") == ''){
+        return true
+      }
+    }
+    else if (panel.Title == "PAYMENTS"){
+      if (this.bankInfo == ''){
+        return true
+      }
+    }
+    else if (panel.Title == "PLAN"){
+      if (this.subInfo == ''){
+        
+        return true
+      }
+    }
+    else if (panel.Title == "PRODUCTS"){
+      if (this.storeProducts && this.storeProducts?.length == 0){
+        return true
+      }
+    }
+    return false
   }
 
   buyNewInventory(template: Template){
@@ -1151,7 +1180,7 @@ isSpinning = false
 
   theme = 'Light'
 
-  userForm = this.fb.group({
+  storeForm = this.fb.group({
     username: [null, Validators.required],
     full_name: [null, Validators.required],
     bio: [null],
@@ -1163,19 +1192,35 @@ isSpinning = false
     }>(),
   });
 
-  storeForm = this.fb.group({
-    slogan: [null, Validators.required],
+  themeForm = this.fb.group({
     loadingIndicator: [null, Validators.required],
     loadingIndicatorColor: [null, Validators.required],
     loadingIndicatorBgColor: [null, Validators.required],
     themeImg: [null],
-    homeImg: [null],
     actionImg: [null],
     storeTheme: [null, Validators.required],
     font: [null, Validators.required],
+  });
+
+  bannerForm = this.fb.group({
     banners: [[[]]],
     style: [null, Validators.required]
   });
+
+  homeForm = this.fb.group({
+    slogan: [null, Validators.required],
+    themeImg: [null],
+    homeImg: [null],
+  });
+
+  shopForm = this.fb.group({
+    themeImg: [null],
+  });
+
+
+
+
+  
 
   changeEmailForm = this.fb.group({
     newEmail: [null, Validators.required],
@@ -1220,32 +1265,38 @@ isSpinning = false
 
   setForm(){
 
-    this.userForm.controls.username.setValue(Globals.userInfo?.username ?? "")
-    this.userForm.controls.full_name.setValue(Globals.userInfo?.fullName ?? "")
-    this.userForm.controls.bio.setValue(Globals.userInfo?.bio ?? "")
+    this.storeForm.controls.username.setValue(Globals.userInfo?.username ?? "")
+    this.storeForm.controls.full_name.setValue(Globals.userInfo?.fullName ?? "")
+    this.storeForm.controls.bio.setValue(Globals.userInfo?.bio ?? "")
 
 
-    this.storeForm.controls.slogan.setValue(Globals.userInfo?.slogan ?? "")
-    this.storeForm.controls.loadingIndicator.setValue(Globals.userInfo?.loading?.name ?? "")
+    this.homeForm.controls.slogan.setValue(Globals.userInfo?.slogan ?? "")
+    this.themeForm.controls.loadingIndicator.setValue(Globals.userInfo?.loading?.name ?? "")
 
-    this.storeForm.controls.themeImg.setValue(Globals.userInfo?.themeLink?.toString())
-    this.storeForm.controls.homeImg.setValue(Globals.userInfo?.homeLink?.toString())
-    this.storeForm.controls.actionImg.setValue(Globals.userInfo?.actionLink?.toString())
-
-    this.storeForm.controls.font.setValue(Globals.userInfo?.fontName)
+    this.themeForm.controls.themeImg.setValue(Globals.userInfo?.themeLink?.toString())
 
 
-    this.userForm.controls.socials.setValue(Globals.userInfo?.socials)
+    this.homeForm.controls.homeImg.setValue(Globals.userInfo?.homeLink?.toString())
+    this.homeForm.controls.themeImg.setValue(Globals.userInfo?.homeLinkTop?.toString())
 
-    this.userForm.controls.custom_url.setValue(Globals.userInfo?.customURL?.fullURL)
+    this.shopForm.controls.themeImg.setValue(Globals.userInfo?.shopLinkTop?.toString())
+
+    this.themeForm.controls.actionImg.setValue(Globals.userInfo?.actionLink?.toString())
+
+    this.themeForm.controls.font.setValue(Globals.userInfo?.fontName)
+
+
+    this.storeForm.controls.socials.setValue(Globals.userInfo?.socials)
+
+    this.storeForm.controls.custom_url.setValue(Globals.userInfo?.customURL?.fullURL)
 
     this.marketingForm.controls.pixel.setValue(Globals.userInfo?.fb_pixel)
 
-    this.storeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name?.toString())
+    this.themeForm.controls.storeTheme.setValue(Globals.userInfo?.colorStyle?.name?.toString())
 
-    this.storeForm.controls.banners.setValue(Globals.userInfo?.banners ?? [])
+    this.bannerForm.controls.banners.setValue(Globals.userInfo?.banners ?? [])
 
-    this.storeForm.controls.style.setValue(Globals.userInfo?.bannerStyle ?? 0)
+    this.bannerForm.controls.style.setValue(Globals.userInfo?.bannerStyle ?? 0)
 
 
     this.theme = Globals.userInfo?.colorStyle?.name?.toString() ?? 'Light'
@@ -1257,8 +1308,8 @@ isSpinning = false
 
     let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
 
-    this.storeForm.controls.loadingIndicatorColor.setValue(color ?? [])
-    this.storeForm.controls.loadingIndicatorBgColor.setValue(bg_color ?? [])
+    this.themeForm.controls.loadingIndicatorColor.setValue(color ?? [])
+    this.themeForm.controls.loadingIndicatorBgColor.setValue(bg_color ?? [])
 
 
   }
@@ -1276,10 +1327,10 @@ isSpinning = false
   selectColor(value: string, isPrimary: boolean){
 
       if (isPrimary){
-        this.storeForm.controls.loadingIndicatorColor.setValue(value ?? [])
+        this.themeForm.controls.loadingIndicatorColor.setValue(value ?? [])
       }
       else{
-        this.storeForm.controls.loadingIndicatorBgColor.setValue(value ?? [])
+        this.themeForm.controls.loadingIndicatorBgColor.setValue(value ?? [])
       }
 
       this.showSampleSpinner(2000)
@@ -1301,7 +1352,7 @@ isSpinning = false
           let sub = modalRef.dismissed.subscribe((img: string) => {
             sub.unsubscribe()
             if (img != '0'){
-              this.userForm.controls.profile_pic.setValue(img)
+              this.storeForm.controls.profile_pic.setValue(img)
             }
           })
         }
@@ -1313,11 +1364,11 @@ isSpinning = false
           let sub = modalRef.dismissed.subscribe((img: string) => {
             sub.unsubscribe()
             if (img != '0'){
-              this.storeForm.controls.themeImg.setValue(img)
+              this.themeForm.controls.themeImg.setValue(img)
             }
           })
         }
-        else if (type == "Promotion"){
+        else if (type == "Home_Background"){
           modalRef.componentInstance.ratio = 1.78
           modalRef.componentInstance.width = 2560
           modalRef.componentInstance.height = 1440
@@ -1325,7 +1376,31 @@ isSpinning = false
           let sub = modalRef.dismissed.subscribe((img: string) => {
             sub.unsubscribe()
             if (img != '0'){
-              this.storeForm.controls.homeImg.setValue(img)
+              this.homeForm.controls.themeImg.setValue(img)
+            }
+          })
+        }
+        else if (type == "Home_Promotion"){
+          modalRef.componentInstance.ratio = 1.78
+          modalRef.componentInstance.width = 2560
+          modalRef.componentInstance.height = 1440
+
+          let sub = modalRef.dismissed.subscribe((img: string) => {
+            sub.unsubscribe()
+            if (img != '0'){
+              this.homeForm.controls.homeImg.setValue(img)
+            }
+          })
+        }
+        else if (type == "Shop_Background"){
+          modalRef.componentInstance.ratio = 1.78
+          modalRef.componentInstance.width = 2560
+          modalRef.componentInstance.height = 1440
+
+          let sub = modalRef.dismissed.subscribe((img: string) => {
+            sub.unsubscribe()
+            if (img != '0'){
+              this.shopForm.controls.themeImg.setValue(img)
             }
           })
         }
@@ -1337,7 +1412,7 @@ isSpinning = false
           let sub = modalRef.dismissed.subscribe((img: string) => {
             sub.unsubscribe()
             if (img != '0'){
-              this.storeForm.controls.actionImg.setValue(img)
+              this.themeForm.controls.actionImg.setValue(img)
             }
           })
         }
@@ -1348,30 +1423,30 @@ isSpinning = false
 
   getImgSrc(){
     
-    if (this.userForm.controls.profile_pic.value){
-      return this.userForm.controls.profile_pic.value
+    if (this.storeForm.controls.profile_pic.value){
+      return this.storeForm.controls.profile_pic.value
     }
     return this.userInfo()?.profileLink
   }
 
   getUsername(){
     
-    if (this.userForm.controls.full_name.value){
-      return this.userForm.controls.full_name.value
+    if (this.storeForm.controls.full_name.value){
+      return this.storeForm.controls.full_name.value
     }
     return this.userInfo()?.fullName ?? "Brian's Tees"
   }
 
   saveProfile(){
 
-    if (this.userForm.valid){
+    if (this.storeForm.valid){
       var data = {
-        username: this.userForm.controls.username.value,
-        full_name: this.userForm.controls.full_name.value,
-        bio: this.userForm.controls.bio.value,
-        socials: this.userForm.controls.socials.value,
-        custom_url: this.userForm.controls.custom_url.value?.trim(),
-        profile_pic: this.userForm.controls.profile_pic.value
+        username: this.storeForm.controls.username.value,
+        full_name: this.storeForm.controls.full_name.value,
+        bio: this.storeForm.controls.bio.value,
+        socials: this.storeForm.controls.socials.value,
+        custom_url: this.storeForm.controls.custom_url.value?.trim(),
+        profile_pic: this.storeForm.controls.profile_pic.value
       }
 
       this.loadService.checkUsername(data.username, err => {
@@ -1552,9 +1627,9 @@ isSpinning = false
         banner.color = resp.color
         banner.icon = resp.icon
         banner.text = resp.text
-        let curr = this.storeForm.controls.banners.value ?? []
+        let curr = this.bannerForm.controls.banners.value ?? []
         curr.push(banner)
-        this.storeForm.controls.banners.setValue(curr)
+        this.bannerForm.controls.banners.setValue(curr)
       }
       else{
         
@@ -1584,7 +1659,7 @@ isSpinning = false
       
 
 
-      let bannerVals = this.storeForm.controls.banners.value as Array<Dict<any>>
+      let bannerVals = this.bannerForm.controls.banners.value as Array<Dict<any>>
 
   
       bannerVals.forEach(b => {
@@ -1607,7 +1682,7 @@ isSpinning = false
 
         bannerVals.splice(index, 1)
 
-        this.storeForm.controls.banners.setValue(bannerVals)
+        this.bannerForm.controls.banners.setValue(bannerVals)
 
         this.toast("Banner Removed!")
       }
@@ -1616,9 +1691,9 @@ isSpinning = false
   
 
   drop(event: CdkDragDrop<string[]>) {
-    let arr = this.storeForm.controls.banners.value
+    let arr = this.bannerForm.controls.banners.value
     moveItemInArray(arr, event.previousIndex, event.currentIndex);
-    this.storeForm.controls.banners.setValue(arr)
+    this.bannerForm.controls.banners.setValue(arr)
   }
 
   selectedTheme(){
@@ -1640,52 +1715,60 @@ isSpinning = false
   }
 
   selectTheme(){
-    this.theme = this.storeForm.controls.storeTheme.value
+    this.theme = this.themeForm.controls.storeTheme.value
   }
+
 
   async saveStore(){
 
-    if (this.storeForm.valid){
+    var data: Dict<any> = {}
 
-      var color = this.joinColor(this.storeForm.controls.loadingIndicatorColor.value)
-      var bg_color = this.joinColor(this.storeForm.controls.loadingIndicatorBgColor.value)
-
-
-      var banners = new Array<Dict<any>>()
-      
-
-
-      let bannerVals = this.storeForm.controls.banners.value as Array<Dict<any>>
-
-  
-      bannerVals.forEach(b => {
-        banners.push({
-          text: b.text,
-          icon: b.icon,
-          bg_color: this.numToColor(b.bg_color ?? []),
-          color: this.numToColor(b.color ?? [])
+    if (this.getSelectedPanel().Title == 'HOME'){
+      data = {
+        slogan: this.homeForm.controls.slogan.value,
+      }
+      var images = new Array<Dict<string>>()
+      if (this.homeForm.controls.themeImg.value && this.isBase64(this.homeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+          images.push({
+            "type" : "home_top",
+            "img" : this.homeForm.controls.themeImg.value
+          })
+      }
+      if (this.homeForm.controls.homeImg.value && this.isBase64(this.homeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+        images.push({
+          "type" : "home",
+          "img" : this.homeForm.controls.homeImg.value
         })
-      })
+      }
+      data.images = images
+    }
 
-
-      var data: Dict<any> = {
-        slogan: this.storeForm.controls.slogan.value,
+    else if (this.getSelectedPanel().Title == 'SHOP'){
+      data = {}
+      var images = new Array<Dict<string>>()
+      if (this.shopForm.controls.themeImg.value && this.isBase64(this.shopForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+          images.push({
+            "type" : "shop_top",
+            "img" : this.shopForm.controls.themeImg.value
+          })
+      }
+      data.images = images
+    }
+    
+    else if (this.getSelectedPanel().Title == 'THEMES'){
+      var color = this.joinColor(this.themeForm.controls.loadingIndicatorColor.value)
+      var bg_color = this.joinColor(this.themeForm.controls.loadingIndicatorBgColor.value)
+      data = {
         indicator: {
-          name: this.storeForm.controls.loadingIndicator.value,
+          name: this.themeForm.controls.loadingIndicator.value,
           color: color,
           bg_color: bg_color
         },
         loadingIndicatorColor: color,
         loadingIndicatorBgColor: bg_color,
-        banners: banners,
-        banner_style: this.storeForm.controls.style.value ?? 0,
-        font: this.storeForm.controls.font.value
+        font: this.themeForm.controls.font.value
       }
-
-      console.log(data.banner_style)
-
-      var selectedTheme = this.storeForm.controls.storeTheme.value as string
-
+      var selectedTheme = this.themeForm.controls.storeTheme.value as string
 
       let matchingTheme = Globals.themes?.find(theme => { return theme.themes.find(theme => { return theme.name == selectedTheme})})?.themes.find(theme => { return theme.name == selectedTheme})
 
@@ -1703,38 +1786,58 @@ isSpinning = false
           name: matchingTheme?.name
         }
       }
-
-    
-
       var images = new Array<Dict<string>>()
-      if (this.storeForm.controls.themeImg.value && this.isBase64(this.storeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+      if (this.themeForm.controls.themeImg.value && this.isBase64(this.themeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
           images.push({
             "type" : "theme",
-            "img" : this.storeForm.controls.themeImg.value
+            "img" : this.themeForm.controls.themeImg.value
           })
       }
-      if (this.storeForm.controls.homeImg.value && this.isBase64(this.storeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-        images.push({
-          "type" : "home",
-          "img" : this.storeForm.controls.homeImg.value
-        })
-      }
-      if (this.storeForm.controls.actionImg.value && this.isBase64(this.storeForm.controls.actionImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+      if (this.themeForm.controls.actionImg.value && this.isBase64(this.themeForm.controls.actionImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
         images.push({
           "type" : "action",
-          "img" : this.storeForm.controls.actionImg.value
+          "img" : this.themeForm.controls.actionImg.value
         })
       }
-
       data.images = images
+    }
+
+    else if (this.getSelectedPanel().Title == 'STORE'){
+      this.saveProfile()
+    }
+
+    else if (this.getSelectedPanel().Title == 'BANNERS'){
+
+      var banners = new Array<Dict<any>>()
+      let bannerVals = this.bannerForm.controls.banners.value as Array<Dict<any>>
+  
+      bannerVals.forEach(b => {
+        banners.push({
+          text: b.text,
+          icon: b.icon,
+          bg_color: this.numToColor(b.bg_color ?? []),
+          color: this.numToColor(b.color ?? [])
+        })
+      })
+      data = {
+        banners: banners,
+        banner_style: this.bannerForm.controls.style.value ?? 0,
+      }
+    }
 
 
-      this.loadService.myCallback = () => this.toast("Store Settings Updated!")
+
+    // if (this.storeForm.valid){
+
+
+      // console.log(data.banner_style)
+
+      this.loadService.myCallback = () => this.toast("Store Updated!")
       await this.loadService.saveStore(data)
-    }
-    else{
+      // }
+    // else{
 
-    }
+    // }
   }
 
   titleCase(str: string = '') {
@@ -1765,12 +1868,12 @@ isSpinning = false
 
   async selectSetting(index: number, section: number){
 
-    if (section == 3){
+    if (section == 4 && index != 0){
       var urlLink = ""
-      if (index == 0 || index == 1){
+      if (index == 1 || index == 2){
         urlLink = "https://thredapps.com/privacy-policy"
       }
-      else if (index == 2){
+      else if (index == 3){
         urlLink = "https://thredapps.com/customer-support"
       }
       const link = document.createElement('a');
@@ -1790,7 +1893,7 @@ isSpinning = false
           link.click()
           link.remove()
 
-      return
+      return 
     }
 
     if (this.isMobile()){

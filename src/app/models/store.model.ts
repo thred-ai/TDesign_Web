@@ -27,9 +27,14 @@ export class Store {
     postNotifsList: Array<string>
     slogan?: string
     loading?: Dict<any>
+
+
     themeLink?: URL = new URL('https://shopmythred.com')
     homeLink?: URL = new URL('https://shopmythred.com')
     actionLink?: URL = new URL('https://shopmythred.com')
+    homeLinkTop?: URL
+    shopLinkTop?: URL
+
     colorStyle: StoreTheme
     fontName?: string
     socials?: Array<{
@@ -64,9 +69,17 @@ export class Store {
       postNotifsList?: Array<string>,
       slogan?: string,
       loading?: Dict<any>,
+
+
       themeLink?: string,
-      homeLink?: string,
       actionLink?: string,
+
+
+      homeLink?: string,
+      homeLinkTop?: string,
+      shopLinkTop?: string,
+
+
       colorStyle?: StoreTheme,
       fontName?: string,
       socials?: Array<{
@@ -105,6 +118,12 @@ export class Store {
       }
       if (actionLink){
         this.actionLink = new URL(actionLink as string ?? "");
+      }
+      if (homeLinkTop){
+        this.homeLinkTop = new URL(homeLinkTop as string ?? "");
+      }
+      if (shopLinkTop){
+        this.shopLinkTop = new URL(shopLinkTop as string ?? "");
       }
 
       this.verified = verified;

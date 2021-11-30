@@ -30,7 +30,7 @@ style.color = "{{selectedIndicator()!.color}}"
 [name]="'sampleSpinner'"
 >
 
-<h3 class="text-center mt-5" [style.font-family]="storeForm.controls['font']!.value" >{{storeInfo()?.fullName}}
+<h3 class="text-center mt-5" [style.font-family]="themeForm.controls['font']!.value" >{{storeInfo()?.fullName}}
 </h3>
 </ngx-spinner>
 
@@ -39,91 +39,89 @@ style.color = "{{selectedIndicator()!.color}}"
 
     <!-- Sidebar -->
     <nav id="sidebar" [class.active]="classApplied" class="bg-{{storeInfo().colorStyle!.back_code}}">
-        <div style="position:fixed; width: 250px; height: 90vh; overflow-y: auto; ">
-            <div *ngFor="let panel of panels; index as s">
-                <div class="sidebar-header bg-{{storeInfo().colorStyle!.back_code}}" style="height: 50px; color: #6c757d;">
-                    <h3 [style.font-family]="storeInfo().fontName!">{{panel.Category}}</h3>
-                </div>
-        
-                <ul class="list-unstyled components pb-1 mb-1">
-                    <li *ngFor="let option of panel.Options; index as i" [class.active] = "getSelectedPanel()?.Title == option.Title">
-                        <a *ngIf="!shouldRed(option)" role="button" (click) = "selectSetting(i, s)" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} align-items-center justify-content-start" style="font-size: 20px;">
-                            <mat-icon class="me-2 ms-3"><span class="material-icons-outlined" style="font-size: 25px;">
-                                {{option.Icon}}
-                                </span></mat-icon>
-                            {{option.Title}}
-                        </a>
-                        <a *ngIf="shouldRed(option)" role="button" (click) = "selectSetting(i, s)" [style.font-family]="storeInfo().fontName!" class="side d-flex text-danger align-items-center justify-content-start" style="font-size: 20px;">
-                            <mat-icon class="me-2 ms-3"><span class="material-icons-outlined" style="font-size: 25px;">
-                                {{option.Icon}}
-                                </span></mat-icon>
-                            {{option.Title}}
-                        </a>
-                    </li>
-                </ul>
+        <div style="position:fixed; width: 250px; height: 100vh;" class="shadow card bg-{{storeInfo().colorStyle!.back_code}}">
+            <div class="w-100 d-flex my-2 justify-content-center align-items-center">
+                <img class="set-img" [src]='storeInfo().profileLink'/>
+                <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}} adminTitle" role="button" (click)="routeToHome()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
             </div>
-            <a class="btn side ms-2" role="button" (click) = "signOutPressed()" style="font-size: 12px; color: crimson; margin-bottom: 20vh;" [style.font-family]="storeInfo().fontName!">
-                LOG OUT
-            </a>
- 
+            <div class="w-100" style="overflow-y: auto; ">
+                <div class="w-100" *ngFor="let panel of panels; index as s">
+                    <div class="sidebar-header bg-{{storeInfo().colorStyle!.back_code}} w-100" style="height: 50px; color: #6c757d;">
+                        <h3 [style.font-family]="storeInfo().fontName!">{{panel.Category}}</h3>
+                    </div>
+            
+                    <ul class="list-unstyled components pb-1 mb-1">
+                        <li *ngFor="let option of panel.Options; index as i" [class.active] = "getSelectedPanel()?.Title == option.Title">
+                            <a *ngIf="!shouldRed(option)" role="button" (click) = "selectSetting(i, s)" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} align-items-center justify-content-start" style="font-size: 20px;">
+                                <mat-icon class="me-2 ms-3"><span class="material-icons-outlined" style="font-size: 25px;">
+                                    {{option.Icon}}
+                                    </span></mat-icon>
+                                {{option.Title}}
+                            </a>
+                            <a *ngIf="shouldRed(option)" role="button" (click) = "selectSetting(i, s)" [style.font-family]="storeInfo().fontName!" class="side d-flex text-danger align-items-center justify-content-start" style="font-size: 20px;">
+                                <mat-icon class="me-2 ms-3"><span class="material-icons-outlined" style="font-size: 25px;">
+                                    {{option.Icon}}
+                                    </span></mat-icon>
+                                {{option.Title}}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a class="btn side ms-2" role="button" (click) = "signOutPressed()" style="font-size: 12px; color: crimson; margin-bottom: 20vh;" [style.font-family]="storeInfo().fontName!">
+                    LOG OUT
+                </a>
+            </div> 
         </div>
     </nav>
 
     <!-- Page Content -->
-    <div *ngIf="signedIn" id="content" class = "w-100 h-100">
-        <header *ngIf="isBrowser();" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-            <div class="w-100 d-flex justify-content-start align-items-center">
-                <a class="btn side text-{{storeInfo().colorStyle!.text_code}}" role="button" (click) = "toggleSidebar()" style="text-shadow: 2px 2px 4px #42424281;">
-                    <mat-icon >menu_open</mat-icon>
-                </a>
-                <div [hidden]='shouldHideLiveBtn()'>
-                    <a *ngIf="storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-success rounded-pill mb-2 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
-                        STORE IS LIVE
-                        <mat-icon class="ms-2">
-                            <span class="material-icons-outlined" style="font-size: 25px;">
-                                check_circle
-                            </span>
-                        </mat-icon>
+    <div *ngIf="signedIn" id="content" class = "w-100 h-100 mt-2">
+        <header *ngIf="isBrowser();" class="border-bottom">
+            <div class="w-100 d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex justify-content-start">
+                    <a class="btn rounded-pill shadow mx-2 mb-0 card side bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" role="button" (click) = "toggleSidebar()" style="text-shadow: 2px 2px 4px #42424281;">
+                        <mat-icon >menu_open</mat-icon>
                     </a>
-                    <a *ngIf="!storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-danger rounded-pill mb-2 align-items-center justify-content-center fw-bold" style="font-size: 15px;" [ngbTooltip]="etipContent">
-                        <ng-template #etipContent>
-                            
-                            <div class="d-flex" *ngFor="let a of missingInfo()">
-                                <mat-icon class="ms-2 me-2 text-danger">
-                                    <span class="material-icons-outlined">
-                                        error_outline
-                                    </span>
-                                </mat-icon>
-                                <p class="text-start">
-                                    {{a}}
-                                </p>
-                            </div>
-                            
-                        </ng-template>
-                        STORE INACTIVE
-                        <mat-icon class="ms-2">
-                            <span class="material-icons-outlined" style="font-size: 25px;">
-                                error_outline
-                            </span>
-                        </mat-icon>
-                    </a>
-                </div>
-            </div>
-                <div class="cover" style="height: 200px; background-image: url(https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media);" [style.background-image]='"url(" + (storeInfo()!.themeLink?.toString() ?? "") + ")"'>
-                <div class="d-flex align-items-center justify-content-center h-100" style="font-weight: bold;font-size:35px">
-                    <a role="button" (click) = "toggleSidebar()" class = "side text-center text-{{storeInfo().colorStyle!.text_code}} d-flex align-items-center justify-content-between" style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;" [style.font-family]="storeInfo().fontName!">
-                        <a class="btn side mt-2 text-{{storeInfo().colorStyle!.text_code}}" [@rotatedState]='state' style="text-shadow: 2px 2px 4px #42424281;">
-                            <mat-icon >arrow_back_ios</mat-icon>
+                    <div [hidden]='shouldHideLiveBtn()'>
+                        <a *ngIf="storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-success rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                            LIVE
+                            <mat-icon class="ms-2">
+                                <span class="material-icons-outlined" style="font-size: 25px;">
+                                    check_circle
+                                </span>
+                            </mat-icon>
                         </a>
-                      {{getSelectedPanel()?.Title}}
-                    </a>
-                   </div>
-              </div>
+                        <a *ngIf="!storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-danger rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;" [ngbTooltip]="etipContent">
+                            <ng-template #etipContent>
+                                
+                                <div class="d-flex" *ngFor="let a of missingInfo()">
+                                    <mat-icon class="ms-2 me-2 text-danger">
+                                        <span class="material-icons-outlined">
+                                            error_outline
+                                        </span>
+                                    </mat-icon>
+                                    <p class="text-start">
+                                        {{a}}
+                                    </p>
+                                </div>
+                                
+                            </ng-template>
+                            INACTIVE
+                            <mat-icon class="ms-2">
+                                <span class="material-icons-outlined" style="font-size: 25px;">
+                                    error_outline
+                                </span>
+                            </mat-icon>
+                        </a>
+                    </div>
+                </div>
+                <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark me-2 d-flex rounded-pill">SAVE CHANGES</button>
+            </div>
           </header>
         
           <section *ngIf="isBrowser()" class="py-2 " style.background-color="{{selectedTheme()!.bg_color}}">
-            <div *ngIf="getSelectedPanel()?.Title == 'PROFILE'" class="py-3" >
-                <form [formGroup]="userForm" novalidate>
+            <div *ngIf="getSelectedPanel()?.Title == 'STORE'" class="py-3" >
+                <form [formGroup]="storeForm" novalidate>
                     <div class="card ms-4 me-4" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                         <div class="card-body">
                             <div class="row row-cols-1 px-2 row-cols-md-2 row-cols-xl-2 justify-content-center" >
@@ -245,8 +243,8 @@ style.color = "{{selectedIndicator()!.color}}"
                 </form>
             </div>
 
-            <div *ngIf="getSelectedPanel()?.Title == 'MARKETING'" class="py-3 w-100">
-                <!-- <div 
+            <div *ngIf="getSelectedPanel()?.Title == 'AUDIENCE'" class="py-3 w-100">
+                <div 
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-1 row-cols-xl-1 justify-content-center m-2 m-md-5 m-lg-5"
                 > 
                 <h2 class="w-100 text-start fw-bolder">Email Subscribers</h2>
@@ -302,7 +300,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 <td> {{ contact.phone }}</td>
                                 <td> {{ contact.timestamp }}</td>
                                 <td>
-                                  <button class="btn btn-primary"> Show details</button>
+                                  <button class="btn btn-primary">Show details</button>
                                 </td>
                               </tr>
                             </tbody>
@@ -311,7 +309,7 @@ style.color = "{{selectedIndicator()!.color}}"
                             [pageSize]="10">
                         </mat-paginator>
                     </div>                    
-                </div> -->
+                </div>
                 
                   <!-- <div class="card text-center" *ngIf="selectedContact">
                       <div class="card-header">
@@ -332,27 +330,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
 
 
-                <div class="row gx-0 gx-md-2 gx-lg-2 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
-                    <form [formGroup]="marketingForm" novalidate>
-                        <div class="col mb-2">
-                            <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Facebook Ads</h2>
-                                <div class="card-body">    
-                                    <div class="row">
-                                        <div class="col-md-8 mx-auto d-block">
-                                            <div class="form-group mb-4">
-                                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Facebook Pixel</label>
-                                                <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="ex: '642345685432123'" style.color="{{selectedTheme()!.color}}" formControlName="pixel">
-                                                <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">For more info, visit <a role="button" (click)="openFBAdsManager()">Facebook Ads Manager</a></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button [style.font-family]="storeInfo().fontName!" (click)='setFBPixel()' class="btn btn-dark mx-auto d-flex mt-2">Set Facebook Pixel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                
 
 
 
@@ -384,244 +362,335 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div> -->
             </div>
 
-            <div *ngIf="getSelectedPanel()?.Title == 'STORE'" class="py-3">
-
-                <div class="card ms-4 me-4 py-3 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                    <div class="card-body">
-
-                        <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark mx-auto d-flex mb-5">Save Changes</button>
-
-                        <form [formGroup]="storeForm" novalidate>
-                            <div class="row">
-                                <div class="col-md-8 mb-3 mx-auto d-block">
-                                    <div >
-                                        <mat-form-field class="w-100">
-                                            <mat-select (change)="selectTheme()" formControlName="storeTheme">
-                                                <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
-                                                  {{storeForm.controls['storeTheme'].value}}
-                                                </mat-select-trigger>
-                                                <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
-                                                    <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
-                                                        {{ cTheme.name }}
-                                                    </mat-option>
-                                                </mat-optgroup>
-                                              </mat-select>
-                                              <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
-                                              <mat-error *ngIf="storeForm.controls['storeTheme'].hasError('required')">
-                                                Theme is <strong>required</strong>
-                                            </mat-error>
-                                        </mat-form-field>
-
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Promotional Banners</label>
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;"> (Drag & Drop to Rearrange)</i></mat-hint>
-                                        <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" style.background-color="{{selectedTheme()!.bg_color}}">
-                                            <div class="example-box" *ngFor="let banner of this.storeForm.controls.banners.value ?? []" [style.font-family]="storeInfo().fontName!" style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" cdkDrag>
-                                              <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
-                                              <div class="w-100 d-flex justify-content-between align-items-center">
-                                                <div class="d-flex justify-content-between align-items-center me-2" style="text-overflow: ellipsis;">
-                                                    {{banner.text}}
-                                                    <mat-icon class="ms-1 mt-1" style="font-size: 20px;">{{banner.icon}}</mat-icon>
-                                                </div>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <a role="button">
-                                                        <mat-icon class="me-2" (click)='editBanner(banner)' style.color="{{bannerTheme(banner)!.color}}">edit</mat-icon>
-                                                    </a>
-                                                    <a role="button">
-                                                        <mat-icon class="me-2" (click)='deleteBanner(banner)' style.color="{{bannerTheme(banner)!.color}}">delete</mat-icon>
-                                                    </a>
-                                                    <a role="button">
-                                                        <mat-icon class="example-handle me-2" cdkDragHandle style.color="{{bannerTheme(banner)!.color}}">drag_handle</mat-icon>
-                                                    </a>
-                                                </div>
-                                              </div>
-                                            </div>
-                                        </div>
-                                        <div [style.font-family]="storeInfo().fontName!">
-                                            <a class="side" role="button" (click)='addBanner()' style.color="{{selectedTheme()!.color}}">
-                                                <div class="w-100 d-inline-flex justify-content-start align-items-center">
-                                                    ADD BANNER
-                                                    <mat-icon class="ms-1 mt-1" style="font-size: 20px;">add_circle_outline</mat-icon>
-                                                </div>
-                                            </a>
-                                        </div>
-
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Banner Style</label>
-                                        <mat-form-field class="w-100">
-                                            <mat-label>Banner Style</mat-label>
-                                            <mat-select formControlName="style">
-                                            <mat-select-trigger class="d-flex align-items-center" *ngIf='matchingStyle(storeForm.controls.style.value)'>
-                                                <!-- <mat-icon class="me-2">{{matchingStyle(bannerForm.controls.style.value)!.icon}}</mat-icon> -->
-                                                {{matchingStyle(storeForm.controls.style.value)!.name}}
-                                            </mat-select-trigger>
-                                              <mat-option *ngFor="let style of styles" [value]="style.code">
-                                                <!-- <mat-icon >{{type.icon}}</mat-icon> -->
-                                                {{style.name}}
-                                              </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 mb-3 mt-3 mx-auto d-block">
-                                    <div >
-                                        <mat-form-field class="w-100">
-                                        <mat-select formControlName="font">
-                                            <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeForm.controls['font'].value">
-                                              {{storeForm.controls['font'].value}}
-                                            </mat-select-trigger>
-                                            <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="font" [selected]="font == userInfo()!.fontName" *ngFor="let font of fonts()"[value]="font">
-                                              {{ font }}
-                                            </mat-option>
-                                          </mat-select>
-                                          <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Font</mat-placeholder>
-                                          <mat-error *ngIf="storeForm.controls['font'].hasError('required')">
-                                            Font is <strong>required</strong>
-                                          </mat-error>
-                                        </mat-form-field>
-                                        <!-- <select [style.font-family]="storeInfo().fontName!"  class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required">
-                                            <option *ngFor="let font of fonts()"  >{{ font }}</option>
-                                        </select> -->
-                                    </div>
-                                </div>
-                                <div class="col-md-8 mt-3 mx-auto d-block">
-                                    <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Store Slogan</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputSlogan" placeholder="ex: 'Coolest brand on the block'" formControlName="slogan" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will show up on your store's homepage</i></mat-hint>
-                                    </div>
-                                </div>
+            <div *ngIf="getSelectedPanel()?.Title == 'THEMES'" class="py-3">
+                <form [formGroup]="themeForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <mat-form-field class="w-100">
+                                <mat-select (change)="selectTheme()" formControlName="storeTheme">
+                                    <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
+                                      {{themeForm.controls['storeTheme'].value}}
+                                    </mat-select-trigger>
+                                    <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
+                                        <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
+                                            {{ cTheme.name }}
+                                        </mat-option>
+                                    </mat-optgroup>
+                                  </mat-select>
+                                  <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
+                                  <mat-error *ngIf="themeForm.controls['storeTheme'].hasError('required')">
+                                    Theme is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-md-8 mb-3 mt-3 mx-auto d-block">
+                            <div >
+                                <mat-form-field class="w-100">
+                                <mat-select formControlName="font">
+                                    <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="themeForm.controls['font'].value">
+                                      {{themeForm.controls['font'].value}}
+                                    </mat-select-trigger>
+                                    <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="font" [selected]="font == userInfo()!.fontName" *ngFor="let font of fonts()"[value]="font">
+                                      {{ font }}
+                                    </mat-option>
+                                  </mat-select>
+                                  <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Font</mat-placeholder>
+                                  <mat-error *ngIf="themeForm.controls['font'].hasError('required')">
+                                    Font is <strong>required</strong>
+                                  </mat-error>
+                                </mat-form-field>
                             </div>
-                            
-                            
-
-                            <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
-                                <div class="col-md-8 mb-3 mx-auto d-block">
-                                    <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Store Background Image  ➜</label>
-
-
-                                    <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will show up at the top for ALL pages</i></mat-hint>
-
-                                    <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                        <!-- Product image-->
-
-                                        <a role="button" class="btn" (click)="fileBackground.click()">
-                                            <img class="card-img-top"  alt='ok' src="{{storeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-                                        </a>
-                                        <!-- Product details-->
-                                        
-                                        <div class="card-body p-2 pb-1">
-                                            <div class="mt-2 text-center">
-
-                                                <a role="button" class="btn" (click)="fileBackground.click()">
-                                                    <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                                    <input #fileBackground type="file" (change)="fileChangeEvent($event, 'Background')" style="display:none;" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="col-md-8 mb-3 mx-auto d-block">
-                                    <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Promotion Image  ➜</label>
-                                    <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will show up on the homepage</i></mat-hint>
-
-                                    <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                        <!-- Product image-->
-
-                                        <a role="button" class="btn" (click)="fileHome.click()">
-                                            <img class="card-img-top"  alt='ok' src="{{storeForm.controls['homeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-                                        </a>
-                                        <!-- Product details-->
-                                        <div class="card-body p-2 pb-1">
-                                            <div class="mt-2 text-center">
-
-                                                <a role="button" class="btn" (click)="fileHome.click()">
-                                                    <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                                    <input #fileHome type="file" (change)="fileChangeEvent($event, 'Promotion')" style="display:none;" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 mb-3 mx-auto d-block">
-                                    <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Action Image  ➜</label>
-                                    <mat-hint [style.font-family]="storeInfo().fontName!" align="start"><i style="font-size: 12px; color: #6c757d;">Displayed with any action button (ex: Continue Shopping) </i></mat-hint>
-
-                                    <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                        <!-- Product image-->
-
-                                        <a role="button" class="btn" (click)="fileAction.click()">
-                                            <img class="card-img-top"  alt='ok' src="{{storeForm.controls['actionImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-
-                                        </a>
-                                        <!-- Product details-->
-                                        <div class="card-body p-2 pb-1">
-                                            <div class="mt-2 text-center">
-
-                                                <a role="button" class="btn" (click)="fileAction.click()">
-                                                    <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                                    <input #fileAction type="file" (change)="fileChangeEvent($event, 'Action')" style="display:none;" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Store Loading Indicator  ➜</label>
-                                    <mat-hint [style.font-family]="storeInfo().fontName!" align="start"><i style="font-size: 12px; color: #6c757d;">Displayed anytime loading is in progress. </i></mat-hint>
-                                    <div>
-                                        <select [style.font-family]="storeInfo().fontName!" formControlName="loadingIndicator" class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required" (change) = "showSampleSpinner()">
-                                            <option *ngFor="let indicator of loaders()" [selected]="indicator == storeForm.controls['loadingIndicator'].value" >{{ indicator }}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row gx-10 row-cols-1 justify-content-center">
-                                <div class="col-md-8 mb-3 mx-auto d-block">
-                                    <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Color</label>
-                                    <div class="card h-auto">
-                                    <a
-                                    role="button" 
-                                    class="btn"
-                                    [style.background]="selectedIndicator()!.color"
-                                    [cpPosition]="'top'"
-                                    [cpPositionRelativeToArrow]="true"
-                                    (colorPickerSelect)="selectColor($event, true)"
-                                    [cpOutputFormat]="'rgba'"
-                                    [cpOKButton]="true"
-                                    [cpOKButtonText]="'SET COLOR'"
-                                    [cpOKButtonClass]= "'btn btn-dark'"
-                                    [cpSaveClickOutside]="false"
-                                    [(colorPicker)]="selectedIndicator()!.color"
-                                    >
-                                    <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
-                                    </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 mb-3 mx-auto d-block">
-                                    <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Background Color</label>
-                                    <div class="card h-auto">
-                                    <a
-                                    role="button" 
-                                    class="btn"
-                                    [style.background]="selectedIndicator()!.bg_color"
-                                    [cpPosition]="'top'"
-                                    [cpPositionRelativeToArrow]="true"
-                                    (colorPickerSelect)="selectColor($event, false)"
-                                    [cpOutputFormat]="'rgba'"
-                                    [cpOKButton]="true"
-                                    [cpOKButtonText]="'SET COLOR'"
-                                    [cpOKButtonClass]= "'btn btn-dark'"
-                                    [cpSaveClickOutside]="false"
-                                    [(colorPicker)]="selectedIndicator()!.bg_color"
-                                    >
-                                    <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
-                                    </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark mx-auto d-flex">Save Changes</button>
+                        </div>
                     </div>
+                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Theme Background Image</label>
+    
+                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                <!-- Product image-->
+    
+                                <a role="button" class="btn" (click)="fileBackground.click()">
+                                    <img class="card-img-top"  alt='ok' src="{{themeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+                                </a>
+                                <!-- Product details-->
+                                
+                                <div class="card-body p-2 pb-1">
+                                    <div class="mt-2 text-center">
+    
+                                        <a role="button" class="btn" (click)="fileBackground.click()">
+                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                            <input #fileBackground type="file" (change)="fileChangeEvent($event, 'Background')" style="display:none;" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Theme CTA Image</label>
+    
+                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                <!-- Product image-->
+    
+                                <a role="button" class="btn" (click)="fileAction.click()">
+                                    <img class="card-img-top"  alt='ok' src="{{themeForm.controls['actionImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+    
+                                </a>
+                                <!-- Product details-->
+                                <div class="card-body p-2 pb-1">
+                                    <div class="mt-2 text-center">
+    
+                                        <a role="button" class="btn" (click)="fileAction.click()">
+                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                            <input #fileAction type="file" (change)="fileChangeEvent($event, 'Action')" style="display:none;" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Store Loading Indicator</label>
+                            <div>
+                                <select [style.font-family]="storeInfo().fontName!" formControlName="loadingIndicator" class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required" (change) = "showSampleSpinner()">
+                                    <option *ngFor="let indicator of loaders()" [selected]="indicator == themeForm.controls['loadingIndicator'].value" >{{ indicator }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gx-10 row-cols-1 justify-content-center">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Color</label>
+                            <div class="card h-auto">
+                            <a
+                            role="button" 
+                            class="btn"
+                            [style.background]="selectedIndicator()!.color"
+                            [cpPosition]="'top'"
+                            [cpPositionRelativeToArrow]="true"
+                            (colorPickerSelect)="selectColor($event, true)"
+                            [cpOutputFormat]="'rgba'"
+                            [cpOKButton]="true"
+                            [cpOKButtonText]="'SET COLOR'"
+                            [cpOKButtonClass]= "'btn btn-dark'"
+                            [cpSaveClickOutside]="false"
+                            [(colorPicker)]="selectedIndicator()!.color"
+                            >
+                            <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
+                            </a>
+                            </div>
+                        </div>
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Background Color</label>
+                            <div class="card h-auto">
+                            <a
+                            role="button" 
+                            class="btn"
+                            [style.background]="selectedIndicator()!.bg_color"
+                            [cpPosition]="'top'"
+                            [cpPositionRelativeToArrow]="true"
+                            (colorPickerSelect)="selectColor($event, false)"
+                            [cpOutputFormat]="'rgba'"
+                            [cpOKButton]="true"
+                            [cpOKButtonText]="'SET COLOR'"
+                            [cpOKButtonClass]= "'btn btn-dark'"
+                            [cpSaveClickOutside]="false"
+                            [(colorPicker)]="selectedIndicator()!.bg_color"
+                            >
+                            <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div *ngIf="getSelectedPanel()?.Title == 'BANNERS'" class="py-3">
+                <form [formGroup]="bannerForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <div>
+                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Promotional Banners</label>
+                                <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;"> (Drag & Drop to Rearrange)</i></mat-hint>
+                                <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" style.background-color="{{selectedTheme()!.bg_color}}">
+                                    <div class="example-box" *ngFor="let banner of bannerForm.controls.banners.value ?? []" [style.font-family]="storeInfo().fontName!" style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" cdkDrag>
+                                      <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
+                                      <div class="w-100 d-flex justify-content-between align-items-center">
+                                        <div class="d-flex justify-content-between align-items-center me-2" style="text-overflow: ellipsis;">
+                                            {{banner.text}}
+                                            <mat-icon class="ms-1 mt-1" style="font-size: 20px;">{{banner.icon}}</mat-icon>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a role="button">
+                                                <mat-icon class="me-2" (click)='editBanner(banner)' style.color="{{bannerTheme(banner)!.color}}">edit</mat-icon>
+                                            </a>
+                                            <a role="button">
+                                                <mat-icon class="me-2" (click)='deleteBanner(banner)' style.color="{{bannerTheme(banner)!.color}}">delete</mat-icon>
+                                            </a>
+                                            <!-- <a role="button">
+                                                <mat-icon class="example-handle me-2" cdkDragHandle style.color="{{bannerTheme(banner)!.color}}">drag_handle</mat-icon>
+                                            </a> -->
+                                        </div>
+                                      </div>
+                                    </div>
+                                </div>
+                                <div [style.font-family]="storeInfo().fontName!">
+                                    <a class="side" role="button" (click)='addBanner()' style.color="{{selectedTheme()!.color}}">
+                                        <div class="w-100 d-inline-flex justify-content-start align-items-center">
+                                            ADD BANNER
+                                            <mat-icon class="ms-1 mt-1" style="font-size: 20px;">add_circle_outline</mat-icon>
+                                        </div>
+                                    </a>
+                                </div>
+    
+                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Banner Style</label>
+                                <mat-form-field class="w-100">
+                                    <mat-label>Banner Style</mat-label>
+                                    <mat-select formControlName="style">
+                                    <mat-select-trigger class="d-flex align-items-center" *ngIf='matchingStyle(bannerForm.controls.style.value)'>
+                                        <!-- <mat-icon class="me-2">{{matchingStyle(bannerForm.controls.style.value)!.icon}}</mat-icon> -->
+                                        {{matchingStyle(bannerForm.controls.style.value)!.name}}
+                                    </mat-select-trigger>
+                                      <mat-option *ngFor="let style of styles" [value]="style.code">
+                                        <!-- <mat-icon >{{type.icon}}</mat-icon> -->
+                                        {{style.name}}
+                                      </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div *ngIf="getSelectedPanel()?.Title == 'ADVERTISE'" class="py-3">
+                <div class="row gx-0 gx-md-2 gx-lg-2 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
+                    <form [formGroup]="marketingForm" novalidate>
+                        <div class="col mb-2">
+                            <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Facebook Ads</h2>
+                                <div class="card-body">    
+                                    <div class="row">
+                                        <div class="col-md-8 mx-auto d-block">
+                                            <div class="form-group mb-4">
+                                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Facebook Pixel</label>
+                                                <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="ex: '642345685432123'" style.color="{{selectedTheme()!.color}}" formControlName="pixel">
+                                                <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">For more info, visit <a role="button" (click)="openFBAdsManager()">Facebook Ads Manager</a></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button [style.font-family]="storeInfo().fontName!" (click)='setFBPixel()' class="btn btn-dark mx-auto d-flex mt-2">Set Facebook Pixel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
+
+            <div *ngIf="getSelectedPanel()?.Title == 'HOME'" class="py-3">
+                <form [formGroup]="homeForm" novalidate>
+                    <div class="row">
+                        <div class="col-md-8 mt-3 mx-auto d-block">
+                            <div class="form-group mb-4">
+                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Top Display Text</label>
+                                <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputSlogan" placeholder="ex: 'Coolest brand on the block'" formControlName="slogan" style.color="{{selectedTheme()!.color}}">
+                                <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will show up at the top of the homepage</i></mat-hint>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Top Image</label>
+                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                <!-- Product image-->
+    
+                                <a role="button" class="btn" (click)="fileHome.click()">
+                                    <img class="card-img-top"  alt='ok' src="{{homeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+                                </a>
+                                <!-- Product details-->
+                                <div class="card-body p-2 pb-1">
+                                    <div class="mt-2 text-center">
+    
+                                        <a role="button" class="btn" (click)="fileHome.click()">
+                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                            <input #fileHome type="file" (change)="fileChangeEvent($event, 'Home_Background')" style="display:none;" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Center Image</label>
+                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                <!-- Product image-->
+    
+                                <a role="button" class="btn" (click)="fileHome.click()">
+                                    <img class="card-img-top"  alt='ok' src="{{homeForm.controls['homeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+                                </a>
+                                <!-- Product details-->
+                                <div class="card-body p-2 pb-1">
+                                    <div class="mt-2 text-center">
+    
+                                        <a role="button" class="btn" (click)="fileHome.click()">
+                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                            <input #fileHome type="file" (change)="fileChangeEvent($event, 'Home_Promotion')" style="display:none;" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div *ngIf="getSelectedPanel()?.Title == 'SHOP'" class="py-3">
+                <form [formGroup]="shopForm" novalidate>
+                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
+                        <div class="col-md-8 mb-3 mx-auto d-block">
+                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Shop Page Top Image</label>
+                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                <!-- Product image-->
+    
+                                <a role="button" class="btn" (click)="fileHome.click()">
+                                    <img class="card-img-top"  alt='ok' src="{{shopForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+                                </a>
+                                <!-- Product details-->
+                                <div class="card-body p-2 pb-1">
+                                    <div class="mt-2 text-center">
+    
+                                        <a role="button" class="btn" (click)="fileHome.click()">
+                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                            <input #fileHome type="file" (change)="fileChangeEvent($event, 'Shop_Background')" style="display:none;" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div *ngIf="getSelectedPanel()?.Title == 'PRODUCT'" class="py-3">
+                <!-- <form [formGroup]="shopForm" novalidate>
+                    <mat-form-field class="w-100">
+                        <mat-select (change)="selectTheme()" formControlName="storeTheme">
+                            <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
+                              {{storeForm.controls['storeTheme'].value}}
+                            </mat-select-trigger>
+                            <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
+                                <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
+                                    {{ cTheme.name }}
+                                </mat-option>
+                            </mat-optgroup>
+                          </mat-select>
+                          <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
+                          <mat-error *ngIf="storeForm.controls['storeTheme'].hasError('required')">
+                            Theme is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+                </form> -->
+            </div>
+
+
+
             <div *ngIf="getSelectedPanel()?.Title == 'POPUPS'">
                 <div class="container px-4 px-lg-5 mt-0 pt-0">
                     <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
