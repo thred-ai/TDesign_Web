@@ -83,17 +83,16 @@ export class LoginComponent implements OnInit {
 
 
   authForm = this.fb.group({
-    username: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    username: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern("^[a-zA-Z0-9]+$")]],
     email: [null, [Validators.required, Validators.email]],
-    password: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    confirmpassword: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    password: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+    confirmpassword: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
   });
 
   loginForm = this.fb.group({
-    username: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-    password: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+    username: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+    password: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
   });
-
   constructor(
     private cdr: ChangeDetectorRef, 
     private load: LoadService, 
@@ -160,13 +159,33 @@ hideSpinner(){
     })
   }
   
-  close(){
+  async close(){
     console.log("go")
     this.hideSpinner()
     if (this.isLanding){
       this.signedIn.emit(true)
     }
     else{
+      let user = await (this.load.isLoggedIn())
+      if (
+        Globals.storeInfo.uid &&
+        Globals.storeInfo.uid != '' &&
+        user?.uid &&
+        user?.uid != Globals.storeInfo.uid &&
+        user?.email &&
+        Globals.isNewUser &&
+        !user?.isAnonymous
+        ){
+          this.load.saveData(0, user?.email, success => {
+            this.spinner.hide('popupSpinner')
+            if (success){
+              console.log('saved')
+            }
+            else{
+              this.err = "An Error Occured, Try Again Later"
+            }
+          }, undefined, Globals.storeInfo.uid)
+      }
       this.modalService.dismissAll("success")
     }
   }
@@ -253,20 +272,33 @@ hideSpinner(){
     if (this.authForm.valid){
 
 
-      const email = this.authForm.controls.email.value
+      const email = this.authForm.controls.email.value ?? ''
 
-      const username = this.authForm.controls.username.value
+      const username = this.authForm.controls.username.value ?? ''
 
-      const password = this.authForm.controls.password.value
+      const password = this.authForm.controls.password.value ?? ''
 
-      const confirmpassword = this.authForm.controls.confirmpassword.value
+      const confirmpassword = this.authForm.controls.confirmpassword.value ?? ''
+
+      if (password == '' || username == '' || email == ''){
+        return
+      }
+
+      if (password?.trim() != confirmpassword?.trim()){
+        this.error("Password Field's don't match")
+        return
+      }
 
       const credentials = {
 
         "email": email,
-        "password": password,
+        "password": password?.trim(),
         "username": username,
       }
+
+      console.log(username)
+
+      return
 
       console.log(this.affiliate)
       this.loadingAction = "Creating Account..."

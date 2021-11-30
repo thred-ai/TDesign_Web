@@ -1188,7 +1188,7 @@ isSpinning = false
   theme = 'Light'
 
   storeForm = this.fb.group({
-    username: [null, Validators.required],
+    username: [null, [Validators.required, Validators.pattern("^[a-zA-Z0-9]+$")]],
     full_name: [null, Validators.required],
     bio: [null],
     profile_pic: [null],
