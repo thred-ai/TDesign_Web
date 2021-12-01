@@ -294,7 +294,7 @@ hideSpinner(){
       const credentials = {
 
         "email": email,
-        "password": password?.trim(),
+        "password": password,
         "username": username,
       }
 
@@ -304,6 +304,7 @@ hideSpinner(){
       this.loadingAction = "Creating Account..."
 
       this.showSpinner()
+
       if (password == confirmpassword){
         this.load.myCallback = () => this.close()        
         this.load.checkUsername(username, err => {
@@ -314,6 +315,7 @@ hideSpinner(){
             this.load.registerAccount("Email_UP", (app, error) => {
               if (error){
                 this.err = error
+                this.hideSpinner()
               }
               else{
                 app?.setOptions()

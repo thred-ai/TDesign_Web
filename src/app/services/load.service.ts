@@ -168,7 +168,7 @@ export class LoadService {
       if (docData){
         console.log(docData)
         let plan_id = docData.plan_id as string
-        let can_trial = docData.canTrial as boolean ?? false
+        let can_trial = docData.canTrial as boolean ?? true
         if (plan_id && plan_id != ""){
           this.functions.httpsCallable('getSubInfo')({}).pipe(first()).subscribe(resp => {  
             callback(resp)
@@ -182,7 +182,7 @@ export class LoadService {
         }
       }
       else{
-        callback(undefined, false)
+        callback(undefined, true)
       }
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
@@ -2391,6 +2391,11 @@ export class LoadService {
       let password = credentials?.password!
       let email = credentials?.email!
 
+
+      console.log(username)
+      console.log(email)
+      console.log(password)
+
       this.auth.createUserWithEmailAndPassword(email, password).then(async (result) => {
         await result.user?.sendEmailVerification()
         if (result.user && username){
@@ -2406,7 +2411,7 @@ export class LoadService {
           var errorCode = error.code;
           var errorMessage = error.message;
           callback(undefined, errorMessage)
-          console.log(errorCode)
+          console.log(error)
       });  
     }
     else if(type == "Email_IN"){
@@ -2547,7 +2552,7 @@ export class LoadService {
       'Followers_Count' : 0,
       'Posts_Count' : 0,
       'Platform' : "WEB",
-      'Associated_Store' : store,
+      'Associated_Store' : store ?? null,
       'Timestamp' : new Date()
     }
 
