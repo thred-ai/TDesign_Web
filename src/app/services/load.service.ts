@@ -1303,7 +1303,7 @@ export class LoadService {
                 }
                 callback()
               }, err => {
-                callback(err)
+                callback('Card was declined')
                 console.error({ err });
               });
             }

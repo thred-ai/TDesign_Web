@@ -283,8 +283,12 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
       }
       console.log(f.country.value)
 
+      if (isPlatformBrowser(this.platformID)){
+        this.spinner.show()
+      };
 
       this.loadService.linkCard({card: this.card1, stripe: this.stripeService}, (err?: any) => {
+        this.spinner.hide()
         if (err){
           this.err = err
         }
@@ -293,9 +297,6 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
         }
       })
 
-      if (isPlatformBrowser(this.platformID)){
-          this.spinner.show()
-      };
     }
   }
 

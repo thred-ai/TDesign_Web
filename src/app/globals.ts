@@ -530,6 +530,9 @@ public static fonts = [
   ];
 
   public static allCountries = [
+    {"name": "United States", "code": "US"},
+    {"name": "Canada", "code": "CA"},
+    {"name": "United Kingdom", "code": "GB"},
     {"name": "Afghanistan", "code": "AF"},
     {"name": "Åland Islands", "code": "AX"},
     {"name": "Albania", "code": "AL"},
@@ -568,7 +571,6 @@ public static fonts = [
     {"name": "Burundi", "code": "BI"},
     {"name": "Cambodia", "code": "KH"},
     {"name": "Cameroon", "code": "CM"},
-    {"name": "Canada", "code": "CA"},
     {"name": "Cape Verde", "code": "CV"},
     {"name": "Cayman Islands", "code": "KY"},
     {"name": "Central African Republic", "code": "CF"},
@@ -758,8 +760,6 @@ public static fonts = [
     {"name": "Uganda", "code": "UG"},
     {"name": "Ukraine", "code": "UA"},
     {"name": "United Arab Emirates", "code": "AE"},
-    {"name": "United Kingdom", "code": "GB"},
-    {"name": "United States", "code": "US"},
     {"name": "United States Minor Outlying Islands", "code": "UM"},
     {"name": "Uruguay", "code": "UY"},
     {"name": "Uzbekistan", "code": "UZ"},
