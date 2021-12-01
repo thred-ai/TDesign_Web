@@ -168,7 +168,7 @@ export class LoadService {
       if (docData){
         console.log(docData)
         let plan_id = docData.plan_id as string
-        let can_trial = docData.canTrial as boolean ?? true
+        let can_trial = docData.canTrial as boolean ?? false
         if (plan_id && plan_id != ""){
           this.functions.httpsCallable('getSubInfo')({}).pipe(first()).subscribe(resp => {  
             callback(resp)
@@ -182,7 +182,7 @@ export class LoadService {
         }
       }
       else{
-        callback(undefined, true)
+        callback(undefined, false)
       }
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
@@ -2372,7 +2372,7 @@ export class LoadService {
     return this.auth.authState.pipe(first()).toPromise();
   }
 
-  registerAccount(type: string, callback: (root?: AppComponent, error?: string) => any, credentials?: Dict<string>, affiliate?: string){
+  registerAccount(type: string, callback: (root?: AppComponent, error?: string) => any, credentials?: Dict<string>, affiliate?: string, associated?: string){
 
     if (type == "Guest"){
       this.auth.signInAnonymously().then(() => {
@@ -2395,7 +2395,7 @@ export class LoadService {
         await result.user?.sendEmailVerification()
         if (result.user && username){
           Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-          await this.setUsername(result.user?.uid, username, true, affiliate)
+          await this.setUsername(result.user?.uid, username, true, affiliate, associated)
           callback(this.rootComponent, undefined)
         }
         else{
@@ -2534,7 +2534,7 @@ export class LoadService {
     return Globals.storeInfo.profileLink
   }
 
-  async setUsername(uid: string, username: string, hasUsername?: boolean, affiliate?: string){
+  async setUsername(uid: string, username: string, hasUsername?: boolean, affiliate?: string, store?: string){
     
     var data = {
       'Full_Name' : "GUEST",
@@ -2547,6 +2547,7 @@ export class LoadService {
       'Followers_Count' : 0,
       'Posts_Count' : 0,
       'Platform' : "WEB",
+      'Associated_Store' : store,
       'Timestamp' : new Date()
     }
 

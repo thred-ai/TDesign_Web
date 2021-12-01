@@ -23,7 +23,7 @@
                             <div id="back" style="background-color:#cdf4fc; position: relative; aspect-ratio: 1/1;">
                                 
                                 <div class="w-100 h-100 d-flex justify-content-center" style="position: absolute;">
-                                    <a role="button" (click)="fileBackground.click()" class="d-flex align-items-center justify-content-center" style="position: absolute; pointer-events: auto;  text-decoration: none;" [class.noDesign]="shouldShowCanvas() && !hideCanvas" [style.borderColor] = "calculateColor(color).border_color" [style.height.px]="calculateHeight()" [style.top.px]="calculateCenterY()" [style.width.px]="calculateWidth()">
+                                    <a *ngIf='showCanv' role="button" (click)="fileBackground.click()" class="d-flex align-items-center justify-content-center" style="position: absolute; pointer-events: auto;  text-decoration: none;" [class.noDesign]="shouldShowCanvas() && !hideCanvas" [style.borderColor] = "calculateColor(color).border_color" [style.height.px]="calculateHeight()" [style.top.px]="calculateCenterY()" [style.left.px]="calculateCenterX()" [style.width.px]="calculateWidth()">
                                         
                                         <p *ngIf='!hideCanvas' [hidden]="!shouldShowCanvas()" class="fw-bolder text-center text-wrap text-{{calculateColor(color).text_color}}" style="pointer-events: none;" >
                                             {{sideName()}}

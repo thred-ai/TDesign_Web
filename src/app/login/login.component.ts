@@ -289,6 +289,8 @@ hideSpinner(){
         return
       }
 
+      let associated = (Globals.storeInfo?.uid && Globals.storeInfo?.uid != '') ? Globals.storeInfo?.uid : undefined
+
       const credentials = {
 
         "email": email,
@@ -297,8 +299,6 @@ hideSpinner(){
       }
 
       console.log(username)
-
-      return
 
       console.log(this.affiliate)
       this.loadingAction = "Creating Account..."
@@ -320,7 +320,7 @@ hideSpinner(){
                 this.hideSpinner()
                 this.close()
               }
-            }, credentials, this.affiliate)
+            }, credentials, this.affiliate, associated)
           }
         })
       }

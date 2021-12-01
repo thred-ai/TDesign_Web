@@ -510,11 +510,16 @@ export class DesignComponent implements OnInit {
     this.sanitizer = sanitizer
   }
 
+  showCanv = false
+
   ngOnInit(): void {
     
 
     this.loadTemplate()
 
+    setTimeout(() => {
+      this.showCanv = true
+    }, 200);
 
   }
 
@@ -535,6 +540,15 @@ export class DesignComponent implements OnInit {
     let height = (back?.height ?? 0)
 
     return ((height / 2) + (this.selectedTemplate!.supportedSides[this.selectedSide ?? 0].centerYConst * (width / 375))) - (this.calculateHeight()) / 2
+  }
+
+  calculateCenterX(){
+    let frame = document.getElementById("frame")?.getBoundingClientRect()
+    let width = (frame?.width ?? 0)
+    let back = document.getElementById("back")?.getBoundingClientRect()
+    let height = (back?.height ?? 0)
+
+    return ((width / 2) + (this.selectedTemplate!.supportedSides[this.selectedSide ?? 0].centerXConst * (width / 375))) - (this.calculateWidth()) / 2
   }
 
   calculateColor(color: Color){
