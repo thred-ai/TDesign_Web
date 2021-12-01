@@ -426,7 +426,12 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
       }
       console.log(f.country.value)
 
+      if (isPlatformBrowser(this.platformID)){
+        this.spinner.show()
+      };
+
       this.loadService.linkCard({card: this.card, stripe: this.stripeService}, (err?: any) => {
+        this.spinner.hide()
         if (err){
           this.err = err
         }
@@ -434,10 +439,7 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
           this.routeToReview()
         }
       })
-
-      if (isPlatformBrowser(this.platformID)){
-          this.spinner.show()
-      };
+      
     }
     else if (this.useApple || this.useGoogle || this.useMicrosoft){
       let f = this.billingForm.controls
