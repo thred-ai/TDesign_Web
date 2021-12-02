@@ -49,7 +49,7 @@
         <div style="width: fit-content;">
             <h2 class="text-start fw-bolder m-2" style="font-size: x-large;" >Benefits of pre-purchasing {{template!.templateDisplayName.toLowerCase()}}:</h2>
             <p class="text-start  m-2">• <b>{{calculateMarginPercent(template!)}}% margins</b> on every sale, giving you full control on pricing.  <br><p *ngIf="(template!.supportedSides.length ?? 0) > 1" style="color: #6c757d;">(-{{formatPrice((template?.extraCost ?? 0) / 100, true)}} per. <b>additional</b> side)</p></p>
-            <p class="text-start  m-2"  >• <b>{{calculateMarginDifference(template!)}}x your current margins</b> when pricing at {{formatPrice((template?.bulkSuggestPrice ?? 0) / 100)}}. <br><p style="color: #6c757d;">(Profit: <b>{{formatPrice(calculateMargin(true, template!))}} per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}}</b>)</p></p>
+            <p *ngIf="!(template!.onlyBulk)" class="text-start  m-2"  >• <b>{{calculateMarginDifference(template!)}}x your current margins</b> when pricing at {{formatPrice((template?.bulkSuggestPrice ?? 0) / 100)}}. <br><p style="color: #6c757d;">(Profit: <b>{{formatPrice(calculateMargin(true, template!))}} per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}}</b>)</p></p>
             <p class="text-start  m-2"  >• When you pre-purchase your inventory, you have <b>full ownership</b>. <br><p style="color: #6c757d;">(You own your {{template!.bulkUnit}} {{template!.templateDisplayName.toLowerCase()}})</p></p>
             <p class="text-start  m-2"  >• Thred will fulfill your orders/manage your inventory with <b>no added cost</b>. <br><p style="color: #6c757d;">(Thred takes only 5% off the sale)</p></p>
 

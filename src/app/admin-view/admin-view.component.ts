@@ -67,7 +67,7 @@ bankInfo?: any = undefined
 subInfo?: any = undefined
 canTrial?: boolean = true
 
-invTitle = 'SELL MORE'
+invTitle = 'EXPLORE INVENTORY'
 
 
 socials(){
@@ -1067,9 +1067,9 @@ showSocialModal(logo: {
     this.loadService.getInventory(inventory => {
       console.log(inventory)
       this.inventory = inventory ?? []
-      if (inventory.length == 0){
-        this.invTitle = 'INCREASE PROFIT'
-      }
+      // this.inventory.forEach(inv => {
+      //   inv.img = this.getTypeImages(inv.name)
+      // })
       console.log(this.inventory)
       this.cdr.detectChanges()
     })

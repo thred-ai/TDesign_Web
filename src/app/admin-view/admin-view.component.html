@@ -314,56 +314,6 @@ style.color = "{{selectedIndicator()!.color}}"
                         </mat-paginator>
                     </div>                    
                 </div>
-                
-                  <!-- <div class="card text-center" *ngIf="selectedContact">
-                      <div class="card-header">
-                        # {{selectedContact.name}}
-                      </div>
-                      <div class="card-block">
-                        <h4 class="card-title">{{selectedContact.name}}</h4>
-                        <p class="card-text">
-                          {{selectedContact.description}}
-                        </p>    
-                      </div>
-                
-                </div> -->
-
-
-
-
-
-
-
-                
-
-
-
-
-
-
-
-
-                <!-- <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"> 
-                    <form [formGroup]="marketingForm" novalidate>
-                        <div class="col mb-2">
-                            <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Facebook Ads</h2>
-                                <div class="card-body">    
-                                    <div class="row">
-                                        <div class="col-md-8 mx-auto d-block">
-                                            <div class="form-group mb-4">
-                                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Facebook Pixel</label>
-                                                <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="ex: '642345685432123'" style.color="{{selectedTheme()!.color}}" formControlName="pixel">
-                                                <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">For more info, visit <a role="button" (click)="openFBAdsManager()">Facebook Ads Manager</a></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button [style.font-family]="storeInfo().fontName!" (click)='setFBPixel()' class="btn btn-dark mx-auto d-flex mt-2">Set Facebook Pixel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div> -->
             </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'THEMES'" class="py-3">
@@ -1021,78 +971,107 @@ style.color = "{{selectedIndicator()!.color}}"
             </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'INVENTORY'">
-                <div *ngIf="(inventory?.length ?? 0) > 0">
-                    <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">MY INVENTORY</h1>
+                <mat-tab-group mat-stretch-tabs>
+                    <mat-tab>
+                  <!-- #docregion label-directive -->
+                      <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">add_box</mat-icon>
+                        <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                            EXPLORE INVENTORY
+                        </span>
+                      </ng-template>
 
-                    <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
-
-                        <div class="col" *ngFor="let inv of inventory">
-                            <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{inv.name}}</h2>
-                                <div class="card-body mt-2">
-                                    <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Remaining: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
-                                    </div>
-                                    <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">{{invUsed(inv)}}</label>
-                                    </div>
-                                    <div class="rounded mx-auto w-100" >
-                                        <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                            <img [src]='getTypeImages(inv.code)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
-                                        </a>
-                                    </div>
+                    <div *ngIf="availableToBuyTemplates().length > 0"  style="height: 100vh;">
+                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{invTitle}}</h1>
+                        <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
     
-                                    <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                        <button [style.font-family]="storeInfo().fontName!" (click)="buyMore(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Add More</button>
-                                        <button *ngIf="!inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button>
-                                        <button *ngIf="inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div *ngIf="availableToBuyTemplates().length > 0">
-                    <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{invTitle}} <br> <small>Bulk-Buy your own inventory</small></h1>
-                    <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3">
-
-                        <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">
-                            <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                               
-                                <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{template.templateDisplayName}}</h2>
-                                <div class="card-body mt-2">
-                                    <div class="d-flex align-items-center justify-content-center">
-                                        <div class="mx-auto">
-                                            
-                                            <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 22px;">
-                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "mb-1 me-1 text-center">Price: </label>
-                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((template.bulkPrice) / 100, true)}}</a></mat-hint>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">(Per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}})</label>
+                            <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">
+                                <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                   
+                                    <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{template.templateDisplayName}}</h2>
+                                    <div class="card-body mt-2">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="mx-auto">
+                                                
+                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 22px;">
+                                                    <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((template.bulkPrice) / 100, true)}}</a></mat-hint>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                    <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">(Per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}})</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-    
-                                    <div class="rounded mx-auto w-100" >
-                                        <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                            <img [src]='getTypeImages(template.productCode)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
-                                        </a>
-                                    </div>
-    
-                                    <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                        <button [style.font-family]="storeInfo().fontName!" (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
+        
+                                        <div class="rounded mx-auto w-100" >
+                                            <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                <img [src]='getTypeImages(template.productCode)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                            </a>
+                                        </div>
+        
+                                        <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
+                                            <button [style.font-family]="storeInfo().fontName!" (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div *ngIf="availableToBuyTemplates().length == 0" style="height: 100vh;">
+                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">
+                            NO INVENTORY
+                            <h2 class="mt-1" style="font-size: small;">New inventory to buy appears here</h2>
+                        </h1>
+                    </div>
+                    </mat-tab>
 
-                
-
+                    <mat-tab>
+                        <!-- #docregion label-directive -->
+                        <ng-template mat-tab-label>
+                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">inventory_2</mat-icon>
+                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                  MY INVENTORY
+                            </span>
+                            </ng-template>
+                            <div *ngIf="(inventory?.length ?? 0) > 0"  style="height: 100vh;">
+                              <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">MY INVENTORY</h1>
+          
+                              <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
+          
+                                  <div class="col" *ngFor="let inv of inventory">
+                                      <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                          <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{inv.name}}</h2>
+                                          <div class="card-body mt-2">
+                                              <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
+                                                  <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Remaining: </label>
+                                                  <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
+                                              </div>
+                                              <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                  <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">{{invUsed(inv)}}</label>
+                                              </div>
+                                              <div class="rounded mx-auto w-100" >
+                                                  <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                      <img [src]='getTypeImages(inv.code)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                                  </a>
+                                              </div>
+              
+                                              <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
+                                                  <button [style.font-family]="storeInfo().fontName!" (click)="buyMore(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Add More</button>
+                                                  <button *ngIf="!inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button>
+                                                  <button *ngIf="inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                          <div *ngIf="inventory && (inventory!.length) == 0" style="height: 100vh;">
+                            <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">
+                                NO INVENTORY
+                                <h2 class="mt-1" style="font-size: small;">Custom inventory you buy appears here</h2>
+                            </h1>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
             </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'SECURITY'">

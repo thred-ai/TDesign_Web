@@ -3,6 +3,7 @@ import { Dict } from '../services/load.service'
 export class Inventory {
   code: string
   name: string
+  img?: string
   amount: number
   timestamp: Date
   id: string

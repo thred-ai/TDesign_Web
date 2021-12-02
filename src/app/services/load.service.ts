@@ -551,7 +551,7 @@ export class LoadService {
   }
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any){
-    var query = this.db.collection("Users/" + uid + "/Numbers")
+    var query = this.db.collection("Users/" + uid + "/Numbers", ref => ref.orderBy('timestamp', 'desc'))
     var arr = new Array<Dict<any>>()
     let sub = query.get().subscribe(docDatas => {  
       console.log(docDatas)
@@ -577,7 +577,7 @@ export class LoadService {
   }
 
   async getEmailSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any){
-    var query = this.db.collection("Users/" + uid + "/Emails")
+    var query = this.db.collection("Users/" + uid + "/Emails", ref => ref.orderBy('timestamp', 'desc'))
     var arr = new Array<Dict<any>>()
     let sub = query.get().subscribe(docDatas => {  
       console.log(docDatas)
