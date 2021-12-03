@@ -174,7 +174,12 @@ mainPrice(product: Product){
   
   let coupon = this.autoCoupon(product)
   if (coupon){
-    return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    if (coupon.style == 0){
+      return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    }
+    else if (coupon.style == 1){
+      return ((product.price ?? 0) / 100) - ((coupon.amt ?? 0) * 100)
+    }
   }
   return (product.price ?? 0) / 100
 }
@@ -1085,6 +1090,13 @@ showSocialModal(logo: {
 
   matchTemplate(inv: Inventory){
     return this.templates()?.find(obj => { return inv.code == obj.productCode })
+  }
+
+  discountDisplay(coupon: Coupon){
+    if (coupon.style == 0){
+      return (coupon.amt * 100)+ '% off'
+    }
+    return this.formatPrice((coupon.amt * 100))+ ' off'
   }
 
   

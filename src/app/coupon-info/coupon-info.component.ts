@@ -65,6 +65,7 @@ export class CouponInfoComponent implements OnInit {
   productCtrl = new FormControl();
   typeCtrl = new FormControl();
   thresholdCtrl = new FormControl();
+  discountStyle = new FormControl();
 
   filteredProducts: Observable<Product[]>;
   products: string[] = [];
@@ -148,6 +149,7 @@ export class CouponInfoComponent implements OnInit {
     // console.log(this.linkImg)
     this.mode = this.editCoupon ? 1 : 0
     this.name = (this.mode == 0) ? 'NEW COUPON' : 'EDIT COUPON'
+    this.discountStyle.setValue(this.editCoupon?.style ?? 0)
 
     console.log(this.mode)
     if (this.editCoupon){
@@ -185,11 +187,31 @@ export class CouponInfoComponent implements OnInit {
     this.dialogRef.close('0')
   }
 
+  discountIcon(){
+    if (this.discountStyle.value == 1){
+      return 'attach_money'
+    }
+    return 'percent'
+  }
+
+  discountPlaceholder(){
+    if (this.discountStyle.value == 1){
+      return "Coupon $ (ex: 20)"
+    }
+    return "Coupon % (ex: 30)"
+  }
+
+  changeDiscountStyle(){
+    let val = this.discountStyle.value == 0 ? 1 : 0
+    this.discountStyle.setValue(val)
+  }
+
   finish(){
     var name = ((this.couponForm.controls.name.value ?? '') as string)?.replace(" ", '').toUpperCase()
     var price = Number(this.couponForm.controls.price.value) ?? 0
     var type = this.typeCtrl.value
     var threshold = this.thresholdCtrl.value
+    var style = this.discountStyle.value ?? 0
 
     console.log(this.products)
 
@@ -211,7 +233,7 @@ export class CouponInfoComponent implements OnInit {
       price = 95
     }
 
-    let coupon = new Coupon(name, price / 100, this.products, this.isGlobal, type, threshold)
+    let coupon = new Coupon(name, price / 100, this.products, this.isGlobal, type, threshold, style)
 
     this.dialogRef.close(coupon)
   }

@@ -2,6 +2,7 @@
 export class Coupon {
   code: string
   amt: number
+  style: number
   products: Array<string>
   auto: boolean
   type: string
@@ -13,7 +14,8 @@ export class Coupon {
     products?: Array<string>,
     auto?: boolean,
     type?: string,
-    threshold?: number
+    threshold?: number,
+    style?: number
     ) {
 
     this.code = code ?? ""
@@ -22,5 +24,6 @@ export class Coupon {
     this.auto = auto ?? false
     this.type = type ?? ''
     this.threshold = threshold ?? 0
+    this.style = style ?? 0
   }
 }

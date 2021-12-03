@@ -76,7 +76,8 @@ style.color = "{{selectedIndicator()!.color}}"
                     <h2 [style.font-family]="storeInfo().fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2>
                     <h3 [style.font-family]="storeInfo().fontName!" class="fw-normal" style.color="{{selectedTheme()!.color}}">{{formatPrice(total())}}</h3>
                   </div>
-                  <h3 *ngIf='cartDiscount()' [style.font-family]="storeInfo().fontName!" class="fw-normal text-center" style.color="{{selectedTheme()!.color}}">{{cartDiscount()!.amt * 100}}% off applied at checkout</h3>
+                  <h3 *ngIf='cartDiscount() && cartDiscount()!.style == 0' [style.font-family]="storeInfo().fontName!" class="fw-normal text-center" style.color="{{selectedTheme()!.color}}">{{cartDiscount()!.amt * 100}}% off applied at checkout</h3>
+                  <h3 *ngIf='cartDiscount() && cartDiscount()!.style == 1' [style.font-family]="storeInfo().fontName!" class="fw-normal text-center" style.color="{{selectedTheme()!.color}}">{{formatPrice(cartDiscount()!.amt * 100)}} off applied at checkout</h3>
                   <div class="text-center my-2"><a *ngIf="hasCart() && loadedCart;" [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click) = "next()" [innerHTML]="'CHECKOUT'"></a></div>
 
                   <div class="accordion" id="order-options">

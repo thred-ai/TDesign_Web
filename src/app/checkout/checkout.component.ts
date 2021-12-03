@@ -14,6 +14,7 @@ import { Stripe, PaymentRequestPaymentMethodEvent, StripeElementsOptions, Stripe
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { RoutingService } from '../services/routing.service';
+import { Coupon } from '../models/coupon.model';
 
 @Component({
   selector: 'app-checkout',
@@ -202,13 +203,21 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   mainPrice(product: Product, cartDiscounts = false){
     
     let coupon = this.autoCoupon(product)
-    if (coupon && !this.cartDiscount()){
-      return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    if (coupon && (!this.cartDiscount() || (this.cartDiscount()?.style == 1 && coupon.style == 1))){
+      if (coupon.style == 0){
+        return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+      }
+      if (coupon.style == 1){
+        return ((product.price ?? 0) / 100) - ((coupon.amt ?? 0) * 100)
+      }
     }
+    
     if (cartDiscounts){
       let cartCoupon = this.cartDiscount()
       if (cartCoupon){
-        return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * cartCoupon.amt)
+        if (cartCoupon.style == 0){
+          return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * cartCoupon.amt)
+        }
       }
     }
     return (product.price ?? 0) / 100
@@ -216,17 +225,32 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   total(noCoupon = false){
     var total = 0
-    
+    var f: Coupon | undefined
     this.rootComponent.cart?.forEach(product => {
       if (noCoupon){
-        total += (product.product?.price ?? 0) * (product.quantity ?? 1)
+        var coupon = this.autoCoupon(product.product!)
+        if (coupon?.style == 0){
+          total += (product.product?.price ?? 0) * (product.quantity ?? 1) 
+        }
+        else{
+          total += ((product.product?.price ?? 0) - ((coupon?.amt ?? 0) * 10000)) * (product.quantity ?? 1) 
+        }
       }
       else{
         total += (this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1)
+        let l = this.cartDiscount()
+        if (l?.style == 1){
+          f = l
+        }
       }
     })
-    
-    return total / 100
+
+    if (noCoupon){
+      return (total / 100)
+    }
+    else{
+      return (total / 100) - ((f?.amt ?? 0) * 100)
+    }
   }
   
   d_total(noCoupon = false){

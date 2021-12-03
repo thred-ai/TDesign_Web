@@ -305,7 +305,12 @@ export class ShippingAddressComponent implements OnInit {
     
     let coupon = this.autoCoupon(product)
     if (coupon){
-      return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+      if (coupon.style == 0){
+        return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+      }
+      else if (coupon.style == 1){
+        return ((product.price ?? 0) / 100) - ((coupon.amt ?? 0) * 100)
+      }
     }
     return (product.price ?? 0) / 100
   }

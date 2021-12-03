@@ -793,7 +793,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
                                             <div class="d-flex align-items-center justify-content-center  my-2 mx-auto">
                                                 <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Discount:</label>
-                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{coupon.amt * 100}}% off</a></mat-hint>
+                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{discountDisplay(coupon)}}</a></mat-hint>
                                             </div>
                                             <h4 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" [style.font-family]="storeInfo().fontName!">{{couponHeader(coupon)}}</a></h4>
                                             <div class="d-flex align-items-center justify-content-center w-100">

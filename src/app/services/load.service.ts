@@ -385,7 +385,7 @@ export class LoadService {
           console.log(popups)
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
-            coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
+            coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold, discount.style))
           })
 
           var banners = new Array<Banner>()
@@ -655,7 +655,7 @@ export class LoadService {
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
-            coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold))
+            coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold, discount.style))
           })
 
           var banners = new Array<Banner>()
@@ -2242,6 +2242,7 @@ export class LoadService {
       same.type = coupon.type
       same.threshold = coupon.threshold
       same.auto = coupon.auto
+      same.style = coupon.style
     }
     else{
       coupons.push(coupon)
