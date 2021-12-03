@@ -39,6 +39,7 @@ import { PixelService } from 'ngx-pixel';
 import { Coupon } from '../models/coupon.model';
 import { Banner } from '../models/banner.model';
 import { Popup } from '../models/popup.model';
+import { Row } from '../models/row.model';
 
 
 
@@ -381,6 +382,7 @@ export class LoadService {
           let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
           let bannerStyle = docData["banner_style"] as number ?? 0
           let popups = docData["Popups"] as Array<Popup> ?? []
+          let homeRows = docData["rows"] as Array<Row>
 
           console.log(popups)
           var coupons = new Array<Coupon>()
@@ -440,6 +442,7 @@ export class LoadService {
             banners,
             bannerStyle,
             popups,
+            homeRows
           )
 
           if (banners.length > 0){
@@ -468,6 +471,9 @@ export class LoadService {
             }
             else if (type == 'home'){
               Globals.storeInfo!.homeLink = new URL(this.getHomeURL(uid))
+              if (!homeRows){
+                Globals.storeInfo!.homeRows![1].img = this.getHomeURL(uid)
+              }
             }
             else if (type == 'action'){
               Globals.storeInfo!.actionLink = new URL(this.getActionURL(uid))
@@ -652,6 +658,7 @@ export class LoadService {
           let bannerFields = docData["banners"] as Array<Dict<any>> ?? []
           let bannerStyle = docData["banner_style"] as number ?? 0
           let popups = docData["Popups"] as Array<Popup> ?? []
+          let homeRows = docData["rows"] as Array<Row>
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
@@ -717,7 +724,8 @@ export class LoadService {
             coupons,
             banners,
             bannerStyle,
-            popups
+            popups,
+            homeRows
           )
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -728,6 +736,9 @@ export class LoadService {
             }
             else if (type == 'home'){
               Globals.userInfo!.homeLink = new URL(this.getHomeURL(uid))
+              if (!homeRows){
+                Globals.userInfo!.homeRows![1].img = this.getHomeURL(uid)
+              }
             }
             else if (type == 'action'){
               Globals.userInfo!.actionLink = new URL(this.getActionURL(uid))

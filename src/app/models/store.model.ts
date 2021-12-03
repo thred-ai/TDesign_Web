@@ -6,6 +6,7 @@ import { Banner } from './banner.model'
 import { Popup } from './popup.model'
 
 import { Globals } from '../globals'
+import { Row } from './row.model'
 
 export class Store {
     uid?: string
@@ -48,6 +49,7 @@ export class Store {
     banners: Array<Banner> = []
     bannerStyle?: number = 0
     popups?: Array<Popup>
+    homeRows?: Array<Row>
 
 
     constructor(
@@ -92,7 +94,8 @@ export class Store {
       coupons?: Array<Coupon>,
       banners?: Array<Banner>,
       bannerStyle?: number,
-      popups?: Array<Popup>
+      popups?: Array<Popup>,
+      homeRows?: Array<Row>
       ) {
 
       this.uid = uid
@@ -130,7 +133,6 @@ export class Store {
       this.isPublic = isPublic
       this.postNotifsList = postNotifsList as Array<string>
       this.slogan = slogan ?? fullName ?? ""
-
 
 
       this.loading = loading ?? {
@@ -171,5 +173,11 @@ export class Store {
       this.bannerStyle = bannerStyle ?? 0
 
       this.popups = popups ?? []
+      this.homeRows = homeRows ?? [
+        new Row('NEW ARRIVALS', undefined, 0, 0, undefined),
+        new Row(undefined, undefined, undefined, 1, this.homeLink?.toString() ?? ""),
+        new Row('FEATURED', undefined, 1, 0, undefined),
+      ]
+
     }
 }

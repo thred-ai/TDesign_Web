@@ -9,6 +9,7 @@ import { Globals } from '../globals';
 import { AppComponent } from '../app.component';
 import { NgxSpinnerService } from "ngx-spinner";
 import { RoutingService } from '../services/routing.service';
+import { Row } from '../models/row.model';
 
 @Component({
   selector: 'app-home',
@@ -42,6 +43,51 @@ export class HomeComponent implements OnInit, OnDestroy {
       return 0;
     })[0]
     return autoCoupon
+  }
+
+  fontSize(row: Row){
+    if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
+      return 'inherit'
+    }
+    return (0.5 / this.colCount(row)) * 100
+  }
+
+  titleFontSize(row: Row){
+    if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
+      return 'inherit'
+    }
+    return (0.3 / this.colCount(row)) * 100
+  }
+
+  products(smartProducts?: number, products?: Array<String>){
+    if (smartProducts !== undefined){
+      console.log(smartProducts)
+
+      if (smartProducts == 0){
+        return this.newArrivalProducts()
+      }
+      else if (smartProducts == 1){
+        return this.featuredProducts()
+      }
+    }
+    var prod = Array<Product>()
+    products?.forEach(p => { 
+      let pro = this.storeProducts?.find(pr => { return pr.productID == p})
+      if (pro){
+        prod.push(pro)
+      }
+    })
+    return prod
+  }
+
+  colCount(row: Row){
+    var count = 0
+    this.products(row.smart_products, row.products)?.forEach(product => {
+      if (count < 4){
+        count += 1
+      }
+    })
+    return count
   }
 
   mainPrice(product: Product){
