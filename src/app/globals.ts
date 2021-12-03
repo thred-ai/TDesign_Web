@@ -219,7 +219,11 @@ public static fonts = [
     {
       'name': 'United Kingdom',
       'abbreviation': 'UK'
-    }
+    },
+    {
+        'name': 'Australia',
+        'abbreviation': 'AU'
+      }
   ]
 
 
@@ -529,10 +533,38 @@ public static fonts = [
     },
   ];
 
+  public static auNations = [
+    {
+        'name': 'New South Wales',
+        'abbreviation': 'NSW'
+    },
+    {
+        'name': 'Queensland',
+        'abbreviation': 'QLD'
+    },
+    {
+        'name': 'Victoria',
+        'abbreviation': 'VIC'
+    },
+    {
+        'name': 'Tasmania',
+        'abbreviation': 'TAS'
+    },
+    {
+        'name': 'Western Australia',
+        'abbreviation': 'WA'
+    },
+    {
+        'name': 'South Australia',
+        'abbreviation': 'SA'
+    },
+  ];
+
   public static allCountries = [
     {"name": "United States", "code": "US"},
     {"name": "Canada", "code": "CA"},
     {"name": "United Kingdom", "code": "GB"},
+    {"name": "Australia", "code": "AU"},
     {"name": "Afghanistan", "code": "AF"},
     {"name": "Åland Islands", "code": "AX"},
     {"name": "Albania", "code": "AL"},
@@ -546,7 +578,6 @@ public static fonts = [
     {"name": "Argentina", "code": "AR"},
     {"name": "Armenia", "code": "AM"},
     {"name": "Aruba", "code": "AW"},
-    {"name": "Australia", "code": "AU"},
     {"name": "Austria", "code": "AT"},
     {"name": "Azerbaijan", "code": "AZ"},
     {"name": "Bahamas", "code": "BS"},

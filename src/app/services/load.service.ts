@@ -1585,6 +1585,24 @@ export class LoadService {
         sub.unsubscribe();
       });
     }
+    else if (country === "Australia" || country === "AU" || country === "AUD"){
+      let sub = this.db.collection("Canada_Tax_Docs").doc(admin).valueChanges().subscribe((doc) => {
+        // Globals.selectedBlog = undefined
+  
+        let taxDoc = doc as DocumentData
+  
+        if (taxDoc){
+          if (!this.isUndefined(taxDoc.HST)){
+            salesTax += 0.10
+          }
+        }
+        Globals.shippingTax = salesTax
+        if (this.myCallback) 
+        this.myCallback()
+        if (isPlatformBrowser(this.platformID))
+        sub.unsubscribe();
+      });
+    }
   }
 
   async addToCart(mappedData: Dict<any>){

@@ -104,6 +104,9 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
     if (country == "united kingdom"){
       return Globals.ukNations
     }
+    if (country == "australia"){
+      return Globals.auNations
+    }
     return Globals.usStates
   }
 
@@ -123,6 +126,9 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
     if (country == "united kingdom"){
       return "Region"
     }
+    if (country == "australia"){
+      return "Province"
+    }
     return "State"
   }
 
@@ -136,6 +142,9 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
       return "Zip Code"
     }
     if (country == "united kingdom"){
+      return "Postal Code"
+    }
+    if (country == "australia"){
       return "Postal Code"
     }
     return "Zip Code"
