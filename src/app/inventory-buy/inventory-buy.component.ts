@@ -88,7 +88,7 @@ getCurrencyForCountry(country: Country, shouldShowName: boolean){
     this.spinner.show("invSpinner")
 
     await this.loadService.createBulkPayment(inventory.code, (id: string, err?: string) => {
-      if (err || err != ''){
+      if (err && err != ''){
         this.err = err!
         this.spinner.hide("invSpinner")
       }
@@ -127,7 +127,7 @@ getCurrencyForCountry(country: Country, shouldShowName: boolean){
 
     this.spinner.show("invSpinner")
     await this.loadService.createBulkPayment(template.productCode, (id: string, err?: string) => {
-      if (err || err != ''){
+      if (err && err != ''){
         this.err = err!
         this.spinner.hide("invSpinner")
       }

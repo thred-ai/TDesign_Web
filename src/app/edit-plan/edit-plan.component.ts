@@ -62,7 +62,8 @@ export class EditPlanComponent implements OnInit {
   startSubscription(){
     this.spinner.show('subSpinner')
     this.loadService.startSubscription((id: any, err?: string) => { 
-      if (err || err != ''){
+      this.spinner.hide('subSpinner')
+      if (err && err != ''){
         this.err = err!
       }
       else{
@@ -145,7 +146,7 @@ selectedIndicator(){
 reactivateSubscription(){
   this.spinner.show('subSpinner')
   this.loadService.reactivateSubscription((id: any, err?: string) => {
-    if (err || err != ''){
+    if (err && err != ''){
       this.err = err!
     }
     else{
