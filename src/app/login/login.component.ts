@@ -24,6 +24,8 @@ export class LoginComponent implements OnInit {
 
 
   loadingAction = "Creating Account..."
+  username = 'Username'
+  
 
   storeInfo(){
     return Globals.storeInfo
@@ -99,7 +101,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder, 
     private modalService: NgbModal,
     private spinner: NgxSpinnerService,
-  ) { }
+  ) { 
+  }
 
   isSpinning = false
 
@@ -284,7 +287,7 @@ hideSpinner(){
         return
       }
 
-      if (password?.trim() != confirmpassword?.trim()){
+      if (password?.replace(/\s/g, "") != confirmpassword?.replace(/\s/g, "")){
         this.error("Password Field's don't match")
         return
       }
@@ -293,9 +296,9 @@ hideSpinner(){
 
       const credentials = {
 
-        "email": email,
-        "password": password,
-        "username": username,
+        "email": email.replace(/\s/g, ""),
+        "password": password.replace(/\s/g, ""),
+        "username": username.replace(/\s/g, ""),
       }
 
       console.log(username)
@@ -335,7 +338,7 @@ hideSpinner(){
   }
 
   ngOnInit(): void {
-    
+    this.username = this.isLanding ? 'Store Name' : 'Username'
   }
 
 }

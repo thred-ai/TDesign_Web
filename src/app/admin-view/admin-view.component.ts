@@ -1460,11 +1460,11 @@ isSpinning = false
 
     if (this.storeForm.valid){
       var data = {
-        username: this.storeForm.controls.username.value,
+        username: this.storeForm.controls.username.value?.replace(/\s/g, ""),
         full_name: this.storeForm.controls.full_name.value,
         bio: this.storeForm.controls.bio.value,
         socials: this.storeForm.controls.socials.value,
-        custom_url: this.storeForm.controls.custom_url.value?.trim(),
+        custom_url: this.storeForm.controls.custom_url.value?.replace(/\s/g, ""),
         profile_pic: this.storeForm.controls.profile_pic.value
       }
 
@@ -1499,7 +1499,7 @@ isSpinning = false
   savePassword(){
 
     if (this.changePassForm.valid){
-      if (this.changePassForm.controls.password.value != this.changePassForm.controls.confirmNewPassword.value){
+      if (this.changePassForm.controls.password.value?.replace(/\s/g, "") != this.changePassForm.controls.confirmNewPassword.value?.replace(/\s/g, "")){
         
         return
       }
@@ -2075,7 +2075,7 @@ isSpinning = false
 
     startSubscription(){
 
-      if (Globals.billingInfo?.number && Globals.billingInfo?.number != ""){
+      // if (Globals.billingInfo?.number && Globals.billingInfo?.number != ""){
         var sec = 0
         var ind = 0
 
@@ -2100,21 +2100,21 @@ isSpinning = false
             this.subInfo = subInfo ?? ''
           }
         })
-      }
-      else{
-        var sec = 0
-        var ind = 0
-        this.panels.forEach((panel, section) => {
-          panel.Options.forEach((option, index) => {
-            if (option.Title == 'BILLING'){
-              sec = section
-              ind = index
-              return
-            }
-          });
-        });
-        this.selectSetting(ind, sec)
-      }
+      // }
+      // else{
+      //   var sec = 0
+      //   var ind = 0
+      //   this.panels.forEach((panel, section) => {
+      //     panel.Options.forEach((option, index) => {
+      //       if (option.Title == 'BILLING'){
+      //         sec = section
+      //         ind = index
+      //         return
+      //       }
+      //     });
+      //   });
+      //   this.selectSetting(ind, sec)
+      // }
     }
 
     editSubscription(subInfo: any){

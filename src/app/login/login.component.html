@@ -54,7 +54,7 @@ style.color = "{{selectedIndicator()!.color}}"
             <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
             <input [style.font-family]="storeInfo().fontName!" class = "fadeIn second bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}"  placeholder="Email Address" [email]="true" type="text" name="email" formControlName="email">
 
-            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="Username" formControlName="username">
+            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="{{username}}" formControlName="username">
             <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="password" placeholder="Password" formControlName="password">
             <input [style.font-family]="storeInfo().fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword">
             <!-- <input type="submit" class="fadeIn fourth mt-5" value="Create Account"> -->
@@ -73,7 +73,7 @@ style.color = "{{selectedIndicator()!.color}}"
        <div *ngIf="isSignIn()">
           <form  class = "mt-4" [formGroup]="loginForm">
             <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
-            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="Username/Email" formControlName="username">
+            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="{{username}}/Email" formControlName="username">
             <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="password" placeholder="Password" formControlName="password">
             <!-- <button class="btn forgot underlineHover">Forgot Password</button> -->
             <div>

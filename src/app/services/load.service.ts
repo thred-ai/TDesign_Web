@@ -169,7 +169,7 @@ export class LoadService {
       if (docData){
         console.log(docData)
         let plan_id = docData.plan_id as string
-        let can_trial = docData.canTrial as boolean ?? true
+        let can_trial = docData.canTrial as boolean ?? false
         if (plan_id && plan_id != ""){
           this.functions.httpsCallable('getSubInfo')({}).pipe(first()).subscribe(resp => {  
             callback(resp)
@@ -183,7 +183,7 @@ export class LoadService {
         }
       }
       else{
-        callback(undefined, true)
+        callback(undefined, false)
       }
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
