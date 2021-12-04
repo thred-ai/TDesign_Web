@@ -2056,6 +2056,7 @@ isSpinning = false
     showWelcomeModal(){
 
       if (Globals.isNewUser && !this.modalService.hasOpenModals()){
+        Globals.isNewUser = false
         const modalRef = this.modalService.open(StoreSetupComponent, {size : "lg"});
         // modalRef.componentInstance.canTrial = this.canTrial
         let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
