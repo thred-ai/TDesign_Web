@@ -109,6 +109,10 @@ export class AppComponent implements OnInit {
     let isAnon = user?.isAnonymous ?? false
   
     this.signedIn = uid != undefined && !isAnon
+    
+    if (this.signedIn){
+      this.signedInUid = uid
+    }
 
     this.profileSettings = []
 
@@ -656,6 +660,7 @@ export class AppComponent implements OnInit {
   }
     
   signedIn = false
+  signedInUid?: any
 
   interval: any
 

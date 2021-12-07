@@ -383,6 +383,7 @@ export class LoadService {
           let bannerStyle = docData["banner_style"] as number ?? 0
           let popups = docData["Popups"] as Array<Popup> ?? []
           let homeRows = docData["rows"] as Array<Row>
+          let orders = docData["Orders"] as number ?? 0
 
           console.log(popups)
           var coupons = new Array<Coupon>()
@@ -442,7 +443,8 @@ export class LoadService {
             banners,
             bannerStyle,
             popups,
-            homeRows
+            homeRows,
+            orders
           )
 
           if (banners.length > 0){
@@ -659,6 +661,7 @@ export class LoadService {
           let bannerStyle = docData["banner_style"] as number ?? 0
           let popups = docData["Popups"] as Array<Popup> ?? []
           let homeRows = docData["rows"] as Array<Row>
+          let orders = docData["Orders"] as number ?? 0
 
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
@@ -725,7 +728,8 @@ export class LoadService {
             banners,
             bannerStyle,
             popups,
-            homeRows
+            homeRows,
+            orders
           )
 
           let list = docData["image_list"] as Array<string> ?? []
@@ -2386,6 +2390,8 @@ export class LoadService {
     await this.auth.signOut().then(() =>{
       Globals.userInfo = undefined
       this.rootComponent!.cart = []
+      this.rootComponent!.signedIn = false
+      this.rootComponent!.signedInUid = undefined
       if (this.myCallback)
       this.myCallback()
     }).catch((error) => {

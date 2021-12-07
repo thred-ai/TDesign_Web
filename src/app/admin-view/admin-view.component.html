@@ -82,6 +82,18 @@ style.color = "{{selectedIndicator()!.color}}"
                     <a class="btn rounded-pill shadow mx-2 mb-0 card side bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" role="button" (click) = "toggleSidebar()" style="text-shadow: 2px 2px 4px #42424281;">
                         <mat-icon >menu_open</mat-icon>
                     </a>
+                    <div>
+                        <a role="button" [style.font-family]="storeInfo().fontName!" class="side card shadow fw-bold m-0 me-2 rounded-pill" style="font-size: 15px;">
+                            <div class="d-flex text-{{storeInfo().colorStyle!.text_code}} btn btn-{{storeInfo().colorStyle!.back_code}} rounded-pill align-items-center justify-content-center h-100 w-100">
+                                {{storeInfo().orders}} ORDERS
+                                <mat-icon class="ms-2">
+                                    <span class="material-icons-outlined" style="font-size: 25px;">
+                                        monetization_on
+                                    </span>
+                                </mat-icon>
+                            </div>
+                        </a>
+                    </div>
                     <div [hidden]='shouldHideLiveBtn()'>
                         <a *ngIf="storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-success rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
                             LIVE

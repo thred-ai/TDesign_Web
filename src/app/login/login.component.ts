@@ -246,6 +246,8 @@ hideSpinner(){
           }
           else{
             app?.setOptions()
+            app!.signedIn = true
+            app!.signedInUid = Globals.storeInfo.uid
             this.close()
           }
         }, credentials)
@@ -321,6 +323,8 @@ hideSpinner(){
                 this.hideSpinner()
               }
               else{
+                app!.signedIn = true
+                app!.signedInUid = Globals.storeInfo.uid
                 app?.setOptions()
                 this.hideSpinner()
                 this.close()

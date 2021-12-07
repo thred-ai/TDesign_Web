@@ -50,7 +50,7 @@ export class Store {
     bannerStyle?: number = 0
     popups?: Array<Popup>
     homeRows?: Array<Row>
-
+    orders?: number = 0
 
     constructor(
       uid?: string, 
@@ -95,7 +95,8 @@ export class Store {
       banners?: Array<Banner>,
       bannerStyle?: number,
       popups?: Array<Popup>,
-      homeRows?: Array<Row>
+      homeRows?: Array<Row>,
+      orders?: number
       ) {
 
       this.uid = uid
@@ -178,6 +179,6 @@ export class Store {
         new Row(undefined, undefined, undefined, 1, this.homeLink?.toString() ?? ""),
         new Row('FEATURED', undefined, 1, 0, undefined),
       ]
-
+      this.orders = orders ?? 0
     }
 }
