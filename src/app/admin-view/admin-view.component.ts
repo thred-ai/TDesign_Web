@@ -800,7 +800,7 @@ showSocialModal(logo: {
         },
         {
           "Title": "PRODUCTS",
-          "Icon": "brush",
+          "Icon": "category",
           "Active": false
         },
         {

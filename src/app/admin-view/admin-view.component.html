@@ -82,7 +82,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     <a class="btn rounded-pill shadow mx-2 mb-0 card side bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" role="button" (click) = "toggleSidebar()" style="text-shadow: 2px 2px 4px #42424281;">
                         <mat-icon >menu_open</mat-icon>
                     </a>
-                    <div>
+                    <div *ngIf='!isMobile()'>
                         <a role="button" [style.font-family]="storeInfo().fontName!" class="side card shadow fw-bold m-0 me-2 rounded-pill" style="font-size: 15px;">
                             <div class="d-flex text-{{storeInfo().colorStyle!.text_code}} btn btn-{{storeInfo().colorStyle!.back_code}} rounded-pill align-items-center justify-content-center h-100 w-100">
                                 {{storeInfo().orders}} ORDERS
@@ -256,46 +256,45 @@ style.color = "{{selectedIndicator()!.color}}"
                 <div 
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-1 row-cols-xl-1 justify-content-center m-2 m-md-5 m-lg-5"
                 > 
-                <h2 class="w-100 text-start fw-bolder">Email Subscribers</h2>
+                <h2 class="w-100 text-start fw-bolder text-{{storeInfo().colorStyle!.text_code}}">Email Subscribers</h2>
                     <div class="w-100">
-                        <table class="w-100 h-100 table table-hover bg-light">
-                            <thead>
-                              <tr>
-                                <th>#</th>
-                                <th *ngIf='(emails()?.length ?? 0) > 0'>Name</th>
-                                <th *ngIf='(emails()?.length ?? 0) > 0'>Email</th>
-                                <th *ngIf='(emails()?.length ?? 0) > 0'>Date Subscribed</th>
-                                <!-- <th *ngIf='(emails()?.length ?? 0) > 0'>Actions</th> -->
-                              </tr>
-                            </thead>
-                            <tbody *ngIf='(emails()?.length ?? 0) > 0'>
-                              <tr *ngFor="let contact of emails(); index as i;">
-                        
-                                <td >{{ i + (selectedEmailPageIndex * 10) + 1 }}</td>
-                                <td> {{ contact.name ?? 'Not Provided' }}</td>
-                                <td> {{ contact.email }}</td>
-                                <td> {{ contact.timestamp }}</td>
-                                <!-- <td>
-                                  <button class="btn btn-primary"> Show details</button>
-                                </td> -->
-                              </tr>
-                              
-                            </tbody>
+                        <table class="w-100 h-100 table table-hover bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}">
+                            <thead class="w-100">
+                                <tr>
+                                  <th *ngIf='!isMobile()'>#</th>
+                                  <th *ngIf='!isMobile() && (emails()?.length ?? 0) > 0'>Name</th>
+                                  <th *ngIf='(emails()?.length ?? 0) > 0'>Email</th>
+                                  <th *ngIf='(emails()?.length ?? 0) > 0'>Date Subscribed</th>
+                                  <!-- <th *ngIf='(emails()?.length ?? 0) > 0'>Actions</th> -->
+                                </tr>
+                              </thead>
+                              <tbody class="w-100" *ngIf='(emails()?.length ?? 0) > 0'>
+                                <tr *ngFor="let contact of emails(); index as i;">
+                                  <td *ngIf='!isMobile()'>{{ i + (selectedEmailPageIndex * 10) + 1 }}</td>
+                                  <td *ngIf='!isMobile()'> {{ contact.name ?? 'Not Provided' }}</td>
+                                  <td> {{ contact.email }}</td>
+                                  <td> {{ contact.timestamp }}</td>
+                                  <!-- <td>
+                                    <button class="btn btn-primary"> Show details</button>
+                                  </td> -->
+                                </tr>
+                                
+                              </tbody>
                             <div *ngIf='(emails()?.length ?? 0) == 0' class="w-100 text-center h-100 d-flex justify-content-center align-items-center">
                                 <span class="text-center fw-bolder" style="font-size: large;">No Emails Collected</span>
                             </div>
                           </table>
-                          <mat-paginator #paginator [length]="emailLengthTotal()" hidePageSize="false" (page)="changeEmailDisplayColumns($event)"
+                          <mat-paginator class="bg-transparent text-{{storeInfo().colorStyle!.text_code}}" #paginator [length]="emailLengthTotal()" hidePageSize="false" (page)="changeEmailDisplayColumns($event)"
                             [pageSize]="10">
                         </mat-paginator>
                     </div>                    
                 </div>
                 <div 
-                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-1 row-cols-xl-1 justify-content-center m-2 m-md-5 m-lg-5"
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-1 row-cols-xl-1 justify-content-center m-2 m-md-5 m-lg-5 mt-5"
                 > 
-                <h2 class="w-100 text-start fw-bolder">SMS Subscribers</h2>
+                <h2 class="w-100 text-start fw-bolder text-{{storeInfo().colorStyle!.text_code}}">SMS Subscribers</h2>
                     <div class="w-100">
-                        <table class="w-100 h-100 table table-hover bg-light">
+                        <table class="w-100 h-100 table table-hover bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}">
                             <thead>
                               <tr>
                                 <th>#</th>
@@ -321,7 +320,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 <span class="text-center fw-bolder" style="font-size: large;">No Phone Numbers Collected</span>
                             </div>
                           </table>
-                          <mat-paginator #paginator [length]="phoneLengthTotal()" hidePageSize="false" (page)="changePhoneDisplayColumns($event)"
+                          <mat-paginator class="bg-transparent text-{{storeInfo().colorStyle!.text_code}}" #paginator [length]="phoneLengthTotal()" hidePageSize="false" (page)="changePhoneDisplayColumns($event)"
                             [pageSize]="10">
                         </mat-paginator>
                     </div>                    
