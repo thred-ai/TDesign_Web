@@ -1889,6 +1889,18 @@ isSpinning = false
     return false
   }
 
+  shouldShowSaveBtn(){
+    let title = this.getSelectedPanel().Title
+    let list = [
+      'STORE',
+      'HOME',
+      'SHOP',
+      'THEMES',
+      'BANNERS'
+    ]
+    return list.find(l => { return l == title})
+  }
+
   async selectSetting(index: number, section: number){
 
     if (section == 4 && index != 0){

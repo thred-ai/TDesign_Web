@@ -594,15 +594,13 @@ export class AppComponent implements OnInit {
   }
 
   activateComponent(event: any){
-    console.log()
-
-
     if (event.constructor.name == 'LandingComponent'){
       this.setBodyColor('dark')
+      this.createLinkForFavURL('https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media')
       if (this.interval){
         clearInterval(this.interval)
       }
-      event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, free.", "shopmythred.com")
+      event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, Free.", "shopmythred.com")
     }
   }
 

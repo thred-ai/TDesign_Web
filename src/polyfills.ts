@@ -63,6 +63,7 @@ import 'globalthis/auto';
 import 'proxy-polyfill'
 import 'whatwg-fetch'
 import 'cross-fetch/polyfill';
+import 'intersection-observer';
 import * as buffer from 'buffer';
 (window as any).Buffer = buffer.Buffer;
 /***************************************************************************************************

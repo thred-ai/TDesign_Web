@@ -127,7 +127,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         </a>
                     </div>
                 </div>
-                <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark me-2 d-flex rounded-pill">SAVE CHANGES</button>
+                <button *ngIf='shouldShowSaveBtn()' [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark me-2 d-flex rounded-pill">SAVE CHANGES</button>
             </div>
           </header>
         
