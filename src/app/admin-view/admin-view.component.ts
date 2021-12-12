@@ -1509,8 +1509,9 @@ isSpinning = false
   saveProfile(){
 
     if (this.storeForm.valid){
+
       var data = {
-        username: this.storeForm.controls.username.value?.replace(/\s/g, ""),
+        username: this.storeForm.controls.username.value,
         full_name: this.storeForm.controls.full_name.value,
         bio: this.storeForm.controls.bio.value,
         socials: this.storeForm.controls.socials.value,
@@ -1518,28 +1519,20 @@ isSpinning = false
         profile_pic: this.storeForm.controls.profile_pic.value
       }
 
-      this.loadService.checkUsername(data.username, err => {
-        if (err){
-          this.toast("A store with this name already exists!")
+      this.loadService.checkURL(data.custom_url, error => {
+        if (error){
+          this.toast(error)
         }
         else{
-          this.loadService.checkURL(data.custom_url, error => {
-            if (error){
-              this.toast(error)
-            }
-            else{
-              console.log(',')
-
-              this.loadService.saveUser(data, success => {
-                if (success){
-                  console.log(success)
-                  this.toast("Profile Information Updated!")
-                }
-              })
+          console.log(',')
+          this.loadService.saveUser(data, success => {
+            if (success){
+              console.log(success)
+              this.toast("Profile Information Updated!")
             }
           })
         }
-      }, Globals.userInfo?.uid)
+      })
     }
     else{
       this.toast("One or more fields are invalid!")
