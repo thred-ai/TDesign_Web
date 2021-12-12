@@ -277,7 +277,7 @@ hideSpinner(){
 
     if (this.authForm.valid){
 
-      let pattern = /^[a-zA-Z0-9]+$/g
+      let pattern = /^[a-zA-Z0-9]/g
 
       const email = (this.authForm.controls.email.value ?? '') as string
 
