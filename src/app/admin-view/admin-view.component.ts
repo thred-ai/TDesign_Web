@@ -2175,11 +2175,16 @@ isSpinning = false
         // modalRef.componentInstance.canTrial = this.canTrial
         let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
           sub.unsubscribe()
-          // if (subInfo){
-          //   this.subInfo = subInfo
-          // }
-          this.selectSetting(1,3)
-      })
+          this.showSpinner()
+          this.loadService.startSubscription((id: any, err?: string) => {
+            if (err && err != ''){
+              return
+            }
+            else{
+              this.subInfo = id
+            }
+          })
+        })
       }
     }
 
@@ -2451,8 +2456,10 @@ isSpinning = false
       }
       if (!this.subInfo){
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
-          this.subInfo = subInfo ?? ''
-          console.log(subInfo)
+          if (!subInfo){
+            this.subInfo = subInfo ?? ''
+            console.log(subInfo)
+          }
           this.canTrial = canTrial
           this.cdr.detectChanges()
         })

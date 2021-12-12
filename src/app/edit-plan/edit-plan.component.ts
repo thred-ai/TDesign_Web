@@ -61,7 +61,7 @@ export class EditPlanComponent implements OnInit {
 
   startSubscription(){
     this.spinner.show('subSpinner')
-    this.loadService.startSubscription((id: any, err?: string) => { 
+    this.loadService.startSubscription((id: any, err?: string) => {
       this.spinner.hide('subSpinner')
       if (err && err != ''){
         this.err = err!
