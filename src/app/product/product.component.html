@@ -38,25 +38,14 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="p-4 py-2 border-top-0">
                             <!-- <div *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" class="text-center"><a class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:15px" [style.font-family]="storeInfo().fontName!" (click)="open()">VIEW IN 3D</a></div> -->
                             <div class="mx-auto d-flex justify-content-center align-items-center">
-                                <a *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                                <a *ngIf="has3D();" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
                                     <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
                                             view_in_ar
                                         </span>
                                     </mat-icon>
                                     VIEW IN 3D
-
                                 </a>
-                                <ng-template #elseBlock>
-                                    <a [hidden]="selectedTemplate() == undefined" role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill mb-2 align-items-center justify-content-center fw-bold" style="font-size: 12px;">
-                                        <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
-                                            <span class="material-icons-outlined" style="font-size: 23px;">
-                                                crop_free
-                                            </span>
-                                        </mat-icon>
-                                        3D Not Supported
-                                    </a>
-                                </ng-template>
                             </div>
                         </div>
                     </div>
@@ -117,7 +106,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row gx-4 gx-lg-1 row-cols-5 row-cols-md-4 row-cols-xl-6 justify-content-center" >
+                                    <div class="row gx-4 gx-lg-1 row-cols-4 row-cols-md-5 row-cols-xl-5 justify-content-center" >
                                         <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
                                         <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
                                     </div>

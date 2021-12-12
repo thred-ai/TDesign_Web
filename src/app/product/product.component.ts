@@ -16,6 +16,8 @@ import { NgxSpinnerService } from "ngx-spinner";
 import { RoutingService } from '../services/routing.service';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Product } from '../models/product.model';
+import { Inventory } from '../models/inventory.model';
+import { Template } from '../models/template.model';
 
 @Component({
   selector: 'app-product',
@@ -31,10 +33,18 @@ export class ProductComponent implements OnInit, AfterViewInit {
   selectedCurrency(){return Globals.selectedCurrency}
   templates(){return Globals.availableTemplates}
   availableTemplates(){return Globals.availableTemplates}
-  selectedTemplate(){return Globals.selectedTemplate}
+  selectedTemplate(){
+
+    if (this.productToBuy.product?.custom){
+      return this.selectedInv
+    }
+    return Globals.selectedTemplate
+  }
   selectedProduct(){return this.productToBuy.product}
 
   selectedIndex = 0
+
+  selectedInv?: Inventory
 
   productToBuy = new ProductInCart()
   
@@ -179,7 +189,11 @@ export class ProductComponent implements OnInit, AfterViewInit {
   }
 
   has3D(){
-    return this.selectedTemplate()?.has3D ?? false
+    if (this.selectedTemplate() instanceof Template){
+      let temp = this.selectedTemplate() as Template
+      return temp?.has3D ?? false
+    }
+    return false
   }
 
   nextweek(){
@@ -196,7 +210,11 @@ export class ProductComponent implements OnInit, AfterViewInit {
   }
 
   formattedInfo(){
-    return this.selectedTemplate()?.moreInfo.replace(/\\n/g, "<br>") ?? "";
+    if (this.selectedTemplate() instanceof Template){
+      let temp = this.selectedTemplate() as Template
+      return temp?.moreInfo.replace(/\\n/g, "<br>") ?? "";
+    }
+    return ''
   }
 
   sizes(popFirst: boolean){
@@ -302,9 +320,16 @@ export class ProductComponent implements OnInit, AfterViewInit {
             else if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
               this.loadService.getCustomer()
             }
-            else if (Globals.selectedTemplate == undefined){
+            else if (!this.productToBuy.product.custom && Globals.selectedTemplate == undefined){
               this.rootComponent.setOptions()
               this.loadService.getTemplate(this.productToBuy.product.productType ?? "")
+            }
+            else if (this.productToBuy.product.custom && this.selectedInv == undefined){
+              this.rootComponent.setOptions()
+              this.loadService.getInv(this.productToBuy.product.productType ?? "", inv => {
+                this.selectedInv = inv
+                this.checkLoad()
+              })
             }
             else if (Globals.selectedCurrency == undefined){
               this.loadService.getCountries()

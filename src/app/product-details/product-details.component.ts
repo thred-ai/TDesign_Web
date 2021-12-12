@@ -57,6 +57,7 @@ export class ProductDetailsComponent implements OnInit {
     name: [null, Validators.required],
     description: null,
     price: [null, [Validators.required]],
+    type: [null]
   });
   sanitizer: DomSanitizer;
 
@@ -82,46 +83,106 @@ export class ProductDetailsComponent implements OnInit {
     return (document.getElementById('label')?.offsetWidth ?? 0) / 5
   }
 
+  selectSize(size: string, $event: { target: any; srcElement: any; }){
+
+
+    this.designForm.controls.type.setValue(size)
+    let clickedElement = $event.target || $event.srcElement;
+
+    if( clickedElement.nodeName === "BUTTON" ) {
+
+      let isCertainButtonAlreadyActive = clickedElement.parentElement.querySelector(".active");
+      // if a Button already has Class: .active
+      if( isCertainButtonAlreadyActive ) {
+        isCertainButtonAlreadyActive.classList.remove("active");
+      }
+      clickedElement.className += " active";
+    }
+  }
+
+  matchingInv(popFirst: boolean){
+
+    if (popFirst){
+      return this.inventory.find(inv => { return inv.code == this.product?.productType})?.variations?.slice(1) ?? []
+    }
+    return this.inventory.find(inv => { return inv.code == this.product?.productType})?.variations ?? []
+  }
+
   async ngOnInit() {
     this.selectedColor = this.data.selectedColor
     this.selectedTemplate = this.data.selectedTemplate
     this.frontImg = this.data.frontImg
     this.backImg = this.data.backImg
     this.mode = this.data.mode
+    this.inventory = this.data.inventory
+
 
     this.designForm.controls.price.setValue(this.data.suggested_price)
     this.product = this.data.product
 
     if (this.mode == 'create'){
-      this.images = [
-        {
-          isActive: true,
-          img: this.data.linkImg
-        },
-        {
-          isActive: false,
-          img: ''
-        },
-        {
-          isActive: false,
-          img: ''
-        },
-        {
-          isActive: false,
-          img: ''
-        },
-        {
-          isActive: false,
-          img: ''
+      if (this.product?.custom){
+        this.images = [
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          }
+        ]
+        let inv = this.matchingInv(false)
+        
+        let variations = inv[0]
+        if (variations){
+          this.designForm.controls.type.setValue(variations)
         }
-      ]
-      if (this.data.back_linkImg){
-        this.images[1] = {
-          isActive: true,
-          img: this.data.back_linkImg
-        }
+        this.designForm.controls.description.setValue(this.inventory.find(inv => { return inv.code == this.product?.productType})?.desc ?? '')
       }
-      console.log(this.images)
+      else{
+        this.images = [
+          {
+            isActive: true,
+            img: this.data.linkImg
+          },
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          },
+          {
+            isActive: false,
+            img: ''
+          }
+        ]
+        if (this.data.back_linkImg){
+          this.images[1] = {
+            isActive: true,
+            img: this.data.back_linkImg
+          }
+        }
+        this.designForm.controls.description.setValue((this.selectedTemplate?.moreInfo ?? '')?.replace(/\\n/g, ' '))
+      }
     }
     else{
       console.log(this.images)
@@ -202,8 +263,9 @@ export class ProductDetailsComponent implements OnInit {
     let priceField = this.designForm.controls.price
     let descField = this.designForm.controls.description
 
-    var amt = this.selectedTemplate!.minPrice
+    let color = this.designForm.controls.type ?? null
 
+    var amt = this.selectedTemplate?.minPrice ?? 0
 
     if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
       amt = 0
@@ -218,7 +280,6 @@ export class ProductDetailsComponent implements OnInit {
       return
     }
     else if (priceField.invalid || (priceField.value * 100) < amt){
-
       return
     }
     else if (descField.invalid){
@@ -241,6 +302,7 @@ export class ProductDetailsComponent implements OnInit {
     let name = nameField.value as string
     let price = (priceField.value as number) * 100
     let desc = descField.value as string ?? ""
+    let type = color.value as string ?? ''
 
 
 
@@ -265,11 +327,9 @@ export class ProductDetailsComponent implements OnInit {
       description: desc ?? "",
       available: true,
       productID: this.product?.productID ?? "",
-      images: images
+      images: images,
+      color: type
     }
-
-    
-
 
     await this.loadService.updateProduct(mappedData, this.product)
 

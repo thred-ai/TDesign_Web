@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
 
 
   authForm = this.fb.group({
-    username: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern("^[a-zA-Z0-9]+$")]],
+    username: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     email: [null, [Validators.required, Validators.email]],
     password: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
     confirmpassword: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
@@ -258,6 +258,7 @@ hideSpinner(){
     }
   }
 
+
   // useApple(){
   //   this.load.myCallback = () => this.close()
   //   this.load.errCallback = (err: string) => this.error(err)
@@ -276,31 +277,36 @@ hideSpinner(){
 
     if (this.authForm.valid){
 
+      let pattern = /^[a-zA-Z0-9]+$/g
 
-      const email = this.authForm.controls.email.value ?? ''
+      const email = (this.authForm.controls.email.value ?? '') as string
 
-      const username = this.authForm.controls.username.value ?? ''
+      const username = ((this.authForm.controls.username.value ?? '') as string)?.replace(pattern, '')
 
-      const password = this.authForm.controls.password.value ?? ''
+      const password = (this.authForm.controls.password.value ?? '') as string
 
-      const confirmpassword = this.authForm.controls.confirmpassword.value ?? ''
+      const confirmpassword = (this.authForm.controls.confirmpassword.value ?? '') as string
 
       if (password == '' || username == '' || email == ''){
+        console.log('man')
         return
       }
+
 
       if (password?.replace(/\s/g, "") != confirmpassword?.replace(/\s/g, "")){
         this.error("Password Field's don't match")
         return
       }
 
+
+
       let associated = (Globals.storeInfo?.uid && Globals.storeInfo?.uid != '') ? Globals.storeInfo?.uid : undefined
 
       const credentials = {
 
-        "email": email.replace(/\s/g, ""),
-        "password": password.replace(/\s/g, ""),
-        "username": username.replace(/\s/g, ""),
+        "email": email.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
+        "password": password.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
+        "username": username.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
       }
 
       console.log(username)

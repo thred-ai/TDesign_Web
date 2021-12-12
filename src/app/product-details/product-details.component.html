@@ -8,10 +8,10 @@
                     <div class="p-0 pt-0 w-100">
                         <div class="container-contact1 rounded w-100 h-100 p-2" >
                             <div *ngIf='images.length == 5'>
-                                <span class="contact1-form-title fw-bolder mt-4" style="font-size: 20px;" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">
+                                <span class="contact1-form-title fw-bolder mt-4" style="font-size: 20px;"  style.color="{{selectedTheme()!.color}}">
                                     PRODUCT IMAGES
                                 </span>
-                                <p class="text-center mb-4 fw-bold" style="font-size: smaller;" [style.font-family]="storeInfo().fontName!"style.color="{{selectedTheme()!.color}}">
+                                <p class="text-center mb-4 fw-bold" style="font-size: smaller;" style.color="{{selectedTheme()!.color}}">
                                     Drag & Drop to rearrange order
                                 </p>
                             </div>
@@ -34,7 +34,7 @@
                                     </div>
                                     
                                     <div class="mx-auto d-flex justify-content-center align-items-center mt-3">
-                                        <a *ngIf="has3D(); else elseBlock" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold px-2 py-1" style="font-size: 15px;">
+                                        <a *ngIf="has3D()" (click)="open()"  role="button"  class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold px-3 py-1" style="font-size: 15px;">
                                             <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
                                                 <span class="material-icons-outlined" style="font-size: 25px;">
                                                     view_in_ar
@@ -42,39 +42,48 @@
                                             </mat-icon>
                                             ADD 3D IMAGE
                                         </a>
-                                        <ng-template #elseBlock>
-                                            <a role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill px-3 py-1 mb-2 align-items-center justify-content-center fw-bold" style="font-size: 12px;">
-                                                <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
-                                                    <span class="material-icons-outlined" style="font-size: 23px;">
-                                                        crop_free
-                                                    </span>
-                                                </mat-icon>
-                                                3D Not Supported
-                                            </a>
-                                        </ng-template>
                                     </div>
                                 </div>
 
-                                <span class="contact1-form-title mb-4 mt-4 fw-bolder" id='label' style="font-size: 20px;" [style.font-family]="storeInfo().fontName!"  style.color="{{selectedTheme()!.color}}">
+                                <span class="contact1-form-title mb-4 mt-4 fw-bolder" id='label' style="font-size: 20px;"   style.color="{{selectedTheme()!.color}}">
                                     PRODUCT DETAILS
                                 </span>
+
+                                <div *ngIf='mode == "create" && (matchingInv(false)?.length ?? 0) > 1' class="text-center">
+                                    <div class="card-body p-0 pt-0">
+                                        <div class="text-left">
+                                            <h5 class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Type'"></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf='mode == "create" && (matchingInv(false)?.length ?? 0) > 1' class="row gx-4 gx-lg-1 row-cols-4 w-100 row-cols-md-5 row-cols-xl-5 justify-content-center" style>
+                                    <button  type="button" class="btn btn-outline-dark active my-1 mx-1 py-2" (click)="selectSize(matchingInv(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{(matchingInv(false) ?? [])[0]}}</button>
+                                    <button  type="button" class="btn btn-outline-dark my-1 mx-1 py-2" *ngFor="let size of matchingInv(true) ?? []" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                                </div>
+                                
                 
                                 <div class="wrap-input1 w-100 mb-3">
-                                    <input type="text " [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="shadow rounded input1 w-100 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" name="name" formControlName="name" placeholder="Name">
+                                    <input type="text "  style.color="{{selectedTheme()!.color}}" class="shadow rounded input1 w-100 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" name="name" formControlName="name" placeholder="Name">
                                     <span class="rounded shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
                                 </div>
+
+                                <div class="wrap-input1 w-100 mb-3">
+                                    <input type="text"  style.color="{{selectedTheme()!.color}}" class="shadow rounded input1 w-100 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" name="name" formControlName="sku" placeholder="SKU (optional)">
+                                    <span class="rounded shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
+                                </div>
+
                                 <div class="wrap-input1 w-100 mb-3" >
                                     <!-- <input class="input1" 
                                     
                                      formControlName="price" name="quantity" placeholder="Price"> -->
-                                    <input [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" currencyMask [options]="customCurrencyMaskConfig" class="shadow rounded input1 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" placeholder="Price" formControlName="price" />
+                                    <input  style.color="{{selectedTheme()!.color}}" currencyMask [options]="customCurrencyMaskConfig" class="shadow rounded input1 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" placeholder="Price" formControlName="price" />
                                     <span class="rounded shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
                                     
                                 </div>
                 
                 
                                 <div class="wrap-input1 w-100 mb-3">
-                                    <textarea [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="shadow rounded input1 p-3 p-lg-4 p-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" name="message" placeholder="Description (Optional)" formControlName="description"></textarea>
+                                    <textarea style.color="{{selectedTheme()!.color}}" class="shadow rounded input1 p-3 p-lg-4 p-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" name="message" placeholder="Description (Optional)" formControlName="description"></textarea>
                                     <span class="rounded shadow-input1 p-2 p-lg-4 p-md-4"></span>
                                 </div>
                 
@@ -100,7 +109,7 @@
                         [name]="'productSpinner'"
                         [disableAnimation] = "true"
                         >
-                        <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">UPLOADING PRODUCT...</h3>
+                        <h3 class="text-center mt-5" >UPLOADING PRODUCT...</h3>
                         </ngx-spinner>
                     </div>
                 </div>

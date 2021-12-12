@@ -85,7 +85,7 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
     country: [null, Validators.required],
     city: [null, Validators.required],
     state: [null, Validators.required],
-    postalCode: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(8)]],
+    postalCode: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(8)]],
     shipping: ['custom', Validators.required]
   });
 

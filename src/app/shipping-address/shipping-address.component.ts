@@ -33,7 +33,7 @@ export class ShippingAddressComponent implements OnInit {
     phone: [null, [Validators.required, Validators.pattern("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$")]],
     city: [null, Validators.required],
     state: [null, Validators.required],
-    postalCode: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(8)]],
+    postalCode: [null, [Validators.required, Validators.minLength(2), Validators.maxLength(8)]],
     shipping: ['free']
   });
 
@@ -160,6 +160,8 @@ export class ShippingAddressComponent implements OnInit {
 
   save(){
 
+    console.log(this.addressForm.controls.state.value)
+
     if (this.addressForm.valid){
       let f = this.addressForm.controls
 
@@ -179,9 +181,9 @@ export class ShippingAddressComponent implements OnInit {
         f.email.value
       )
 
-      if (f.country.value == "CA" || f.country.value == "Canada"){
-        Globals.shippingInfo.admin_area = Globals.caProvinces.find(province => { return province.name == f.state.value || province.abbreviation == f.state.value})?.abbreviation ?? "ON"
-      }
+      // if (f.country.value == "CA" || f.country.value == "Canada"){
+      //   Globals.shippingInfo.admin_area = Globals.caProvinces.find(province => { return province.name == f.state.value || province.abbreviation == f.state.value})?.abbreviation ?? "ON"
+      // }
 
       if (isPlatformBrowser(this.platformID)){
           this.spinner.show()
@@ -201,6 +203,7 @@ export class ShippingAddressComponent implements OnInit {
       })
     }
     else{
+      console.log('ello')
     }
   }
 

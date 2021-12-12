@@ -35,7 +35,7 @@ import { PopupComponent } from './popup/popup.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   title = 'thred-web';
 
   mode = "All Products"
@@ -213,7 +213,12 @@ export class AppComponent implements OnInit {
   }
 
   isAdmin(){
+
     return (this.router.snapshot.firstChild?.routeConfig?.path?.includes("my-store"))
+  }
+
+  isLanding(){
+    return ((this.router.snapshot.firstChild?.routeConfig?.path?.trim() ?? '') == '')
   }
 
   isOrder(){
@@ -575,8 +580,8 @@ export class AppComponent implements OnInit {
     }
 
 
-  // ngAfterViewInit(): void {
-  // }
+  ngAfterViewInit(): void {
+  }
 
 
 
@@ -714,7 +719,6 @@ repeatContent(el: HTMLElement, till: number) {
 
     this.loadService.rootComponent = this
     this.setOptions()
-
 
 
     // this._router.events

@@ -13,6 +13,7 @@ import { Product } from '../models/product.model';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { Inventory } from '../models/inventory.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -22,7 +23,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class DesignComponent implements OnInit {
 
-  mode = "create"
+  mode = 0
 
   product?: Product
   inventory: Array<Inventory> = []
@@ -43,8 +44,35 @@ export class DesignComponent implements OnInit {
     }
   }
 
+  inv(){
+    var i = new Array<any>()
 
-  
+    if (this.inventory.find(inven => { return inven.isCustom})){
+      this.inventory.forEach(ing => { 
+        if (ing.isCustom){
+          i.push(ing)
+        }
+      })
+    }
+    i.push({
+      name: 'Thred Inventory'
+    })
+    return i
+  }
+
+  chooseInv(inv: any){
+
+    console.log(inv)
+    console.log('ggggg')
+
+    if (inv.name == 'Thred Inventory'){
+      this.mode = 1
+      console.log('yes')
+    }
+    else{
+      this.finishedDesigning(undefined, inv)
+    }
+  }
 
   templates?: Array<Template>
   selectedTemplate?: Template
@@ -131,88 +159,137 @@ export class DesignComponent implements OnInit {
 
   hideCanvas = false
 
-  async finishedDesigning(back_link_img?: string){
-    var amt = this.selectedTemplate!.minPrice / 100
-        if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
-          amt = this.selectedTemplate!.bulkSuggestPrice / 100
-        }
-        if (this.backImg && this.frontImg){
-          amt += this.selectedTemplate!.extraCost / 100
-        }
-        // this.designForm.controls.price.setValue(amt)
+  async finishedDesigning(back_link_img?: string, inv?: Inventory){
+    if (!inv){
+      var amt = this.selectedTemplate!.minPrice / 100
+      if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
+        amt = this.selectedTemplate!.bulkSuggestPrice / 100
+      }
+      if (this.backImg && this.frontImg){
+        amt += this.selectedTemplate!.extraCost / 100
+      }
+      // this.designForm.controls.price.setValue(amt)
 
-      var displaySide = "front"
-      var sides = new Array<string>()
+    var displaySide = "front"
+    var sides = new Array<string>()
 
 
-      var images: Array<Dict<any>> = [
-        {
-          img: this.linkImg,
-          type: "link_"
-        },
-      ]
+    var images: Array<Dict<any>> = [
+      {
+        img: this.linkImg,
+        type: "link_"
+      },
+    ]
 
-      if (back_link_img){
-        images.push({
-          img: back_link_img,
-          type: "link_2"
-        })
+    if (back_link_img){
+      images.push({
+        img: back_link_img,
+        type: "link_2"
+      })
+    }
+
+    if (this.frontImg){
+      sides.push("Front")
+      images.push({
+        img: this.frontImg,
+        type: ""
+      })
+    }
+    else{
+      displaySide = "back"
+    }
+
+    if (this.backImg){
+      sides.push("Back")
+      images.push({
+        img: this.backImg,
+        type: "BACK_"
+      })
+    }
+
+    if (sides.length == 0){
+      sides.push("Front")
+      images.push({
+        img: this.frontImg,
+        type: ""
+      })
+    }
+
+      let mappedData = {
+        name: 'DRAFT',
+        price: amt * 100 ?? 2000,
+        description: "",
+        productType: this.selectedTemplate?.productCode ?? "ATC1000",
+        displaySide: displaySide,
+        templateColor: this.selectedColor?.code ?? "white",
+        sides: sides,
+        images: images
       }
   
-      if (this.frontImg){
-        sides.push("Front")
-        images.push({
-          img: this.frontImg,
-          type: ""
-        })
-      }
-      else{
-        displaySide = "back"
-      }
-  
-      if (this.backImg){
-        sides.push("Back")
-        images.push({
-          img: this.backImg,
-          type: "BACK_"
-        })
-      }
-  
-      if (sides.length == 0){
-        sides.push("Front")
-        images.push({
-          img: this.frontImg,
-          type: ""
-        })
-      }
+      let product = await this.loadService.createProduct(mappedData)
+      this.hideCanvas = false
 
-        let mappedData = {
-          name: 'DRAFT',
-          price: amt * 100 ?? 2000,
-          description: "",
-          productType: this.selectedTemplate?.productCode ?? "ATC1000",
-          displaySide: displaySide,
-          templateColor: this.selectedColor?.code ?? "white",
-          sides: sides,
-          images: images
-        }
+      this.spinner.hide("designSpinner")
+      
+      var data = {
+        linkImg: this.linkImg,
+        back_linkImg: back_link_img,
+        frontImg: this.frontImg,
+        backImg: this.backImg,
+        selectedTemplate: this.selectedTemplate,
+        selectedColor: this.selectedColor,
+        suggested_price: amt,
+        product: product
+      }
+      this.activeModal.close(data)
+    }
+    else{
+
+      this.spinner.show("iSpinner")
+
+      this.http.get('https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media', { responseType: 'blob' })
+      .subscribe(blob => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = async (event: any) => {
+          console.log('Image in Base64: ', event.target.result);
+          var images: Array<Dict<any>> = [
+            {
+              img: event.target.result,
+              type: "link_"
+            },
+          ]
+
+          let mappedData = {
+            name: 'DRAFT',
+            price: 0,
+            description: "",
+            productType: inv.code,
+            displaySide: null,
+            templateColor: null,
+            sides: null,
+            isCustom: true,
+            images: images
+          }
+
+      
+          let product = await this.loadService.createProduct(mappedData)
     
-        let product = await this.loadService.createProduct(mappedData)
-        this.hideCanvas = false
+          this.spinner.hide("iSpinner")
+          var d = {
+            linkImg: event.target.result,
+            selectedInv: inv,
+            suggested_price: 0,
+            product: product
+          }
+          this.activeModal.close(d)
+        };
 
-        this.spinner.hide("designSpinner")
-        
-        var data = {
-          linkImg: this.linkImg,
-          back_linkImg: back_link_img,
-          frontImg: this.frontImg,
-          backImg: this.backImg,
-          selectedTemplate: this.selectedTemplate,
-          selectedColor: this.selectedColor,
-          suggested_price: amt,
-          product: product
-        }
-        this.activeModal.close(data)
+        reader.onerror = (event: any) => {
+          console.log("File could not be read: " + event.target.error.code);
+        };
+      });
+    }
   }
 
   
@@ -311,7 +388,7 @@ export class DesignComponent implements OnInit {
   }
 
   cancel(){
-    if (this.frontImg == undefined && this.backImg == undefined || this.mode == 'edit'){
+    if (this.frontImg == undefined && this.backImg == undefined){
       this.activeModal.close()
       return
     }
@@ -502,18 +579,23 @@ export class DesignComponent implements OnInit {
     private spinner: NgxSpinnerService,
     private loadService: LoadService,
     public activeModal: MatDialogRef<DesignComponent>,
+    private http: HttpClient,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { 
 
     this.templates = data.templates ?? []
     this.inventory = data.inventory ?? []
+    this.mode = ((this.inventory.filter(i => { return i.isCustom})).length > 0) ? 0 : 1
     this.sanitizer = sanitizer
   }
 
   showCanv = false
 
+  invt = new Array<any>()
+
   ngOnInit(): void {
     
+    this.invt = this.inv()
 
     this.loadTemplate()
 

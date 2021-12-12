@@ -1,5 +1,5 @@
 <div class="bg-transparent rounded-top d-flex justify-content-between align-items-center" style="height: 30px;">
-    <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+    <a role="button" (click)='close()' style="text-shadow: 2px 2px 4px #42424281;">
         <mat-icon >highlight_off</mat-icon>
     </a>
     <mat-icon ></mat-icon>
@@ -58,7 +58,7 @@
                         <mat-form-field class="w-100" appearance="outline">
                             <mat-label>Popup Trigger</mat-label>
                             <mat-select formControlName='trigger'>
-                            <mat-select-trigger class="d-flex align-items-center" *ngIf='matchingTrigger(popupForm.controls.trigger.value)'>
+                            <mat-select-trigger class="d-flex mx-2 align-items-center" *ngIf='matchingTrigger(popupForm.controls.trigger.value)'>
                                 {{matchingTrigger(popupForm.controls.trigger.value)!.name}}
                             </mat-select-trigger>
                               <mat-option *ngFor="let trigger of triggers" [value]="trigger.code">

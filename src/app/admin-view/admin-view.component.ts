@@ -33,6 +33,7 @@ import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 import { Popup } from '../models/popup.model';
 import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import {PageEvent} from '@angular/material/paginator'
+import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
 
 
 @Component({
@@ -50,8 +51,6 @@ import {PageEvent} from '@angular/material/paginator'
   ]
 })
 export class AdminViewComponent implements OnInit, OnDestroy {
-  // @ViewChild("chart") chart?: ChartComponent;
-
   
 
 activeAffiliates = new Array<{
@@ -106,6 +105,13 @@ couponHeader(coupon: Coupon){
   return ''
 }
 
+customInv(){
+  return this.inventory?.filter(i => { return i.isCustom}) ?? []
+}
+
+thredInv(){
+  return this.inventory?.filter(i => { return !i.isCustom}) ?? []
+}
 
 
 popupHeader(popup: Popup){
@@ -207,6 +213,47 @@ showPopupModal(popup?: Popup){
   });
 }
 
+newInventory(inv?: Inventory){
+  const modalRef = this.dialog.open(EditInventoryComponent, {
+    width: '800px',
+    data: {
+      inv: inv, 
+    },
+  });
+
+  let sub = modalRef.afterClosed().subscribe((inventory: Inventory) => {
+    console.log('The dialog was closed');
+    sub.unsubscribe()
+    if (inventory){
+      console.log("lop")
+      let index = this.inventory?.findIndex(i => { return i.id == inventory.id})
+      if (index == -1){
+        console.log("dop")
+        this.inventory?.unshift(inventory)
+      }
+      else{
+        console.log(index)
+        this.inventory![index!] = inventory
+      }
+      this.toast("Inventory Added!")
+    } 
+    else if (inventory){
+      this.toast("Unable to add Inventory!")
+    }
+  });
+}
+
+deleteInventory(inv?: Inventory){
+  this.openPopup("Are you sure?", "Your inventory '" + inv?.name +  "' will be removed forever. All products using this inventory will also be unavailable.", inv?.img ?? '', 'Yes, Remove', 'Never Mind', async () => {
+    await this.loadService.removeInv(inv!)
+    let index = this.inventory?.findIndex(i => { return i.id == inv?.id})
+    console.log(index)
+    if (index != undefined && index != -1){
+      this.inventory?.splice(index, 1)
+      this.toast("Inventory Removed")
+    }
+  })
+}
 
 
 emailSubs?: Array<{
@@ -922,16 +969,17 @@ showSocialModal(logo: {
 
   
 
-  getTypeImages(templateCode: string) {
+  getTypeImages(templateCode: string, inv?: Inventory) {
 
-    let template = Globals.templates.find(obj => {
-      return obj.productCode == templateCode
-    })
-
-
-
-    return "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Templates%2F" + template?.templateID + "%2Fdisplay1.jpg?alt=media"
-    
+    if (inv?.isCustom){
+      return inv?.img
+    }
+    else{
+      let template = Globals.templates.find(obj => {
+        return obj.productCode == templateCode
+      })
+      return "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Templates%2F" + template?.templateID + "%2Fdisplay1.jpg?alt=media"
+    }    
 
   }
 
@@ -1071,10 +1119,12 @@ showSocialModal(logo: {
     this.inventory = []
     this.loadService.getInventory(inventory => {
       console.log(inventory)
-      this.inventory = inventory ?? []
-      // this.inventory.forEach(inv => {
-      //   inv.img = this.getTypeImages(inv.name)
-      // })
+      this.inventory = (inventory ?? []).sort(function(a, b){
+        if(a.timestamp < b.timestamp) { return 1; }
+        if(a.timestamp > b.timestamp) { return -1; }
+        return 0;
+      })
+      
       console.log(this.inventory)
       this.cdr.detectChanges()
     })
@@ -1101,12 +1151,13 @@ showSocialModal(logo: {
 
   
   invUsed(inv: Inventory){
-    let num = (this.matchTemplate(inv)?.bulkUnit ?? 0) - inv.amount
+    // Globals.productsSold
+    let n = Globals.productsSold?.filter(p => { return p.product?.productID == inv.code})?.length ?? 0
 
-    if (num == 0){
+    if (n == 0){
       return 'No sales on this product'
     }
-    return num + " sales on this product"
+    return n + " sales on this product"
   }
 
   matchInventory(template: Template){
@@ -1362,7 +1413,6 @@ isSpinning = false
         modalRef.componentInstance.imageChangedEvent = event
 
 
-
         if (type == "Profile"){
           modalRef.componentInstance.ratio = 1
           modalRef.componentInstance.width = 200
@@ -1376,7 +1426,7 @@ isSpinning = false
           })
         }
         else if (type == "Background"){
-          modalRef.componentInstance.ratio = 1.78
+          // modalRef.componentInstance.ratio = 1.78
           modalRef.componentInstance.width = 2560
           modalRef.componentInstance.height = 1440
 
@@ -1388,7 +1438,7 @@ isSpinning = false
           })
         }
         else if (type == "Home_Background"){
-          modalRef.componentInstance.ratio = 1.78
+          // modalRef.componentInstance.ratio = 1.78
           modalRef.componentInstance.width = 2560
           modalRef.componentInstance.height = 1440
 
@@ -1400,7 +1450,7 @@ isSpinning = false
           })
         }
         else if (type == "Home_Promotion"){
-          modalRef.componentInstance.ratio = 1.78
+          // modalRef.componentInstance.ratio = 1.78
           modalRef.componentInstance.width = 2560
           modalRef.componentInstance.height = 1440
 
@@ -1412,7 +1462,7 @@ isSpinning = false
           })
         }
         else if (type == "Shop_Background"){
-          modalRef.componentInstance.ratio = 1.78
+          // modalRef.componentInstance.ratio = 1.78
           modalRef.componentInstance.width = 2560
           modalRef.componentInstance.height = 1440
 
@@ -1424,7 +1474,7 @@ isSpinning = false
           })
         }
         else if (type == "Action"){
-          modalRef.componentInstance.ratio = 1.78
+          // modalRef.componentInstance.ratio = 1.78
           modalRef.componentInstance.width = 2560
           modalRef.componentInstance.height = 1440
 
@@ -1890,7 +1940,7 @@ isSpinning = false
   }
 
   shouldShowSaveBtn(){
-    let title = this.getSelectedPanel().Title
+    let title = this.getSelectedPanel()?.Title
     let list = [
       'STORE',
       'HOME',
@@ -2065,6 +2115,8 @@ isSpinning = false
       this.init()
     }
 
+    
+
     showWelcomeModal(){
 
       if (Globals.isNewUser && !this.modalService.hasOpenModals()){
@@ -2180,10 +2232,12 @@ isSpinning = false
             else{
               Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
               this.inventory?.forEach(inv => {
-                let name = Globals.templates.filter(obj => {
-                  return obj.productCode == inv.code
-                })[0]?.templateDisplayName
-                inv.name = name
+                if (!inv.isCustom){
+                  let name = Globals.templates.filter(obj => {
+                    return obj.productCode == inv.code
+                  })[0]?.templateDisplayName
+                  inv.name = name
+                }
               });
               this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
               this.hideSpinner()
@@ -2395,8 +2449,8 @@ isSpinning = false
 
     editProduct(product: Product){
       
-      let same = this.templates().find(temp => { return temp.productCode == product.productType})
-      let sameC = same?.colors.find(co => { return co.code == product.templateColor})
+      let same = this.templates().find(temp => { return temp.productCode == product.productType}) ?? null
+      let sameC = same?.colors.find(co => { return co.code == product.templateColor}) ?? null
 
       var data: Dict<any> = {
         linkImg: product.url,

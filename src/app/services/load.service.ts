@@ -217,6 +217,41 @@ export class LoadService {
     });
   }
 
+  async getInv(code: string, callback: (inventory: Inventory) => any){
+    let uid = Globals.storeInfo.uid
+    let sub = this.db.collection("Users/" + uid + "/Inventory", ref => ref.where("id",'==', code)).valueChanges({idField: 'inventoryID'}).subscribe((doc) => {
+
+
+      let docData = (doc as DocumentData)[0]
+        if (docData){
+          let amt = docData.amount as number
+          let code = docData.id as string
+          let id = docData.inventoryID as string
+          let autoReload = docData.auto_reload as boolean ?? false
+          let desc = docData.description as string ?? ''
+          let category = docData.category as string ?? ''
+          let img = docData.img as string
+          let name = docData.name as string ?? ''
+
+          let sizes = docData.sizes as Array<string> ?? []
+          let variations = docData.variations as Array<any> ?? []
+          let isCustom = docData.is_custom as boolean ?? false
+
+          let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate()
+
+          if (name.trim() == ''){
+            name = Globals.templates.filter(obj => {
+              return obj.productCode == code
+            })[0]?.templateDisplayName
+          }
+
+          let inventory = new Inventory(code, name, amt, timestamp, id, autoReload, variations, category, desc, sizes, isCustom, img)
+          callback(inventory) 
+        }
+        if (isPlatformBrowser(this.platformID))
+        sub.unsubscribe();   
+    })
+  }
 
   async getInventory(callback: (inventory: Array<Inventory>) => any){
     let uid = (await this.isLoggedIn())?.uid
@@ -231,14 +266,24 @@ export class LoadService {
           let code = docData.id as string
           let id = docData.inventoryID as string
           let autoReload = docData.auto_reload as boolean ?? false
+          let desc = docData.description as string ?? ''
+          let category = docData.category as string ?? ''
+          let img = docData.img as string
+          let name = docData.name as string ?? ''
+
+          let sizes = docData.sizes as Array<string> ?? []
+          let variations = docData.variations as Array<any> ?? []
+          let isCustom = docData.is_custom as boolean ?? false
 
           let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate()
 
-          let name = Globals.templates.filter(obj => {
-            return obj.productCode == code
-          })[0]?.templateDisplayName
+          if (name.trim() == ''){
+            name = Globals.templates.filter(obj => {
+              return obj.productCode == code
+            })[0]?.templateDisplayName
+          }
 
-          let inventory = new Inventory(code, name, amt, timestamp, id, autoReload)
+          let inventory = new Inventory(code, name, amt, timestamp, id, autoReload, variations, category, desc, sizes, isCustom, img)
           totalInventory.push(inventory)
         }
         if (isPlatformBrowser(this.platformID))
@@ -385,7 +430,6 @@ export class LoadService {
           let homeRows = docData["rows"] as Array<Row>
           let orders = docData["Orders"] as number ?? 0
 
-          console.log(popups)
           var coupons = new Array<Coupon>()
           discounts.forEach(discount => {
             coupons.push(new Coupon(discount.code ?? 'CODE1', discount.amt ?? 0, discount.products ?? [], discount.auto, discount.type, discount.threshold, discount.style))
@@ -393,7 +437,6 @@ export class LoadService {
 
           var banners = new Array<Banner>()
           bannerFields.forEach(banner => {
-            console.log(banner)
             banners.push(new Banner(banner.text, banner.icon, this.parseColor(banner.bg_color), this.parseColor(banner.color)))
           })
 
@@ -874,6 +917,7 @@ export class LoadService {
           let sides = docData["Sides"] as Array<string> ?? ["Front"]
           let images = docData["Images"] as Array<any> ?? [{index:0, img: this.getURL(uid, productID)}]
           let isAvailable = docData.Available as boolean ?? false
+          let custom = docData.Custom as boolean ?? false
 
   
           let product = new Product(
@@ -896,7 +940,8 @@ export class LoadService {
             displaySide, 
             sides,
             this.getURL(uid, productID),
-            images
+            images,
+            custom
           )
 
             products.push(product);
@@ -993,6 +1038,13 @@ export class LoadService {
     }
   }
 
+  async removeInv(inv: Inventory){
+
+    let uid = (await this.isLoggedIn())?.uid ?? ""
+
+    return this.db.collection("Users/" + uid + "/Inventory").doc(inv.id).delete()
+
+  }
 
   removeProduct(product: Product){
 
@@ -1681,6 +1733,58 @@ export class LoadService {
     callback(true)
   }
 
+  isBase64(str: string) {
+    try {
+        return btoa(atob(str)) == str;
+    } catch (err) {
+        return false;
+    }
+  }
+  
+
+  async saveInventory(inv: Inventory, callback: (inventory?: Inventory) => any, uid?: string){
+    
+    var data: Dict<any> = {
+      "amount" : inv.amount,
+      "name" : inv.name,
+      "id" : '',
+      "auto_reload" : inv.autoReload ?? false,
+      "description" : inv.desc,
+      "category" : inv.category,
+      "variations" : inv.variations,
+      "sizes" : inv.sizes,
+      "timestamp" : inv.timestamp ?? new Date(),
+      "is_custom" : true,
+    }
+
+    if ((inv.code ?? '').trim() == ''){
+      data["id"] = uuid().replace('-', '')
+    }
+
+    if ((inv.id ?? '').trim() == ''){
+      inv.id = this.db.collection("Users/" + uid + '/Inventory').doc().ref.id
+    }
+
+    if ((inv.img ?? '').trim() != '' && this.isBase64(inv.img?.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+      var url = inv.img
+      url = await this.uploadInventoryImages(inv.img, inv.id, uid) as string
+      var split = url.split('&token=')
+      url = split[0]
+  
+      if (url){
+        data.img = url
+      }
+    }
+
+    if (uid){
+      await this.db.collection("Users/" + uid + '/Inventory').doc(inv.id).set(data, {merge : true})
+      callback(inv)
+      return
+    }
+    callback(undefined)
+    return
+  }
+
   async saveEmail(mappedData: Dict<any>, callback: (success: boolean) => any){
 
     let user = (await this.isLoggedIn())
@@ -1765,14 +1869,18 @@ export class LoadService {
         return 0;
       })
 
-      let data = {
+      let data: Dict<any> = {
         "Name" : mappedData.name ?? "Post",
         "Search_Name" : mappedData.name.toLowerCase() ?? "post",
         "Description" : mappedData.description ?? "",
         "Price_Cents" : mappedData.price ?? 2000,
         "Available" : mappedData.available ?? true,
         'Public' : true,
+        'SKU' : mappedData.sku ?? null,
         "Images":images
+      }
+      if (mappedData.color && mappedData.color?.trim() != ''){
+        data.Template_Color = mappedData.color
       }
       await this.db.collection("Users/" + uid + "/Products").doc(productID).update(data)
   
@@ -1855,7 +1963,8 @@ export class LoadService {
           data.Side,
           data.sides,
           url,
-          images
+          images,
+          data.Custom
         )
   
         resolve(product)  
@@ -1917,6 +2026,44 @@ export class LoadService {
     return undefined
   }
 
+
+  private async uploadInventoryImages(image: string, inv_id: string, uid?: string) {
+    const filePath = 'Users/' + uid + '/Inventory/' + inv_id + '.png';
+    let ref = this.storage.ref(filePath);
+
+    console.log(typeof image)
+    const byteArray = Buffer.from(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
+
+    // const task = await this.storage.upload(filePath, byteArray);
+    const task = await ref.put(byteArray);
+    const url = await task.ref.getDownloadURL();
+
+    // if (type == "theme"){
+    //   Globals.userInfo!.themeLink = url
+  
+    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //     Globals.storeInfo!.themeLink = url
+    //   }
+    // }
+    // else if (type == "home"){
+    //   Globals.userInfo!.homeLink = url
+  
+    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //     Globals.storeInfo!.homeLink = url
+    //   }
+    // }
+    // else if (type == "action"){
+
+    //   Globals.userInfo!.actionLink = url
+  
+    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //     Globals.storeInfo!.actionLink = url
+    //   }
+    // }
+    return url;
+  return undefined
+}
+
   private async uploadStoreImages(image: string, type?: string, uid?: string) {
     if (type){
       const filePath = 'Users/' + uid + '/Store_Images/' + type + '.png';
@@ -1977,25 +2124,26 @@ export class LoadService {
       "Name" : mappedData.name ?? "Post",
       "Search_Name" : mappedData.name.toLowerCase() ?? "post",
       "Description" : mappedData.description ?? "",
-      "Price_Cents" : mappedData.price ?? 2000,
+      "Price_Cents" : mappedData.price ?? 0,
       "UID" : uid,
       "Blurred" : false,
       "Timestamp" : new Date(),
-      "Template_Color" : mappedData.templateColor ?? "black",
+      "Template_Color" : mappedData.templateColor ?? null,
       "Likes" : 0,
       "Comments" : 0,
       "Has_Picture" : false,
       "Product_ID" : productID,
       "Available" : true,
       "Public" : false,
+      "Custom" : mappedData.isCustom ?? false,
       "Type" : mappedData.productType ?? "ATC1000",
-      "Side" : mappedData.displaySide ?? "front",
-      "Sides" : mappedData.sides
+      "Side" : mappedData.displaySide ?? null,
+      "Sides" : mappedData.sides ?? []
      } as Dict<any>
 
     if (uid){
       
-      await this.db.collection("Users/" + uid + "/Products").doc(productID).set(data)
+      await this.db.collection("Users/" + uid + "/Products").doc(productID).set(data, {merge: true})
 
       return data
       
@@ -3096,6 +3244,7 @@ export class LoadService {
           let isAvailable = docData.Available as boolean ?? false
 
           let images = docData["Images"] as Array<any> ?? [{index:0, img: this.getURL(uid, productID)}]
+          let custom = docData.Custom as boolean ?? false
 
           let product = new Product(
             uid, 
@@ -3117,7 +3266,8 @@ export class LoadService {
             displaySide, 
             sides,
             this.getURL(uid, productID),
-            images
+            images,
+            custom
           )
 
 
@@ -3151,7 +3301,6 @@ export class LoadService {
     
 
     Globals.templates = [...new Map(Globals.templates.map(item => [item.productCode, item])).values()]
-    console.log(Globals.templates)
     return Globals.templates.filter(
       (template, i) => products.some(product => product.productType === template.productCode));
   }

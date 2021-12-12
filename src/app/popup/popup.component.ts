@@ -37,6 +37,24 @@ export class PopupComponent implements OnInit {
     return theme
   }
 
+  selectedIndicator(){
+
+    let co = Globals.storeInfo?.loading?.color
+    let bco = Globals.storeInfo?.loading?.bg_color
+    let name = Globals.storeInfo?.loading?.name
+    
+    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
+
+    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+
+    let indicator: Dict<string> = {
+      "name": name,
+      "color": color,
+      "bg_color": bg_color
+    }
+    return indicator
+  }
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
@@ -64,23 +82,6 @@ export class PopupComponent implements OnInit {
     this.dialogRef.close()
   }
 
-  selectedIndicator(){
-
-    let co = Globals.storeInfo?.loading?.color
-    let bco = Globals.storeInfo?.loading?.bg_color
-    let name = Globals.storeInfo?.loading?.name
-    
-    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
-
-    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
-
-    let indicator: Dict<string> = {
-      "name": name,
-      "color": color,
-      "bg_color": bg_color
-    }
-    return indicator
-  }
 
   save(){
     this.err = undefined

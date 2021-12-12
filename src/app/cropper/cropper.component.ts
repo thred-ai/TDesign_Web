@@ -11,7 +11,7 @@ export class CropperComponent implements OnInit {
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
-  ratio = 1;
+  ratio?: number;
   width = 200
   height = 200
   innerHeight(){
@@ -39,12 +39,18 @@ compressImage(src: string) {
     img.src = src;
     img.onload = () => {
       const elem = document.createElement('canvas');
-      elem.width = this.width;
-      elem.height = this.height;
-      const ctx = elem.getContext('2d');
-      ctx?.drawImage(img, 0, 0, this.width, this.height);
-      const data = ctx?.canvas.toDataURL("image/jpg")
-      res(data);
+
+      if (this.ratio){
+        elem.width = this.width;
+        elem.height = this.height;
+        const ctx = elem.getContext('2d');
+        ctx?.drawImage(img, 0, 0, this.width, this.height);
+        const data = ctx?.canvas.toDataURL("image/jpg")
+        res(data);
+      }
+      else{
+        res(src);
+      }
     }
     img.onerror = error => rej(error);
   })

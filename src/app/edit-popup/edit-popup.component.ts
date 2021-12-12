@@ -134,4 +134,7 @@ export class EditPopupComponent implements OnInit {
     this.dialogRef.close(popup)
   }
 
+  close(){
+    this.dialogRef.close()
+  }
 }

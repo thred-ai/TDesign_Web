@@ -24,6 +24,7 @@ export class Product {
       index: number,
       img: URL
     }> = []
+    custom: boolean = false
 
 
     getUrl(downloadBack: boolean){
@@ -59,7 +60,8 @@ export class Product {
       images?: Array<{
         index: number,
         img: string
-      }>
+      }>,
+      custom?: boolean
       ) {
 
       this.uid = uid ?? ""
@@ -81,6 +83,7 @@ export class Product {
       this.displaySide = displaySide ?? ""
       this.supportedSides = supportedSides ?? []
       this.url = new URL(url ?? "https://shopmythred.com")
+      this.custom = custom ?? false
 
       images?.forEach(image => {
         this.images.push({

@@ -13,7 +13,7 @@ type = {{selectedIndicator().name}}
 style.color = "{{selectedIndicator()!.color}}"
 [name]="'adminSpinner'"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!" >{{storeInfo()?.fullName}}
+<h3 [style.font-family]="storeInfo().fontName!" class="text-center mt-5"  >{{storeInfo()?.fullName}}
 </h3>
 </ngx-spinner>
 
@@ -30,7 +30,7 @@ style.color = "{{selectedIndicator()!.color}}"
 [name]="'sampleSpinner'"
 >
 
-<h3 class="text-center mt-5" [style.font-family]="themeForm.controls['font']!.value" >{{storeInfo()?.fullName}}
+<h3 [style.font-family]="storeInfo().fontName!" class="text-center mt-5" [style.font-family]="themeForm.controls['font']!.value" >{{storeInfo()?.fullName}}
 </h3>
 </ngx-spinner>
 
@@ -42,23 +42,23 @@ style.color = "{{selectedIndicator()!.color}}"
         <div style="position:fixed; width: 250px; height: 100vh;" class="shadow card bg-{{storeInfo().colorStyle!.back_code}}">
             <div class="w-100 d-flex my-2 justify-content-center align-items-center">
                 <img class="set-img" [src]='storeInfo().profileLink'/>
-                <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}} adminTitle" role="button" (click)="routeToHome()"  [style.font-family]="storeInfo().fontName!">{{storeInfo().fullName}}</a>
+                <a class="navbar-brand px-2 text-{{storeInfo().colorStyle!.text_code}} adminTitle" role="button" (click)="routeToHome()" [style.font-family]="storeInfo().fontName!" >{{storeInfo().fullName}}</a>
             </div>
             <div class="w-100" style="overflow-y: auto; ">
                 <div class="w-100" *ngFor="let panel of panels; index as s">
                     <div class="sidebar-header bg-{{storeInfo().colorStyle!.back_code}} w-100" style="height: 50px; color: #6c757d;">
-                        <h3 [style.font-family]="storeInfo().fontName!">{{panel.Category}}</h3>
+                        <h3 >{{panel.Category}}</h3>
                     </div>
             
                     <ul class="list-unstyled components pb-1 mb-1">
                         <li *ngFor="let option of panel.Options; index as i" [class.active] = "getSelectedPanel()?.Title == option.Title">
-                            <a *ngIf="!shouldRed(option)" role="button" (click) = "selectSetting(i, s)" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} align-items-center justify-content-start" style="font-size: 20px;">
+                            <a *ngIf="!shouldRed(option)" role="button" (click) = "selectSetting(i, s)"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} align-items-center justify-content-start" style="font-size: 20px;">
                                 <mat-icon class="me-2 ms-3"><span class="material-icons-outlined" style="font-size: 25px;">
                                     {{option.Icon}}
                                     </span></mat-icon>
                                 {{option.Title}}
                             </a>
-                            <a *ngIf="shouldRed(option)" role="button" (click) = "selectSetting(i, s)" [style.font-family]="storeInfo().fontName!" class="side d-flex text-danger align-items-center justify-content-start" style="font-size: 20px;">
+                            <a *ngIf="shouldRed(option)" role="button" (click) = "selectSetting(i, s)"  class="side d-flex text-danger align-items-center justify-content-start" style="font-size: 20px;">
                                 <mat-icon class="me-2 ms-3"><span class="material-icons-outlined" style="font-size: 25px;">
                                     {{option.Icon}}
                                     </span></mat-icon>
@@ -67,7 +67,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         </li>
                     </ul>
                 </div>
-                <a class="btn side ms-2" role="button" (click) = "signOutPressed()" style="font-size: 12px; color: crimson; margin-bottom: 20vh;" [style.font-family]="storeInfo().fontName!">
+                <a class="btn side ms-2" role="button" (click) = "signOutPressed()" style="font-size: 12px; color: crimson; margin-bottom: 20vh;" >
                     LOG OUT
                 </a>
             </div> 
@@ -83,7 +83,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <mat-icon >menu_open</mat-icon>
                     </a>
                     <div *ngIf='!isMobile()'>
-                        <a role="button" [style.font-family]="storeInfo().fontName!" class="side card shadow fw-bold m-0 me-2 rounded-pill" style="font-size: 15px;">
+                        <a role="button"  class="side card shadow fw-bold m-0 me-2 rounded-pill" style="font-size: 15px;">
                             <div class="d-flex text-{{storeInfo().colorStyle!.text_code}} btn btn-{{storeInfo().colorStyle!.back_code}} rounded-pill align-items-center justify-content-center h-100 w-100">
                                 {{storeInfo().orders}} ORDERS
                                 <mat-icon class="ms-2">
@@ -95,7 +95,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         </a>
                     </div>
                     <div [hidden]='shouldHideLiveBtn()'>
-                        <a *ngIf="storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-success rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                        <a *ngIf="storeLive()" role="button"  class="side d-flex text-light btn btn-success rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;">
                             LIVE
                             <mat-icon class="ms-2">
                                 <span class="material-icons-outlined" style="font-size: 25px;">
@@ -103,7 +103,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </span>
                             </mat-icon>
                         </a>
-                        <a *ngIf="!storeLive()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-light btn btn-danger rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;" [ngbTooltip]="etipContent">
+                        <a *ngIf="!storeLive()" role="button"  class="side d-flex text-light btn btn-danger rounded-pill mb-0 align-items-center justify-content-center fw-bold" style="font-size: 15px;" [ngbTooltip]="etipContent">
                             <ng-template #etipContent>
                                 
                                 <div class="d-flex" *ngFor="let a of missingInfo()">
@@ -127,7 +127,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         </a>
                     </div>
                 </div>
-                <button *ngIf='shouldShowSaveBtn()' [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark me-2 d-flex rounded-pill">SAVE CHANGES</button>
+                <button *ngIf='shouldShowSaveBtn()'  (click)="saveStore()" class="btn btn-dark me-2 d-flex rounded-pill">SAVE CHANGES</button>
             </div>
           </header>
         
@@ -151,29 +151,29 @@ style.color = "{{selectedIndicator()!.color}}"
                                                 <input #fileInput type="file" (change)="fileChangeEvent($event, 'Profile')" style="display:none;" />
                                             </a>
                                         </div>
-                                        <button (click)="saveProfile()" [style.font-family]="storeInfo().fontName!" class="btn btn-dark mx-auto d-flex">Save Changes</button>
+                                        <button (click)="saveProfile()"  class="btn btn-dark mx-auto d-flex">Save Changes</button>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Handle</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputUsername" placeholder="ex: 'brianstees'" formControlName="username" style.color="{{selectedTheme()!.color}}">
+                                        <label  class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Handle</label>
+                                        <input [attr.disabled]='true'  type="text" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputUsername" placeholder="ex: 'brianstees'" formControlName="username" style.color="{{selectedTheme()!.color}}">
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Name</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputUsername" placeholder="ex: '{{getUsername()}}'" formControlName="full_name" style.color="{{selectedTheme()!.color}}">
+                                        <label  class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Name</label>
+                                        <input  type="text" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputUsername" placeholder="ex: '{{getUsername()}}'" formControlName="full_name" style.color="{{selectedTheme()!.color}}">
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Description</label>
-                                        <textarea [style.font-family]="storeInfo().fontName!" rows="5" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputBio" placeholder="Describe your store..." formControlName="bio" style.color="{{selectedTheme()!.color}}"></textarea>
+                                        <label  class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Store Description</label>
+                                        <textarea  rows="5" class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputBio" placeholder="Describe your store..." formControlName="bio" style.color="{{selectedTheme()!.color}}"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto mt-3 d-block">
-                                    <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Socials</label>
+                                    <label  class = "fw-bold" for="inputUsername" style.color="{{selectedTheme()!.color}}">Socials</label>
                                     <div class="d-flex justify-content-start" style="overflow: scroll">
                                         <a role="button" [style.width.px]="45" class="btn mx-2" (click)="showSocialModal(social)" [class.not-set]="toolTip(social)!.name == 'No ' + social!.name + ' URL set'" *ngFor="let social of socials()" [ngbTooltip]="tipContent">
                                             <ng-template #tipContent>
@@ -189,8 +189,8 @@ style.color = "{{selectedIndicator()!.color}}"
                         </div>
                     </div>
                     <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <h2 *ngIf="domainNotSetUp() == undefined" class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Custom Store Domain</h2>
-                        <a *ngIf="domainNotSetUp()" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex m-3 align-items-center justify-content-center fw-bold" style.color="{{selectedTheme()!.color}}" style="font-size: x-large;">
+                        <h2 *ngIf="domainNotSetUp() == undefined" class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Custom Store Domain</h2>
+                        <a *ngIf="domainNotSetUp()" role="button"  class="side d-flex m-3 align-items-center justify-content-center fw-bold" style.color="{{selectedTheme()!.color}}" style="font-size: x-large;">
                             Custom Store Domain
                             <mat-icon class="ms-2 text-danger" [ngbTooltip]="dtipContent">
                                 <ng-template #dtipContent>
@@ -212,7 +212,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </span>
                             </mat-icon>
                         </a>
-                        <a *ngIf="domainNotSetUp() == false" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex m-3 align-items-center justify-content-center fw-bold" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">
+                        <a *ngIf="domainNotSetUp() == false" role="button"  class="side d-flex m-3 align-items-center justify-content-center fw-bold" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">
                             Custom Store Domain
                             <mat-icon class="ms-2 text-success" [ngbTooltip]="dstipContent">
                                 <ng-template #dstipContent >
@@ -238,15 +238,15 @@ style.color = "{{selectedIndicator()!.color}}"
                             <div class="row">
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Current Domain</label>
+                                        <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Current Domain</label>
                                         
-                                        <input [attr.disabled]="true" [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="shopmythred.com (default)" formControlName="custom_url" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">Adding a custom domain helps boost conversions by over 30%</i></mat-hint>
+                                        <input [attr.disabled]="true"  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="shopmythred.com (default)" formControlName="custom_url" style.color="{{selectedTheme()!.color}}">
+                                        <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">Adding a custom domain helps boost conversions by over 30%</i></mat-hint>
                                     </div>
                                 </div>
                             </div>
                             
-                            <button [style.font-family]="storeInfo().fontName!" (click)="showLinkModal()" class="btn btn-dark mx-auto d-flex">Edit Domain</button>
+                            <button  (click)="showLinkModal()" class="btn btn-dark mx-auto d-flex">Edit Domain</button>
                         </div>
                     </div>
                 </form>
@@ -331,6 +331,151 @@ style.color = "{{selectedIndicator()!.color}}"
                 <form [formGroup]="themeForm" novalidate>
                     <mat-tab-group mat-stretch-tabs>
                         <mat-tab>
+                            <ng-template mat-tab-label>
+                              <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">tune</mat-icon>
+                              <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                  MY THEME
+                              </span>
+                            </ng-template>
+                            <div class="row w-100">
+                              <!-- <div class="col-md-8 mb-3 mx-auto d-block">
+                                  <mat-form-field class="w-100">
+                                      <mat-select (change)="selectTheme()" formControlName="storeTheme">
+                                          <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" >
+                                            {{themeForm.controls['storeTheme'].value}}
+                                          </mat-select-trigger>
+                                          <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
+                                              <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}"  *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
+                                                  {{ cTheme.name }}
+                                              </mat-option>
+                                          </mat-optgroup>
+                                        </mat-select>
+                                        <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
+                                        <mat-error *ngIf="themeForm.controls['storeTheme'].hasError('required')">
+                                          Theme is <strong>required</strong>
+                                      </mat-error>
+                                  </mat-form-field>
+                              </div> -->
+                              <div class="col-md-8 mb-3 mt-3 mx-auto d-block">
+                                  <div >
+                                      <mat-form-field class="w-100">
+                                      <mat-select formControlName="font">
+                                          <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="themeForm.controls['font'].value">
+                                            {{themeForm.controls['font'].value}}
+                                          </mat-select-trigger>
+                                          <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="font" [selected]="font == userInfo()!.fontName" *ngFor="let font of fonts()"[value]="font">
+                                            {{ font }}
+                                          </mat-option>
+                                        </mat-select>
+                                        <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Font</mat-placeholder>
+                                        <mat-error *ngIf="themeForm.controls['font'].hasError('required')">
+                                          Font is <strong>required</strong>
+                                        </mat-error>
+                                      </mat-form-field>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center w-100">
+                              <div class="col-md-8 mb-3 mx-auto d-block">
+                                  <label  class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Theme Background Image</label>
+          
+                                  <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                      <!-- Product image-->
+          
+                                      <a role="button" class="btn" (click)="fileBackground.click()">
+                                          <img class="card-img-top"  alt='ok' src="{{themeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+                                      </a>
+                                      <!-- Product details-->
+                                      
+                                      <div class="card-body p-2 pb-1">
+                                          <div class="mt-2 text-center">
+          
+                                              <a role="button" class="btn" (click)="fileBackground.click()">
+                                                  <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                                  <input #fileBackground type="file" (change)="fileChangeEvent($event, 'Background')" style="display:none;" />
+                                              </a>
+                                          </div>
+                                      </div>
+                                  </div>
+          
+                              </div>
+                          </div>
+                          <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center w-100">
+                              <div class="col-md-8 mb-3 mx-auto d-block">
+                                  <label  style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Theme CTA Image</label>
+          
+                                  <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
+                                      <!-- Product image-->
+          
+                                      <a role="button" class="btn" (click)="fileAction.click()">
+                                          <img class="card-img-top"  alt='ok' src="{{themeForm.controls['actionImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
+          
+                                      </a>
+                                      <!-- Product details-->
+                                      <div class="card-body p-2 pb-1">
+                                          <div class="mt-2 text-center">
+          
+                                              <a role="button" class="btn" (click)="fileAction.click()">
+                                                  <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
+                                                  <input #fileAction type="file" (change)="fileChangeEvent($event, 'Action')" style="display:none;" />
+                                              </a>
+                                          </div>
+                                      </div>
+                                  </div>
+                                  <label  style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Store Loading Indicator</label>
+                                  <div>
+                                      <select  formControlName="loadingIndicator" class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required" (change) = "showSampleSpinner()">
+                                          <option *ngFor="let indicator of loaders()" [selected]="indicator == themeForm.controls['loadingIndicator'].value" >{{ indicator }}</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="row gx-10 row-cols-1 justify-content-center w-100">
+                              <div class="col-md-8 mb-3 mx-auto d-block">
+                                  <label  style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Color</label>
+                                  <div class="card h-auto">
+                                  <a
+                                  role="button" 
+                                  class="btn"
+                                  [style.background]="selectedIndicator()!.color"
+                                  [cpPosition]="'top'"
+                                  [cpPositionRelativeToArrow]="true"
+                                  (colorPickerSelect)="selectColor($event, true)"
+                                  [cpOutputFormat]="'rgba'"
+                                  [cpOKButton]="true"
+                                  [cpOKButtonText]="'SET COLOR'"
+                                  [cpOKButtonClass]= "'btn btn-dark'"
+                                  [cpSaveClickOutside]="false"
+                                  [(colorPicker)]="selectedIndicator()!.color"
+                                  >
+                                  <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
+                                  </a>
+                                  </div>
+                              </div>
+                              <div class="col-md-8 mb-3 mx-auto d-block">
+                                  <label  style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Background Color</label>
+                                  <div class="card h-auto">
+                                  <a
+                                  role="button" 
+                                  class="btn"
+                                  [style.background]="selectedIndicator()!.bg_color"
+                                  [cpPosition]="'top'"
+                                  [cpPositionRelativeToArrow]="true"
+                                  (colorPickerSelect)="selectColor($event, false)"
+                                  [cpOutputFormat]="'rgba'"
+                                  [cpOKButton]="true"
+                                  [cpOKButtonText]="'SET COLOR'"
+                                  [cpOKButtonClass]= "'btn btn-dark'"
+                                  [cpSaveClickOutside]="false"
+                                  [(colorPicker)]="selectedIndicator()!.bg_color"
+                                  >
+                                  <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
+                                  </a>
+                                  </div>
+                              </div>
+                          </div>
+                          </mat-tab>
+                        <mat-tab>
                       <!-- #docregion label-directive -->
                           <ng-template mat-tab-label>
                             <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">window</mat-icon>
@@ -339,20 +484,20 @@ style.color = "{{selectedIndicator()!.color}}"
                             </span>
                           </ng-template>
                           <div *ngFor="let sTheme of themes()">
-                            <h1 class="text-start mx-3 mx-md-4 mx-lg-4 fw-bolder text-{{storeInfo().colorStyle!.text_code}} pt-4 pb-2" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{titleCase(sTheme.name)}}</h1>
+                            <h1 class="text-start mx-3 mx-md-4 mx-lg-4 fw-bolder text-{{storeInfo().colorStyle!.text_code}} pt-4 pb-2" style="font-size: xx-large; font-style: italic;" style.color="{{selectedTheme()!.color}}" >{{titleCase(sTheme.name)}}</h1>
         
                             <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
         
                                 <div class="col" *ngFor="let cTheme of sTheme.themes">
                                     <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                        <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{cTheme.name}}</h2>
+                                        <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{cTheme.name}}</h2>
                                         <div class="card-body">
                                             <!-- <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
-                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Remaining: </label>
-                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
+                                                <label style="color: #6c757d;"  class = "me-1 text-center">Remaining: </label>
+                                                <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">{{invUsed(inv)}}</label>
+                                                <label style="color: #6c757d;"  class = "me-1 text-center">{{invUsed(inv)}}</label>
                                             </div> -->
                                             <div class="rounded mx-auto w-100" >
                                                 <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
@@ -361,7 +506,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                             </div>
             
                                             <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                                <button (click)='selectTheme(cTheme.name)' *ngIf='theme != cTheme.name' [style.font-family]="storeInfo().fontName!" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">
+                                                <button (click)='selectTheme(cTheme.name)' *ngIf='theme != cTheme.name'  class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">
                                                     Use Theme
                                                     <mat-icon class="ms-2">
                                                         <span class="material-icons-outlined">
@@ -369,7 +514,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                                         </span>
                                                     </mat-icon>
                                                 </button>
-                                                <button *ngIf='theme == cTheme.name' [style.font-family]="storeInfo().fontName!" class="btn d-flex mx-1 text-light btn-success">
+                                                <button *ngIf='theme == cTheme.name'  class="btn d-flex mx-1 text-light btn-success">
                                                     Theme In Use
                                                     <mat-icon class="ms-2">
                                                         <span class="material-icons-outlined">
@@ -377,8 +522,8 @@ style.color = "{{selectedIndicator()!.color}}"
                                                         </span>
                                                     </mat-icon>
                                                 </button>
-                                                <!-- <button *ngIf="!inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button> -->
-                                                <!-- <button *ngIf="inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button> -->
+                                                <!-- <button *ngIf="!inv.autoReload"  (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button> -->
+                                                <!-- <button *ngIf="inv.autoReload"  (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button> -->
                                             </div>
                                         </div>
                                     </div>
@@ -386,153 +531,6 @@ style.color = "{{selectedIndicator()!.color}}"
                             </div>
                         </div>
                         </mat-tab>
-                      
-                        <mat-tab>
-                          <ng-template mat-tab-label>
-                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">tune</mat-icon>
-                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
-                                MY THEME
-                            </span>
-                          </ng-template>
-                          <div class="row w-100">
-                            <!-- <div class="col-md-8 mb-3 mx-auto d-block">
-                                <mat-form-field class="w-100">
-                                    <mat-select (change)="selectTheme()" formControlName="storeTheme">
-                                        <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
-                                          {{themeForm.controls['storeTheme'].value}}
-                                        </mat-select-trigger>
-                                        <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
-                                            <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
-                                                {{ cTheme.name }}
-                                            </mat-option>
-                                        </mat-optgroup>
-                                      </mat-select>
-                                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
-                                      <mat-error *ngIf="themeForm.controls['storeTheme'].hasError('required')">
-                                        Theme is <strong>required</strong>
-                                    </mat-error>
-                                </mat-form-field>
-                            </div> -->
-                            <div class="col-md-8 mb-3 mt-3 mx-auto d-block">
-                                <div >
-                                    <mat-form-field class="w-100">
-                                    <mat-select formControlName="font">
-                                        <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="themeForm.controls['font'].value">
-                                          {{themeForm.controls['font'].value}}
-                                        </mat-select-trigger>
-                                        <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="font" [selected]="font == userInfo()!.fontName" *ngFor="let font of fonts()"[value]="font">
-                                          {{ font }}
-                                        </mat-option>
-                                      </mat-select>
-                                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Font</mat-placeholder>
-                                      <mat-error *ngIf="themeForm.controls['font'].hasError('required')">
-                                        Font is <strong>required</strong>
-                                      </mat-error>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center w-100">
-                            <div class="col-md-8 mb-3 mx-auto d-block">
-                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Theme Background Image</label>
-        
-                                <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                    <!-- Product image-->
-        
-                                    <a role="button" class="btn" (click)="fileBackground.click()">
-                                        <img class="card-img-top"  alt='ok' src="{{themeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-                                    </a>
-                                    <!-- Product details-->
-                                    
-                                    <div class="card-body p-2 pb-1">
-                                        <div class="mt-2 text-center">
-        
-                                            <a role="button" class="btn" (click)="fileBackground.click()">
-                                                <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                                <input #fileBackground type="file" (change)="fileChangeEvent($event, 'Background')" style="display:none;" />
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                            </div>
-                        </div>
-                        <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center w-100">
-                            <div class="col-md-8 mb-3 mx-auto d-block">
-                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Theme CTA Image</label>
-        
-                                <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                    <!-- Product image-->
-        
-                                    <a role="button" class="btn" (click)="fileAction.click()">
-                                        <img class="card-img-top"  alt='ok' src="{{themeForm.controls['actionImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-        
-                                    </a>
-                                    <!-- Product details-->
-                                    <div class="card-body p-2 pb-1">
-                                        <div class="mt-2 text-center">
-        
-                                            <a role="button" class="btn" (click)="fileAction.click()">
-                                                <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                                <input #fileAction type="file" (change)="fileChangeEvent($event, 'Action')" style="display:none;" />
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Store Loading Indicator</label>
-                                <div>
-                                    <select [style.font-family]="storeInfo().fontName!" formControlName="loadingIndicator" class="form-select bg-{{storeInfo().colorStyle!.back_code}}" style.color="{{selectedTheme()!.color}}" required="required" (change) = "showSampleSpinner()">
-                                        <option *ngFor="let indicator of loaders()" [selected]="indicator == themeForm.controls['loadingIndicator'].value" >{{ indicator }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row gx-10 row-cols-1 justify-content-center w-100">
-                            <div class="col-md-8 mb-3 mx-auto d-block">
-                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Color</label>
-                                <div class="card h-auto">
-                                <a
-                                role="button" 
-                                class="btn"
-                                [style.background]="selectedIndicator()!.color"
-                                [cpPosition]="'top'"
-                                [cpPositionRelativeToArrow]="true"
-                                (colorPickerSelect)="selectColor($event, true)"
-                                [cpOutputFormat]="'rgba'"
-                                [cpOKButton]="true"
-                                [cpOKButtonText]="'SET COLOR'"
-                                [cpOKButtonClass]= "'btn btn-dark'"
-                                [cpSaveClickOutside]="false"
-                                [(colorPicker)]="selectedIndicator()!.color"
-                                >
-                                <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
-                                </a>
-                                </div>
-                            </div>
-                            <div class="col-md-8 mb-3 mx-auto d-block">
-                                <label [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "fw-bold mb-1 me-1" for="inputUsername">Loading Background Color</label>
-                                <div class="card h-auto">
-                                <a
-                                role="button" 
-                                class="btn"
-                                [style.background]="selectedIndicator()!.bg_color"
-                                [cpPosition]="'top'"
-                                [cpPositionRelativeToArrow]="true"
-                                (colorPickerSelect)="selectColor($event, false)"
-                                [cpOutputFormat]="'rgba'"
-                                [cpOKButton]="true"
-                                [cpOKButtonText]="'SET COLOR'"
-                                [cpOKButtonClass]= "'btn btn-dark'"
-                                [cpSaveClickOutside]="false"
-                                [(colorPicker)]="selectedIndicator()!.bg_color"
-                                >
-                                <mat-icon style.color="{{selectedTheme()!.color}}" class="mt-1">colorize</mat-icon>
-                                </a>
-                                </div>
-                            </div>
-                        </div>
-                        </mat-tab>
-            
                       </mat-tab-group>
                 </form>
             </div>
@@ -542,10 +540,10 @@ style.color = "{{selectedIndicator()!.color}}"
                     <div class="row">
                         <div class="col-md-8 mb-3 mx-auto d-block">
                             <div>
-                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Promotional Banners</label>
-                                <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;"> (Drag & Drop to Rearrange)</i></mat-hint>
+                                <label  class = "fw-bold mt-3 mb-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Promotional Banners</label>
+                                <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;"> (Drag & Drop to Rearrange)</i></mat-hint>
                                 <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" style.background-color="{{selectedTheme()!.bg_color}}">
-                                    <div class="example-box" *ngFor="let banner of bannerForm.controls.banners.value ?? []" [style.font-family]="storeInfo().fontName!" style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" cdkDrag>
+                                    <div class="example-box" *ngFor="let banner of bannerForm.controls.banners.value ?? []"  style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" cdkDrag>
                                       <div class="example-custom-placeholder" *cdkDragPlaceholder></div>
                                       <div class="w-100 d-flex justify-content-between align-items-center">
                                         <div class="d-flex justify-content-between align-items-center me-2" style="text-overflow: ellipsis;">
@@ -566,7 +564,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                       </div>
                                     </div>
                                 </div>
-                                <div [style.font-family]="storeInfo().fontName!">
+                                <div >
                                     <a class="side" role="button" (click)='addBanner()' style.color="{{selectedTheme()!.color}}">
                                         <div class="w-100 d-inline-flex justify-content-start align-items-center">
                                             ADD BANNER
@@ -599,18 +597,18 @@ style.color = "{{selectedIndicator()!.color}}"
                     <form [formGroup]="marketingForm" novalidate>
                         <div class="col mb-2">
                             <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Facebook Ads</h2>
+                                <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Facebook Ads</h2>
                                 <div class="card-body">    
                                     <div class="row">
                                         <div class="col-md-8 mx-auto d-block">
                                             <div class="form-group mb-4">
-                                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Facebook Pixel</label>
-                                                <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="ex: '642345685432123'" style.color="{{selectedTheme()!.color}}" formControlName="pixel">
-                                                <i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">For more info, visit <a role="button" (click)="openFBAdsManager()">Facebook Ads Manager</a></i>
+                                                <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Facebook Pixel</label>
+                                                <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" placeholder="ex: '642345685432123'" style.color="{{selectedTheme()!.color}}" formControlName="pixel">
+                                                <i  style="font-size: 12px; color: #6c757d;">For more info, visit <a role="button" (click)="openFBAdsManager()">Facebook Ads Manager</a></i>
                                             </div>
                                         </div>
                                     </div>
-                                    <button [style.font-family]="storeInfo().fontName!" (click)='setFBPixel()' class="btn btn-dark mx-auto d-flex mt-2">Set Facebook Pixel</button>
+                                    <button  (click)='setFBPixel()' class="btn btn-dark mx-auto d-flex mt-2">Set Facebook Pixel</button>
                                 </div>
                             </div>
                         </div>
@@ -623,16 +621,16 @@ style.color = "{{selectedIndicator()!.color}}"
                     <div class="row">
                         <div class="col-md-8 mt-3 mx-auto d-block">
                             <div class="form-group mb-4">
-                                <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Top Display Text</label>
-                                <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputSlogan" placeholder="ex: 'Coolest brand on the block'" formControlName="slogan" style.color="{{selectedTheme()!.color}}">
-                                <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">This will show up at the top of the homepage</i></mat-hint>
+                                <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Top Display Text</label>
+                                <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputSlogan" placeholder="ex: 'Coolest brand on the block'" formControlName="slogan" style.color="{{selectedTheme()!.color}}">
+                                <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">This will show up at the top of the homepage</i></mat-hint>
                             </div>
                         </div>
                     </div>
                     
                     <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
                         <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Top Image</label>
+                            <label  class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Top Image</label>
                             <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
                                 <!-- Product image-->
     
@@ -650,7 +648,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                     </div>
                                 </div>
                             </div>
-                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Center Image</label>
+                            <label  class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Center Image</label>
                             <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
                                 <!-- Product image-->
     
@@ -677,7 +675,7 @@ style.color = "{{selectedIndicator()!.color}}"
                 <form [formGroup]="shopForm" novalidate>
                     <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
                         <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label [style.font-family]="storeInfo().fontName!" class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Shop Page Top Image</label>
+                            <label  class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Shop Page Top Image</label>
                             <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
                                 <!-- Product image-->
     
@@ -704,11 +702,11 @@ style.color = "{{selectedIndicator()!.color}}"
                 <!-- <form [formGroup]="shopForm" novalidate>
                     <mat-form-field class="w-100">
                         <mat-select (change)="selectTheme()" formControlName="storeTheme">
-                            <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!">
+                            <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" >
                               {{storeForm.controls['storeTheme'].value}}
                             </mat-select-trigger>
                             <mat-optgroup style="display: block"  class="text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let sTheme of themes()" [label]="titleCase(sTheme.name)">
-                                <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [style.font-family]="storeInfo().fontName!" *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
+                                <mat-option [selected]="cTheme.name == theme" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}"  *ngFor="let cTheme of sTheme.themes" [value]="cTheme.name">
                                     {{ cTheme.name }}
                                 </mat-option>
                             </mat-optgroup>
@@ -727,7 +725,7 @@ style.color = "{{selectedIndicator()!.color}}"
                 <div class="container px-4 px-lg-5 mt-0 pt-0">
                     <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                         <div class="d-flex justify-content-center align-items-center w-100">
-                            <a role="button" [style.font-family]="storeInfo().fontName!" (click)="showPopupModal()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
+                            <a role="button"  (click)="showPopupModal()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
                                 <mat-icon class="mx-2"><span style="font-size: 25px;">
                                     wysiwyg
                                     </span></mat-icon>
@@ -748,13 +746,13 @@ style.color = "{{selectedIndicator()!.color}}"
                                                     wysiwyg
                                                 </span>
                                             </mat-icon>
-                                            <h1 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" [style.font-family]="storeInfo().fontName!">{{popup.title}}</a></h1>
+                                            <h1 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" >{{popup.title}}</a></h1>
 
                                             <div class="d-flex align-items-center justify-content-center  my-2 mx-auto">
-                                                <!-- <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Discount:</label> -->
-                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{popup.description ?? ''}}</a></mat-hint>
+                                                <!-- <label style="color: #6c757d;"  class = "me-1 text-center">Discount:</label> -->
+                                                <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{popup.description ?? ''}}</a></mat-hint>
                                             </div>
-                                            <p class="" ><a style="text-decoration: none; font-size: x-small; color: #6c757d;"  role="button" [style.font-family]="storeInfo().fontName!">{{popupHeader(popup)}}</a></p>
+                                            <p class="" ><a style="text-decoration: none; font-size: x-small; color: #6c757d;"  role="button" >{{popupHeader(popup)}}</a></p>
                                             <div class="d-flex align-items-center justify-content-center w-100">
                                                 <a role="button" class="btn">
                                                     <mat-icon (click)='showPopupModal(popup)' style.color="{{selectedTheme()!.color}}">edit</mat-icon>
@@ -776,7 +774,7 @@ style.color = "{{selectedIndicator()!.color}}"
                 <div *ngIf="storeProducts?.length != 0" class="container px-4 px-lg-5 mt-0 pt-0">
                     <div *ngIf="inventory?.length != 0" class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                         <div class="d-flex justify-content-center align-items-center w-100">
-                            <a role="button" [style.font-family]="storeInfo().fontName!" (click)="showCouponModal()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
+                            <a role="button"  (click)="showCouponModal()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
                                 <mat-icon class="mx-2"><span style="font-size: 25px;">
                                     loyalty
                                     </span></mat-icon>
@@ -800,13 +798,13 @@ style.color = "{{selectedIndicator()!.color}}"
                                                 {{matchingType(coupon.type)?.icon ?? ''}}
                                                 </span>
                                             </mat-icon>
-                                            <h1 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" [style.font-family]="storeInfo().fontName!">{{coupon.code}}</a></h1>
+                                            <h1 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" >{{coupon.code}}</a></h1>
 
                                             <div class="d-flex align-items-center justify-content-center  my-2 mx-auto">
-                                                <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Discount:</label>
-                                                <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{discountDisplay(coupon)}}</a></mat-hint>
+                                                <label style="color: #6c757d;"  class = "me-1 text-center">Discount:</label>
+                                                <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{discountDisplay(coupon)}}</a></mat-hint>
                                             </div>
-                                            <h4 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" [style.font-family]="storeInfo().fontName!">{{couponHeader(coupon)}}</a></h4>
+                                            <h4 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" >{{couponHeader(coupon)}}</a></h4>
                                             <div class="d-flex align-items-center justify-content-center w-100">
                                                 <a role="button" class="btn">
                                                     <mat-icon style.color="{{selectedTheme()!.color}}" (click)="showCouponModal(coupon)">edit</mat-icon>
@@ -825,8 +823,8 @@ style.color = "{{selectedIndicator()!.color}}"
                     <div *ngIf="inventory?.length == 0" class="container px-4 px-lg-5 mt-0 pt-0">
         
                         <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                            <a role="button" (click)="createNewProduct()" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
-                                Discounts can only be applied to pre-bought inventory
+                            <a role="button" (click)="createNewProduct()"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                                Discounts can only be applied to inventory products
                                 <mat-icon class="ms-2 text-danger">
                                     <span class="material-icons-outlined" style="font-size: 25px;">
                                     new_releases
@@ -834,11 +832,11 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </mat-icon>
                             </a>
                             <div class="d-flex justify-content-center align-items-center w-100">
-                                <a role="button" [style.font-family]="storeInfo().fontName!" (click)="selectSetting(2, 1)" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
+                                <a role="button"  (click)="selectSetting(2, 1)" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-2 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
                                     <mat-icon class="mx-2"><span style="font-size: 25px;">
                                         local_shipping
                                         </span></mat-icon>
-                                        BUY INVENTORY
+                                        BROWSE INVENTORY
                                 </a> 
                             </div>
                         </div>
@@ -847,7 +845,7 @@ style.color = "{{selectedIndicator()!.color}}"
                 <div *ngIf="storeProducts?.length == 0" class="container px-4 px-lg-5 mt-0 pt-0">
         
                     <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <a role="button" (click)="createNewProduct()" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                        <a role="button" (click)="createNewProduct()"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
                             Create your first product
                             <mat-icon class="ms-2 text-danger">
                                 <span class="material-icons-outlined" style="font-size: 25px;">
@@ -862,127 +860,177 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div>
             </div>
             <div *ngIf="getSelectedPanel()?.Title == 'PRODUCTS'">
-                <div *ngIf="subInfo != ''">
-                    <div *ngIf='!productDetailsMode'>
-                        <div class="d-flex justify-content-center align-items-center w-100">
-                            <a role="button" [style.font-family]="storeInfo().fontName!" (click)="createNewProduct()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-4 text-{{storeInfo().colorStyle!.back_code}}">
-                                <mat-icon class="me-2"><span style="font-size: 25px;">
-                                    storefront
-                                    </span></mat-icon>
-                                    NEW PRODUCT
-                            </a> 
-                        </div>
-                        <div *ngIf="storeProducts?.length != 0" class="container px-4 px-lg-5 mt-0 pt-0">
-        
-                            <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-center">
-                                <div class="col mb-5" *ngFor="let product of storeProducts">
-                                    <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                        <!-- Product image-->
-                                        <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
-                                        <!-- Product details-->
-                                        <div class="card-body pb-0">
-                                            <div class="text-center">
-                                                <!-- Product name-->
-                                                <h4 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)" [style.font-family]="storeInfo().fontName!">{{product.name}}</a></h4>
-                                                <div class="d-flex align-items-center justify-content-center w-100">
-                                                    <a role="button" class="btn" (click) = "editProduct(product)">
-                                                        <mat-icon style.color="{{selectedTheme()!.color}}">edit</mat-icon>
-                                                    </a>
-                                                    <a role="button" class="btn" (click) = "deleteProduct(product)">
-                                                        <mat-icon style.color="{{selectedTheme()!.color}}">delete</mat-icon>
-                                                    </a> 
-                                                </div>
-                                                <!-- Product price-->
-                                            </div>
-                                        </div>
-                                        <!-- Product actions-->
-                                        <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
-                                            <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                                                <!-- <mat-icon
-                                                 class="mt-2" 
-                                                 style="font-size:15px" 
-                                                 [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
-                                                 [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
-                                                 [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
-                                                >
-                                                    loyalty
-                                                </mat-icon> -->
-                                                <b class="old-price">
-                                                    {{formatPrice((product.price ?? 0) / 100)}}
-                                                </b>
-                                            </p>
-                                            <div class="text-center" >
-                                                <a 
-                                                [style.font-family]="storeInfo().fontName!" 
-                                                class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
-                                                [class.new-price]='autoCoupon(product)' 
-                                                style="font-weight:bold;" 
-                                                role="button" 
-                                                (click)="routeToProduct(product.productID)"
-                                                >
-                                                {{formatPrice(mainPrice(product))}}
+                <div *ngIf='!productDetailsMode'>
+                    <div class="d-flex justify-content-center align-items-center w-100">
+                        <a role="button"  (click)="createNewProduct()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-4 text-{{storeInfo().colorStyle!.back_code}}">
+                            <mat-icon class="me-2"><span style="font-size: 25px;">
+                                storefront
+                                </span></mat-icon>
+                                NEW PRODUCT
+                        </a> 
+                    </div>
+                    <div *ngIf="storeProducts?.length != 0" class="container px-4 px-lg-5 mt-0 pt-0">
+    
+                        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-center">
+                            <div class="col mb-5" *ngFor="let product of storeProducts">
+                                <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                    <!-- Product image-->
+                                    <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{product.url}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
+                                    <!-- Product details-->
+                                    <div class="card-body pb-0">
+                                        <div class="text-center">
+                                            <!-- Product name-->
+                                            <h4 class="fw-bolder" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)" >{{product.name}}</a></h4>
+                                            <div class="d-flex align-items-center justify-content-center w-100">
+                                                <a role="button" class="btn" (click) = "editProduct(product)">
+                                                    <mat-icon style.color="{{selectedTheme()!.color}}">edit</mat-icon>
                                                 </a>
-                                            </div>                    
+                                                <a role="button" class="btn" (click) = "deleteProduct(product)">
+                                                    <mat-icon style.color="{{selectedTheme()!.color}}">delete</mat-icon>
+                                                </a> 
+                                            </div>
+                                            <!-- Product price-->
                                         </div>
+                                    </div>
+                                    <!-- Product actions-->
+                                    <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
+                                        <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" >
+                                            <!-- <mat-icon
+                                             class="mt-2" 
+                                             style="font-size:15px" 
+                                             [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
+                                             [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
+                                             [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
+                                            >
+                                                loyalty
+                                            </mat-icon> -->
+                                            <b class="old-price">
+                                                {{formatPrice((product.price ?? 0) / 100)}}
+                                            </b>
+                                        </p>
+                                        <div class="text-center" >
+                                            <a 
+                                             
+                                            class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
+                                            [class.new-price]='autoCoupon(product)' 
+                                            style="font-weight:bold;" 
+                                            role="button" 
+                                            (click)="routeToProduct(product.productID)"
+                                            >
+                                            {{formatPrice(mainPrice(product))}}
+                                            </a>
+                                        </div>                    
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div *ngIf="storeProducts?.length == 0" class="container px-4 px-lg-5 mt-0 pt-0">
-        
-                            <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <a role="button" (click)="createNewProduct()" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
-                                    Create your first product
-                                    <mat-icon class="ms-2 text-danger">
-                                        <span class="material-icons-outlined" style="font-size: 25px;">
-                                        new_releases
-                                        </span>
-                                    </mat-icon>
-                                </a>
-                                <a role="button" (click)="createNewProduct()" class="w-100 side">
-                                    <img class="rounded w-100" src='/assets/design_image.png'/>
-                                </a>
-                            </div>
-                        </div>
                     </div>
-                    <div *ngIf='productDetailsMode'>
-                        <app-product-details
-                        [data]="productDetails" 
-                        (finished)="finish($event)"
-                        ></app-product-details>
+                    <div *ngIf="storeProducts?.length == 0" class="container px-4 px-lg-5 mt-0 pt-0">
+    
+                        <div class="card py-3 px-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                            <a role="button" (click)="createNewProduct()"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                                Create your first product
+                                <mat-icon class="ms-2 text-danger">
+                                    <span class="material-icons-outlined" style="font-size: 25px;">
+                                    new_releases
+                                    </span>
+                                </mat-icon>
+                            </a>
+                            <a role="button" (click)="createNewProduct()" class="w-100 side">
+                                <img class="rounded w-100" src='/assets/design_image.png'/>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div *ngIf="subInfo == ''">
-                    <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3">
-                        
-                        <div class="col mb-2">
-                            <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <a role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
-                                    PLAN NEEDED
-                                    <mat-icon class="ms-2 text-danger">
-                                        <span class="material-icons-outlined" style="font-size: 25px;">
-                                        new_releases
-                                        </span>
-                                    </mat-icon>
-                                </a>
-                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
-                                    Set up your merchant plan to create your first product.
-                                </p>
-                                    <div class="card-body mt-4">
-                                        
-                                        <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                            <button *ngIf="canTrial!" [style.font-family]="storeInfo().fontName!" (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start 14 day Free Trial</button>
-                                            <button *ngIf="!canTrial!" [style.font-family]="storeInfo().fontName!" (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Subscription</button>
-                                        </div>
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
+                <div *ngIf='productDetailsMode'>
+                    <app-product-details
+                    [data]="productDetails" 
+                    (finished)="finish($event)"
+                    ></app-product-details>
                 </div>
             </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'INVENTORY'">
                 <mat-tab-group mat-stretch-tabs>
+                    <mat-tab>
+                        <!-- #docregion label-directive -->
+                        <ng-template mat-tab-label>
+                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">inventory_2</mat-icon>
+                            </ng-template>
+                            <div style="height: 100vh;">
+                              <div class="d-flex justify-content-center align-items-center w-100">
+                                <a role="button"  (click)="newInventory()" class="btn rounded-pill bg-{{storeInfo().colorStyle!.text_code}} d-inline-flex px-3 my-3 mb-4 text-{{storeInfo().colorStyle!.back_code}}">
+                                    <mat-icon class="me-2"><span style="font-size: 25px;">
+                                        storefront
+                                        </span></mat-icon>
+                                        ADD INVENTORY
+                                </a> 
+                            </div>
+                            <div *ngIf='customInv().length > 0' >
+                                <h2 class="text-start fw-bolder m-2 ms-4 mb-3 mt-4" style="font-size: xx-large; font-style: italic;" style.color="{{selectedTheme()!.color}}" >MY INVENTORY</h2>
+                                <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0 h-100 w-100">
+                                      <div class="col" *ngFor="let inv of customInv()">
+                                          <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                              <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{inv.name}}</h2>
+                                              <div class="card-body mt-2">
+                                                  <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
+                                                      <label style="color: #6c757d;"  class = "me-1 text-center">Remaining: </label>
+                                                      <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
+                                                  </div>
+                                                  <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                      <label style="color: #6c757d;"  class = "me-1 text-center">{{invUsed(inv)}}</label>
+                                                  </div>
+                                                  <div class="rounded mx-auto w-100" >
+                                                      <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                          <img [src]='getTypeImages(inv.code, inv)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                                      </a>
+                                                  </div>
+                                                  <div *ngIf='inv.isCustom' class="d-flex align-items-center justify-content-center mt-4 mb-2" style="font-size: 15px;">
+                                                    <button  (click)="newInventory(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Update<mat-icon class="ms-1">edit</mat-icon></button>
+                                                    <button  (click)="deleteInventory(inv)" class="btn btn-danger d-flex mx-1">Remove<mat-icon class="ms-1">delete</mat-icon></button>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </div>
+                            </div>
+                            <div *ngIf='thredInv().length > 0' >
+                                <h2 class="text-start fw-bolder m-2 ms-4 mb-3 mt-4" style="font-size: xx-large; font-style: italic;" style.color="{{selectedTheme()!.color}}" >THRED INVENTORY</h2>
+                                <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0 h-100 w-100">
+                                    <div class="col" *ngFor="let inv of thredInv()">
+                                        <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                            <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{inv.name}}</h2>
+                                            <div class="card-body mt-2">
+                                                <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
+                                                    <label style="color: #6c757d;"  class = "me-1 text-center">Remaining: </label>
+                                                    <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                    <label style="color: #6c757d;"  class = "me-1 text-center">{{invUsed(inv)}}</label>
+                                                </div>
+                                                <div class="rounded mx-auto w-100" >
+                                                    <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                        <img [src]='getTypeImages(inv.code, inv)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                                    </a>
+                                                </div>
+                                                <div *ngIf='!inv.isCustom' class="d-flex align-items-center justify-content-center mt-4 mb-2" style="font-size: 15px;">
+                                                    <button  (click)="buyMore(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Add More</button>
+                                                    <button *ngIf="!inv.autoReload"  (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button>
+                                                    <button *ngIf="inv.autoReload"  (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                          <div *ngIf="inventory && (inventory!.length) == 0" style="height: 100vh;">
+                            <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" >
+                                NO INVENTORY
+                                <h2 class="mt-1" style="font-size: small;">Custom inventory you add appears here</h2>
+                            </h1>
+                        </div>
+                    </mat-tab>
                     <mat-tab>
                   <!-- #docregion label-directive -->
                       <ng-template mat-tab-label>
@@ -993,22 +1041,22 @@ style.color = "{{selectedIndicator()!.color}}"
                       </ng-template>
 
                     <div *ngIf="availableToBuyTemplates().length > 0"  style="height: 100vh;">
-                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{invTitle}}</h1>
+                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" >{{invTitle}}</h1>
                         <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
     
                             <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">
                                 <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                                    
-                                    <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{template.templateDisplayName}}</h2>
+                                    <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{template.templateDisplayName}}</h2>
                                     <div class="card-body mt-2">
                                         <div class="d-flex align-items-center justify-content-center">
                                             <div class="mx-auto">
                                                 
                                                 <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 22px;">
-                                                    <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((template.bulkPrice) / 100, true)}}</a></mat-hint>
+                                                    <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((template.bulkPrice) / 100, true)}}</a></mat-hint>
                                                 </div>
                                                 <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                                    <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">(Per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}})</label>
+                                                    <label style="color: #6c757d;"  class = "me-1 text-center">(Per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}})</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1020,7 +1068,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                         </div>
         
                                         <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                            <button [style.font-family]="storeInfo().fontName!" (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
+                                            <button  (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1028,59 +1076,11 @@ style.color = "{{selectedIndicator()!.color}}"
                         </div>
                     </div>
                     <div *ngIf="availableToBuyTemplates().length == 0" style="height: 100vh;">
-                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">
+                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" >
                             NO INVENTORY
                             <h2 class="mt-1" style="font-size: small;">New inventory to buy appears here</h2>
                         </h1>
                     </div>
-                    </mat-tab>
-
-                    <mat-tab>
-                        <!-- #docregion label-directive -->
-                        <ng-template mat-tab-label>
-                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">inventory_2</mat-icon>
-                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
-                                  MY INVENTORY
-                            </span>
-                            </ng-template>
-                            <div *ngIf="(inventory?.length ?? 0) > 0"  style="height: 100vh;">
-                              <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-5" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">MY INVENTORY</h1>
-          
-                              <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
-          
-                                  <div class="col" *ngFor="let inv of inventory">
-                                      <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                          <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{inv.name}}</h2>
-                                          <div class="card-body mt-2">
-                                              <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
-                                                  <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">Remaining: </label>
-                                                  <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
-                                              </div>
-                                              <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                                  <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = "me-1 text-center">{{invUsed(inv)}}</label>
-                                              </div>
-                                              <div class="rounded mx-auto w-100" >
-                                                  <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                                      <img [src]='getTypeImages(inv.code)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
-                                                  </a>
-                                              </div>
-              
-                                              <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                                  <button [style.font-family]="storeInfo().fontName!" (click)="buyMore(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Add More</button>
-                                                  <button *ngIf="!inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button>
-                                                  <button *ngIf="inv.autoReload" [style.font-family]="storeInfo().fontName!" (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button>
-                                              </div>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div *ngIf="inventory && (inventory!.length) == 0" style="height: 100vh;">
-                            <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">
-                                NO INVENTORY
-                                <h2 class="mt-1" style="font-size: small;">Custom inventory you buy appears here</h2>
-                            </h1>
-                        </div>
                     </mat-tab>
                 </mat-tab-group>
             </div>
@@ -1088,74 +1088,74 @@ style.color = "{{selectedIndicator()!.color}}"
             <div *ngIf="getSelectedPanel()?.Title == 'SECURITY'">
 
                 <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                    <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Change Email Address</h2>
+                    <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Change Email Address</h2>
 
                     <div class="card-body">
-                        <!-- <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark mx-auto d-flex mb-5">Save Changes</button> -->
+                        <!-- <button  (click)="saveStore()" class="btn btn-dark mx-auto d-flex mb-5">Save Changes</button> -->
 
                         <form [formGroup]="changeEmailForm" novalidate>
                             <div class="row">
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">New Email</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" type="email" placeholder="ex: 'johnapple@gmail.com'" formControlName="newEmail" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">The new email you wish to use</i></mat-hint>
+                                        <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">New Email</label>
+                                        <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" type="email" placeholder="ex: 'johnapple@gmail.com'" formControlName="newEmail" style.color="{{selectedTheme()!.color}}">
+                                        <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">The new email you wish to use</i></mat-hint>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Password</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Confirm Password" type="password" formControlName="password" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">Confirm your password to make changes</i></mat-hint>
+                                        <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Password</label>
+                                        <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Confirm Password" type="password" formControlName="password" style.color="{{selectedTheme()!.color}}">
+                                        <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">Confirm your password to make changes</i></mat-hint>
                                     </div>
                                 </div>
                             </div>
                         </form>
-                        <button [style.font-family]="storeInfo().fontName!" (click)="saveEmail()" class="btn btn-dark mx-auto d-flex">Update Email</button>
+                        <button  (click)="saveEmail()" class="btn btn-dark mx-auto d-flex">Update Email</button>
                     </div>
                 </div>
 
                 <div class="card ms-4 me-4 py-3" style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                    <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Change Password</h2>
+                    <h2 class="text-center fw-bolder m-2 mb-4" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Change Password</h2>
 
                     <div class="card-body">
 
-                        <!-- <button [style.font-family]="storeInfo().fontName!" (click)="saveStore()" class="btn btn-dark mx-auto d-flex mb-5">Save Changes</button> -->
+                        <!-- <button  (click)="saveStore()" class="btn btn-dark mx-auto d-flex mb-5">Save Changes</button> -->
 
                         <form [formGroup]="changePassForm" novalidate>
                             <div class="row">
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Old Password</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Confirm Old Password" formControlName="password" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">Your current password</i></mat-hint>
+                                        <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Old Password</label>
+                                        <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Confirm Old Password" formControlName="password" style.color="{{selectedTheme()!.color}}">
+                                        <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">Your current password</i></mat-hint>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">New Password</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Enter New Password" formControlName="newPassword" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">The new password you wish to use</i></mat-hint>
+                                        <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">New Password</label>
+                                        <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Enter New Password" formControlName="newPassword" style.color="{{selectedTheme()!.color}}">
+                                        <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">The new password you wish to use</i></mat-hint>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-8 mx-auto d-block">
                                     <div class="form-group mb-4">
-                                        <label [style.font-family]="storeInfo().fontName!" class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Confirm New Password</label>
-                                        <input [style.font-family]="storeInfo().fontName!" type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Confirm New Password" formControlName="confirmNewPassword" style.color="{{selectedTheme()!.color}}">
-                                        <mat-hint align="start"><i [style.font-family]="storeInfo().fontName!" style="font-size: 12px; color: #6c757d;">Confirm your new password</i></mat-hint>
+                                        <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Confirm New Password</label>
+                                        <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" [type]="show ? 'text' : 'password'" placeholder="Confirm New Password" formControlName="confirmNewPassword" style.color="{{selectedTheme()!.color}}">
+                                        <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">Confirm your new password</i></mat-hint>
                                     </div>
                                 </div>
                             </div>
                         </form>
-                        <button [style.font-family]="storeInfo().fontName!" (click)="savePassword()" class="btn btn-dark mx-auto d-flex">Update Password</button>
+                        <button  (click)="savePassword()" class="btn btn-dark mx-auto d-flex">Update Password</button>
                         <!-- <div class="d-flex justify-content-end w-100">
-                            <a role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} align-items-center justify-content-center fw-bold">
+                            <a role="button"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} align-items-center justify-content-center fw-bold">
                                 <mat-icon class="text-danger">
                                     <span class="material-icons-outlined">
                                     new_releases
@@ -1172,7 +1172,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <a role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                                <a role="button"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
                                     Payment Method
                                     <mat-icon class="ms-2 text-danger">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
@@ -1180,13 +1180,13 @@ style.color = "{{selectedIndicator()!.color}}"
                                         </span>
                                     </mat-icon>
                                 </a>
-                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
+                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" >
                                     This is required to activate your merchant plan.
                                 </p>
                                     <div class="card-body mt-4">
                                         
                                         <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                            <button [style.font-family]="storeInfo().fontName!" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" (click)="routeToBillingAdmin()" style.color="{{selectedTheme()!.bg_color}}">Add Payment Method</button>
+                                            <button  class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" (click)="routeToBillingAdmin()" style.color="{{selectedTheme()!.bg_color}}">Add Payment Method</button>
                                         </div>
                                     </div>
                             </div>
@@ -1198,22 +1198,22 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Payment Method</h2>
+                                <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Payment Method</h2>
                                     <div class="card-body mt-2">
                                         <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                            <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressFirst()}}</a></mat-hint>
+                                            <mat-hint   align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressFirst()}}</a></mat-hint>
                                         </div>
                                         <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                            <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressSecond()}}</a></mat-hint>
+                                            <mat-hint   align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressSecond()}}</a></mat-hint>
                                         </div>
                                         <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                            <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressThird()}}</a></mat-hint>
+                                            <mat-hint   align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressThird()}}</a></mat-hint>
                                         </div>
                                         <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                            <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressFourth()}}</a></mat-hint>
+                                            <mat-hint   align="start"><a role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{getBillingAddressFourth()}}</a></mat-hint>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                            <button [style.font-family]="storeInfo().fontName!" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" (click)="routeToBillingAdmin()" style.color="{{selectedTheme()!.bg_color}}">Edit Billing Info</button>
+                                            <button  class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" (click)="routeToBillingAdmin()" style.color="{{selectedTheme()!.bg_color}}">Edit Billing Info</button>
                                         </div>
                                     </div>
                             </div>
@@ -1228,7 +1228,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <a role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                                <a role="button"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
                                     Merchant Plan
                                     <mat-icon class="ms-2 text-danger">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
@@ -1236,14 +1236,14 @@ style.color = "{{selectedIndicator()!.color}}"
                                         </span>
                                     </mat-icon>
                                 </a>
-                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
+                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" >
                                     Set up your merchant plan to activate your online store.
                                 </p>
                                     <div class="card-body mt-4">
                                         
                                         <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                            <button *ngIf="canTrial!" [style.font-family]="storeInfo().fontName!" (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start 14 day Free Trial</button>
-                                            <button *ngIf="!canTrial!" [style.font-family]="storeInfo().fontName!" (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Subscription</button>
+                                            <button *ngIf="canTrial!"  (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start 14 day Free Trial</button>
+                                            <button *ngIf="!canTrial!"  (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Subscription</button>
                                         </div>
                                     </div> 
                             </div>
@@ -1256,11 +1256,11 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <!-- <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                <!-- <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
                                     {{item.series[0].name.toUpperCase()}}
                                 </p> -->
-                                <h2 *ngIf="!subInfo!.cancel_at_period_end" class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Merchant Plan</h2>
-                                <a *ngIf="subInfo!.cancel_at_period_end" role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-danger m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                                <h2 *ngIf="!subInfo!.cancel_at_period_end" class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Merchant Plan</h2>
+                                <a *ngIf="subInfo!.cancel_at_period_end" role="button"  class="side d-flex text-danger m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
                                     Renew Merchant Plan
                                     <mat-icon class="ms-2 text-danger">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
@@ -1270,32 +1270,32 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </a>
                                 <div class="card-body mt-2">
                                     <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Plan: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planStatus()}} <b *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;">(Trial)</b></a></mat-hint>
+                                        <label style="color: #6c757d;"  class = " mb-1 me-1">Plan: </label>
+                                        <mat-hint   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planStatus()}} <b *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;">(Trial)</b></a></mat-hint>
                                     </div>
                                     <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Price: </label>
-                                        <mat-hint *ngIf="subInfo.status != 'trialing'" [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}}</a></mat-hint>
-                                        <mat-hint *ngIf="subInfo.status == 'trialing'" [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">FREE <b style="color: #6c757d;">({{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}} after trial)</b></a></mat-hint>
+                                        <label style="color: #6c757d;"  class = " mb-1 me-1">Price: </label>
+                                        <mat-hint *ngIf="subInfo.status != 'trialing'"   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}}</a></mat-hint>
+                                        <mat-hint *ngIf="subInfo.status == 'trialing'"   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">FREE <b style="color: #6c757d;">({{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}} after trial)</b></a></mat-hint>
                                     </div>
                                     <div *ngIf="!subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">
-                                        <label *ngIf="subInfo.status != 'trialing'" style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Renews: </label>
-                                        <label *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Trial End: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planRenewalDate()}}</a></mat-hint>
+                                        <label *ngIf="subInfo.status != 'trialing'" style="color: #6c757d;"  class = " mb-1 me-1">Renews: </label>
+                                        <label *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;"  class = " mb-1 me-1">Trial End: </label>
+                                        <mat-hint   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planRenewalDate()}}</a></mat-hint>
                                     </div>
                                     <div *ngIf="subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Plan Ends: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planEndDate()}}</a></mat-hint>
+                                        <label style="color: #6c757d;"  class = " mb-1 me-1">Plan Ends: </label>
+                                        <mat-hint   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planEndDate()}}</a></mat-hint>
                                     </div>
                                     
                                     <div *ngIf="!subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                        <button [style.font-family]="storeInfo().fontName!" (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Edit Plan</button>
+                                        <button  (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Edit Plan</button>
                                     </div>
                                     <div *ngIf="subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                        <button [style.font-family]="storeInfo().fontName!" (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Renew Plan</button>
+                                        <button  (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Renew Plan</button>
                                     </div>
                                 </div>
-                                <!-- <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                                <!-- <p  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
                                     {{item.xAxisLabel.toUpperCase()}}
                                 </p> -->
                             </div>
@@ -1314,10 +1314,10 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <!-- <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                <!-- <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
                                     {{item.series[0].name.toUpperCase()}}
                                 </p> -->
-                                <a role="button" [style.font-family]="storeInfo().fontName!" class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
+                                <a role="button"  class="side d-flex text-{{storeInfo().colorStyle!.text_code}} m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
                                     Direct-Deposit Account
                                     <mat-icon class="ms-2 text-danger">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
@@ -1325,17 +1325,17 @@ style.color = "{{selectedIndicator()!.color}}"
                                         </span>
                                     </mat-icon>
                                 </a>
-                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
+                                <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" >
                                     Set up your bank account to receive payments.
                                 </p>
 
 
                                 <div class="card-body mt-4">
                                     <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                        <button [style.font-family]="storeInfo().fontName!" (click)="beginBankAdd()" class="btn me-1 d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Link Bank Account</button>
+                                        <button  (click)="beginBankAdd()" class="btn me-1 d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Link Bank Account</button>
                                     </div>
                                 </div>
-                                <!-- <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                                <!-- <p  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
                                     {{item.xAxisLabel.toUpperCase()}}
                                 </p> -->
                             </div>
@@ -1350,28 +1350,28 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <!-- <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                <!-- <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
                                     {{item.series[0].name.toUpperCase()}}
                                 </p> -->
-                                <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Direct-Deposit Account</h2>
+                                <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Direct-Deposit Account</h2>
                                 <div class="card-body mt-2">
                                     <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Institution: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{bankInfo.external_accounts.data[0].bank_name}}</a></mat-hint>
+                                        <label style="color: #6c757d;"  class = " mb-1 me-1">Institution: </label>
+                                        <mat-hint   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{bankInfo.external_accounts.data[0].bank_name}}</a></mat-hint>
                                     </div>
                                     <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Account Number: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">••••••{{bankInfo.external_accounts.data[0].last4}}</a></mat-hint>
+                                        <label style="color: #6c757d;"  class = " mb-1 me-1">Account Number: </label>
+                                        <mat-hint   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">••••••{{bankInfo.external_accounts.data[0].last4}}</a></mat-hint>
                                     </div>
                                     <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                                        <label style="color: #6c757d;" [style.font-family]="storeInfo().fontName!" class = " mb-1 me-1">Country: </label>
-                                        <mat-hint [style.font-family]="storeInfo().fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{bankInfo.external_accounts.data[0].country}}</a></mat-hint>
+                                        <label style="color: #6c757d;"  class = " mb-1 me-1">Country: </label>
+                                        <mat-hint   align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{bankInfo.external_accounts.data[0].country}}</a></mat-hint>
                                     </div>
                                     <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                        <button [style.font-family]="storeInfo().fontName!" (click)="beginBankAdd()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Edit Account</button>
+                                        <button  (click)="beginBankAdd()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Edit Account</button>
                                     </div>
                                 </div>
-                                <!-- <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                                <!-- <p  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
                                     {{item.xAxisLabel.toUpperCase()}}
                                 </p> -->
                             </div>
@@ -1391,7 +1391,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
                     <div class="col mb-2" *ngFor="let item of charts(true)">
                         <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                            <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                            <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
                                 {{item.series[0].name.toUpperCase()}}
                             </p>
                             <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{formatGraphElement(totalElement(item.series[0].series), item.series[0].name)}}</h2>
@@ -1422,8 +1422,8 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </ngx-charts-area-chart>
                                 <div
                                 *ngIf ="!(item.shouldDisplay)" class="text-center">
-                                <h4 class="fw-bolder" style="font-size: large; line-height:1.0em;" ><a style="text-decoration: none; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" role="button" [style.font-family]="storeInfo().fontName!">Get started by sharing your affiliate link.</a></h4>
-                                <a role="button" [style.font-family]="storeInfo().fontName!"  (click)="copyAffiliateURL()" class="btn d-flex mx-auto ps-0 mb-5 justify-content-center text-{{storeInfo().colorStyle!.text_code}}">
+                                <h4 class="fw-bolder" style="font-size: large; line-height:1.0em;" ><a style="text-decoration: none; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" role="button" >Get started by sharing your affiliate link.</a></h4>
+                                <a role="button"   (click)="copyAffiliateURL()" class="btn d-flex mx-auto ps-0 mb-5 justify-content-center text-{{storeInfo().colorStyle!.text_code}}">
                                     <mat-icon class="me-2"><span style="font-size: 25px;">
                                         content_copy
                                         </span></mat-icon>
@@ -1431,7 +1431,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </a> 
                                 </div>
                             </div>
-                            <p *ngIf ="(item.shouldDisplay)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                            <p *ngIf ="(item.shouldDisplay)"  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
                                 {{item.xAxisLabel.toUpperCase()}}
                             </p>
                         </div>
@@ -1446,7 +1446,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
                     <div class="col mb-2" *ngFor="let item of charts()">
                         <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                            <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                            <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
                                 {{item.series[0].name.toUpperCase()}}
                             </p>
                             <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{formatGraphElement(totalElement(item.series[0].series), item.series[0].name)}}</h2>
@@ -1477,11 +1477,11 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </ngx-charts-area-chart>
                                 <div
                                 *ngIf ="!(item.shouldDisplay)" class="text-center">
-                                <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" [style.font-family]="storeInfo().fontName!">Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
-                                <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" [style.font-family]="storeInfo().fontName!">Check out our marketing guide below</a></h4> -->
+                                <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
+                                <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
                                 </div>
                             </div>
-                            <p *ngIf ="(item.shouldDisplay)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                            <p *ngIf ="(item.shouldDisplay)"  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
                                 {{item.xAxisLabel.toUpperCase()}}
                             </p>
                         </div>

@@ -1,0 +1,151 @@
+<div class="w-100 h-100 p-5" style="position: relative;">
+    <ngx-spinner
+    bdColor = '{{selectedIndicator().bg_color}}'
+    size = "medium"
+    color = '{{selectedIndicator().color}}'
+    type = {{selectedIndicator().name}} 
+    [fullScreen] = "false"
+    style.color = "{{selectedIndicator()!.color}}"
+    [name]="'newInvSpinner'"
+    [disableAnimation] = "true"
+    >
+    <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">CREATING INVENTORY...</h3>
+    </ngx-spinner>
+    
+    <div class="bg-transparent rounded-top d-flex justify-content-between align-items-center" style="height: 30px;">
+        <a role="button" (click)='close()' style="text-shadow: 2px 2px 4px #42424281;">
+            <mat-icon >highlight_off</mat-icon>
+        </a>
+        <mat-icon ></mat-icon>
+    </div>
+    <mat-dialog-content>
+    
+        <div class="w-100 rounded" style="background-color: #e6e6e6; position: relative;" >
+            <div class="p-0 pt-0 w-100">
+                <div class="container-contact1 rounded-bottom w-100 h-100 p-2 d-flex justify-content-center" >
+                    
+                    <form class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form" [formGroup]="invForm" >
+                        <span class="contact1-form-title mb-4 fw-bolder" style="font-size: 20px;">
+                            {{name}}
+                        </span>
+                        <div class="wrap-input1 w-100">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label>Name</mat-label>
+                                <input matInput class="bg-transparent" type="text" name="name" formControlName="name" placeholder="Inventory Name (ex: Gildan Hoodies)">
+                                <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                            </mat-form-field>
+                        </div>
+                        <div class="wrap-input1 w-100">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label>Description</mat-label>
+                                <textarea matInput class="bg-transparent" formControlName="description" style="min-height: 60px;"></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div class="wrap-input1 w-100 border bg-light rounded mb-4 mt-1">
+                            <a role="button" class="btn" (click)="fileHome.click()">
+                                <img class="card-img-top"  alt='ok' src="{{invForm.controls['img'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Fdefault_inv.png?alt=media';"/>
+                            </a>
+                            <!-- Product details-->
+                            <div class="card-body p-2 pb-1">
+                                <div class="mt-2 text-center">
+                                    <a class="h-100" role="button" class="btn" (click)="fileHome.click()">
+                                        <div class="d-flex justify-content-center align-items-center h-100">
+                                                Display Image
+                                            <mat-icon>file_upload</mat-icon>
+                                        </div>
+                                        <input #fileHome type="file" (change)="fileChangeEvent($event)" style="display:none;" />
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wrap-input1 w-100">
+                            <mat-form-field class="w-100" appearance="outline">
+                                <mat-label>Quantity</mat-label>
+                                <input matInput class="bg-transparent" type="number" name="qty"  formControlName="qty" placeholder="Inventory Qty (ex: 100)">
+                            </mat-form-field>
+                        </div>
+                        <mat-form-field class="w-100 h-100" appearance='outline' floatLabel='never'>
+                            <mat-label>Styles</mat-label>
+                            <mat-chip-list #chipList aria-label="Variation selection">
+                              <mat-chip
+                                *ngFor="let v of invForm.controls.variations.value ?? []"
+                                [selectable]="selectable"
+                                [removable]="removable"
+                                (removed)="remove(v)"
+                                class="category-chip"
+                                >
+                                <div class="category-chip__text"> {{v}} </div>
+                                <button matChipRemove class="d-flex justify-content-center align-items-center" style="width: fit-content; height: fit-content;" *ngIf="removable">
+                                  <mat-icon >cancel</mat-icon>
+                                </button>
+                              </mat-chip>
+                              <input
+                                placeholder="Product Styles (ex: Red, Blue, Plastic)"
+                                #productInput
+                                [formControl]="productCtrl"
+                                [matChipInputFor]="chipList"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-icon *ngIf='(productCtrl.value ?? "")?.trim() != ""' role="button" (click)="addVal()" matSuffix class="ms-1">control_point</mat-icon>
+                            <!-- <mat-hint align="start">Add this coupon to your products</mat-hint> -->
+                        </mat-form-field>
+                        <mat-form-field class="w-100 h-100" appearance='outline' floatLabel='never'>
+                            <mat-label>Sizes</mat-label>
+                            <mat-chip-list #chipListSize aria-label="Size selection">
+                              <mat-chip
+                                *ngFor="let v of invForm.controls.sizes.value ?? []"
+                                [selectable]="selectable"
+                                [removable]="removable"
+                                (removed)="removeSize(v)"
+                                class="category-chip"
+                                >
+                                <div class="category-chip__text"> {{v}} </div>
+                                <button matChipRemove class="d-flex justify-content-center align-items-center" style="width: fit-content; height: fit-content;" *ngIf="removable">
+                                  <mat-icon >cancel</mat-icon>
+                                </button>
+                              </mat-chip>
+                              <input
+                                placeholder="Product Sizes (ex: S, M, L)"
+                                #sizeInput
+                                [formControl]="sizeCtrl"
+                                [matChipInputFor]="chipListSize"
+                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                (matChipInputTokenEnd)="addSize($event)">
+                            </mat-chip-list>
+                            <mat-icon *ngIf='(sizeCtrl.value ?? "")?.trim() != ""' role="button" (click)="addSizeVal()" matSuffix class="ms-1">control_point</mat-icon>
+                            <!-- <mat-hint align="start">Add this coupon to your products</mat-hint> -->
+                        </mat-form-field>
+<!-- 
+                        <mat-label *ngIf='(invForm.controls.sku.value ?? []).length > 0'>SKU Codes (optional)</mat-label>
+                        <table *ngIf='(invForm.controls.sku.value ?? []).length > 0' #skuTable mat-table [dataSource]="invForm.controls.sku.value ?? []" class="mat-elevation-z8 demo-table w-100">
+
+                            <ng-container matColumnDef="style">
+                                <th mat-header-cell *matHeaderCellDef> Style </th>
+                                <td mat-cell *matCellDef="let element"> {{element.type ?? ''}} </td>
+                              </ng-container>
+                            
+                              <ng-container matColumnDef="size">
+                                <th mat-header-cell *matHeaderCellDef> Size </th>
+                                <td mat-cell *matCellDef="let element"> {{element.size ?? ''}} </td>
+                              </ng-container>
+                              <ng-container matColumnDef="sku">
+                                <th mat-header-cell *matHeaderCellDef> SKU </th>
+                                <td mat-cell *matCellDef="let element"> {{element.sku ?? ''}} </td>
+                              </ng-container>
+                              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                          </table> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="container-contact1-form-btn mb-4 mt-auto w-100">
+            <button class="contact1-form-btn" (click)='save()'>
+                <span class="my-auto p-3 px-4 fw-bolder">
+                    Save Inventory
+                </span>
+            </button>
+        </div>
+    </mat-dialog-content>
+</div>

@@ -15,21 +15,8 @@ style.color = "{{selectedIndicator()!.color}}"
 </ngx-spinner>
 
   <!-- Header-->
-  <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
-    <div class="cover" [style.background-image]='"url(" + (storeInfo()!.homeLinkTop?.toString() ?? storeInfo()!.themeLink?.toString() ?? "") + ")"'>
-        <div class="d-flex align-items-center justify-content-center" style="height: 750px; font-weight: bold;font-size:40px">
-            
-              <div>
-                <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}"  style = "line-height:1.2em;text-shadow: 2px 2px 4px #42424281;" [style.font-family]="storeInfo().fontName!">
-                    {{storeInfo().slogan}}
-                  </p>
-                  <p *ngIf='storeInfo()?.active && storeProducts?.length != 0' class = "text-center px-5 mx-5" style = "font-size: 30px;line-height:1.2em;font-weight: bold;text-shadow: 2px 2px 4px #42424281;" [style.font-family]="storeInfo().fontName!">
-                      <a role="button" (click)="routeToShop()" class="btn btn-{{storeInfo().colorStyle!.text_code}}" style="font-weight: bold;" style.color="{{selectedTheme()!.bg_color}}">BROWSE PRODUCTS</a>
-                    </p>
-            </div>
-        </div>
-
-    </div>
+  <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
+    <img class="w-100 h-100" [src]='storeInfo()!.homeLinkTop?.toString() ?? storeInfo()!.themeLink?.toString()'>
   </header>
   <!-- Section-->
   <section *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">

@@ -96,7 +96,7 @@ export class Store {
       bannerStyle?: number,
       popups?: Array<Popup>,
       homeRows?: Array<Row>,
-      orders?: number
+      orders?: number,
       ) {
 
       this.uid = uid

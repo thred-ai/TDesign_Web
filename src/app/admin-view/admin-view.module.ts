@@ -38,6 +38,8 @@ import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DragScrollModule } from 'ngx-drag-scroll';
 import {MatTabsModule} from '@angular/material/tabs';
+import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
+import {MatTableModule} from '@angular/material/table';
 
 const routes: Routes = [
   {
@@ -61,6 +63,7 @@ const routes: Routes = [
     CouponInfoComponent,
     EditBannerComponent,
     EditPopupComponent,
+    EditInventoryComponent,
   ],
   imports: [
     CommonModule,
@@ -88,6 +91,7 @@ const routes: Routes = [
     MatAutocompleteModule,
     MatDialogModule,
     MatTabsModule,
+    MatTableModule,
     RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
