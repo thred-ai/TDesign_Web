@@ -262,6 +262,14 @@ export class ViewOrderInfoComponent implements OnInit {
     return this.numberWithCommas(this.formatPrice(this.total() + this.shippingNum() + this.productTaxNum()))
   }
 
+  productTaxNum(){
+    return (this.tax() ?? 0)
+  }
+
+  tax(){
+    return this.selectedOrder()!.tax
+  }
+
   productTax(){
     let tax = this.tax()
     if (tax > 0){
@@ -281,13 +289,6 @@ export class ViewOrderInfoComponent implements OnInit {
     window.open(link, "_blank");
   }
 
-  productTaxNum(){
-    return (this.tax() ?? 0)
-  }
-
-  tax(){
-    return this.selectedOrder()!.tax
-  }
 
   shippingNum(){
     return this.selectedOrder()?.shippingCost ?? 0

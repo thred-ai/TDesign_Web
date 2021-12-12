@@ -54,6 +54,7 @@ export class EditInventoryComponent implements OnInit {
     sizes: [[], Validators.required],
     qty: [null, Validators.required],
     sku: [[], Validators.required],
+    countries: [[], Validators.required],
   });
 
 

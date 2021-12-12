@@ -55,19 +55,24 @@ export class DesignComponent implements OnInit {
       })
     }
     i.push({
-      name: 'Thred Inventory'
+      name: 'Fulfilled by Thred'
+    })
+    i.push({
+      name: 'New Inventory'
     })
     return i
   }
 
   chooseInv(inv: any){
 
-    console.log(inv)
-    console.log('ggggg')
-
-    if (inv.name == 'Thred Inventory'){
+    if (inv.name == 'Fulfilled by Thred'){
       this.mode = 1
       console.log('yes')
+      return
+    }
+    if (inv.name == 'New Inventory'){
+      this.activeModal.close(2)
+      return
     }
     else{
       this.finishedDesigning(undefined, inv)
@@ -585,7 +590,7 @@ export class DesignComponent implements OnInit {
 
     this.templates = data.templates ?? []
     this.inventory = data.inventory ?? []
-    this.mode = ((this.inventory.filter(i => { return i.isCustom})).length > 0) ? 0 : 1
+    this.mode = 0
     this.sanitizer = sanitizer
   }
 

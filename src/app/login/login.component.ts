@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
   });
 
   loginForm = this.fb.group({
-    username: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
+    username: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     password: [null, [Validators.required, Validators.minLength(6), Validators.maxLength(50)]],
   });
   constructor(
@@ -211,6 +211,8 @@ hideSpinner(){
 
       const password = this.loginForm.controls.password.value
 
+      console.log(password)
+
       let fieldToSearch = "Username"
   
       const credentials = {
@@ -254,6 +256,7 @@ hideSpinner(){
       }
     }
     else{
+      console.log('p')
 
     }
   }
@@ -273,17 +276,21 @@ hideSpinner(){
   //   this.load.registerAccount("Google", undefined, this.affiliate)
   // }
 
+  storeVal(){
+    return (this.authForm.controls.username.value ?? '')?.replace(/[^a-zA-Z0-9]/g, '').split(' ').join('').trim() as string
+  }
+
   useEmail(){
 
     if (this.authForm.valid){
 
-      let pattern = /^[a-zA-Z0-9]/g
 
       const email = (this.authForm.controls.email.value ?? '') as string
 
-      const username = ((this.authForm.controls.username.value ?? '') as string)?.replace(pattern, '')
+      const username = this.storeVal()
 
       const password = (this.authForm.controls.password.value ?? '') as string
+
 
       const confirmpassword = (this.authForm.controls.confirmpassword.value ?? '') as string
 
@@ -298,6 +305,7 @@ hideSpinner(){
         return
       }
 
+      console.log('jan')
 
 
       let associated = (Globals.storeInfo?.uid && Globals.storeInfo?.uid != '') ? Globals.storeInfo?.uid : undefined
@@ -342,6 +350,10 @@ hideSpinner(){
       else{
         this.hideSpinner()
       }
+    }
+    else{
+      this.err = 'Password must be longer than 6 characters.'
+      console.log('pan')
     }
     return false
 

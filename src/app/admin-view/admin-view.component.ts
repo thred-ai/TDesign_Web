@@ -34,6 +34,11 @@ import { Popup } from '../models/popup.model';
 import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import {PageEvent} from '@angular/material/paginator'
 import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
+import { MatTable } from '@angular/material/table';
+import { Order } from '../models/order.model';
+import { ViewOrderInfoComponent } from '../view-order-info/view-order-info.component';
+import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
+import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 
 
 @Component({
@@ -66,7 +71,7 @@ bankInfo?: any = undefined
 subInfo?: any = undefined
 canTrial?: boolean = true
 
-invTitle = 'EXPLORE INVENTORY'
+invTitle = 'FULFILLED BY THRED'
 
 
 socials(){
@@ -203,7 +208,7 @@ showPopupModal(popup?: Popup){
   let sub = modalRef.afterClosed().subscribe(popup => {
     console.log('The dialog was closed');
     sub.unsubscribe()
-    if (popup != '0'){
+    if (popup && popup != '0'){
       this.loadService.addPopup(popup, success => {
         if (success){
           this.toast("Popup Saved!")
@@ -256,6 +261,7 @@ deleteInventory(inv?: Inventory){
 }
 
 
+
 emailSubs?: Array<{
   email: string,
   name: string,
@@ -267,6 +273,33 @@ phoneSubs?: Array<{
   name: string,
   timestamp: string,
 }>
+
+showLegend = true;
+
+  colorScheme = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+  };
+
+  // pie
+  showLabels = true;
+  explodeSlices = false;
+  doughnut = false;
+
+
+pieInfo?: Array<Dict<any>>
+addSubs(){
+  if (!this.emailSubs || !this.phoneSubs) { return }
+  this.pieInfo = [
+    {
+      name: 'Email Subscribers',
+      value: this.emailSubs?.length ?? 0
+    },
+    {
+      name: 'SMS Subscribers',
+      value: this.phoneSubs?.length ?? 0
+    }
+  ]
+}
 
 
 emails(){
@@ -652,13 +685,25 @@ showSocialModal(logo: {
     return ""
   } 
 
-  charts(onlyAffiliates = false){
+  charts(onlyAffiliates = false, onlyOverview = false){
     if (onlyAffiliates){
       return this.items.filter(item => { return item.name == "Onboarded Users (Affiliate)" || item.name == "Affiliate Revenue"}).sort(function(a, b){
         if(a.index < b.index) { return -1; }
         if(a.index > b.index) { return 1; }
         return 0;
       })
+    }
+    if (onlyOverview){
+      let charts = this.items.filter(item => { return item.name == "Gross Revenue" || item.name == 'Net Profit'}).sort(function(a, b){
+        if(a.index < b.index) { return -1; }
+        if(a.index > b.index) { return 1; }
+        return 0;
+      })
+      let views = this.miscItems.find(item => { return item.name == "Store Views"})
+      if (views){
+        charts.unshift(views)
+      }
+      return charts
     }
     if (Globals.productsSold == undefined || Globals.newCustomers == undefined || Globals.dropCarts == undefined){
       return []
@@ -670,7 +715,6 @@ showSocialModal(logo: {
       return 0;
     })
   }
-
 
   addMiscCharts(name: string, data_set: Array<Dict<any>>){
 
@@ -794,6 +838,8 @@ showSocialModal(logo: {
 
   availableTemplates(){return Globals.availableTemplates}
 
+  @ViewChild('orderTable') orderTable?: MatTable<any>;
+
 
   themes(){
   return Globals.themes?.sort(function(a, b){
@@ -811,8 +857,8 @@ showSocialModal(logo: {
       Category: "DASHBOARD",
       Options: [
         {
-          "Title": "ANALYTICS",
-          "Icon": "trending_up",
+          "Title": "OVERVIEW",
+          "Icon": "dashboard",
           "Active": false
         },
         {
@@ -1173,6 +1219,13 @@ showSocialModal(logo: {
     return total
   }
 
+  orderCurrency(order?: Order){
+    if (order == undefined){
+      return undefined
+    }
+    return new Country(order?.currency.toUpperCase().slice(0, (order?.currency.length ?? 0) - 1), undefined, undefined, order?.currency, order?.currencySymbol, 1, true, 0)
+  }
+
   formatGraphElement(element: number, name: string){
 
     if (name == "Gross Revenue" || name == "Net Profit" || name == "Affiliate Revenue"){
@@ -1181,10 +1234,10 @@ showSocialModal(logo: {
     return element
   }
 
-  formatPrice(price: number, short = false){
-    var priceAsString = new String(Number((price * (Globals.selectedCurrency?.rate ?? 1)).toFixed(2)).toLocaleString('en'))
+  formatPrice(price: number, short = false, order?: Order){
+    var priceAsString = new String(Number((price * (this.orderCurrency(order)?.rate ?? (Globals.selectedCurrency?.rate ?? 1))).toFixed(2)).toLocaleString('en'))
     if (!short){
-      priceAsString = new String(Number((price * (Globals.selectedCurrency?.rate ?? 1)).toFixed(2)))
+      priceAsString = new String(Number((price * (this.orderCurrency(order)?.rate ?? (Globals.selectedCurrency?.rate ?? 1))).toFixed(2)))
     }
     let index = priceAsString.indexOf(".")
     
@@ -1201,13 +1254,13 @@ showSocialModal(logo: {
       default:
           break
     }
-    return this.getCurrencyForCountry(Globals.selectedCurrency?.name != "US", Globals.selectedCurrency) + priceAsString
+    return this.getCurrencyForCountry((this.orderCurrency(order)?.name ?? Globals.selectedCurrency?.name) != "US", this.orderCurrency(order) ?? Globals.selectedCurrency) + priceAsString
 }
   
 getCurrencyForCountry(shouldShowName: boolean, country?: Country){
 
   var returnItem = country?.currency_symbol ?? "$"
-  if (shouldShowName) returnItem = country?.name + " " + returnItem
+  if (shouldShowName) returnItem = (country?.name ?? '') + " " + returnItem
 
   return returnItem
 }
@@ -1217,7 +1270,7 @@ getCurrencyForCountry(shouldShowName: boolean, country?: Country){
 
 isSpinning = false
 
-    showSpinner(duration = 2000){
+    showSpinner(duration = 500){
       if (!this.isSpinning){
         this.isSpinning = true
         if (isPlatformBrowser(this.platformID)){
@@ -1243,7 +1296,6 @@ isSpinning = false
   
     hideSpinner(){
       if (this.isSpinning){
-        this.isSpinning = false
         // this.spinner.hide()
       }
     }
@@ -1251,7 +1303,7 @@ isSpinning = false
   theme = 'Light'
 
   storeForm = this.fb.group({
-    username: [null, [Validators.required, Validators.pattern("^[a-zA-Z0-9]+$")]],
+    username: [null, [Validators.required]],
     full_name: [null, Validators.required],
     bio: [null],
     profile_pic: [null],
@@ -1548,8 +1600,8 @@ isSpinning = false
       }
 
       let data = {
-        password: this.changePassForm.controls.password.value,
-        newPassword: this.changePassForm.controls.newPassword.value,
+        password: this.changePassForm.controls.password.value?.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
+        newPassword: this.changePassForm.controls.newPassword.value?.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
       }
       this.loadService.savePassword(data, success => {
         this.changePassForm.controls.password.setValue(undefined)
@@ -1579,7 +1631,7 @@ isSpinning = false
     if (this.changeEmailForm.valid){
 
       let data = {
-        password: this.changeEmailForm.controls.password.value,
+        password: this.changeEmailForm.controls.password.value?.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
         newEmail: this.changeEmailForm.controls.newEmail.value,
       }
       this.loadService.saveEmail(data, success => {
@@ -1711,7 +1763,7 @@ isSpinning = false
   ]
 
   matchingStyle(s?: any){
-    return this.styles.find(style => { style.code == s})
+    return this.styles.find(style => { return style.code == s})
   }
 
   async deleteBanner(banner: Banner){
@@ -1789,121 +1841,126 @@ isSpinning = false
 
     var data: Dict<any> = {}
 
-    if (this.getSelectedPanel().Title == 'HOME'){
-      data = {
-        slogan: this.homeForm.controls.slogan.value,
-      }
-      var images = new Array<Dict<string>>()
-      if (this.homeForm.controls.themeImg.value && this.isBase64(this.homeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-          images.push({
-            "type" : "home_top",
-            "img" : this.homeForm.controls.themeImg.value
-          })
-      }
-      if (this.homeForm.controls.homeImg.value && this.isBase64(this.homeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-        images.push({
-          "type" : "home",
-          "img" : this.homeForm.controls.homeImg.value
-        })
-      }
-      data.images = images
-    }
-
-    else if (this.getSelectedPanel().Title == 'SHOP'){
-      data = {}
-      var images = new Array<Dict<string>>()
-      if (this.shopForm.controls.themeImg.value && this.isBase64(this.shopForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-          images.push({
-            "type" : "shop_top",
-            "img" : this.shopForm.controls.themeImg.value
-          })
-      }
-      data.images = images
-    }
-    
-    else if (this.getSelectedPanel().Title == 'THEMES'){
-      var color = this.joinColor(this.themeForm.controls.loadingIndicatorColor.value)
-      var bg_color = this.joinColor(this.themeForm.controls.loadingIndicatorBgColor.value)
-      data = {
-        indicator: {
-          name: this.themeForm.controls.loadingIndicator.value,
-          color: color,
-          bg_color: bg_color
-        },
-        loadingIndicatorColor: color,
-        loadingIndicatorBgColor: bg_color,
-        font: this.themeForm.controls.font.value
-      }
-      var selectedTheme = this.themeForm.controls.storeTheme.value as string
-
-      let matchingTheme = Globals.themes?.find(theme => { return theme.themes.find(theme => { return theme.name == selectedTheme})})?.themes.find(theme => { return theme.name == selectedTheme})
-
-      if (matchingTheme){
-        var color = this.numToColor(matchingTheme.btn_color)
-        var bg_color = this.numToColor(matchingTheme.bg_color)
-
-        data.theme = {
-          back_code: matchingTheme.back_code,
-          text_code: matchingTheme.text_code,
-          nav_code: matchingTheme.nav_code,
-          class: matchingTheme.style,
-          bg_color: bg_color,
-          btn_color: color,
-          name: matchingTheme?.name
-        }
-      }
-      var images = new Array<Dict<string>>()
-      if (this.themeForm.controls.themeImg.value && this.isBase64(this.themeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-          images.push({
-            "type" : "theme",
-            "img" : this.themeForm.controls.themeImg.value
-          })
-      }
-      if (this.themeForm.controls.actionImg.value && this.isBase64(this.themeForm.controls.actionImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-        images.push({
-          "type" : "action",
-          "img" : this.themeForm.controls.actionImg.value
-        })
-      }
-      data.images = images
-    }
-
-    else if (this.getSelectedPanel().Title == 'STORE'){
+    if (this.getSelectedPanel().Title == 'STORE'){
       this.saveProfile()
     }
-
-    else if (this.getSelectedPanel().Title == 'BANNERS'){
-
-      var banners = new Array<Dict<any>>()
-      let bannerVals = this.bannerForm.controls.banners.value as Array<Dict<any>>
-  
-      bannerVals.forEach(b => {
-        banners.push({
-          text: b.text,
-          icon: b.icon,
-          bg_color: this.numToColor(b.bg_color ?? []),
-          color: this.numToColor(b.color ?? [])
-        })
-      })
-      data = {
-        banners: banners,
-        banner_style: this.bannerForm.controls.style.value ?? 0,
+    else{
+      if (this.getSelectedPanel().Title == 'HOME'){
+        data = {
+          slogan: this.homeForm.controls.slogan.value,
+        }
+        var images = new Array<Dict<string>>()
+        if (this.homeForm.controls.themeImg.value && this.isBase64(this.homeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+            images.push({
+              "type" : "home_top",
+              "img" : this.homeForm.controls.themeImg.value
+            })
+        }
+        if (this.homeForm.controls.homeImg.value && this.isBase64(this.homeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+          images.push({
+            "type" : "home",
+            "img" : this.homeForm.controls.homeImg.value
+          })
+        }
+        data.images = images
       }
-    }
-
-
-
-    // if (this.storeForm.valid){
-
-
-      // console.log(data.banner_style)
-
-      this.loadService.myCallback = () => this.toast("Store Updated!")
-      await this.loadService.saveStore(data)
+  
+      else if (this.getSelectedPanel().Title == 'SHOP'){
+        data = {}
+        var images = new Array<Dict<string>>()
+        if (this.shopForm.controls.themeImg.value && this.isBase64(this.shopForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+            images.push({
+              "type" : "shop_top",
+              "img" : this.shopForm.controls.themeImg.value
+            })
+        }
+        data.images = images
+      }
+      
+      else if (this.getSelectedPanel().Title == 'THEMES'){
+        var color = this.joinColor(this.themeForm.controls.loadingIndicatorColor.value)
+        var bg_color = this.joinColor(this.themeForm.controls.loadingIndicatorBgColor.value)
+        data = {
+          indicator: {
+            name: this.themeForm.controls.loadingIndicator.value,
+            color: color,
+            bg_color: bg_color
+          },
+          loadingIndicatorColor: color,
+          loadingIndicatorBgColor: bg_color,
+          font: this.themeForm.controls.font.value
+        }
+        var selectedTheme = this.themeForm.controls.storeTheme.value as string
+  
+        let matchingTheme = Globals.themes?.find(theme => { return theme.themes.find(theme => { return theme.name == selectedTheme})})?.themes.find(theme => { return theme.name == selectedTheme})
+  
+        if (matchingTheme){
+          var color = this.numToColor(matchingTheme.btn_color)
+          var bg_color = this.numToColor(matchingTheme.bg_color)
+  
+          data.theme = {
+            back_code: matchingTheme.back_code,
+            text_code: matchingTheme.text_code,
+            nav_code: matchingTheme.nav_code,
+            class: matchingTheme.style,
+            bg_color: bg_color,
+            btn_color: color,
+            name: matchingTheme?.name
+          }
+        }
+        var images = new Array<Dict<string>>()
+        if (this.themeForm.controls.themeImg.value && this.isBase64(this.themeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+            images.push({
+              "type" : "theme",
+              "img" : this.themeForm.controls.themeImg.value
+            })
+        }
+        if (this.themeForm.controls.actionImg.value && this.isBase64(this.themeForm.controls.actionImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+          images.push({
+            "type" : "action",
+            "img" : this.themeForm.controls.actionImg.value
+          })
+        }
+        data.images = images
+      }
+  
+      else if (this.getSelectedPanel().Title == 'STORE'){
+        this.saveProfile()
+      }
+  
+      else if (this.getSelectedPanel().Title == 'BANNERS'){
+  
+        var banners = new Array<Dict<any>>()
+        let bannerVals = this.bannerForm.controls.banners.value as Array<Dict<any>>
+    
+        bannerVals.forEach(b => {
+          banners.push({
+            text: b.text,
+            icon: b.icon,
+            bg_color: this.numToColor(b.bg_color ?? []),
+            color: this.numToColor(b.color ?? [])
+          })
+        })
+        data = {
+          banners: banners,
+          banner_style: this.bannerForm.controls.style.value ?? 0,
+        }
+      }
+  
+  
+  
+      // if (this.storeForm.valid){
+  
+  
+        // console.log(data.banner_style)
+  
+        this.loadService.myCallback = () => this.toast("Store Updated!")
+        await this.loadService.saveStore(data)
+        // }
+      // else{
+  
       // }
-    // else{
-
-    // }
+    }
   }
 
   titleCase(str: string = '') {
@@ -1984,7 +2041,7 @@ isSpinning = false
       });
     });
     let user = await this.loadService.isLoggedIn()
-    if (this.panels[section].Options[index].Title == "ANALYTICS" && user?.uid && !user?.isAnonymous){
+    if (this.panels[section].Options[index].Title == "OVERVIEW" && user?.uid && !user?.isAnonymous){
       this.getMiscStats()
     }
     else if (this.panels[section].Options[index].Title == "AFFILIATE" && user?.uid && !user?.isAnonymous){
@@ -2121,7 +2178,7 @@ isSpinning = false
           // if (subInfo){
           //   this.subInfo = subInfo
           // }
-          if (this.checkBilling()){}
+          this.selectSetting(1,3)
       })
       }
     }
@@ -2265,6 +2322,35 @@ isSpinning = false
       return Globals.billingInfo
     }
 
+    orderTotal(order: Order){
+      return this.numberWithCommas(this.formatPrice(this.total(order), false, order))
+    }
+
+    orderLoaded(){
+      return !this.orders?.find(o => o.products?.length == 0)
+    }
+
+    orderSlice(){
+      return this.orders?.slice(0,4) ?? []
+    }
+
+    orderCount(){
+      return this.orders?.filter(o => o.status == 'confirmed').length ?? 0
+    }
+  
+    total(order: Order){
+      var total = 0
+      
+      order.products.forEach(product => {
+        total += (product.product?.price ?? 0) * (product.quantity ?? 1)
+      })
+      return total / 100
+    }
+
+    numberWithCommas(x: string) {
+      return x.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     beginBankAdd(){
       this.spinner.show("adminSpinner")
       this.loadService.beginBankAdd((urlLink: string) => {
@@ -2291,7 +2377,63 @@ isSpinning = false
     routeToBillingAdmin(){
       this.rootComponent.routeToBillingAdmin()
     }
+
+    viewAllOrders(){
+      const modalRef = this.dialog.open(ViewAllOrderAdminComponent, {
+        width: '800px',
+        data: {
+          orders: this.orders ?? []
+        },
+        panelClass: 'app-full-bleed-dialog', 
+      });
+    
+      let sub = modalRef.afterClosed().subscribe(order => {
+        sub.unsubscribe()
+        if (order as Order){
+          this.viewOrder(order)
+        }
+      });
+    }
+
+    viewOrder(order: Order){
+      const modalRef = this.dialog.open(ViewOrderAdminComponent, {
+        width: '100vw',
+        data: {
+          order: order
+        },
+        panelClass: 'app-full-bleed-dialog', 
+      });
+    
+      let sub = modalRef.afterClosed().subscribe(popup => {
+        // console.log('The dialog was closed');
+        // sub.unsubscribe()
+        // if (popup && popup != '0'){
+        //   this.loadService.addPopup(popup, success => {
+        //     if (success){
+        //       this.toast("Popup Saved!")
+        //     } 
+        //   }, Globals.storeInfo.uid)
+        // }
+      });
+    }
         
+    orders?: Array<Order>
+    displayedColumns: string[] = ['name', 'value', 'status', 'action'];
+
+    matchingElem(order: Order){
+      if (order.status == 'confirmed'){
+        return {
+          color: 'info',
+          icon: 'credit_card',
+          text: 'CONFIRMED'
+        }
+      }
+      return {
+        color: 'success',
+        icon: 'local_shipping',
+        text: 'SHIPPED'
+      }
+    }
     
     async init() {
   
@@ -2315,6 +2457,14 @@ isSpinning = false
           this.cdr.detectChanges()
         })
       }
+      if (!this.orders){
+        this.loadService.getAllOrders(async (arr: Array<Order>) => {
+          console.log(arr)
+          this.orders = arr ?? []
+          this.orderTable?.renderRows()
+          this.cdr.detectChanges()
+        })
+      }
       if (!this.emailSubs){
         this.loadService.getEmailSubs(uid, async (arr: Array<Dict<any>>) => {
           console.log(arr)
@@ -2323,6 +2473,7 @@ isSpinning = false
             name: string,
             timestamp: string
           }> ?? []
+          this.addSubs()
           this.cdr.detectChanges()
         })
       }
@@ -2335,6 +2486,7 @@ isSpinning = false
             name: string,
             timestamp: string
           }> ?? []
+          this.addSubs()
           this.cdr.detectChanges()
         })
       }
@@ -2483,7 +2635,10 @@ isSpinning = false
       let sub = modalRef.afterClosed().subscribe(resp => {
         console.log('The dialog was closed');
         sub.unsubscribe()
-        if (resp){
+        if (resp == 2){
+          this.newInventory()
+        }
+        else if (resp){
           this.productDetailsMode = true
           resp.templates = this.templates().filter(template => { return !template.onlyBulk || this.inventory?.filter(inv =>{ return inv.code == template.productCode && inv.amount > 0}).length != 0}),
           resp.inventory = this.inventory ?? []

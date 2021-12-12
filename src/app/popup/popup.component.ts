@@ -114,6 +114,9 @@ export class PopupComponent implements OnInit {
         this.err = "An Error Occured, Try Again Later"
       }
     }, this.popupForm.controls.name.value, Globals.storeInfo.uid)
+
+    this.close()
+
   }
 
 }

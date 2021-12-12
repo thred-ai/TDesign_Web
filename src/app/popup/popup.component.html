@@ -12,7 +12,12 @@ style.color = "{{selectedIndicator()!.color}}"
 >
 <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">ONE MOMENT...</h3>
 </ngx-spinner>
-    <h2 mat-dialog-title class="text-center text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
+    <div mat-dialog-title class="bg-transparent rounded-top d-flex justify-content-end align-items-center" style="height: 10px;">
+        <a role="button" (click)='close()' style="text-shadow: 2px 2px 4px #42424281;">
+            <mat-icon >highlight_off</mat-icon>
+        </a>
+    </div>
+    <h2 class="text-center w-100 text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">
         {{popup?.title ?? ""}}
     </h2>
     <mat-dialog-content>

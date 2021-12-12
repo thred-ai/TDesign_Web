@@ -2967,6 +2967,87 @@ export class LoadService {
     });
   }
 
+  async getAllOrders(callback: (orders: Array<Order>) => any){
+    
+    const uid = (await this.isLoggedIn())?.uid
+
+    if (!(uid)){
+      callback([])
+      return
+    }
+
+    var query = this.db.collectionGroup("Orders", ref => ref.where("merchant_uid",'==', uid).orderBy("timestamp", "desc"))
+
+
+    var orders = new Array<Order>()
+    
+    let sub = query.valueChanges().subscribe((docDatas) => {
+
+      console.log(docDatas)
+
+      docDatas.forEach((doc, index) => {
+        const docData = doc as DocumentData
+        if (docData){
+          let status = docData.status as string ?? "cancelled"
+          let intents = docData.order_intents as Array<Dict<string>>
+          
+          let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate()
+          let shippingIntent = docData.shipping_intent as string
+          let trackingNumber = docData.tracking_id as string
+          let shippingCost = docData.shipping_cost as number
+          let taxPercent = docData.tax as number
+          let taxNum = docData.sales_tax as number
+  
+          let currency = docData.currency as string ?? "CAD"
+
+          let currencySymbol = docData.currency_symbol as string
+          let orderID = docData.order_id as string
+          let merchantID = docData.merchant_uid as string
+
+          var subtotal = 0.0
+
+
+          let address = docData.delivery_address as Dict<string>
+          let street = address.street_address as string
+          let city = address.city as string
+          let country = address.country as string
+          let postalCode = address.postal_code as string
+          let area = address.admin_area as string
+          let phone = address.phone_number as string
+          let name = address.full_name as string
+          let company = address.company as string
+          let email = address.email as string
+          let country_code = address.country_code as string
+          const uid = docData.uid as string
+
+
+                    // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100              
+                
+                    
+          let unitNum = address.unit_number as string
+                    
+          let orderAddress = new ShippingInfo(name, company, street, city, country, area, unitNum, postalCode, phone, country_code, email)
+                    
+
+          let tax = taxNum ?? (taxPercent ?? 0) * subtotal
+          let totalCost = (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0)
+
+          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID)
+
+
+          orders.push(order)
+
+
+          this.getOrderProducts(order, uid, index)
+    
+        }
+      })
+      callback(orders)
+      if (isPlatformBrowser(this.platformID))
+      sub.unsubscribe();
+    });
+  }
+
   async getOrders(callback: (orders: Array<Order>) => any){
     
     const uid = (await this.isLoggedIn())?.uid
@@ -3310,6 +3391,9 @@ export class LoadService {
   }
 
   getProfileURL(uid: string, dpID: string){
+    if (Globals.isNewUser){
+      return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F0aDUTsg31KR7sb4r6ACi4NWmjXi2%2Fprofile_pic-D6F448C1B7C541F387C2FE4EA02A51D5.jpeg?alt=media'
+    }
     return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2Fprofile_pic-' + dpID + '.jpeg?alt=media'
   }
 

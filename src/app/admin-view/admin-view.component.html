@@ -83,11 +83,11 @@ style.color = "{{selectedIndicator()!.color}}"
                         <mat-icon >menu_open</mat-icon>
                     </a>
                     <div *ngIf='!isMobile()'>
-                        <a role="button"  class="side card shadow fw-bold m-0 me-2 rounded-pill" style="font-size: 15px;">
+                        <a role="button" class="side card shadow fw-bold m-0 me-2 rounded-pill" style="font-size: 15px;" (click)='selectSetting(0,0)'>
                             <div class="d-flex text-{{storeInfo().colorStyle!.text_code}} btn btn-{{storeInfo().colorStyle!.back_code}} rounded-pill align-items-center justify-content-center h-100 w-100">
-                                {{storeInfo().orders}} ORDERS
+                                {{orderCount() == 0 ? 'NO' : orderCount()}} ORDERS
                                 <mat-icon class="ms-2">
-                                    <span class="material-icons-outlined" style="font-size: 25px;">
+                                    <span class="material-icons-outlined text-warning" style="font-size: 25px;">
                                         monetization_on
                                     </span>
                                 </mat-icon>
@@ -151,7 +151,6 @@ style.color = "{{selectedIndicator()!.color}}"
                                                 <input #fileInput type="file" (change)="fileChangeEvent($event, 'Profile')" style="display:none;" />
                                             </a>
                                         </div>
-                                        <button (click)="saveProfile()"  class="btn btn-dark mx-auto d-flex">Save Changes</button>
                                     </div>
                                 </div>
                                 <div class="col-md-8 mx-auto d-block">
@@ -331,6 +330,62 @@ style.color = "{{selectedIndicator()!.color}}"
                 <form [formGroup]="themeForm" novalidate>
                     <mat-tab-group mat-stretch-tabs>
                         <mat-tab>
+                      <!-- #docregion label-directive -->
+                          <ng-template mat-tab-label>
+                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">window</mat-icon>
+                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                EXPLORE THEMES
+                            </span>
+                          </ng-template>
+                          <div *ngFor="let sTheme of themes()">
+                            <h1 class="text-start mx-3 mx-md-4 mx-lg-4 fw-bolder text-{{storeInfo().colorStyle!.text_code}} pt-4 pb-2" style="font-size: xx-large; font-style: italic;" style.color="{{selectedTheme()!.color}}" >{{titleCase(sTheme.name)}}</h1>
+        
+                            <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
+        
+                                <div class="col" *ngFor="let cTheme of sTheme.themes">
+                                    <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                        <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{cTheme.name}}</h2>
+                                        <div class="card-body">
+                                            <!-- <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
+                                                <label style="color: #6c757d;"  class = "me-1 text-center">Remaining: </label>
+                                                <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                <label style="color: #6c757d;"  class = "me-1 text-center">{{invUsed(inv)}}</label>
+                                            </div> -->
+                                            <div class="rounded mx-auto w-100" >
+                                                <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                    <img [src]='cTheme.img' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                                </a>
+                                            </div>
+            
+                                            <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
+                                                <button (click)='selectTheme(cTheme.name)' *ngIf='theme != cTheme.name'  class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">
+                                                    Use Theme
+                                                    <mat-icon class="ms-2">
+                                                        <span class="material-icons-outlined">
+                                                            published_with_changes
+                                                        </span>
+                                                    </mat-icon>
+                                                </button>
+                                                <button *ngIf='theme == cTheme.name'  class="btn d-flex mx-1 text-light btn-success">
+                                                    Theme In Use
+                                                    <mat-icon class="ms-2">
+                                                        <span class="material-icons-outlined">
+                                                            check_circle
+                                                        </span>
+                                                    </mat-icon>
+                                                </button>
+                                                <!-- <button *ngIf="!inv.autoReload"  (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button> -->
+                                                <!-- <button *ngIf="inv.autoReload"  (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </mat-tab>
+                        <mat-tab>
                             <ng-template mat-tab-label>
                               <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">tune</mat-icon>
                               <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
@@ -475,62 +530,6 @@ style.color = "{{selectedIndicator()!.color}}"
                               </div>
                           </div>
                           </mat-tab>
-                        <mat-tab>
-                      <!-- #docregion label-directive -->
-                          <ng-template mat-tab-label>
-                            <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">window</mat-icon>
-                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
-                                EXPLORE THEMES
-                            </span>
-                          </ng-template>
-                          <div *ngFor="let sTheme of themes()">
-                            <h1 class="text-start mx-3 mx-md-4 mx-lg-4 fw-bolder text-{{storeInfo().colorStyle!.text_code}} pt-4 pb-2" style="font-size: xx-large; font-style: italic;" style.color="{{selectedTheme()!.color}}" >{{titleCase(sTheme.name)}}</h1>
-        
-                            <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
-        
-                                <div class="col" *ngFor="let cTheme of sTheme.themes">
-                                    <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                        <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{cTheme.name}}</h2>
-                                        <div class="card-body">
-                                            <!-- <div class="d-flex align-items-center justify-content-center my-2 text-shadow" style="font-size: 22px;">
-                                                <label style="color: #6c757d;"  class = "me-1 text-center">Remaining: </label>
-                                                <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"> {{inv.amount ?? 0}}</a></mat-hint>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                                <label style="color: #6c757d;"  class = "me-1 text-center">{{invUsed(inv)}}</label>
-                                            </div> -->
-                                            <div class="rounded mx-auto w-100" >
-                                                <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                                    <img [src]='cTheme.img' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
-                                                </a>
-                                            </div>
-            
-                                            <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                                <button (click)='selectTheme(cTheme.name)' *ngIf='theme != cTheme.name'  class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">
-                                                    Use Theme
-                                                    <mat-icon class="ms-2">
-                                                        <span class="material-icons-outlined">
-                                                            published_with_changes
-                                                        </span>
-                                                    </mat-icon>
-                                                </button>
-                                                <button *ngIf='theme == cTheme.name'  class="btn d-flex mx-1 text-light btn-success">
-                                                    Theme In Use
-                                                    <mat-icon class="ms-2">
-                                                        <span class="material-icons-outlined">
-                                                            check_circle
-                                                        </span>
-                                                    </mat-icon>
-                                                </button>
-                                                <!-- <button *ngIf="!inv.autoReload"  (click)="setUpAutoReload(inv)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Set up Auto-Reload</button> -->
-                                                <!-- <button *ngIf="inv.autoReload"  (click)="removeAutoReload(inv)" class="btn btn-success d-flex mx-1">Auto-Reload<mat-icon class="ms-1">check_circle</mat-icon></button> -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        </mat-tab>
                       </mat-tab-group>
                 </form>
             </div>
@@ -574,17 +573,18 @@ style.color = "{{selectedIndicator()!.color}}"
                                 </div>
     
                                 <mat-form-field class="w-100 mt-3">
-                                    <mat-label>Banner Style</mat-label>
+
+                                    
+                                   
                                     <mat-select formControlName="style">
-                                    <mat-select-trigger class="d-flex align-items-center" *ngIf='matchingStyle(bannerForm.controls.style.value)'>
-                                        <!-- <mat-icon class="me-2">{{matchingStyle(bannerForm.controls.style.value)!.icon}}</mat-icon> -->
-                                        {{matchingStyle(bannerForm.controls.style.value)!.name}}
-                                    </mat-select-trigger>
-                                      <mat-option *ngFor="let style of styles" [value]="style.code">
-                                        <!-- <mat-icon >{{type.icon}}</mat-icon> -->
-                                        {{style.name}}
-                                      </mat-option>
-                                    </mat-select>
+                                        <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}" *ngIf='matchingStyle(bannerForm.controls.style.value)'>
+                                            {{matchingStyle(bannerForm.controls.style.value)!.name}}
+                                        </mat-select-trigger>
+                                        <mat-option *ngFor="let style of styles" class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" [value]="style.code">
+                                            {{style.name}}
+                                        </mat-option>
+                                      </mat-select>
+                                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Banner Style</mat-placeholder>
                                 </mat-form-field>
                             </div>
                         </div>
@@ -953,9 +953,63 @@ style.color = "{{selectedIndicator()!.color}}"
             <div *ngIf="getSelectedPanel()?.Title == 'INVENTORY'">
                 <mat-tab-group mat-stretch-tabs>
                     <mat-tab>
+                  <!-- #docregion label-directive -->
+                      <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">add_box</mat-icon>
+                        <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                            EXPLORE INVENTORY
+                        </span>
+                      </ng-template>
+
+                    <div *ngIf="availableToBuyTemplates().length > 0"  style="height: 100vh;">
+                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" >{{invTitle}}</h1>
+                        <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
+    
+                            <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">
+                                <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                   
+                                    <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{template.templateDisplayName}}</h2>
+                                    <div class="card-body mt-2">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="mx-auto">
+                                                
+                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 22px;">
+                                                    <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((template.bulkPrice) / 100, true)}}</a></mat-hint>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
+                                                    <label style="color: #6c757d;"  class = "me-1 text-center">(Per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}})</label>
+                                                </div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="rounded mx-auto w-100" >
+                                            <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
+                                                <img [src]='getTypeImages(template.productCode)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
+                                            </a>
+                                        </div>
+        
+                                        <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
+                                            <button  (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="availableToBuyTemplates().length == 0" style="height: 100vh;">
+                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" >
+                            NO INVENTORY
+                            <h2 class="mt-1" style="font-size: small;">New inventory to buy appears here</h2>
+                        </h1>
+                    </div>
+                    </mat-tab>
+                    <mat-tab>
                         <!-- #docregion label-directive -->
                         <ng-template mat-tab-label>
                             <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">inventory_2</mat-icon>
+                            <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                MY INVENTORY
+                            </span>
                             </ng-template>
                             <div style="height: 100vh;">
                               <div class="d-flex justify-content-center align-items-center w-100">
@@ -1030,57 +1084,6 @@ style.color = "{{selectedIndicator()!.color}}"
                                 <h2 class="mt-1" style="font-size: small;">Custom inventory you add appears here</h2>
                             </h1>
                         </div>
-                    </mat-tab>
-                    <mat-tab>
-                  <!-- #docregion label-directive -->
-                      <ng-template mat-tab-label>
-                        <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">add_box</mat-icon>
-                        <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
-                            EXPLORE INVENTORY
-                        </span>
-                      </ng-template>
-
-                    <div *ngIf="availableToBuyTemplates().length > 0"  style="height: 100vh;">
-                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large; line-height: 1.2em;" style.color="{{selectedTheme()!.color}}" >{{invTitle}}</h1>
-                        <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0">
-    
-                            <div class="col mb-2" *ngFor="let template of availableToBuyTemplates()">
-                                <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                   
-                                    <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >{{template.templateDisplayName}}</h2>
-                                    <div class="card-body mt-2">
-                                        <div class="d-flex align-items-center justify-content-center">
-                                            <div class="mx-auto">
-                                                
-                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 22px;">
-                                                    <mat-hint   align="start"><a class="fw-bolder text-center" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((template.bulkPrice) / 100, true)}}</a></mat-hint>
-                                                </div>
-                                                <div class="d-flex align-items-center justify-content-center  my-2 mx-auto" style="font-size: 10px;">
-                                                    <label style="color: #6c757d;"  class = "me-1 text-center">(Per. {{template!.templateDisplayName.slice(0,-1).toLowerCase()}})</label>
-                                                </div>
-                                            </div>
-                                        </div>
-        
-                                        <div class="rounded mx-auto w-100" >
-                                            <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                                                <img [src]='getTypeImages(template.productCode)' class="rounded img-responsive h-100 w-100" style="object-fit:contain;">
-                                            </a>
-                                        </div>
-        
-                                        <div class="d-flex align-items-center justify-content-center  mt-4 mb-2" style="font-size: 15px;">
-                                            <button  (click)="buyNewInventory(template)" class="btn d-flex mx-1" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Buy {{template.bulkUnit}} Units</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="availableToBuyTemplates().length == 0" style="height: 100vh;">
-                        <h1 class="text-center fw-bolder text-{{storeInfo().colorStyle!.text_code}} py-4" style="font-size: xx-large;" style.color="{{selectedTheme()!.color}}" >
-                            NO INVENTORY
-                            <h2 class="mt-1" style="font-size: small;">New inventory to buy appears here</h2>
-                        </h1>
-                    </div>
                     </mat-tab>
                 </mat-tab-group>
             </div>
@@ -1181,7 +1184,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                     </mat-icon>
                                 </a>
                                 <p class="px-2 text-center text-{{storeInfo().colorStyle!.text_code}}" >
-                                    This is required to activate your merchant plan.
+                                    This card will be billed after your trial ends.
                                 </p>
                                     <div class="card-body mt-4">
                                         
@@ -1439,54 +1442,213 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div>
             </div>
 
-            <div *ngIf="getSelectedPanel()?.Title == 'ANALYTICS'" class="h-100">
-                <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3">
-                    
-                    
+            <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW'" class="h-100">
+                <mat-tab-group mat-stretch-tabs>
+                    <mat-tab>
+                        <!-- #docregion label-directive -->
+                            <ng-template mat-tab-label>
+                              <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">ballot</mat-icon>
+                              <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                                  MY STORE
+                              </span>
+                            </ng-template>
+                            <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3">
+                                <div class="col mb-2">
+                                    <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                        <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                            NEW ORDERS
+                                        </p>
+                                        <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{orderCount()}}</h2>
+                                        <div class="card-body d-flex justify-content-center align-items-center my-2" style="height: 300px; overflow-y: scroll;">
+                                            <table *ngIf='orderLoaded() && orders && (orders?.length ?? 0) > 0' #orderTable mat-table [dataSource]="orderSlice()" class="w-100 h-100 bg-{{storeInfo().colorStyle!.back_code}}">
 
-                    <div class="col mb-2" *ngFor="let item of charts()">
-                        <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                            <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
-                                {{item.series[0].name.toUpperCase()}}
-                            </p>
-                            <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{formatGraphElement(totalElement(item.series[0].series), item.series[0].name)}}</h2>
-                            <div class="card-body d-flex justify-content-center align-items-center my-2" style="height: 300px;">
-                                <ngx-charts-area-chart
-                                *ngIf ="item.shouldDisplay"
-                                [results]="item.series"
-                                [xAxis]="true"
-                                [yAxis]="false"
-                                [gradient]="true"
-                                [customColors]="item.customColors"
-                                [showXAxisLabel]="false"
-                                [showYAxisLabel]="false"
-                                [xAxisLabel]="item.xAxisLabel"
-                                [xAxisTickFormatting] = "formatPercent"
-                                [yAxisLabel]="item.yAxisLabel"
-                                style.fill = "{{selectedTheme()!.color}}">
-                                >
-                                <ng-template #tooltipTemplate let-model="model">
-                                    {{model.series}} • {{model.name}}
-                                <h2>{{formatGraphElement(model.value, model.series)}}</h2>    
-                                </ng-template>
+                                                <ng-container matColumnDef="name">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-{{storeInfo().colorStyle!.text_code}} px-1"> Name </th>
+                                                    <td mat-cell *matCellDef="let element" style="border-bottom-style: none;" style.color="{{selectedTheme()!.color}}" class="px-1"> {{(element.address?.name ?? '')?.trim() == '' ? 'Not Provided' : element.address?.name}} </td>
+                                                    <td mat-footer-cell *matFooterCellDef style="border-bottom-style: none;"> 
+                                                    </td>
+                                                  </ng-container>
+                                                  <ng-container matColumnDef="value">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-{{storeInfo().colorStyle!.text_code}} px-1"> Value </th>
+                                                    <td mat-cell *matCellDef="let element" style="border-bottom-style: none;" style.color="{{selectedTheme()!.color}}" class="px-1"> {{orderTotal(element)}} </td>
+                                                    <td mat-footer-cell *matFooterCellDef style="border-bottom-style: none;"> 
+                                                    </td>
+                                                  </ng-container>
+                                                  <ng-container matColumnDef="status">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-{{storeInfo().colorStyle!.text_code}} px-1"> Status </th>
+                                                    <td mat-cell *matCellDef="let element" style="border-bottom-style: none;">
+                                                        <button (click)='viewOrder(element)' class="btn rounded-pill d-flex mx-1 btn-{{matchingElem(element).color}} text-light fw-bolder" style="font-size: small;">
+                                                            {{matchingElem(element).text}}
+                                                            <mat-icon class="ms-2" [inline]=true>
+                                                                <span class="material-icons-outlined">
+                                                                    {{matchingElem(element).icon}}
+                                                                </span>
+                                                            </mat-icon>
+                                                        </button>
+                                                    </td>
+                                                    <td mat-footer-cell *matFooterCellDef style="border-bottom-style: none;"> 
+                                                    </td>
+                                                    <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
+                                                  </ng-container>
+                                                  <ng-container matColumnDef="action">
+                                                    <th mat-header-cell *matHeaderCellDef class="text-{{storeInfo().colorStyle!.text_code}}"> </th>
+                                                    <td mat-cell *matCellDef="let element" class="d-flex h-100 justify-content-end align-items-center" style="border-bottom-style: none;">
+                                                        <mat-icon role="button" (click)='viewOrder(element)' class="ms-2 h-100 d-flex h-100 justify-content-end align-items-center" style.color="{{selectedTheme()!.color}}">
+                                                            <span class="material-icons-outlined">
+                                                                chevron_right
+                                                            </span>
+                                                        </mat-icon>
+                                                    </td>
+                                                    <td mat-footer-cell *matFooterCellDef class="d-flex h-100 justify-content-end align-items-center" style="border-bottom-style: none;"> 
+                                                        <button (click)='viewAllOrders()' class="btn d-flex justify-content-end align-items-center px-0 me-1 py-0 mb-0 text-end fw-bolder text-{{storeInfo().colorStyle!.text_code}}" style="font-size: small;">
+                                                            VIEW ALL
+                                                            <mat-icon class="ms-0 d-flex align-items-center justify-content-center" style="font-size: large;">
+                                                                history
+                                                            </mat-icon>
+                                                        </button>
+                                                    </td>
 
-                                <ng-template #seriesTooltipTemplate let-model="model">
-                                    {{model[0].series}}
-                                <h2>{{formatGraphElement(model[0].value, model[0].series)}}</h2>       
-                                </ng-template>
-                                </ngx-charts-area-chart>
-                                <div
-                                *ngIf ="!(item.shouldDisplay)" class="text-center">
-                                <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
-                                <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                                                    <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
+                                                  </ng-container>
+
+                                                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                                  <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+                                              </table>
+                                              <div
+                                          *ngIf ="orderLoaded() && orders && (orders?.length ?? 0) == 0" class="text-center">
+                                          <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
+                                          <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                                          </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col mb-2">
+                                    <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                        <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                            SUBSCRIBERS 
+                                        </p>
+                                        <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{(emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)}}</h2>
+
+                                        <div class="card-body d-flex justify-content-center align-items-center my-2" style="height: 300px; position: relative;">
+                                            <ngx-charts-pie-chart
+                                            *ngIf='pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0'
+                                            [results]="pieInfo"
+                                            [explodeSlices]="explodeSlices"
+                                            [doughnut]="true"
+                                            [customColors]="[{name: 'Email Subscribers',value: '#1ac6ff'},{name: 'SMS Subscribers',value: selectedTheme()!.color ?? ''}]"
+                                            [gradient]="true">
+                                          </ngx-charts-pie-chart>
+                                          <mat-icon role="button" (click)='selectSetting(1,0)' class="w-100 h-auto text-center h1 text-{{storeInfo().colorStyle!.text_code}}" *ngIf='pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0' style="position: absolute;">groups</mat-icon>
+                                          <div
+                                          *ngIf="emailSubs && phoneSubs && ((emailSubs!.length) + (phoneSubs!.length)) == 0" class="text-center">
+                                          <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
+                                          <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                                          </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <p *ngIf ="(item.shouldDisplay)"  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
-                                {{item.xAxisLabel.toUpperCase()}}
-                            </p>
+                            <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start m-2 m-md-3 m-lg-3">
+                              <div class="col mb-2" *ngFor="let item of charts(false, true)">
+                                  <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                      <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                          {{item.series[0].name.toUpperCase()}}
+                                      </p>
+                                      <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{formatGraphElement(totalElement(item.series[0].series), item.series[0].name)}}</h2>
+                                      <div class="card-body d-flex justify-content-center align-items-center my-2" style="height: 250px;">
+                                          <ngx-charts-area-chart
+                                          *ngIf ="item.shouldDisplay"
+                                          [results]="item.series"
+                                          [xAxis]="true"
+                                          [yAxis]="false"
+                                          [gradient]="true"
+                                          [customColors]="item.customColors"
+                                          [showXAxisLabel]="false"
+                                          [showYAxisLabel]="false"
+                                          [xAxisLabel]="item.xAxisLabel"
+                                          [xAxisTickFormatting] = "formatPercent"
+                                          [yAxisLabel]="item.yAxisLabel"
+                                          style.fill = "{{selectedTheme()!.color}}">
+                                          >
+                                          <ng-template #tooltipTemplate let-model="model">
+                                              {{model.series}} • {{model.name}}
+                                          <h2>{{formatGraphElement(model.value, model.series)}}</h2>    
+                                          </ng-template>
+          
+                                          <ng-template #seriesTooltipTemplate let-model="model">
+                                              {{model[0].series}}
+                                          <h2>{{formatGraphElement(model[0].value, model[0].series)}}</h2>       
+                                          </ng-template>
+                                          </ngx-charts-area-chart>
+                                          <div
+                                          *ngIf ="!(item.shouldDisplay)" class="text-center">
+                                          <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
+                                          <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                                          </div>
+                                      </div>
+                                      <p *ngIf ="(item.shouldDisplay)"  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                                          {{item.xAxisLabel.toUpperCase()}}
+                                      </p>
+                                  </div>
+                              </div>
+                          </div>
+                    </mat-tab>
+                    <mat-tab>
+                  <!-- #docregion label-directive -->
+                      <ng-template mat-tab-label>
+                        <mat-icon class="example-tab-icon text-{{storeInfo().colorStyle!.text_code}}">trending_up</mat-icon>
+                        <span class="ms-2 text-{{storeInfo().colorStyle!.text_code}}">
+                            ANALYTICS
+                        </span>
+                      </ng-template>
+                      <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3">
+                        <div class="col mb-2" *ngFor="let item of charts()">
+                            <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
+                                <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
+                                    {{item.series[0].name.toUpperCase()}}
+                                </p>
+                                <h2 class="text-center fw-bolder" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}">{{formatGraphElement(totalElement(item.series[0].series), item.series[0].name)}}</h2>
+                                <div class="card-body d-flex justify-content-center align-items-center my-2" style="height: 300px;">
+                                    <ngx-charts-area-chart
+                                    *ngIf ="item.shouldDisplay"
+                                    [results]="item.series"
+                                    [xAxis]="true"
+                                    [yAxis]="false"
+                                    [gradient]="true"
+                                    [animated]='false'
+                                    [customColors]="item.customColors"
+                                    [showXAxisLabel]="false"
+                                    [showYAxisLabel]="false"
+                                    [xAxisLabel]="item.xAxisLabel"
+                                    [xAxisTickFormatting] = "formatPercent"
+                                    [yAxisLabel]="item.yAxisLabel"
+                                    style.fill = "{{selectedTheme()!.color}}">
+                                    >
+                                    <ng-template #tooltipTemplate let-model="model">
+                                        {{model.series}} • {{model.name}}
+                                    <h2>{{formatGraphElement(model.value, model.series)}}</h2>    
+                                    </ng-template>
+    
+                                    <ng-template #seriesTooltipTemplate let-model="model">
+                                        {{model[0].series}}
+                                    <h2>{{formatGraphElement(model[0].value, model[0].series)}}</h2>       
+                                    </ng-template>
+                                    </ngx-charts-area-chart>
+                                    <div
+                                    *ngIf ="!(item.shouldDisplay)" class="text-center">
+                                    <h4 class="fw-bolder" style="font-size: x-large; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Nothing to display here.<br><mat-icon class="mt-2" style.color="{{selectedTheme()!.color}}">sentiment_dissatisfied</mat-icon></a></h4>
+                                    <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                                    </div>
+                                </div>
+                                <p *ngIf ="(item.shouldDisplay)"  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">
+                                    {{item.xAxisLabel.toUpperCase()}}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    </mat-tab>
+                </mat-tab-group>
             </div>
           </section>
     </div>

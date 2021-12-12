@@ -40,6 +40,8 @@ import { DragScrollModule } from 'ngx-drag-scroll';
 import {MatTabsModule} from '@angular/material/tabs';
 import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
 import {MatTableModule} from '@angular/material/table';
+import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
+import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 
 const routes: Routes = [
   {
@@ -64,6 +66,8 @@ const routes: Routes = [
     EditBannerComponent,
     EditPopupComponent,
     EditInventoryComponent,
+    ViewOrderAdminComponent,
+    ViewAllOrderAdminComponent,
   ],
   imports: [
     CommonModule,

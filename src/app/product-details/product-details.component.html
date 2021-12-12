@@ -52,13 +52,13 @@
                                 <div *ngIf='mode == "create" && (matchingInv(false)?.length ?? 0) > 1' class="text-center">
                                     <div class="card-body p-0 pt-0">
                                         <div class="text-left">
-                                            <h5 class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Type'"></h5>
+                                            <h5 style.color="{{selectedTheme()!.color}}"  class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Type'"></h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div *ngIf='mode == "create" && (matchingInv(false)?.length ?? 0) > 1' class="row gx-4 gx-lg-1 row-cols-4 w-100 row-cols-md-5 row-cols-xl-5 justify-content-center" style>
-                                    <button  type="button" class="btn btn-outline-dark active my-1 mx-1 py-2" (click)="selectSize(matchingInv(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{(matchingInv(false) ?? [])[0]}}</button>
-                                    <button  type="button" class="btn btn-outline-dark my-1 mx-1 py-2" *ngFor="let size of matchingInv(true) ?? []" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                                    <button  type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}}  active my-1 mx-1 py-2" (click)="selectSize(matchingInv(false)[0], $event)" style="font-weight:bold; font-size:12px;"  id="size">{{(matchingInv(false) ?? [])[0]}}</button>
+                                    <button  type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}}  my-1 mx-1 py-2" *ngFor="let size of matchingInv(true) ?? []" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;"   id="size">{{size}}</button>
                                 </div>
                                 
                 
@@ -67,10 +67,6 @@
                                     <span class="rounded shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
                                 </div>
 
-                                <div class="wrap-input1 w-100 mb-3">
-                                    <input type="text"  style.color="{{selectedTheme()!.color}}" class="shadow rounded input1 w-100 py-3 px-3 px-lg-4 px-md-4 fw-bold bg-{{storeInfo().colorStyle!.back_code}}" name="name" formControlName="sku" placeholder="SKU (optional)">
-                                    <span class="rounded shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span>
-                                </div>
 
                                 <div class="wrap-input1 w-100 mb-3" >
                                     <!-- <input class="input1" 
