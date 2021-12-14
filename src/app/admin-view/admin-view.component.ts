@@ -2426,7 +2426,7 @@ isSpinning = false
     displayedColumns: string[] = ['name', 'value', 'status', 'action'];
 
     matchingElem(order: Order){
-      if (order.status == 'confirmed'){
+      if (order.status == 'confirmed' || order.status == 'completed'){
         return {
           color: 'info',
           icon: 'credit_card',

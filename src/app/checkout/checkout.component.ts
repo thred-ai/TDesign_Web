@@ -158,7 +158,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     this.updatePayBtnOptions()
 
     this.cdr.detectChanges()
-    // this.selectedCountry = country
   }
 
   calculate(){
@@ -166,7 +165,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   shipping(){
-    let shipping = (Globals.availableCurrencies.find(country => country.name_full == this.selectedCountry)?.shipping_rate_usd ?? 0) / 100
+    let shipping = (Globals.availableCurrencies.find(country => country.name_full?.toLowerCase() == Globals.shippingInfo?.country?.toLowerCase().trim() || country.name?.toLowerCase() == this.selectedCountry?.toLowerCase().trim())?.shipping_rate_usd ?? 0) / 100
     if (shipping > 0){
       return this.numberWithCommas(this.formatPrice(shipping))
     }
@@ -174,7 +173,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   shippingNum(){
-    return (Globals.availableCurrencies.find(country => country.name_full == this.selectedCountry)?.shipping_rate_usd ?? 0) / 100
+    return (Globals.availableCurrencies.find(country => country.name_full?.toLowerCase() == Globals.shippingInfo?.country?.toLowerCase().trim())?.shipping_rate_usd ?? 0) / 100
   }
   
 

@@ -2994,7 +2994,7 @@ export class LoadService {
           let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate()
           let shippingIntent = docData.shipping_intent as string
           let trackingNumber = docData.tracking_id as string
-          let shippingCost = docData.shipping_cost as number
+          let shippingCost = (docData.shipping_cost as number ?? 0) / 100
           let taxPercent = docData.tax as number
           let taxNum = docData.sales_tax as number
   

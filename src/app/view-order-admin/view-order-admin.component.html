@@ -73,7 +73,7 @@
               <div class="py-2 px-xl-2">
                 <!-- (click)="placeOrder()" -->
                 <a *ngIf="order?.trackingNumber ?? false" class="btn btn-primary d-block w-100 mb-4" type="button" (click)="trackingLink()"><i class="ci-card fs-lg me-2"></i>Track Order</a>
-
+                <a *ngIf="!(order?.status =='completed')" class="btn btn-primary d-block w-100 mb-4" type="button" (click)="trackingLink()"><i class="ci-card fs-lg me-2"></i>Mark as Shipped</a>
                 <div  class="text-center mt-4 pt-3 border-top border-bottom">
                 <div class="d-flex justify-content-between">
                     <h3 class="fw-bold" style="font-size: 9;">Items ({{itemCount()}}):</h3>

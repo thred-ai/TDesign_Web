@@ -66,6 +66,12 @@ export class ViewOrderAdminComponent implements OnInit {
     return count
   }
 
+  
+
+  markAsShipped(){
+
+  }
+
   shipping(){
     let shipping = (this.order?.shippingCost ?? 0)
     if (shipping > 0){
