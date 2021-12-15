@@ -511,7 +511,7 @@ public static fonts = [
   ];
 
   public static matchingProvince(a: string){
-    return this.caProvinces.find(p => {p.name.toLowerCase() == a.toLowerCase() || p.abbreviation.toLowerCase() == a.toLowerCase()})
+    return this.caProvinces.find(p => { return p.name.toLowerCase() == a.trim().toLowerCase() || p.abbreviation.toLowerCase() == a.trim().toLowerCase()})
   }
 
   public static ukNations = [

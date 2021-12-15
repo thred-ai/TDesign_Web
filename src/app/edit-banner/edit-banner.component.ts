@@ -113,7 +113,6 @@ save(){
   }
 
   if (this.bannerForm.valid){
-    console.log(color.value)
 
 
 
@@ -124,7 +123,6 @@ save(){
       this.loadService.parseColor(this.joinColor(color.value))
     )
 
-    console.log(banner)
     this.activeModal.close(banner)
   }
 }
@@ -148,7 +146,6 @@ save(){
       this.bannerForm.controls.bannerTextColor.setValue(color ?? [])
       this.bannerForm.controls.bannerColor.setValue(bg_color ?? [])
 
-      console.log(this.banner?.icon)
       this.filteredCodeCtrl.setValue(this.banner?.icon)
       this.bannerForm.controls.icon.setValue(this.banner?.icon)
       this.bannerForm.controls.text.setValue(this.banner?.text)
@@ -157,7 +154,6 @@ save(){
 
   ngOnInit(): void {
     this.loadService.getBanners(data => {
-      console.log(data)
       this.icons = data ?? []
     })
 
@@ -219,7 +215,6 @@ save(){
   }
 
   selectIcon(icon?: Dict<any>) {
-    console.log(icon)
     this.bannerForm.controls.icon.setValue(icon)
   }
 

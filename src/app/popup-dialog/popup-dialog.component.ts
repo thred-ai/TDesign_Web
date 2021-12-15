@@ -32,7 +32,6 @@ export class PopupDialogComponent implements OnInit {
       if (icon && icon[1] && [icon[2]]){
         this.iconName = icon[1]
         this.iconColor = icon[2]
-        console.log(icon)
       }
     }
   }

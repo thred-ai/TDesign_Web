@@ -83,7 +83,6 @@ export class EditPopupComponent implements OnInit {
     this.mode = this.editPopup ? 1 : 0
     this.name = (this.mode == 0) ? 'NEW POP-UP' : 'EDIT POP-UP'
 
-    console.log(this.mode)
     if (this.editPopup){
       this.popupForm.controls.title.setValue(this.editPopup.title)
       this.popupForm.controls.description.setValue(this.editPopup.description)
@@ -108,7 +107,6 @@ export class EditPopupComponent implements OnInit {
     var type = this.popupForm.controls.type.value
 
     if (title == '' || type == undefined || trigger == undefined){
-      console.log('m')
       return
     }
 

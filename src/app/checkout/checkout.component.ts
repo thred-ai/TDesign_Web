@@ -76,7 +76,12 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   
 
   productTaxNum(noCoupon = false){
-    return (this.d_total(noCoupon) + this.shippingNum()) * (this.tax() ?? 0)
+
+    console.log(this.d_total(noCoupon))
+    console.log(Math.round(this.shippingNum()))
+    console.log(this.tax() ?? 0)
+
+    return (this.d_total(noCoupon) + Math.round(this.shippingNum())) * (this.tax() ?? 0)
   }
 
   orderTotal(noCoupon = false){
@@ -229,14 +234,14 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
       if (noCoupon){
         var coupon = this.autoCoupon(product.product!)
         if (coupon?.style == 0){
-          total += (product.product?.price ?? 0) * (product.quantity ?? 1) 
+          total += Math.round((product.product?.price ?? 0) * (product.quantity ?? 1))
         }
         else{
-          total += ((product.product?.price ?? 0) - ((coupon?.amt ?? 0) * 10000)) * (product.quantity ?? 1) 
+          total += Math.round(((product.product?.price ?? 0) - ((coupon?.amt ?? 0) * 10000)) * (product.quantity ?? 1))
         }
       }
       else{
-        total += (this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1)
+        total += Math.round((this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1))
         let l = this.cartDiscount()
         if (l?.style == 1){
           f = l
@@ -257,10 +262,10 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     
     this.rootComponent.cart?.forEach(product => {
       if (noCoupon){
-        total += (this.mainPrice(product.product!, false) * 100) * (product.quantity ?? 1)
+        total += Math.round((this.mainPrice(product.product!, false) * 100) * (product.quantity ?? 1))
       }
       else{
-        total += (this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1)
+        total += Math.round((this.mainPrice(product.product!, true) * 100) * (product.quantity ?? 1))
       }
     })
     
@@ -325,7 +330,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         }
         else{
           
-          console.log(Globals.billingInfo.country)
           
           this.updatePayBtnOptions()
 
@@ -346,8 +350,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     if (same && same.length != 0){
 
       const amount = Math.round((((this.total() + this.shippingNum() + this.productTaxNum()) * same[0].rate ?? 1)* 100))
-      console.log(same[0].currency_name)
-      console.log(amount)
       
       this.paymentRequestOptions = {
         country: same[0].name,
@@ -359,14 +361,9 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         requestPayerName: true,
         requestPayerEmail: true,
       };
-
-      console.log(this.paymentRequestOptions)
     }
     else{
-      const amount = Math.round(((this.total() + this.shippingNum() + this.productTaxNum()) * 100))
-      console.log(same[0].currency_name)
-      console.log(amount)
-      
+      const amount = Math.round(((this.total() + this.shippingNum() + this.productTaxNum()) * 100))      
       this.paymentRequestOptions = {
         country: 'US',
         currency: 'usd',
@@ -514,7 +511,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host
@@ -559,7 +555,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
           // Report to the browser that the confirmation was 
           // successful, prompting it to close the browser 
           // payment method collection interface.
-          console.log('success')
 
           ev.complete('success');
           // Let Stripe.js handle the rest of the payment flow.

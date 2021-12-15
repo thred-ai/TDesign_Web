@@ -185,7 +185,6 @@ export class ProductDetailsComponent implements OnInit {
       }
     }
     else{
-      console.log(this.images)
 
       if (this.product){
         this.designForm.controls.name.setValue(this.product.name ?? '')
@@ -216,7 +215,6 @@ export class ProductDetailsComponent implements OnInit {
         }
       }
     }
-    console.log(this.images)
 
   }
 
@@ -296,7 +294,6 @@ export class ProductDetailsComponent implements OnInit {
       return img.isActive
     })
 
-    console.log(imgs)
     
 
     let name = nameField.value as string
@@ -397,8 +394,6 @@ export class ProductDetailsComponent implements OnInit {
       
       xhr.onload = function(e) {
         if (this.status == 200) {
-          console.log("2> " + xhr.response);
-          //  console.log("2b> "+ xhr.responseText);
       
           var uInt8Array = new Uint8Array(this.response);
           var i = uInt8Array.length;
@@ -409,8 +404,6 @@ export class ProductDetailsComponent implements OnInit {
           var data = biStr.join('');
           var base64 = window.btoa(data);
       
-          console.log("3> " + base64);
-          
           xhr.onerror = function(e) { reject(e); };
       
           resolve('data:image/jpeg;base64,' + base64)

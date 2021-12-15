@@ -61,7 +61,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   products(smartProducts?: number, products?: Array<String>){
     if (smartProducts !== undefined){
-      console.log(smartProducts)
 
       if (smartProducts == 0){
         return this.newArrivalProducts()
@@ -243,7 +242,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   storeProducts?: Array<Product> = undefined
 
   callback(){ 
-    console.log("callback    ")
     if (Globals.storeInfo.username){
       this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
       this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
@@ -271,8 +269,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
     else{
-      console.log("oppa gungnam")
-      console.log(Globals.storeInfo)
       this.routingService.routeTo404(this.getStoreName().isCustom)
     }
   }
@@ -306,7 +302,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
 
-      console.log(request)
     }
     else{
       request = globalThis.location.host

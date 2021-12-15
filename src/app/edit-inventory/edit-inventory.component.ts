@@ -87,8 +87,6 @@ export class EditInventoryComponent implements OnInit {
           return 0;
         })
         
-        console.log(sameSku)
-
         this.invForm.controls.sku.setValue(sameSku);
         this.skuTable?.renderRows()
       }
@@ -120,7 +118,6 @@ export class EditInventoryComponent implements OnInit {
           if(a.type! > b.type!) { return 1; }
           return 0;
         })
-        console.log(sameSku)
         this.invForm.controls.sku.setValue(sameSku);
         this.skuTable?.renderRows()
       }
@@ -167,7 +164,6 @@ export class EditInventoryComponent implements OnInit {
           if(a.type! > b.type!) { return 1; }
           return 0;
         })
-        console.log(sameSku)
 
         this.invForm.controls.sku.setValue(sameSku);
         this.skuTable?.renderRows()
@@ -294,7 +290,6 @@ export class EditInventoryComponent implements OnInit {
     this.mode = this.editInventory ? 1 : 0
     this.name = (this.mode == 0) ? 'NEW INVENTORY' : 'EDIT INVENTORY'
 
-    console.log(this.mode)
 
     if(this.editInventory){
       this.invForm.controls.name.setValue(this.editInventory.name)

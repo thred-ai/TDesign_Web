@@ -245,7 +245,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
     else{
-      console.log("not")
       this.loadService.myCallback = () => this.routeToProfile()
       this.loadService.getCustomer()
     }
@@ -255,11 +254,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   getCart(){
     if (this.cart == undefined && isPlatformBrowser(this.platformID)){
-      console.log("Getting Cart")
       this.cart = []
       this.loadService.getCart(false, cart => {
         this.cart = cart
-        console.log(cart)
       })
     }
   }
@@ -268,7 +265,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host
@@ -354,7 +350,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         const modalRef = this.modalService.open(LoginComponent, {size : "lg"});
           let sub = modalRef.dismissed.subscribe((result: string) => {
             this.closeBtn(result)
-            console.log("man")
             sub.unsubscribe()
           })
           modalRef.componentInstance.authMode = authMode
@@ -376,7 +371,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (!this.modalService.hasOpenModals()){
       const modalRef = this.modalService.open(LoginComponent, {size : "lg"});
         let sub = modalRef.dismissed.subscribe((result: string) => {
-          console.log("man")
           sub.unsubscribe()
         })
         modalRef.componentInstance.authMode = 1
@@ -688,8 +682,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       this.repeatContent(content, outer.offsetWidth);
   
-      let el = outer.querySelector('#loop')!;
-      el.innerHTML = el.innerHTML + el.innerHTML;
+      let el = outer.querySelector('#loop');
+      if (el){
+        el.innerHTML = el.innerHTML + el.innerHTML;
+      }
     }
   }
 

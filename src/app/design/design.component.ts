@@ -67,7 +67,6 @@ export class DesignComponent implements OnInit {
 
     if (inv.name == 'Fulfilled by Thred'){
       this.mode = 1
-      console.log('yes')
       return
     }
     if (inv.name == 'New Inventory'){
@@ -257,7 +256,6 @@ export class DesignComponent implements OnInit {
         const reader = new FileReader();
         reader.readAsDataURL(blob);
         reader.onload = async (event: any) => {
-          console.log('Image in Base64: ', event.target.result);
           var images: Array<Dict<any>> = [
             {
               img: event.target.result,

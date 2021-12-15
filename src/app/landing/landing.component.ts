@@ -35,10 +35,8 @@ export class LandingComponent implements OnInit {
       this.isSignedIn()
       this.router.queryParams
       .subscribe(params => {
-        console.log(params); // { orderby: "price" }
         this.affiliate = params.affiliate as string ?? ""
         this.cdr.detectChanges()
-        console.log(this.affiliate)
       })
     } 
 
@@ -94,7 +92,6 @@ export class LandingComponent implements OnInit {
     let width = window.screen.width
 
     if (width < height){
-      console.log(window)
       return width * 0.8
     }
     else{

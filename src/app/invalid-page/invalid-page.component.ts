@@ -99,7 +99,6 @@ export class InvalidPageComponent implements OnInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host

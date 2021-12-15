@@ -438,7 +438,6 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
       if (f.country.value == "CA" || f.country.value == "Canada"){
         Globals.billingInfo.admin_area = Globals.caProvinces.find(province => { return province.name == f.state.value || province.abbreviation == f.state.value})?.abbreviation ?? "ON"
       }
-      console.log(f.country.value)
 
       if (isPlatformBrowser(this.platformID)){
         this.spinner.show()
@@ -475,7 +474,6 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
       if (f.country.value == "CA" || f.country.value == "Canada"){
         Globals.billingInfo.admin_area = Globals.caProvinces.find(province => { return province.name == f.state.value || province.abbreviation == f.state.value})?.abbreviation ?? "ON"
       }
-      console.log(f.country.value)
 
       this.loadService.linkCard({card: this.card, stripe: this.stripeService}, (err?: any) => {
         if (err){
@@ -525,7 +523,6 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host
@@ -637,7 +634,6 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
   };
 
   buttonBack(){
-    console.log(this.storeInfo()?.colorStyle.back_code)
     if (this.storeInfo()?.colorStyle.back_code == "dark"){
       return 'rgb(255,255,255)'
     }
@@ -664,13 +660,10 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
 
       let paymentRequest = this.stripe?.paymentRequest(this.paymentRequestOptions)!
 
-      console.log(paymentRequest)
       paymentRequest?.canMakePayment().then((result: any) => {
 
-        console.log(result)
 
         if (result) {
-          console.log(result)
           this.applePay = result.applePay
           this.googlePay = result.googlePay
 

@@ -74,7 +74,6 @@ export class EditPlanComponent implements OnInit {
   }
 
   planStatus(){
-    console.log(this.subInfo?.items.data[0].plan.id)
     if (this.subInfo?.plan.id == "price_1JmgQyIdY1nzc70NXgzC1vCN"){
       return "Thred Core Plan"
     }
@@ -104,7 +103,6 @@ export class EditPlanComponent implements OnInit {
           priceAsString += ".00"
           break
       case priceAsString.length - 2:
-        console.log(priceAsString)
           priceAsString += "0"
           break
       default:
@@ -177,7 +175,6 @@ getCurrencyForCountry(country: Country, shouldShowName: boolean){
 
   ngOnInit(): void {
     this.mode = this.subInfo == undefined ? 'new' : 'edit' 
-    console.log(this.canTrial)
   }
 
 }

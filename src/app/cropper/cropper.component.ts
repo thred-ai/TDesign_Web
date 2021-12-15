@@ -24,7 +24,6 @@ export class CropperComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    console.log(window.innerHeight)
   }
   imageCropped(event: ImageCroppedEvent) {
     this.croppedImage = event.base64;

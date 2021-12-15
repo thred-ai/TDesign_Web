@@ -119,7 +119,6 @@ export class LoadService {
       .pipe(first()).subscribe(async resp => {
         
         if (resp as string){
-          console.log(resp);
 
           callback(resp)
         }
@@ -167,7 +166,6 @@ export class LoadService {
       let docData = doc as DocumentData
 
       if (docData){
-        console.log(docData)
         let plan_id = docData.plan_id as string
         let can_trial = docData.canTrial as boolean ?? true
         if (plan_id && plan_id != ""){
@@ -497,7 +495,6 @@ export class LoadService {
           let homePopup = popups.find(popup => { return popup.trigger == 0})
           if (homePopup){
             this.checkPopup(homePopup, uid, () => {
-              console.log(sessionStorage.getItem('home_popup'))
               if (!sessionStorage.getItem('home_popup')){
                 this.rootComponent?.showPopUp(homePopup!, 5000)
                 sessionStorage.setItem('home_popup', '1')
@@ -570,13 +567,11 @@ export class LoadService {
          return 
       }
 
-      console.log('mamamamn')
 
       if (popup.type == 0 || popup.type == 2){
         var query = this.db.collection("Users/" + uid + "/Emails", ref => ref.where("uid",'==', user?.uid ?? ''))
       
         var sub = query.get().subscribe(docDatas => {  
-          console.log(docDatas)
           if (docDatas.size == 0){
             callback()
           }
@@ -589,7 +584,6 @@ export class LoadService {
         var query = this.db.collection("Users/" + uid + "/Numbers", ref => ref.where("uid",'==', user?.uid ?? ''))
       
         var sub = query.get().subscribe(docDatas => {  
-          console.log(docDatas)
           if (docDatas.size == 0){
             callback()
           }
@@ -605,7 +599,6 @@ export class LoadService {
     var query = this.db.collection("Users/" + uid + "/Numbers", ref => ref.orderBy('timestamp', 'desc'))
     var arr = new Array<Dict<any>>()
     let sub = query.get().subscribe(docDatas => {  
-      console.log(docDatas)
       docDatas.docs.forEach(doc => {
         const data = doc.data() as DocumentData
         if (data){
@@ -631,7 +624,6 @@ export class LoadService {
     var query = this.db.collection("Users/" + uid + "/Emails", ref => ref.orderBy('timestamp', 'desc'))
     var arr = new Array<Dict<any>>()
     let sub = query.get().subscribe(docDatas => {  
-      console.log(docDatas)
       docDatas.docs.forEach(doc => {
         const data = doc.data() as DocumentData
 
@@ -1065,13 +1057,10 @@ export class LoadService {
         return obj.productID == product.productID
       })[0] as Product
 
-      console.log(p)
   
       let index = this.adminComponent.storeProducts?.indexOf(p)
-      console.log(index)
 
       if (index != undefined){
-        console.log(index)
         this.adminComponent.storeProducts?.splice(index,1)
       }
     }
@@ -1174,15 +1163,11 @@ export class LoadService {
         }
         else {
           //error
-          console.log(resp)
           if (resp.errorInfo.code == "auth/email-already-exists"){
-              console.log("This email address is being used by another account.")
               //show popup ******
               callback("Your email is being used by another Guest order.")
           }
           else{
-            console.log(resp.errorInfo.code)
-
             callback("An error occured, please try again.")
           }
         }
@@ -1243,7 +1228,6 @@ export class LoadService {
     this.functions.httpsCallable('removeSubIntent')({})
       .pipe(first())
       .subscribe(async resp => { 
-        console.log(resp)       
         callback(resp)
       }, err => {
         console.error({ err });
@@ -1254,7 +1238,6 @@ export class LoadService {
     this.functions.httpsCallable('reactivateSubIntent')({})
       .pipe(first())
       .subscribe(async resp => { 
-        console.log(resp)       
         callback(resp)
       }, err => {
         console.error({ err });
@@ -1266,7 +1249,6 @@ export class LoadService {
     this.functions.httpsCallable('createSubIntent')({})
       .pipe(first())
       .subscribe(async resp => { 
-        console.log(resp)       
         callback(resp)
       }, err => {
         callback(undefined, err)
@@ -1293,18 +1275,12 @@ export class LoadService {
 
     let uid = (await this.isLoggedIn())?.uid
 
-    console.log("assssss")
 
     if (details.card && details.stripe){
       if (billing && this.hasEmptyProperties(billing, ["unit", "company", "brand", "number"])){
-      
-        console.log(billing)
         return
-      
       }
-  
-      console.log("s")
-  
+    
       let stripe = details.stripe as StripeService
   
       if (this.isUndefined(billing?.unit)){
@@ -1395,7 +1371,6 @@ export class LoadService {
       }
 
       if (uid){
-        console.log("adsfg")
         await this.db.collection("Users/" + uid + "/Payment_Info").doc("Billing_Address").set(data)
       }
       if (this.myCallback) 
@@ -1601,27 +1576,33 @@ export class LoadService {
 
     if (country === "Canada" || country === "CA"){
 
-      console.log(admin)
       let a = Globals.matchingProvince(admin)?.abbreviation ?? "ON"
       let sub = this.db.collection("Canada_Tax_Docs").doc(a).get().subscribe((doc) => {
         // Globals.selectedBlog = undefined
   
         let taxDoc = doc.data() as DocumentData
-        console.log(taxDoc)
 
         if (taxDoc){
           if (!this.isUndefined(taxDoc.HST)){
             salesTax += taxDoc.HST
+            console.log('h')
           }
           else{
             if (!this.isUndefined(taxDoc.GST)){
                 salesTax += taxDoc.GST
+                console.log('g')
             }
             if (!this.isUndefined(taxDoc.PST)){
                 salesTax += taxDoc.PST
+                console.log('p')
+            }
+            if (!this.isUndefined(taxDoc.QST)){
+              salesTax += taxDoc.QST
+              console.log('q')
             }
           }
         }
+        console.log(salesTax)
         Globals.shippingTax = salesTax
         if (this.myCallback) 
         this.myCallback()
@@ -1699,15 +1680,10 @@ export class LoadService {
 
     let homePopup = Globals.storeInfo.popups?.find(popup => { return popup.trigger == 1})
     if (homePopup){
-      console.log(homePopup)
       this.checkPopup(homePopup, uid!, () => {
-        console.log(sessionStorage.getItem('product_popup'))
         if (!sessionStorage.getItem('product_popup')){
           this.rootComponent?.showPopUp(homePopup!)
           sessionStorage.setItem('product_popup', '1')
-        }
-        else{
-          console.log("shown")
         }
       })
     }
@@ -3286,7 +3262,6 @@ export class LoadService {
           let orderProduct = new ProductInCart(product, size, quantity, false, timestamp, undefined, undefined, profit ?? 0)
 
           Globals.productsSold?.push(orderProduct)
-          console.log('okro')
           this.getPost(productID, () => {
 
           }, undefined, undefined, orderProduct)
@@ -3378,7 +3353,6 @@ export class LoadService {
                 orderProduct.product = product
               }
               else if (selectedProduct){
-                console.log(product)
                 selectedProduct.product = product;
               }
             if (isPlatformBrowser(this.platformID))

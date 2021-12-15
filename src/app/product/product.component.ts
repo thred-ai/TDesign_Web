@@ -274,7 +274,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
       var request = ""
       if (isPlatformServer(this.platformID)){
         request = Globals.URL
-        console.log(request)
       }
       else{
         request = globalThis.location.host
@@ -296,7 +295,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   checkLoad(){
 
     if (this.productToBuy.product) {
-      console.log(this.productToBuy.product)
         if (!(this.productToBuy.product.isAvailable)){
           this.addTags(this.productToBuy.product.name, this.productToBuy.product.url.toString(), "* PRODUCT UNAVAILABLE *", "https://shopmythred.com")
           if (isPlatformBrowser(this.platformID)){
@@ -379,7 +377,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
     var pre = document.getElementById("preview")!;
     pre.style.visibility = "visible";
 
-    console.log('zoom')
     this.isZoom = true
 
     var posX = event.offsetX;
@@ -393,7 +390,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
     pre.style.backgroundPosition=(0)+"px "+(0)+"px";
 
-    console.log('no zoom')
     this.isZoom = false
   }
   
@@ -404,7 +400,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   }
 
   closeBtn(){
-    console.log("Getting Cart")
     this.rootComponent.cart = undefined
     this.rootComponent.getCart()
     this.addToCart()

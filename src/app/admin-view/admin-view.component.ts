@@ -133,7 +133,6 @@ popupHeader(popup: Popup){
 }
 
 matchingType(id: string){
-  console.log(id)
   return Globals.types.find(type => { return type.id == id})
 }
 
@@ -206,7 +205,6 @@ showPopupModal(popup?: Popup){
   });
 
   let sub = modalRef.afterClosed().subscribe(popup => {
-    console.log('The dialog was closed');
     sub.unsubscribe()
     if (popup && popup != '0'){
       this.loadService.addPopup(popup, success => {
@@ -227,17 +225,13 @@ newInventory(inv?: Inventory){
   });
 
   let sub = modalRef.afterClosed().subscribe((inventory: Inventory) => {
-    console.log('The dialog was closed');
     sub.unsubscribe()
     if (inventory){
-      console.log("lop")
       let index = this.inventory?.findIndex(i => { return i.id == inventory.id})
       if (index == -1){
-        console.log("dop")
         this.inventory?.unshift(inventory)
       }
       else{
-        console.log(index)
         this.inventory![index!] = inventory
       }
       this.toast("Inventory Added!")
@@ -252,7 +246,6 @@ deleteInventory(inv?: Inventory){
   this.openPopup("Are you sure?", "Your inventory '" + inv?.name +  "' will be removed forever. All products using this inventory will also be unavailable.", inv?.img ?? '', 'Yes, Remove', 'Never Mind', async () => {
     await this.loadService.removeInv(inv!)
     let index = this.inventory?.findIndex(i => { return i.id == inv?.id})
-    console.log(index)
     if (index != undefined && index != -1){
       this.inventory?.splice(index, 1)
       this.toast("Inventory Removed")
@@ -307,7 +300,6 @@ emails(){
 }
 
 numbers(){
-  console.log(this.phoneSubs)
   return this.phoneSubs?.slice(this.selectedPhonePageIndex*10, this.selectedPhonePageIndex*10+10)
 }
 
@@ -370,7 +362,6 @@ showCouponModal(coupon?: Coupon){
   });
 
   let sub = modalRef.afterClosed().subscribe(coupon => {
-    console.log('The dialog was closed');
     sub.unsubscribe()
     if (coupon != '0'){
       if ((!Globals.storeInfo?.coupons?.find(c => { return c == coupon}))){
@@ -1164,14 +1155,12 @@ showSocialModal(logo: {
     if (this.inventory != undefined) return
     this.inventory = []
     this.loadService.getInventory(inventory => {
-      console.log(inventory)
       this.inventory = (inventory ?? []).sort(function(a, b){
         if(a.timestamp < b.timestamp) { return 1; }
         if(a.timestamp > b.timestamp) { return -1; }
         return 0;
       })
       
-      console.log(this.inventory)
       this.cdr.detectChanges()
     })
   }
@@ -1576,10 +1565,8 @@ isSpinning = false
           this.toast(error)
         }
         else{
-          console.log(',')
           this.loadService.saveUser(data, success => {
             if (success){
-              console.log(success)
               this.toast("Profile Information Updated!")
             }
           })
@@ -1708,7 +1695,6 @@ isSpinning = false
     });
   
     let sub = modalRef.afterClosed().subscribe(resp => {
-      console.log('The dialog was closed');
       sub.unsubscribe()
       if (resp){
         banner.bg_color = resp.bg_color
@@ -1734,7 +1720,6 @@ isSpinning = false
     });
   
     let sub = modalRef.afterClosed().subscribe(resp => {
-      console.log('The dialog was closed');
       sub.unsubscribe()
       if (resp){
         banner.bg_color = resp.bg_color
@@ -2458,7 +2443,6 @@ isSpinning = false
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
           if (!subInfo){
             this.subInfo = subInfo ?? ''
-            console.log(subInfo)
           }
           this.canTrial = canTrial
           this.cdr.detectChanges()
@@ -2466,7 +2450,6 @@ isSpinning = false
       }
       if (!this.orders){
         this.loadService.getAllOrders(async (arr: Array<Order>) => {
-          console.log(arr)
           this.orders = arr ?? []
           this.orderTable?.renderRows()
           this.cdr.detectChanges()
@@ -2474,7 +2457,6 @@ isSpinning = false
       }
       if (!this.emailSubs){
         this.loadService.getEmailSubs(uid, async (arr: Array<Dict<any>>) => {
-          console.log(arr)
           this.emailSubs = arr as Array<{
             email: string,
             name: string,
@@ -2486,7 +2468,6 @@ isSpinning = false
       }
       if (!this.phoneSubs){
         this.loadService.getNumSubs(uid, async (arr: Array<Dict<any>>) => {
-          console.log(arr)
 
           this.phoneSubs = arr as Array<{
             phone: string,
@@ -2640,7 +2621,6 @@ isSpinning = false
       });
     
       let sub = modalRef.afterClosed().subscribe(resp => {
-        console.log('The dialog was closed');
         sub.unsubscribe()
         if (resp == 2){
           this.newInventory()

@@ -70,7 +70,6 @@ export class AppModule {
         request = globalThis.location.host
     }
     if (request != 'localhost:4200' && request != 'shopmythred.com' && request != ""){
-      console.log("URL: " + request)
       router.config = [
         { path: '', redirectTo: 'home', pathMatch: 'full'},
         { path: 'not-found', loadChildren: () => import('./invalid-page/invalid-page.module').then((m) => m.InvalidPageModule), pathMatch: 'full' },

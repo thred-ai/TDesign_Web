@@ -290,7 +290,6 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
       if (f.country.value == "CA" || f.country.value == "Canada"){
         Globals.billingInfo.admin_area = Globals.caProvinces.find(province => { return province.name == f.state.value || province.abbreviation == f.state.value})?.abbreviation ?? "ON"
       }
-      console.log(f.country.value)
 
       if (isPlatformBrowser(this.platformID)){
         this.spinner.show()
@@ -313,8 +312,6 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
     if (isPlatformBrowser(this.platformID)){
           this.spinner.hide()
    }
-   console.log(Globals.storeInfo?.username!)
-   console.log(this.getStoreName().isCustom)
 
    this.routingService.routeToProfile(Globals.storeInfo?.username!, this.getStoreName().isCustom, 'billing')
   }
@@ -341,7 +338,6 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host
@@ -406,7 +402,6 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
 
 
   buttonBack(){
-    console.log(this.storeInfo()?.colorStyle.back_code)
     if (this.storeInfo()?.colorStyle.back_code == "dark"){
       return 'rgb(255,255,255)'
     }

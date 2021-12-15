@@ -163,7 +163,6 @@ hideSpinner(){
   }
   
   async close(){
-    console.log("go")
     this.hideSpinner()
     if (this.isLanding){
       this.signedIn.emit(true)
@@ -182,7 +181,6 @@ hideSpinner(){
           this.load.saveData(0, user?.email, success => {
             this.spinner.hide('popupSpinner')
             if (success){
-              console.log('saved')
             }
             else{
               this.err = "An Error Occured, Try Again Later"
@@ -211,7 +209,6 @@ hideSpinner(){
 
       const password = this.loginForm.controls.password.value
 
-      console.log(password)
 
       let fieldToSearch = "Username"
   
@@ -256,8 +253,7 @@ hideSpinner(){
       }
     }
     else{
-      console.log('p')
-
+      this.err = 'One or more fields are invalid.'
     }
   }
 
@@ -295,7 +291,6 @@ hideSpinner(){
       const confirmpassword = (this.authForm.controls.confirmpassword.value ?? '') as string
 
       if (password == '' || username == '' || email == ''){
-        console.log('man')
         return
       }
 
@@ -305,7 +300,6 @@ hideSpinner(){
         return
       }
 
-      console.log('jan')
 
 
       let associated = (Globals.storeInfo?.uid && Globals.storeInfo?.uid != '') ? Globals.storeInfo?.uid : undefined
@@ -317,9 +311,7 @@ hideSpinner(){
         "username": username.replace(/\s/g, "").split(' ').join('').trim().toLowerCase(),
       }
 
-      console.log(username)
 
-      console.log(this.affiliate)
       this.loadingAction = "Creating Account..."
 
       this.showSpinner()
@@ -353,7 +345,6 @@ hideSpinner(){
     }
     else{
       this.err = 'Password must be longer than 6 characters.'
-      console.log('pan')
     }
     return false
 

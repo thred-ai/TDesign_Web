@@ -42,7 +42,6 @@ export class CouponInfoComponent implements OnInit {
   }
 
   matchingType(id: string){
-    console.log(id)
     return Globals.types.find(type => { return type.id == id})
   }
 
@@ -151,18 +150,14 @@ export class CouponInfoComponent implements OnInit {
     this.name = (this.mode == 0) ? 'NEW COUPON' : 'EDIT COUPON'
     this.discountStyle.setValue(this.editCoupon?.style ?? 0)
 
-    console.log(this.mode)
     if (this.editCoupon){
       this.couponForm.controls.name.setValue(this.editCoupon.code)
       this.couponForm.controls.price.setValue(this.editCoupon.amt * 100)
       this.typeCtrl.setValue(this.editCoupon.type)
       this.isGlobal = this.editCoupon.auto
 
-      console.log(this.editCoupon)
       this.thresholdCtrl.setValue(this.editCoupon.threshold)
 
-      console.log(this.editCoupon.products)
-      console.log(this.parsedProducts())
 
       if (this.editCoupon.products.sort().toString() == this.parsedProducts().sort().toString()){
         this.products = ['ALL']
@@ -213,7 +208,6 @@ export class CouponInfoComponent implements OnInit {
     var threshold = this.thresholdCtrl.value
     var style = this.discountStyle.value ?? 0
 
-    console.log(this.products)
 
     if (name == '' || !(price > 0) || price == NaN || (this.coupons.find(c => { return c.code == name}) && this.mode == 0)){
       return
