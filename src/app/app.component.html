@@ -74,14 +74,14 @@
 
     <div *ngIf='storeInfo().bannerStyle == 1' class="w-100 h-100" id="outer">
         <div class="w-100 h-100">
-            <div class="w-100 h-100" id="loop">
+            <div class="w-100 h-100 loop">
                 <div class="d-flex w-100 h-100 align-items-center" id="content">
                     <div class="d-flex h-100 align-items-center" *ngFor='let _ of arrLength()'>
                         <h2 *ngFor="let banner of storeInfo().banners" style.color="{{bannerTheme(banner)!.color}}" style.background-color="{{bannerTheme(banner)!.bg_color}}" class="h-100 px-5 d-flex justify-content-center align-items-center my-auto" style="font-size: calc(14px + (16 - 14) * (100vw - 400px) / (800 - 400));">
-                            <div *ngIf='banner.text != ""' class="mb-1">
+                            <div *ngIf='banner.text != ""'>
                                 {{(banner.text ?? '')}}
                             </div>
-                            <mat-icon *ngIf='banner.icon != ""' style="font-size: inherit">
+                            <mat-icon class="mt-1" *ngIf='banner.icon != ""' style="font-size: inherit">
                                 <span class="ms-1 material-icons-outlined">
                                     {{banner.icon}}
                                 </span>

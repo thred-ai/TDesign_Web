@@ -2936,6 +2936,7 @@ export class LoadService {
           let email = address.email as string
           let country_code = address.country_code as string
           const uid = docData.uid as string
+          let trackingUrl = docData.tracking_url as string
 
                     // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100              
                 
@@ -2948,7 +2949,7 @@ export class LoadService {
           let totalCost = (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0)
 
 
-          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID)
+          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID, trackingUrl)
 
 
           Globals.selectedOrder = order
@@ -2965,6 +2966,16 @@ export class LoadService {
       if (isPlatformBrowser(this.platformID))
       sub.unsubscribe();
     });
+  }
+
+
+  updateOrder(order: Order){
+    let data = {
+      status : order.status,
+      tracking_url : (order.trackingLink ?? '')?.trim() == '' ? null : order.trackingLink
+    }
+
+    return this.db.collection("Users/" + order.uid + "/Orders").doc(order.orderID).update(data)
   }
 
   async getAllOrders(callback: (orders: Array<Order>) => any){
@@ -3019,6 +3030,7 @@ export class LoadService {
           let email = address.email as string
           let country_code = address.country_code as string
           const uid = docData.uid as string
+          let trackingUrl = docData.tracking_url as string
 
 
                     // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100              
@@ -3032,7 +3044,7 @@ export class LoadService {
           let tax = taxNum ?? (taxPercent ?? 0) * subtotal
           let totalCost = (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0)
 
-          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID)
+          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID, trackingUrl)
 
 
           orders.push(order)
@@ -3075,6 +3087,7 @@ export class LoadService {
           let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate()
           let shippingIntent = docData.shipping_intent as string
           let trackingNumber = docData.tracking_id as string
+          let trackingUrl = docData.tracking_url as string
           let shippingCost = docData.shipping_cost as number
           let taxPercent = docData.tax as number
           let taxNum = docData.sales_tax as number
@@ -3113,7 +3126,7 @@ export class LoadService {
           let tax = taxNum ?? (taxPercent ?? 0) * subtotal
           let totalCost = (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0)
 
-          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID)
+          let order = new Order(orderID, timestamp, [], status, intents, totalCost, tax, subtotal, orderAddress, currency, currencySymbol, trackingNumber, shippingIntent, shippingCost, uid, merchantID, trackingUrl)
 
 
           orders.push(order)

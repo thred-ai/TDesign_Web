@@ -38,16 +38,16 @@ font-size: 1.25vw;
   display: inline-block;
 }
 
-#loop {
+.loop {
   white-space: nowrap;
   animation: loop-anim 30s linear infinite;
 }
 
 @keyframes loop-anim {
   0% {
-      margin-left: 0;
+      transform: translateX(0);
   }
   100% {
-      margin-left: -158% /* This works because of the div between "outer" and "loop" */
+      transform: translateX(-158%) /* This works because of the div between "outer" and "loop" */
   }
 }

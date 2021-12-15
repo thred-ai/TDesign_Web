@@ -41,10 +41,6 @@ export class ViewAllOrderAdminComponent implements OnInit {
       return this.numberWithCommas(this.formatPrice(this.total(order), false, order))
     }
 
-    orderSlice(){
-      return this.orders?.slice(0,5) ?? []
-    }
-
     orderCurrency(order?: Order){
       if (order == undefined){
         return undefined

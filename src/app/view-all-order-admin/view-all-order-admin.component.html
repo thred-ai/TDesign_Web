@@ -8,7 +8,7 @@
     </a>
 </div>
 <mat-dialog-content>
-    <table *ngIf='orderLoaded() && orders && (orders?.length ?? 0) > 0' #orderTable mat-table [dataSource]="orderSlice()" class="w-100 h-100 m-3">
+    <table *ngIf='orderLoaded() && orders && (orders?.length ?? 0) > 0' #orderTable mat-table [dataSource]="orders" class="w-100 h-100 m-3">
 
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef class="text-dark px-1 py-1"> Name </th>

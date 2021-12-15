@@ -4,6 +4,8 @@ import { Order } from '../models/order.model';
 import { Country } from '../models/shipping-country.model';
 import { Globals } from '../globals';
 import { Product } from '../models/product.model';
+import { LoadService } from '../services/load.service';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-view-order-admin',
@@ -15,10 +17,17 @@ export class ViewOrderAdminComponent implements OnInit {
   order?: Order
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef: MatDialogRef<ViewOrderAdminComponent>
+    private loadService: LoadService,
+    public dialogRef: MatDialogRef<ViewOrderAdminComponent>,
+    private fb: FormBuilder
   ) { 
     this.order = data.order
+    this.orderForm.controls.tracking.setValue(this.order?.trackingNumber)
   }
+
+  orderForm = this.fb.group({
+    tracking: [null],
+  });
 
   ngOnInit(): void {
 
@@ -64,12 +73,6 @@ export class ViewOrderAdminComponent implements OnInit {
       count += (product.quantity ?? 0)
     });
     return count
-  }
-
-  
-
-  markAsShipped(){
-
   }
 
   shipping(){
@@ -138,6 +141,25 @@ export class ViewOrderAdminComponent implements OnInit {
     }
     return "N/A"
   }
+  
+
+  async markAsShipped(){
+    if (this.order){
+      this.order.status = 'shipped'
+      this.order.trackingLink = this.orderForm.controls.tracking.value ?? ''
+      await this.loadService.updateOrder(this.order)
+      this.toast("Order Updated!")
+    }
+    else{
+      this.toast("Error! Try again later.")
+    }
+  }
+
+  toast(message: string){
+
+    this.loadService.openSnackBar(message)
+
+  }
 
   getColor(product?: Product){
     let colors = Globals.templates.find(template => template.productCode == product?.productType)?.colors
@@ -153,6 +175,12 @@ export class ViewOrderAdminComponent implements OnInit {
       link = "https://chitchats.com/tracking/" + this.order?.trackingNumber
     }
     window.open(link, "_blank");
+  }
+
+  trackingURL(){
+    if (this.order?.trackingLink){
+      window.open(this.order?.trackingLink, "_blank");
+    }
   }
 
   orderTotal(){

@@ -2340,7 +2340,7 @@ isSpinning = false
     }
 
     orderCount(){
-      return this.orders?.filter(o => o.status == 'confirmed').length ?? 0
+      return this.orders?.filter(o => { return ( (o.status == 'confirmed') || (o.status == 'completed') ) }).length ?? 0
     }
   
     total(order: Order){

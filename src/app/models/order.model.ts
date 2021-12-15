@@ -23,6 +23,7 @@ export class Order {
     currencySymbol: string
     uid: string
     merchantUID?: string
+    trackingLink?: string
 
     constructor(
       orderID?: string,
@@ -41,6 +42,7 @@ export class Order {
       shippingCost?: number,
       uid?: string,
       merchantUID?: string,
+      trackingLink?: string
       ) {
 
       this.orderID = orderID ?? ""
@@ -59,6 +61,7 @@ export class Order {
       this.shippingCost = shippingCost ?? 0
       this.uid = uid ?? ""
       this.merchantUID = merchantUID
+      this.trackingLink = trackingLink ?? ''
 
     }
 }
