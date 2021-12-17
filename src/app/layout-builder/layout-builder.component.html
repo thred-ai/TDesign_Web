@@ -143,7 +143,7 @@
                                 </mat-select>
                             </mat-form-field>
 
-                            <div cdkDropList class="rounded shadow bg-light w-100 h-100 mb-2" (cdkDropListDropped)="drop($event, true)" style="overflow-y: scroll;">
+                            <div cdkDropList class="rounded shadow bg-light w-100 h-100 mb-2" (cdkDropListDropped)="drop($event, true)" style="overflow-y: scroll;" *ngIf='rowForm.controls.type.value == 1'>
                                 <div class="example-box" *ngFor="let image of images" cdkDrag [cdkDragDisabled]='!image.isActive' >
                                     <div class="h-100 w-100" [class.p-1]='image.isActive' style="position: relative;">
                                         <a *ngIf='image.isActive' role="button" (click)="fileInput.click()"><img class="h-100 w-100 ani-style" style="object-fit: contain;" src='{{image.img}}' alt='ok' /></a>
