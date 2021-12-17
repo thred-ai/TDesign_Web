@@ -2537,7 +2537,7 @@ isSpinning = false
       }
       if (!this.subInfo){
         this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
-          if (!subInfo){
+          if (!this.subInfo){
             this.subInfo = subInfo ?? ''
           }
           this.canTrial = canTrial

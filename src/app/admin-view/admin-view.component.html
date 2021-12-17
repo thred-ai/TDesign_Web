@@ -1205,9 +1205,6 @@ style.color = "{{selectedIndicator()!.color}}"
                     
                         <div class="col mb-2">
                             <div class="card bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                <!-- <p  class = "text-center text-{{storeInfo().colorStyle!.text_code}} px-2 mx-2 my-2" style = "font-weight: bolder;">
-                                    {{item.series[0].name.toUpperCase()}}
-                                </p> -->
                                 <h2 *ngIf="!subInfo!.cancel_at_period_end" class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" >Merchant Plan</h2>
                                 <a *ngIf="subInfo!.cancel_at_period_end" role="button"  class="side d-flex text-danger m-3 align-items-center justify-content-center fw-bold" style="font-size: 20px;">
                                     Renew Merchant Plan
@@ -1238,10 +1235,10 @@ style.color = "{{selectedIndicator()!.color}}"
                                     </div>
                                     
                                     <div *ngIf="!subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                        <button  (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Edit Plan</button>
+                                        <button  (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Edit Thred Plan</button>
                                     </div>
                                     <div *ngIf="subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                                        <button  (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Renew Plan</button>
+                                        <button  (click)="editSubscription(subInfo!)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Renew Thred Plan</button>
                                     </div>
                                 </div>
                                 <!-- <p  style.color="{{selectedTheme()!.color}}" class = "text-center px-2 mx-2 my-2" style = "font-weight: bold; font-size: smaller;">

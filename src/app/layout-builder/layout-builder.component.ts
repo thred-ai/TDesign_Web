@@ -403,6 +403,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       row.smart_products = parseInt(products[0])
     }
 
+    console.log(matchGrid)
+
     let rows = this.layoutForm.controls.rows.value as Array<Row> ?? []
 
     console.log(row)
