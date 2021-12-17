@@ -396,7 +396,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     let matchGrid = this.grid.find(g => g.name == grid)?.row
     
-
     let row = new Row(name, Object.assign([], products), undefined, type, Object.assign([], imgs), matchGrid)
 
     if (products.find(i => i == '0') || products.find(i => i == '1')){
@@ -423,7 +422,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   activeRow(index: number){
-    if (!this.editingBlock || index != this.editingBlock) return undefined
+    if (!this.editingBlock && index != this.editingBlock) return undefined
 
     let name = this.rowForm.controls.title.value as string ?? ''
     let type = this.rowForm.controls.type.value as number ?? 0

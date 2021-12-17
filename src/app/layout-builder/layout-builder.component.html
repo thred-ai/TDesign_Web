@@ -285,7 +285,7 @@
                               {{activeRow(i)?.text ?? row.text}}
                             </p>
                         </div>
-                        <div class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center">
+                        <div class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{activeRow(i)?.grid_row ?? row.grid_row ?? 1}} justify-content-center">
                             <div class="col" *ngFor="let product of products(activeRow(i)?.smart_products ?? row.smart_products, activeRow(i)?.products ?? row.products)">
                                 <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}"  [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                                     <!-- Product image-->
