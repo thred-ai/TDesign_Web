@@ -22,18 +22,18 @@ style.color = "{{selectedIndicator()!.color}}"
   <section *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
      
     
-    <div class="px-4 px-lg-4 mt-5 container-fluid">
+    <div>
 
-        <div class="w-100" *ngFor='let row of storeInfo()?.homeRows ?? []'>
+        <div class="w-100 mb-5" *ngFor='let row of storeInfo()?.homeRows ?? []'>
+            <div *ngIf='(row.text ?? "").trim() != ""' class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
+                <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
+                  {{row.text}}
+                </p>
+            </div>
             <div class="w-100" *ngIf='row.type == 0'>
-                <div class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
-                    <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
-                      {{row.text}}
-                    </p>
-                </div>
                 
-                <div class="row gx-3 gx-lg-3 row-cols-1 row-cols-md-{{colCount(row)}} justify-content-center">
-                    <div class="col mb-5" *ngFor="let product of products(row.smart_products, row.products)">
+                <div class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center">
+                    <div class="col" *ngFor="let product of products(row.smart_products, row.products)">
                         <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}"  [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                             <!-- Product image-->
                             <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{(product.url?.toString() ?? "")}}' alt='ok'/></a>
@@ -41,7 +41,7 @@ style.color = "{{selectedIndicator()!.color}}"
                             <div class="card-body p-2 pb-0">
                                 <div class="text-center">
                                     <!-- Product name-->
-                                    <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!" [style.font-size.px]="titleFontSize(row)" [class.my-5]='titleFontSize(row) != "inherit" && colCount(row) <= 2'><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
+                                    <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!" [style.font-size.px]="titleFontSize(row)" [class.my-5]='titleFontSize(row) != "inherit" && (row.grid_row ?? 1) <= 2'><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
                                     <!-- Product price-->
                                 </div>
                             </div>
@@ -79,9 +79,11 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div>
             </div>
     
-            <div class="w-100"  *ngIf='row.type == 1'>
-                <div class="d-block align-items-center pt-0 w-100 mb-5">
-                    <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{row.img}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
+
+            <div class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0" *ngIf='row.type == 1'>
+                <div class="col mb-1" *ngFor="let img of row.imgs ?? []">
+                    <div class="d-block align-items-center text-center text-sm-start w-100">
+                        <a class="ms-0 me-0" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{img}}" style="width: 100%; height: auto;" alt="Product"/></a>
                     </div>
                 </div>
             </div>

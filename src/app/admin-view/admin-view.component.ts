@@ -39,6 +39,8 @@ import { Order } from '../models/order.model';
 import { ViewOrderInfoComponent } from '../view-order-info/view-order-info.component';
 import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
+import { Row } from '../models/row.model';
+import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 
 
 @Component({
@@ -192,6 +194,29 @@ mainPrice(product: Product){
     }
   }
   return (product.price ?? 0) / 100
+}
+
+showLayoutModal(){
+
+
+  const modalRef = this.dialog.open(LayoutBuilderComponent, {
+    width: '100vw',
+    panelClass: 'app-full-bleed-sm-dialog',
+    data: {
+      rootComponent: this.rootComponent, 
+      admin: this
+    },
+  });
+
+  let sub = modalRef.afterClosed().subscribe(layouts => {
+    sub.unsubscribe()
+    if (layouts && layouts != '0'){
+      this.toast("Layout Saved!")      
+    }
+    else if (layouts == '0'){
+      this.toast("Unable to save layout! Try Again Later.")      
+    }
+  });
 }
 
 showPopupModal(popup?: Popup){
@@ -1322,6 +1347,7 @@ isSpinning = false
     slogan: [null, Validators.required],
     themeImg: [null],
     homeImg: [null],
+    rows: [[]],
   });
 
   shopForm = this.fb.group({
@@ -1389,6 +1415,7 @@ isSpinning = false
 
     this.homeForm.controls.homeImg.setValue(Globals.userInfo?.homeLink?.toString())
     this.homeForm.controls.themeImg.setValue(Globals.userInfo?.homeLinkTop?.toString())
+    this.homeForm.controls.rows.setValue(Globals.userInfo?.homeRows ?? [])
 
     this.shopForm.controls.themeImg.setValue(Globals.userInfo?.shopLinkTop?.toString())
 
@@ -1423,6 +1450,67 @@ isSpinning = false
     this.themeForm.controls.loadingIndicatorBgColor.setValue(bg_color ?? [])
 
 
+  }
+
+  fontSize(row: Row){
+    if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
+      return 'inherit'
+    }
+    return (0.5 / this.colCount(row)) * 100
+  }
+
+  titleFontSize(row: Row){
+    if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
+      return 'inherit'
+    }
+    return (0.3 / this.colCount(row)) * 100
+  }
+
+  products(smartProducts?: number, products?: Array<String>){
+    if (smartProducts !== undefined){
+
+      if (smartProducts == 0){
+        return this.newArrivalProducts()
+      }
+      else if (smartProducts == 1){
+        return this.featuredProducts()
+      }
+    }
+    var prod = Array<Product>()
+    products?.forEach(p => { 
+      let pro = this.storeProducts?.find(pr => { return pr.productID == p})
+      if (pro){
+        prod.push(pro)
+      }
+    })
+    return prod
+  }
+
+  newArrivalProducts(){
+    return this.storeProducts?.sort(function(a, b){
+      if(a.timestamp > b.timestamp) { return -1; }
+      if(a.timestamp < b.timestamp) { return 1; }
+      return 0;
+    }).slice(0, 4);
+  }
+
+  featuredProducts(){
+
+    return this.storeProducts?.sort(function(a, b){
+      if(a.likes > b.likes) { return -1; }
+      if(a.likes < b.likes) { return 1; }
+      return 0;
+    }).slice(0, 4);
+  }
+
+  colCount(row: Row){
+    var count = 0
+    this.products(row.smart_products, row.products)?.forEach(product => {
+      if (count < 4){
+        count += 1
+      }
+    })
+    return count
   }
 
   isBase64(str: string) {
@@ -1812,6 +1900,7 @@ isSpinning = false
     }
     return theme
   }
+  
 
 
   selectTheme(theme: string){
@@ -2014,6 +2103,13 @@ isSpinning = false
           link.remove()
 
       return 
+    }
+
+    if (section == 1 && index == 0){
+
+      this.showLayoutModal()
+
+      return
     }
 
     if (this.isMobile()){

@@ -46,17 +46,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   fontSize(row: Row){
-    if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
+    if (this.rootComponent.isMobile() || (row.grid_row ?? 1) >= 2){
       return 'inherit'
     }
-    return (0.5 / this.colCount(row)) * 100
+    return (0.5 / (row.grid_row ?? 1)) * 100
   }
 
   titleFontSize(row: Row){
-    if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
+    if (this.rootComponent.isMobile() || (row.grid_row ?? 1) >= 2){
       return 'inherit'
     }
-    return (0.3 / this.colCount(row)) * 100
+    return (0.3 / (row.grid_row ?? 1)) * 100
   }
 
   products(smartProducts?: number, products?: Array<String>){
@@ -79,15 +79,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     return prod
   }
 
-  colCount(row: Row){
-    var count = 0
-    this.products(row.smart_products, row.products)?.forEach(product => {
-      if (count < 4){
-        count += 1
-      }
-    })
-    return count
-  }
 
   mainPrice(product: Product){
     

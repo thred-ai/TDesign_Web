@@ -60,6 +60,7 @@ export class CouponInfoComponent implements OnInit {
 
   selectable = true;
   removable = true;
+  
   separatorKeysCodes: number[] = [ENTER, COMMA];
   productCtrl = new FormControl();
   typeCtrl = new FormControl();
@@ -71,6 +72,7 @@ export class CouponInfoComponent implements OnInit {
   allProducts: Product[] = [];
   type = 'products'
 
+  
   @ViewChild('productInput') productInput?: ElementRef<HTMLInputElement>;
 
   constructor(
@@ -88,6 +90,7 @@ export class CouponInfoComponent implements OnInit {
       map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allProducts.slice())),
     );
   }
+  
 
   couponForm = this.fb.group({
     name: [null],

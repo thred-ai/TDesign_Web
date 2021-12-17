@@ -514,7 +514,7 @@ export class LoadService {
             else if (type == 'home'){
               Globals.storeInfo!.homeLink = new URL(this.getHomeURL(uid))
               if (!homeRows){
-                Globals.storeInfo!.homeRows![1].img = this.getHomeURL(uid)
+                Globals.storeInfo!.homeRows![1].imgs?.push(this.getHomeURL(uid))
               }
             }
             else if (type == 'action'){
@@ -776,7 +776,7 @@ export class LoadService {
             else if (type == 'home'){
               Globals.userInfo!.homeLink = new URL(this.getHomeURL(uid))
               if (!homeRows){
-                Globals.userInfo!.homeRows![1].img = this.getHomeURL(uid)
+                Globals.userInfo!.homeRows![1].imgs?.push(this.getHomeURL(uid))
               }
             }
             else if (type == 'action'){
@@ -2002,6 +2002,18 @@ export class LoadService {
     return undefined
   }
 
+  private async uploadLayoutImages(image: string, type: string, uid?: string) {
+    const filePath = 'Users/' + uid + '/Layouts/' + type + '.png';
+    let ref = this.storage.ref(filePath);
+
+    console.log(typeof image)
+    const byteArray = Buffer.from(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
+
+    const task = await ref.put(byteArray);
+    const url = await task.ref.getDownloadURL();
+    return url;
+  }
+
 
   private async uploadInventoryImages(image: string, inv_id: string, uid?: string) {
     const filePath = 'Users/' + uid + '/Inventory/' + inv_id + '.png';
@@ -2144,9 +2156,7 @@ export class LoadService {
 
   async saveStoreInfo(mappedData: Dict<any>, uid?: string){
 
-
     console.log(mappedData)
-
 
     var data: Dict<any> = {
 
@@ -2180,7 +2190,7 @@ export class LoadService {
       data["banner_style"] = mappedData.banner_style ?? 0
     }
 
-    if (uid){
+    if (uid && Object.keys(data).length > 0){
       await this.db.collection("Users").doc(uid).update(data)
 
       if (mappedData.slogan){
@@ -2336,6 +2346,65 @@ export class LoadService {
       await this.db.collection("Users").doc(uid).update(data)
       if (data.Popups){
         Globals.userInfo!.popups = data.Popups
+        Globals.storeInfo = Globals.userInfo!
+      }
+    }
+    callback(true)
+  }
+
+  async addLayout(layout: Array<Row>, homeTopImg: string, callback: (success: boolean) => any, uid?: string){
+
+    if (this.isBase64(homeTopImg.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+      await this.saveStore({images : [{
+        type: 'home_top',
+        img: homeTopImg
+      }]})
+    }
+
+    const promises1 = layout.map(async row => { 
+      var images = new Array<{
+        index: number,
+        img: string
+      }>()
+      row.imgs?.forEach((i: string, index: number) => {
+        images.push({
+          img: i,
+          index: index
+        })
+      })
+      const promises2 = (row.imgs?.filter(i => this.isBase64(i.replace(/^[\w\d;:\/]+base64\,/g, ''))) ?? []).map(async (image: string, index: number) => {
+        var url = image
+        url = await this.uploadLayoutImages(image, 'home_' + index.toString(), uid) as string
+        var split = url.split('&token=')
+        url = split[0]
+        let same = images.find(i => i.index == index)
+        
+        if (same)
+        same.img = url
+      });
+      await Promise.all(promises2)
+      images.sort(function(a, b){
+        if(a.index < b.index) { return -1; }
+        if(a.index > b.index) { return 1; }
+        return 0;
+      })
+      row.imgs = images.map(i => i.img)
+    })
+    await Promise.all(promises1)
+
+
+    console.log(layout)
+
+
+
+    var data = {
+      rows: JSON.parse(JSON.stringify(layout))
+    }
+    if (uid && data){
+      
+      await this.db.collection("Users").doc(uid).update(data)
+      if (data.rows){
+        Globals.userInfo!.homeRows = data.rows
         Globals.storeInfo = Globals.userInfo!
       }
     }

@@ -42,6 +42,7 @@ import { EditInventoryComponent } from '../edit-inventory/edit-inventory.compone
 import {MatTableModule} from '@angular/material/table';
 import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
+import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 
 const routes: Routes = [
   {
@@ -68,6 +69,7 @@ const routes: Routes = [
     EditInventoryComponent,
     ViewOrderAdminComponent,
     ViewAllOrderAdminComponent,
+    LayoutBuilderComponent,
   ],
   imports: [
     CommonModule,

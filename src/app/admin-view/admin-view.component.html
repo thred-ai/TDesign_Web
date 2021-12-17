@@ -616,60 +616,6 @@ style.color = "{{selectedIndicator()!.color}}"
                 </div>
             </div>
 
-            <div *ngIf="getSelectedPanel()?.Title == 'HOME'" class="py-3">
-                <form [formGroup]="homeForm" novalidate>
-                    <div class="row">
-                        <div class="col-md-8 mt-3 mx-auto d-block">
-                            <div class="form-group mb-4">
-                                <label  class = "fw-bold" style.color="{{selectedTheme()!.color}}" for="inputUsername">Top Display Text</label>
-                                <input  type="text " class="form-control mt-1 bg-{{storeInfo().colorStyle!.back_code}}" id="inputSlogan" placeholder="ex: 'Coolest brand on the block'" formControlName="slogan" style.color="{{selectedTheme()!.color}}">
-                                <mat-hint align="start"><i  style="font-size: 12px; color: #6c757d;">This will show up at the top of the homepage</i></mat-hint>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row gx-10 row-cols-1 row-cols-md-1 mt-3 row-cols-xl-1 justify-content-center">
-                        <div class="col-md-8 mb-3 mx-auto d-block">
-                            <label  class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Top Image</label>
-                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                <!-- Product image-->
-    
-                                <a role="button" class="btn" (click)="fileHome.click()">
-                                    <img class="card-img-top"  alt='ok' src="{{homeForm.controls['themeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-                                </a>
-                                <!-- Product details-->
-                                <div class="card-body p-2 pb-1">
-                                    <div class="mt-2 text-center">
-    
-                                        <a role="button" class="btn" (click)="fileHome.click()">
-                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                            <input #fileHome type="file" (change)="fileChangeEvent($event, 'Home_Background')" style="display:none;" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <label  class = "fw-bold mb-1 me-1" style.color="{{selectedTheme()!.color}}" for="inputUsername">Homepage Center Image</label>
-                            <div class="card h-auto bg-{{storeInfo().colorStyle!.back_code}}">
-                                <!-- Product image-->
-    
-                                <a role="button" class="btn" (click)="fileHome.click()">
-                                    <img class="card-img-top"  alt='ok' src="{{homeForm.controls['homeImg'].value}}" onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';"/>
-                                </a>
-                                <!-- Product details-->
-                                <div class="card-body p-2 pb-1">
-                                    <div class="mt-2 text-center">
-    
-                                        <a role="button" class="btn" (click)="fileHome2.click()">
-                                            <mat-icon style.color="{{selectedTheme()!.color}}">file_upload</mat-icon>
-                                            <input #fileHome2 type="file" (change)="fileChangeEvent($event, 'Home_Promotion')" style="display:none;" />
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            </div>
 
             <div *ngIf="getSelectedPanel()?.Title == 'SHOP'" class="py-3">
                 <form [formGroup]="shopForm" novalidate>
