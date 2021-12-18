@@ -2007,7 +2007,7 @@ export class LoadService {
     let ref = this.storage.ref(filePath);
 
     console.log(typeof image)
-    const byteArray = Buffer.from(image.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
+    const byteArray = Buffer.from(image?.replace(/^[\w\d;:\/]+base64\,/g, ''), 'base64');
 
     const task = await ref.put(byteArray);
     const url = await task.ref.getDownloadURL();
@@ -2354,7 +2354,7 @@ export class LoadService {
 
   async addLayout(layout: Array<Row>, homeTopImg: string, callback: (success: boolean) => any, uid?: string){
 
-    if (this.isBase64(homeTopImg?.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+    if (homeTopImg && this.isBase64(homeTopImg?.replace(/^[\w\d;:\/]+base64\,/g, ''))){
       await this.saveStore({images : [{
         type: 'home_top',
         img: homeTopImg

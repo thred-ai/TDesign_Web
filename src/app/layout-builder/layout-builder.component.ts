@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, OnDestroy, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Order } from '../models/order.model';
 import { Globals } from '../globals';
@@ -119,7 +119,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<LayoutBuilderComponent>,
     private spinner: NgxSpinnerService,
     private modalService: NgbModal,
-    private loadService: LoadService
+    private loadService: LoadService,
+    private cdr: ChangeDetectorRef
   ) { 
     this.admin = data.admin
     this.rootComponent = data.rootComponent
@@ -297,8 +298,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   }
 
+
+
   height(){
-    let matchGrid = this.grid.find(g => g.name == this.rowForm.controls.grid.value ?? '1x2')
+    let matchGrid = this.grid.find(g => g.name == this.rowForm.controls.grid.value ?? '2x1')
 
     return (document.getElementById('label')?.offsetHeight ?? 0) / ((matchGrid?.row ?? 1) * (matchGrid?.col ?? 2))
   }
@@ -383,16 +386,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         this.images = this.images.slice(0, newSize)
       }
     }
+    this.cdr.detectChanges()
   }
   
   finishedEditing(){
     let name = this.rowForm.controls.title.value as string ?? ''
     let type = this.rowForm.controls.type.value as number ?? 0
 
-    let imgs = (this.images ?? []).map(i => i.img).filter(i => i.trim() != '')
+    let imgs = (this.images ?? []).filter(i => (i.img != undefined && i.img.trim() != '')).map(i => i.img)
     let products = this.prods ?? []
 
-    let grid = this.rowForm.controls.grid.value as string ?? '1x2'
+    let grid = this.rowForm.controls.grid.value as string ?? '2x1'
 
     let matchGrid = this.grid.find(g => g.name == grid)?.row
     
@@ -409,7 +413,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     console.log(row)
 
-    if (this.editingBlock){
+    if (this.editingBlock != undefined){
       rows[this.editingBlock] = row
     }
 
@@ -423,27 +427,47 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.editingBlock = undefined
   }
 
-  activeRow(index: number){
-    if (!this.editingBlock && index != this.editingBlock) return undefined
+  grids(){
+    
+    let count = Math.ceil((this.images ?? []).length)
 
-    let name = this.rowForm.controls.title.value as string ?? ''
-    let type = this.rowForm.controls.type.value as number ?? 0
-
-    let imgs = (this.images ?? []).map(i => i.img).filter(i => i.trim() != '')
-    let products = this.prods ?? []
-
-    let grid = this.rowForm.controls.grid.value as string ?? '1x2'
-
-    let matchGrid = this.grid.find(g => g.name == grid)?.row
-
-    let row = new Row(name, Object.assign([], products), undefined, type, Object.assign([], imgs), matchGrid)
-
-    if (products.find(i => i == '0') || products.find(i => i == '1')){
-      row.products = []
-      row.smart_products = parseInt(products[0])
+    if (count == 0){
+      count = Math.ceil((this.products(Number((this.prods as Array<string>)[0]), ((this.prods as Array<string>)) ?? []) ?? []).length)
     }
 
-    return row
+    if (count == 0){
+      count = 1
+    }
+
+    return this.grid.filter(g => ((g.col) == count || (g.row * g.col) <= count) && (g.row * g.col) % count == 0)
+  }
+
+
+
+
+  activeRow(index: number){
+
+    if (this.editingBlock == index){
+      let name = this.rowForm.controls.title.value as string ?? ''
+      let type = this.rowForm.controls.type.value as number ?? 0
+  
+      let imgs = (this.images ?? []).filter(i => (i.img != undefined && i.img.trim() != '')).map(i => i.img)
+      let products = this.prods ?? []
+  
+      let grid = this.rowForm.controls.grid.value as string ?? '2x1'
+  
+      let matchGrid = this.grid.find(g => g.name == grid)?.row
+  
+      let row = new Row(name, Object.assign([], products), undefined, type, Object.assign([], imgs), matchGrid)
+  
+      if (products.find(i => i == '0') || products.find(i => i == '1')){
+        row.products = []
+        row.smart_products = parseInt(products[0])
+      }
+  
+      return row
+    }
+    return undefined
   }
 
   addBlock(){
@@ -556,7 +580,7 @@ getCurrencyForCountry(shouldShowName: boolean, country?: Country){
 }
 
 fontSize(row: Row){
-  if (this.rootComponent?.isMobile() || (row.grid_row ?? 1) >= 2){
+  if (this.rootComponent?.isMobile() || (row.grid_row ?? 2) >= 2){
     return 'inherit'
   }
   return (0.5 / (row.grid_row ?? 1)) * 100

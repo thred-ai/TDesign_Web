@@ -136,7 +136,7 @@
                                 <mat-select-trigger class="d-flex align-items-center" *ngIf='rowForm.controls.grid.value'>
                                     {{rowForm.controls.grid.value}}
                                 </mat-select-trigger>
-                                  <mat-option *ngFor="let g of grid" [value]="g.name">
+                                  <mat-option *ngFor="let g of grids()" [value]="g.name">
                                     <!-- <mat-icon >{{type.icon}}</mat-icon> -->
                                     {{g.name}}
                                   </mat-option>
@@ -203,8 +203,13 @@
                                   </mat-autocomplete>
                             </mat-form-field>
                         </form>
-                        <a role="button" (click)='finishedEditing()' class="btn btn-dark rounded-pill px-3">
-                            APPLY CHANGES
+                        <a role="button" (click)='finishedEditing()' class="btn btn-dark rounded-pill px-3 mw-100 mb-2 me-2 d-inline-flex align-items-center justify-content-center">
+                            DONE
+                            <mat-icon [inline]='true' class="ms-2 text-white" >check_circle</mat-icon>
+                        </a>
+                        <a role="button" (click)='finishedEditing()' class="btn btn-danger rounded-pill px-3 mw-100 mb-2 d-inline-flex align-items-center justify-content-center">
+                            DELETE
+                            <mat-icon [inline]='true' class="ms-2 text-white" >delete</mat-icon>
                         </a>
                     </div>
                 </div>
@@ -278,7 +283,7 @@
             <section class="py-5 w-100" style.background-color="{{selectedTheme()!.bg_color}}">
                 <!-- (cdkDropListDropped)="drop($event)" -->
                 <div cdkDropList class="ms-0 h-100" (cdkDropListDropped)="drop($event)">
-                    <div class="mb-5 w-100" *ngFor='let row of layoutForm.controls.rows.value ?? []; index as i' cdkDrag>
+                    <div class="mb-5 w-100" *ngFor='let row of layoutForm.controls.rows.value ?? []; index as i' cdkDrag role="button" (click)='edit(i)'>
                           <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
                         <div *ngIf='(activeRow(i)?.text ?? row.text ?? "").trim() != ""' class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
                             <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
@@ -292,9 +297,9 @@
                                     <a role="button"><img class="card-img-top" src='{{(product.url?.toString() ?? "")}}' alt='ok'/></a>
                                     <!-- Product details-->
                                     <div class="card-body p-2 pb-0">
-                                        <div class="text-center">
+                                        <div class="text-center" >
                                             <!-- Product name-->
-                                            <h4 class="fw-bolder" style="font-size: small;" [style.font-family]="storeInfo().fontName!" [style.font-size.px]="titleFontSize(row)" [class.my-5]='titleFontSize(activeRow(i) ?? row) != "inherit" && (activeRow(i)?.grid_row ?? row.grid_row ?? 1) <= 2'><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button">{{product.name}}</a></h4>
+                                            <h4 class="fw-bolder" style="font-size: small;" [style.font-family]="storeInfo().fontName!" [style.font-size.px]="titleFontSize(activeRow(i) ?? row)" [class.my-5]='titleFontSize(activeRow(i) ?? row) != "inherit" && (activeRow(i)?.grid_row ?? row.grid_row ?? 1) <= 2'><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button">{{product.name}}</a></h4>
                                             <!-- Product price-->
                                         </div>
                                     </div>
@@ -317,7 +322,7 @@
                                         <div class="text-center d-flex justify-content-center align-items-center w-100" >
                                             <a 
                                             [style.font-family]="storeInfo().fontName!" 
-                                            [style.font-size.px]="fontSize(row)" 
+                                            [style.font-size.px]="fontSize(activeRow(i) ?? row)" 
                                             class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} bad w-100 mt-auto text-center" 
                                             style="font-weight:bold; max-width: 50vh;" 
                                             role="button" 
