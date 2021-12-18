@@ -136,7 +136,7 @@
                                 <mat-select-trigger class="d-flex align-items-center" *ngIf='rowForm.controls.grid.value'>
                                     {{rowForm.controls.grid.value}}
                                 </mat-select-trigger>
-                                  <mat-option *ngFor="let g of grids()" [value]="g.name">
+                                  <mat-option *ngFor="let g of grid" [value]="g.name">
                                     <!-- <mat-icon >{{type.icon}}</mat-icon> -->
                                     {{g.name}}
                                   </mat-option>
