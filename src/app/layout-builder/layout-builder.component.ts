@@ -71,7 +71,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     // Clear the input value
     event.chipInput!.clear();
-
+    this.setRow()
     this.productCtrl.setValue(null);
   }
 
@@ -85,7 +85,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   productName(id: any) {
     if (id === '1') {
-      return 'FEATURED PRODUCTS';
+      return 'HOTTEST PRODUCTS';
     } else if (id === '0') {
       return 'NEWEST PRODUCTS';
     }
@@ -249,12 +249,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     // this.rowForm.controls.imgs.setValue(matchingRow.text ?? '')
 
-    if ((matchingRow.products ?? []).length > 0) {
+    if ((matchingRow.products ?? [])) {
       this.prods = matchingRow.products ?? [];
     }
 
     if (matchingRow.smart_products != undefined) {
-      this.prods.push(String(matchingRow.smart_products));
+      this.prods = [String(matchingRow.smart_products)];
     }
 
     this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
@@ -307,6 +307,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         }
       }
     }
+    this.setRow()
   }
 
   height() {
@@ -325,7 +326,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     img.isActive = false;
 
     let index = this.images.indexOf(img);
-
+    this.setRow()
     moveItemInArray(this.images, index, this.images.length - 1);
   }
 
@@ -348,6 +349,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         image.img = img;
         image.isActive = true;
       }
+      this.setRow()
     });
   }
 
@@ -397,58 +399,79 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         this.images = this.images.slice(0, newSize);
       }
     }
+    this.setRow(event.value)
     this.cdr.detectChanges();
   }
 
-  finishedEditing() {
-    let name = (this.rowForm.controls.title.value as string) ?? '';
-    let type = (this.rowForm.controls.type.value as number) ?? 0;
+  finishedEditing(isDelete: boolean = false) {
+    if (this.editingBlock == undefined){ return }
 
-    let imgs = (this.images ?? [])
-      .filter((i) => i.img != undefined && i.img.trim() != '')
-      .map((i) => i.img);
-    let products = this.prods ?? [];
-
-    let grid = (this.rowForm.controls.grid.value as string) ?? '2x1';
-
-    let matchGrid = this.grid.find((g) => g.name == grid)?.row;
-
-    let row = new Row(
-      name,
-      Object.assign([], products),
-      undefined,
-      type,
-      Object.assign([], imgs),
-      matchGrid
-    );
-
-    if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
-      row.products = [];
-      row.smart_products = parseInt(products[0]);
+    if (!isDelete){
+      let name = (this.rowForm.controls.title.value as string) ?? '';
+      let type = (this.rowForm.controls.type.value as number) ?? 0;
+  
+      let imgs = (this.images ?? [])
+        .filter((i) => i.img != undefined && i.img.trim() != '')
+        .map((i) => i.img);
+      let products = this.prods ?? [];
+  
+      let grid = (this.rowForm.controls.grid.value as string) ?? '2x1';
+  
+      let matchGrid = this.grid.find((g) => g.name == grid)?.row;
+  
+      let row = new Row(
+        name,
+        Object.assign([], products),
+        undefined,
+        type,
+        Object.assign([], imgs),
+        matchGrid
+      );
+  
+      if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
+        row.products = [];
+        row.smart_products = parseInt(products[0]);
+      }
+  
+      console.log(matchGrid);
+  
+      let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
+  
+      console.log(row);
+  
+      if (this.editingBlock != undefined) {
+        rows[this.editingBlock] = row;
+      }
+  
+      console.log(row);
+  
+      this.layoutForm.controls.rows.setValue(rows);
     }
+    else{
+      let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
 
-    console.log(matchGrid);
-
-    let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-
-    console.log(row);
-
-    if (this.editingBlock != undefined) {
-      rows[this.editingBlock] = row;
+      if (rows[this.editingBlock] != undefined)
+      this.removeRows(this.editingBlock)
     }
-
-    console.log(row);
-
-    this.layoutForm.controls.rows.setValue(rows);
 
     this.rowForm.reset();
     this.prods = [];
     this.images = [];
     this.editingBlock = undefined;
+    this.aRow = undefined
+
   }
 
-  activeRow(index: number) {
+  aRow?: Row
+
+  activeRow(index: number){
     if (this.editingBlock == index) {
+      return this.aRow
+    }
+    return undefined
+  }
+
+  setRow(gridVal?: string) {
       let name = (this.rowForm.controls.title.value as string) ?? '';
       let type = (this.rowForm.controls.type.value as number) ?? 0;
 
@@ -457,7 +480,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         .map((i) => i.img);
       let products = this.prods ?? [];
 
-      let grid = (this.rowForm.controls.grid.value as string) ?? '2x1';
+      let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '2x1';
 
       let matchGrid = this.grid.find((g) => g.name == grid)?.row;
 
@@ -475,15 +498,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         row.smart_products = parseInt(products[0]);
       }
 
-      return row;
-    }
-    return undefined;
+      this.aRow = row
   }
 
   addBlock() {
     let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
     rows.push(new Row('', [], undefined, 0, [], 2));
     this.layoutForm.controls.rows.setValue(rows);
+
     this.edit(rows.length - 1);
   }
 
@@ -506,6 +528,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   close() {
+    this.finishedEditing()
+
     let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
     let header = (this.layoutForm.controls.header.value as string) ?? '';
 
@@ -612,17 +636,26 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   fontSize(row: Row) {
     if (this.rootComponent?.isMobile() || (row.grid_row ?? 2) >= 2) {
-      return 'inherit';
+      return 12;
     }
     return (0.5 / (row.grid_row ?? 1)) * 100;
   }
 
   titleFontSize(row: Row) {
     if (this.rootComponent?.isMobile() || (row.grid_row ?? 1) >= 2) {
-      return 'inherit';
+      return 12;
     }
     return (0.3 / (row.grid_row ?? 1)) * 100;
   }
+
+  // widthM(){
+  //   return (1680 / window.innerWidth) * window.innerWidth
+
+  // }
+
+  // heightM(){
+  //   return (939 / window.innerHeight) * window.innerHeight
+  // }
 
   products(smartProducts?: number, products?: Array<string>) {
     if (smartProducts !== undefined) {

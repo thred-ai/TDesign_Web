@@ -177,7 +177,7 @@ export class Store {
       this.homeRows = homeRows ?? [
         new Row('NEW ARRIVALS', undefined, 0, 0, undefined, 4),
         new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
-        new Row('FEATURED', undefined, 1, 0, undefined, 4),
+        new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
       ]
       this.orders = orders ?? 0
     }

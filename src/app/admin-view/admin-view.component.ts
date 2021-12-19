@@ -200,7 +200,10 @@ showLayoutModal(){
 
 
   const modalRef = this.dialog.open(LayoutBuilderComponent, {
-    width: '100vw',
+    width: '97.5vw',
+    height: '97.5vh',
+    maxHeight: '100vh',
+    maxWidth: '100vw',
     panelClass: 'app-full-bleed-sm-dialog',
     data: {
       rootComponent: this.rootComponent, 
