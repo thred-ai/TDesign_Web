@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef, OnDestroy, Injector } from '@angular/core';
 import { Country } from '../models/shipping-country.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Title, Meta } from '@angular/platform-browser';
+import { Title, Meta, DomSanitizer } from '@angular/platform-browser';
 import { LoadService, Dict } from '../services/load.service';
 import { isPlatformBrowser, APP_BASE_HREF, isPlatformServer, PlatformLocation } from '@angular/common';
 import { Product } from '../models/product.model';
@@ -143,7 +143,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private spinner: NgxSpinnerService,
   private injector : Injector,
   private routingService: RoutingService,
-
+  private sanitizer: DomSanitizer,
   private location: PlatformLocation
 
   ) {
@@ -286,6 +286,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadService.myCallback = () => this.callback()
     this.loadService.getUser(storeName, undefined, isCustom)
   }
+
+  rowText(row: Row) {
+    let replaced = row.html ?? '';
+
+    return this.sanitizer.bypassSecurityTrustHtml(replaced);
+  }
+
 
   getStoreName(){
 

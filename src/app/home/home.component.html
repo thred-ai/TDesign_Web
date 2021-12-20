@@ -87,6 +87,15 @@ style.color = "{{selectedIndicator()!.color}}"
                     </div>
                 </div>
             </div>
+
+            <div
+                  class="m-3"
+                  [style.font-family]="storeInfo().fontName!"
+                  style.color="{{ selectedTheme()!.color }}"
+                  [innerHTML]="rowText(row)"
+            >
+            </div>
+
 <!--     
             <div class="w-100" *ngIf='row.type == 0'>
                 <div class="w-100 d-flex align-items-center justify-content-center pb-4 mb-5 mt-5 pt-5" style="height: 50px; font-weight: bold;font-size:30px">

@@ -43,6 +43,7 @@ import {MatTableModule} from '@angular/material/table';
 import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 const routes: Routes = [
   {
@@ -98,6 +99,7 @@ const routes: Routes = [
     MatDialogModule,
     MatTabsModule,
     MatTableModule,
+    AngularEditorModule,
     RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

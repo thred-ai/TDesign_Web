@@ -559,6 +559,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     return splitStr.join(' '); 
   }
 
+  
+
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
     @Inject(DOCUMENT) private doc: Document,
@@ -571,8 +573,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     private _router: Router,
     private dialog: MatDialog,
     ) {
+      this.check()
     }
 
+    async check(){
+      if (isPlatformBrowser(this.platformID)){
+        import("seamless-scroll-polyfill");
+
+        let polyfill = (await import("seamless-scroll-polyfill")).polyfill;
+        polyfill()
+      }
+    }
 
   ngAfterViewInit(): void {
   }

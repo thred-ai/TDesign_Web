@@ -42,7 +42,7 @@
       </a>
       <a
         role="button"
-        (click)="dialogRef.close()"
+        (click)="closeDialog()"
         class="btn-danger p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
         style="font-size: x-large; text-decoration: none"
       >
@@ -58,7 +58,7 @@
       <div class="d-none d-md-block w-100 w-md-25 h-100 parent">
         <div class="h-100 right">
           <div class="sticky h-100" style="overflow-y: scroll" id="label">
-            <div *ngIf="editingBlock == undefined" class="w-100 h-100">
+            <div [hidden]="editingBlock != undefined" class="w-100 h-100">
               <div
                 class="w-100 pe-3"
                 cdkDropList
@@ -75,7 +75,7 @@
                     *cdkDragPlaceholder
                   ></div>
                   <div
-                    class="d-block justify-content-between align-items-center"
+                    class="d-block justify-content-between align-items-center ms-1"
                   >
                     <a role="button" (click)="edit(i)">
                       <mat-icon class="me-2">settings</mat-icon>
@@ -86,16 +86,14 @@
                   </div>
                   <div class="m-0 h-100 w-100">
                     <div
-                      class="card bg-{{
-                        storeInfo().colorStyle!.back_code
-                      }} shadow mb-2 p-1"
-                      [class.border-secondary]="
-                        storeInfo()!.colorStyle!.text_code == 'light'
-                      "
+                      class="card shadow my-1 me-1 p-1 zoom"
+                      (mouseover)="changeStyle($event, i)" (mouseout)="changeStyle($event, i)"
                       style="position: relative"
+                      style.background-color="{{ selectedTheme()!.bg_color }}"
+
                     >
                       <div
-                        *ngIf='(activeRow(i)?.text ?? row.text ?? "").trim() != ""'
+                        *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
                         class="d-flex align-items-center justify-content-center mt-2 mb-1"
                         style="
                           max-height: 50px;
@@ -112,16 +110,16 @@
                           style="line-height: 1.2em"
                           [style.font-family]="storeInfo().fontName!"
                         >
-                          {{activeRow(i)?.text ?? row.text}}
+                          {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
                         </p>
                       </div>
                       <div
-                        class="row mx-0 gx-1 gx-lg-1 row-cols-1 row-cols-md-{{activeRow(i)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
+                        class="row mx-0 gx-1 gx-lg-1 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
                         style="pointer-events: none"
                       >
                         <div
                           class="col mb-2"
-                          *ngFor="let product of products(activeRow(i)?.smart_products ?? row.smart_products, activeRow(i)?.products ?? row.products)"
+                          *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
                         >
                           <div
                             class="card h-100 bg-{{
@@ -164,13 +162,13 @@
                         </div>
                       </div>
                       <div
-                        class="row gx-0 row-cols-1 row-cols-md-{{activeRow(i)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
-                        *ngIf="(activeRow(i)?.type ?? row.type) == 1"
+                        class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                        *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 1"
                         style="pointer-events: none"
                       >
                         <div
                           class="col"
-                          *ngFor="let img of activeRow(i)?.imgs ?? row.imgs ?? []"
+                          *ngFor="let img of (aRow.index == i ? aRow?.row : undefined)?.imgs ?? row.imgs ?? []"
                           style="
                             margin-bottom: 1px;
                             padding-left: 0.5px;
@@ -191,11 +189,26 @@
                         </div>
                       </div>
                       <div
+                class="w-100 mx-0"
+                *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
+                style="pointer-events: none"
+              >
+                <div
+                  class="m-1 w-100 px-0"
+                  style="text-overflow: ellipsis; line-height: 2em; font-size: 3px; word-break: break-all; padding-right: 2px;"
+                  style.color="{{ selectedTheme()!.color }}"
+                  [style.font-family]="storeInfo().fontName!"
+                  [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row, true)"
+                >
+                
+                </div>
+              </div>
+                      <div
                         class="w-100 h-100"
                         style="
                           position: absolute;
                           pointer-events: all;
-                          cursor: crosshair;
+                          cursor: grab;
                         "
                       ></div>
                     </div>
@@ -214,13 +227,13 @@
                   </a>
                 </div>
                 <div
-                  class="card container-fluid d-flex justify-content-center align-items-center example-custom-placeholder m-3 ms-1 mt-1"
+                  class="card zoom container-fluid d-flex justify-content-center align-items-center example-custom-placeholder m-3 ms-3 me-4 mt-1"
+                  role="button"
+                  (click)="addBlock()"
                 >
                   <a
-                    (click)="addBlock()"
                     class="fw-bolder text-secondary d-flex align-items-center justify-content-center"
-                    role="button"
-                    style="font-size: large; text-decoration: none"
+                    style="font-size: large; text-decoration: none;"
                   >
                     ADD BLOCK
                     <mat-icon
@@ -233,7 +246,7 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="editingBlock != undefined" class="w-100 h-100 pe-3">
+            <div [hidden]="editingBlock == undefined" class="w-100 h-100 pe-3">
               <form [formGroup]="rowForm" novalidate>
                 <mat-form-field class="w-100 h-100">
                   <mat-placeholder class="placeholder"
@@ -266,7 +279,20 @@
                   </mat-select>
                 </mat-form-field>
 
-                <mat-form-field class="w-100" appearance="outline">
+                <angular-editor 
+                *ngIf="rowForm.controls.type.value == 2"
+                class="mb-4 h-100"
+                formControlName="htmlText" 
+                [config]="editorConfig"
+                style="background-color: red;"
+                >
+                </angular-editor>
+
+                <mat-form-field 
+                class="w-100" 
+                appearance="outline"
+                *ngIf="rowForm.controls.type.value != 2"
+                >
                   <mat-label>Grid Size</mat-label>
                   <mat-select
                     formControlName="grid"
@@ -287,7 +313,7 @@
 
                 <div
                   cdkDropList
-                  class="rounded shadow bg-light w-100 h-100 mb-2"
+                  class="rounded shadow bg-light w-100 h-100"
                   (cdkDropListDropped)="drop($event, true)"
                   style="overflow-y: scroll"
                   *ngIf="rowForm.controls.type.value == 1"
@@ -418,7 +444,8 @@
                   </mat-autocomplete>
                 </mat-form-field>
               </form>
-              <a
+              <div class="mt-2">
+                <a
                 role="button"
                 (click)="finishedEditing()"
                 class="btn btn-dark rounded-pill px-3 mw-100 mb-2 me-2 d-inline-flex align-items-center justify-content-center"
@@ -438,6 +465,8 @@
                   >delete</mat-icon
                 >
               </a>
+              </div>
+              
             </div>
           </div>
         </div>
@@ -596,7 +625,7 @@
           />
         </header>
         <section
-          class="py-5 w-100 h-100"
+          class="py-5 pb-0 w-100 mb-0"
           style.background-color="{{ selectedTheme()!.bg_color }}"
         >
           <!-- (cdkDropListDropped)="drop($event)" -->
@@ -606,15 +635,18 @@
             (cdkDropListDropped)="drop($event)"
           >
             <div
-              class="pb-5"
+              class="pb-4 block"
+              style.background-color="{{ selectedTheme()!.bg_color }}"
               *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
+              id='p-{{i}}'
               cdkDrag
               role="button"
               (click)="edit(i)"
+              [class.highlight]='hoverIndex != undefined && hoverIndex == i'
             >
               <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
               <div
-                *ngIf='(activeRow(i)?.text ?? row.text ?? "").trim() != ""'
+                *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
                 class="d-flex align-items-center justify-content-center pb-1 mb-5"
                 style="height: 50px; font-weight: bold; font-size: 30px"
                 style.color="{{ selectedTheme()!.color }}"
@@ -626,15 +658,15 @@
                   style="line-height: 1.2em"
                   [style.font-family]="storeInfo().fontName!"
                 >
-                  {{activeRow(i)?.text ?? row.text}}
+                  {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
                 </p>
               </div>
               <div
-                class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{activeRow(i)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
+                class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
               >
                 <div
                   class="col"
-                  *ngFor="let product of products(activeRow(i)?.smart_products ?? row.smart_products, activeRow(i)?.products ?? row.products)"
+                  *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
                 >
                   <div
                     class="card h-100 bg-{{
@@ -659,8 +691,8 @@
                           class="fw-bolder"
                           style="font-size: small"
                           [style.font-family]="storeInfo().fontName!"
-                          [style.font-size.px]="titleFontSize(activeRow(i) ?? row)"
-                          [class.my-5]='titleFontSize(activeRow(i) ?? row) != 12 && (activeRow(i)?.grid_row ?? row.grid_row ?? 1) <= 2'
+                          [style.font-size.px]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                          [class.my-5]='titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row) != 12 && ((aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1) <= 2'
                         >
                           <a
                             style="text-decoration: none"
@@ -700,7 +732,7 @@
                       >
                         <a
                           [style.font-family]="storeInfo().fontName!"
-                          [style.font-size.px]="fontSize(activeRow(i) ?? row)"
+                          [style.font-size.px]="fontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
                           class="btn btn-outline-{{
                             storeInfo().colorStyle!.text_code
                           }} bad w-100 mt-auto text-center"
@@ -715,14 +747,14 @@
                 </div>
               </div>
               <div
-                class="row gx-0 row-cols-1 row-cols-md-{{activeRow(i)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
-                *ngIf="(activeRow(i)?.type ?? row.type) == 1"
+                class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 1"
                 style="pointer-events: none"
               >
                 <div
                   class="col"
                   style="margin-bottom: 2px"
-                  *ngFor="let img of activeRow(i)?.imgs ?? row.imgs ?? []"
+                  *ngFor="let img of (aRow.index == i ? aRow?.row : undefined)?.imgs ?? row.imgs ?? []"
                 >
                   <div
                     class="d-block align-items-center text-center text-sm-start w-100"
@@ -735,6 +767,20 @@
                         alt="Product"
                     /></a>
                   </div>
+                </div>
+              </div>
+              <div
+                class="w-100 mx-0"
+                *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
+                style="pointer-events: none"
+              >
+                <div
+                  class="m-3"
+                  [style.font-family]="storeInfo().fontName!"
+                  style.color="{{ selectedTheme()!.color }}"
+                  [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                >
+                
                 </div>
               </div>
             </div>
@@ -765,3 +811,4 @@
         </div>
     </div>
 </div> -->
+

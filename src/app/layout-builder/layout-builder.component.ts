@@ -6,6 +6,7 @@ import {
   OnDestroy,
   ElementRef,
   ChangeDetectorRef,
+  SecurityContext,
 } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Order } from '../models/order.model';
@@ -28,6 +29,9 @@ import { Observable } from 'rxjs';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from '../cropper/cropper.component';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { Pipe, PipeTransform } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-layout-builder',
@@ -53,10 +57,35 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   rowForm = this.fb.group({
     title: [null],
+    htmlText: [null],
     imgs: [[]],
     type: [null],
     grid: [null],
   });
+
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: 'auto',
+    minHeight: '100',
+    maxHeight: 'auto',
+    width: 'auto',
+    minWidth: '0',
+    translate: 'yes',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Enter text here...',
+    defaultParagraphSeparator: '',
+    defaultFontName: '',
+    defaultFontSize: '',
+    uploadUrl: 'v1/image',
+    uploadWithCredentials: false,
+    sanitize: false,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['insertImage', 'insertVideo', 'toggleEditorMode', 'heading', 'fontName'],
+    ],
+  };
 
   title = 'LAUNCHING LAYOUT BUILDER';
 
@@ -65,13 +94,16 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    if (value) {
+    if (value != '0' && value != '1') {
       this.prods.push(value);
     }
-
+    else{
+      this.prods = [value]
+      console.log('smart')
+    }
     // Clear the input value
     event.chipInput!.clear();
-    this.setRow()
+    this.setRow();
     this.productCtrl.setValue(null);
   }
 
@@ -80,6 +112,33 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     if (index >= 0) {
       this.prods.splice(index, 1);
+    }
+    this.setRow()
+  }
+
+  hoverIndex?: number = undefined
+
+  changeStyle($event: Event, index: number){
+    // this.color = $event.type == 'mouseover' ? 'yellow' : 'red';
+    let p = document.getElementById('p-' + index);
+
+    if ($event.type == 'mouseover') { 
+      this.hoverIndex = index
+      setTimeout(async () => {
+        if (p) {
+          
+          p.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'start',
+          });
+        } else {
+          console.log('blamk');
+        }
+      }, 0);
+    }
+    else{
+      this.hoverIndex = undefined
     }
   }
 
@@ -101,13 +160,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    if (event.option.value == '0' || event.option.value == '1') {
-      this.prods = [];
+    if (event.option.value != '0' && event.option.value != '1') {
+      this.prods.push(event.option.value);
     }
-    this.prods.push(event.option.value);
+    else{
+      this.prods = [event.option.value]
+      console.log('smart')
+    }
 
     this.productInput!.nativeElement.value = '';
 
+    this.setRow()
     this.productCtrl.setValue(null);
   }
 
@@ -126,7 +189,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private modalService: NgbModal,
     private loadService: LoadService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public sanitizer: DomSanitizer
   ) {
     this.admin = data.admin;
     this.rootComponent = data.rootComponent;
@@ -158,6 +222,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   types = [
     {
+      name: 'Button Block',
+      code: 3,
+    },
+    {
+      name: 'Text Block',
+      code: 2,
+    },
+    {
       name: 'Image Block',
       code: 1,
     },
@@ -186,10 +258,22 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.interval = undefined;
+    this.aRow.index = undefined;
+    this.aRow.row = undefined;
+    this.rowForm.reset();
+    this.layoutForm.reset();
+    this.admin = undefined;
+    this.rootComponent = undefined;
   }
 
   ngOnInit(): void {
-    this.layoutForm.controls.rows.setValue(this.storeInfo().homeRows ?? []);
+    console.log('a');
+
+    console.log(this.storeInfo().homeRows);
+
+    this.layoutForm.controls.rows.setValue(
+      Object.assign([], this.storeInfo().homeRows ?? [])
+    );
     this.layoutForm.controls.header.setValue(
       this.storeInfo().homeLinkTop ?? this.storeInfo().themeLink
     );
@@ -201,10 +285,18 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (this.storeInfo()?.banners.length > 0) {
       this.setInterval();
     }
+    this.cdr.detectChanges();
+    this.onValueChanges();
+  }
+
+  closeDialog() {
+    this.interval = undefined;
+    this.dialogRef.close();
   }
 
   removeRows(index: number) {
     (this.layoutForm.controls.rows.value ?? [])?.splice(index, 1);
+    this.cdr.detectChanges();
   }
 
   async getBase64ImageFromUrl(imageUrl: string) {
@@ -240,22 +332,27 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   async edit(index: number) {
+    if (this.editingBlock == index) {
+      return;
+    }
     this.editingBlock = index;
+
+    this.cdr.detectChanges();
 
     let matchingRow = ((this.layoutForm.controls.rows.value as Array<Row>) ??
       [])[index];
 
     this.rowForm.controls.title.setValue(matchingRow.text ?? '');
 
-    // this.rowForm.controls.imgs.setValue(matchingRow.text ?? '')
-
-    if ((matchingRow.products ?? [])) {
+    if (matchingRow.products ?? []) {
       this.prods = matchingRow.products ?? [];
     }
 
     if (matchingRow.smart_products != undefined) {
       this.prods = [String(matchingRow.smart_products)];
     }
+
+    this.rowForm.controls.htmlText.setValue(matchingRow.html ?? '');
 
     this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
 
@@ -265,8 +362,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         img: image.toString(),
       };
       this.images.push(img);
-      var i = (await this.getBase64ImageFromUrl(image.toString())) as any;
-      img.img = i;
     });
     await Promise.all(promises);
 
@@ -307,7 +402,18 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         }
       }
     }
-    this.setRow()
+    setTimeout(async () => {
+      let p = document.getElementById('p-' + index);
+      if (p) {
+        p.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'start',
+        });
+      } else {
+        console.log('blamk');
+      }
+    }, 100);
   }
 
   height() {
@@ -326,7 +432,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     img.isActive = false;
 
     let index = this.images.indexOf(img);
-    this.setRow()
+    this.setRow();
     moveItemInArray(this.images, index, this.images.length - 1);
   }
 
@@ -349,7 +455,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         image.img = img;
         image.isActive = true;
       }
-      this.setRow()
+      this.setRow();
     });
   }
 
@@ -376,7 +482,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     );
   }
 
-  changed(event: any) {
+  onValueChanges(): void {
+    this.rowForm.valueChanges.subscribe((val) => {
+      this.setRow();
+      this.cdr.detectChanges();
+    });
+  }
+
+  changed(event?: any) {
     let type = this.rowForm.controls.type.value ?? 1;
 
     if (type == 1) {
@@ -399,106 +512,128 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         this.images = this.images.slice(0, newSize);
       }
     }
-    this.setRow(event.value)
-    this.cdr.detectChanges();
   }
 
   finishedEditing(isDelete: boolean = false) {
-    if (this.editingBlock == undefined){ return }
-
-    if (!isDelete){
-      let name = (this.rowForm.controls.title.value as string) ?? '';
-      let type = (this.rowForm.controls.type.value as number) ?? 0;
-  
-      let imgs = (this.images ?? [])
-        .filter((i) => i.img != undefined && i.img.trim() != '')
-        .map((i) => i.img);
-      let products = this.prods ?? [];
-  
-      let grid = (this.rowForm.controls.grid.value as string) ?? '2x1';
-  
-      let matchGrid = this.grid.find((g) => g.name == grid)?.row;
-  
-      let row = new Row(
-        name,
-        Object.assign([], products),
-        undefined,
-        type,
-        Object.assign([], imgs),
-        matchGrid
-      );
-  
-      if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
-        row.products = [];
-        row.smart_products = parseInt(products[0]);
-      }
-  
-      console.log(matchGrid);
-  
-      let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-  
-      console.log(row);
-  
-      if (this.editingBlock != undefined) {
-        rows[this.editingBlock] = row;
-      }
-  
-      console.log(row);
-  
-      this.layoutForm.controls.rows.setValue(rows);
+    if (this.editingBlock == undefined) {
+      return;
     }
-    else{
-      let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
 
-      if (rows[this.editingBlock] != undefined)
-      this.removeRows(this.editingBlock)
+    let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
+
+    switch (isDelete) {
+      // @ts-ignore
+      case false:
+        let name = (this.rowForm.controls.title.value as string) ?? '';
+        let type = (this.rowForm.controls.type.value as number) ?? 0;
+        let html = this.rowForm.controls.htmlText.value ?? '';
+        let imgs = (this.images ?? [])
+          .filter((i) => i.img != undefined && i.img.trim() != '')
+          .map((i) => i.img);
+        let products = this.prods ?? [];
+
+        if (
+          !(
+            (type == 0 && products.length == 0) ||
+            (type == 1 && imgs.length == 0) ||
+            (type == 2 && html.trim() == '')
+          )
+        ) {
+          let grid = (this.rowForm.controls.grid.value as string) ?? '2x1';
+
+          let matchGrid = this.grid.find((g) => g.name == grid)?.row;
+
+          let row = new Row(
+            name,
+            Object.assign([], products),
+            undefined,
+            type,
+            Object.assign([], imgs),
+            matchGrid,
+            html,
+            ''
+          );
+
+          if (
+            products.find((i) => i == '0') ||
+            products.find((i) => i == '1')
+          ) {
+            row.products = [];
+            row.smart_products = parseInt(products[0]);
+          }
+
+          if (this.editingBlock != undefined) {
+            rows[this.editingBlock] = row;
+          }
+
+          console.log(row);
+
+          this.layoutForm.controls.rows.setValue(rows);
+          break;
+        }
+      default:
+        if (rows[this.editingBlock] != undefined)
+          this.removeRows(this.editingBlock);
     }
 
     this.rowForm.reset();
     this.prods = [];
     this.images = [];
     this.editingBlock = undefined;
-    this.aRow = undefined
-
+    this.aRow.row = undefined;
+    this.aRow.index = undefined;
   }
 
-  aRow?: Row
+  aRow: {
+    row?: Row;
+    index?: number;
+  } = {
+    row: undefined,
+    index: undefined,
+  };
 
-  activeRow(index: number){
-    if (this.editingBlock == index) {
-      return this.aRow
+  rowText(row: Row, format = false) {
+    let replaced = row.html ?? '';
+
+    if (format){
+      replaced = replaced.replace(/size=/g, '').replace(/<font >/g, '').replace(/style="/g, 'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; ')
     }
-    return undefined
+    return this.sanitizer.bypassSecurityTrustHtml(replaced);
   }
 
   setRow(gridVal?: string) {
-      let name = (this.rowForm.controls.title.value as string) ?? '';
-      let type = (this.rowForm.controls.type.value as number) ?? 0;
+    let name = (this.rowForm.controls.title.value as string) ?? '';
+    let type = (this.rowForm.controls.type.value as number) ?? 0;
+    let html = this.rowForm.controls.htmlText.value ?? '';
 
-      let imgs = (this.images ?? [])
-        .filter((i) => i.img != undefined && i.img.trim() != '')
-        .map((i) => i.img);
-      let products = this.prods ?? [];
+    let imgs = (this.images ?? [])
+      .filter((i) => i.img != undefined && i.img.trim() != '')
+      .map((i) => i.img);
+    let products = this.prods ?? [];
 
-      let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '2x1';
+    let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '2x1';
 
-      let matchGrid = this.grid.find((g) => g.name == grid)?.row;
+    let matchGrid = this.grid.find((g) => g.name == grid)?.row;
 
-      let row = new Row(
-        name,
-        Object.assign([], products),
-        undefined,
-        type,
-        Object.assign([], imgs),
-        matchGrid
-      );
+    let row = new Row(
+      name,
+      Object.assign([], products),
+      undefined,
+      type,
+      Object.assign([], imgs),
+      matchGrid,
+      html,
+      ''
+    );
 
-      if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
-        row.products = [];
-        row.smart_products = parseInt(products[0]);
-      }
+    if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
+      row.products = [];
+      row.smart_products = parseInt(products[0]);
+      console.log('smart2')
+    }
 
-      this.aRow = row
+    this.aRow.row = row;
+    this.aRow.index = this.editingBlock;
   }
 
   addBlock() {
@@ -527,14 +662,30 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return indicator;
   }
 
-  close() {
-    this.finishedEditing()
+  async close() {
+    this.finishedEditing();
 
     let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
     let header = (this.layoutForm.controls.header.value as string) ?? '';
 
     this.spinner.show('loader');
     this.title = 'SAVING LAYOUT';
+
+    const promises = rowInfo.map(async (r) => {
+      if (r.type == 1) {
+        let promises2 = (r.imgs ?? []).map(async (i: string, index: number) => {
+          if (
+            !this.loadService.isBase64(i?.replace(/^[\w\d;:\/]+base64\,/g, ''))
+          ) {
+            var im = (await this.getBase64ImageFromUrl(i?.toString())) as any;
+            (r.imgs ?? [])[index] = im;
+          }
+        });
+        await Promise.all(promises2);
+      }
+    });
+    await Promise.all(promises);
+
     this.loadService.addLayout(
       rowInfo,
       header,
