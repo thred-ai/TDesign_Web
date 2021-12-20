@@ -526,7 +526,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       case false:
         let name = (this.rowForm.controls.title.value as string) ?? '';
         let type = (this.rowForm.controls.type.value as number) ?? 0;
-        let html = this.rowForm.controls.htmlText.value ?? '';
+        let html = (this.rowForm.controls.htmlText.value ?? '').replace(/style="/g, 'style="overflow-wrap: break-word;')
+        
         let imgs = (this.images ?? [])
           .filter((i) => i.img != undefined && i.img.trim() != '')
           .map((i) => i.img);
@@ -604,7 +605,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   setRow(gridVal?: string) {
     let name = (this.rowForm.controls.title.value as string) ?? '';
     let type = (this.rowForm.controls.type.value as number) ?? 0;
-    let html = this.rowForm.controls.htmlText.value ?? '';
+    let html = (this.rowForm.controls.htmlText.value ?? '').replace(/style="/g, 'style="overflow-wrap: break-word;')
 
     let imgs = (this.images ?? [])
       .filter((i) => i.img != undefined && i.img.trim() != '')

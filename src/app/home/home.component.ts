@@ -290,6 +290,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   rowText(row: Row) {
     let replaced = row.html ?? '';
 
+
+
     return this.sanitizer.bypassSecurityTrustHtml(replaced);
   }
 
