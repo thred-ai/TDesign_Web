@@ -81,9 +81,9 @@ style.color = "{{selectedIndicator()!.color}}"
     
 
             <div class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0" *ngIf='row.type == 1'>
-                <div class="col mb-1" *ngFor="let img of row.imgs ?? []">
+                <div class="col mb-1" *ngFor="let img of row.imgs ?? []; index as i">
                     <div class="d-block align-items-center text-center text-sm-start w-100">
-                        <a class="ms-0 me-0" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{img}}" style="width: 100%; height: auto;" alt="Product"/></a>
+                        <a class="ms-0 me-0" role="button" (click)="imgLinkPressed((row.imgLinks ?? [])[i])"><img style="border-radius: 2.5%;" src="{{img}}" style="width: 100%; height: auto;" alt="Product"/></a>
                     </div>
                 </div>
             </div>

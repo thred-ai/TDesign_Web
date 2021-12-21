@@ -1,4 +1,4 @@
-<div style="position: relative;" class=" h-100">
+<div style="position: relative" class="h-100">
   <input
     #fileInputB
     type="file"
@@ -24,7 +24,9 @@
     class="d-flex justify-content-between align-items-center"
     *ngIf="loaded"
   >
-    <h2 class="me-2 text-center d-none d-md-block">{{editingBlock == undefined ? 'Drag/Drop to Rearrange' : 'Edit Block'}}</h2>
+    <h2 class="me-2 text-center d-none d-md-block">
+      {{ editingBlock == undefined ? "Drag/Drop to Rearrange" : "Edit Block" }}
+    </h2>
     <div class="d-flex justify-content-between align-items-center">
       <a
         role="button"
@@ -87,10 +89,10 @@
                   <div class="m-0 h-100 w-100">
                     <div
                       class="card shadow my-1 me-1 p-1 zoom"
-                      (mouseover)="changeStyle($event, i)" (mouseout)="changeStyle($event, i)"
+                      (mouseover)="changeStyle($event, i)"
+                      (mouseout)="changeStyle($event, i)"
                       style="position: relative"
                       style.background-color="{{ selectedTheme()!.bg_color }}"
-
                     >
                       <div
                         *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
@@ -189,20 +191,24 @@
                         </div>
                       </div>
                       <div
-                class="w-100 mx-0"
-                *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
-                style="pointer-events: none"
-              >
-                <div
-                  class="m-1 w-100 px-0"
-                  style="text-overflow: ellipsis; line-height: 2em; font-size: 3px; word-break: break-all; padding-right: 2px;"
-                  style.color="{{ selectedTheme()!.color }}"
-                  [style.font-family]="storeInfo().fontName!"
-                  [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row, true)"
-                >
-                
-                </div>
-              </div>
+                        class="w-100 mx-0"
+                        *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
+                        style="pointer-events: none"
+                      >
+                        <div
+                          class="m-1 w-100 px-0"
+                          style="
+                            text-overflow: ellipsis;
+                            line-height: 2em;
+                            font-size: 3px;
+                            word-break: break-all;
+                            padding-right: 2px;
+                          "
+                          style.color="{{ selectedTheme()!.color }}"
+                          [style.font-family]="storeInfo().fontName!"
+                          [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row, true)"
+                        ></div>
+                      </div>
                       <div
                         class="w-100 h-100"
                         style="
@@ -233,7 +239,7 @@
                 >
                   <a
                     class="fw-bolder text-secondary d-flex align-items-center justify-content-center"
-                    style="font-size: large; text-decoration: none;"
+                    style="font-size: large; text-decoration: none"
                   >
                     ADD BLOCK
                     <mat-icon
@@ -279,19 +285,19 @@
                   </mat-select>
                 </mat-form-field>
 
-                <angular-editor 
-                *ngIf="rowForm.controls.type.value == 2"
-                class="mb-4 h-100"
-                formControlName="htmlText" 
-                [config]="editorConfig"
-                style="background-color: red;"
+                <angular-editor
+                  *ngIf="rowForm.controls.type.value == 2"
+                  class="mb-4 h-100"
+                  formControlName="htmlText"
+                  [config]="editorConfig"
+                  style="background-color: red"
                 >
                 </angular-editor>
 
-                <mat-form-field 
-                class="w-100" 
-                appearance="outline"
-                *ngIf="rowForm.controls.type.value != 2"
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                  *ngIf="rowForm.controls.type.value != 2"
                 >
                   <mat-label>Grid Size</mat-label>
                   <mat-select
@@ -334,19 +340,43 @@
                         role="button"
                         (click)="fileInput.click()"
                         ><img
-                          class="h-100 w-100 ani-style"
+                          class="w-100 ani-style"
                           style="object-fit: contain"
                           src="{{ image.img }}"
                           alt="ok"
                       /></a>
-                      <a
-                        *ngIf="image.isActive && canCancel()"
-                        class="ani-style"
-                        style="position: absolute; top: 0; right: 0"
-                        (click)="removeImg(image)"
-                        role="button"
-                        ><mat-icon>cancel</mat-icon></a
-                      >
+
+                      <mat-form-field class="w-100 my-1">
+                        <mat-placeholder class="placeholder"
+                          >Image Click URL</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          [ngModelOptions]="{standalone: true}"
+                          [(ngModel)]='image.link'
+                          style="font-size: small;"
+                          class="text-dark"
+                        />
+                        <mat-icon role="button" matSuffix
+                          >link</mat-icon
+                        >
+                      </mat-form-field>
+
+
+
+
+
+                      <div style="position: absolute; top: 0; right: 0">
+                        <a
+                          *ngIf="image.isActive && canCancel()"
+                          class="ani-style"
+                          (click)="removeImg(image)"
+                          role="button"
+                          ><mat-icon>cancel</mat-icon></a
+                        >
+                      </div>
+
                       <div
                         *ngIf="!image.isActive"
                         class="cdk-drag-placeholder w-100"
@@ -446,275 +476,283 @@
               </form>
               <div class="mt-2">
                 <a
-                role="button"
-                (click)="finishedEditing()"
-                class="btn btn-dark rounded-pill px-3 mw-100 mb-2 me-2 d-inline-flex align-items-center justify-content-center"
-              >
-                DONE
-                <mat-icon [inline]="true" class="ms-2 text-white"
-                  >check_circle</mat-icon
+                  role="button"
+                  (click)="finishedEditing()"
+                  class="btn btn-dark rounded-pill px-3 mw-100 mb-2 me-2 d-inline-flex align-items-center justify-content-center"
                 >
-              </a>
-              <a
-                role="button"
-                (click)="finishedEditing(true)"
-                class="btn btn-danger rounded-pill px-3 mw-100 mb-2 d-inline-flex align-items-center justify-content-center"
-              >
-                DELETE
-                <mat-icon [inline]="true" class="ms-2 text-white"
-                  >delete</mat-icon
+                  DONE
+                  <mat-icon [inline]="true" class="ms-2 text-white"
+                    >check_circle</mat-icon
+                  >
+                </a>
+                <a
+                  role="button"
+                  (click)="finishedEditing(true)"
+                  class="btn btn-danger rounded-pill px-3 mw-100 mb-2 d-inline-flex align-items-center justify-content-center"
                 >
-              </a>
+                  DELETE
+                  <mat-icon [inline]="true" class="ms-2 text-white"
+                    >delete</mat-icon
+                  >
+                </a>
               </div>
-              
             </div>
           </div>
         </div>
       </div>
-      <div class="ms-md-4 w-100 w-md-75 h-100 card shadow-lg border border-dark border-3">
-        <div class="card-header bg-dark text-light fw-bolder border-dark border-bottom border-2 rounded-0"><i>Live Preview: Desktop</i></div>
-        <div class="w-100 h-100 card-body p-0" style="overflow-y: scroll;">
-            <div
-          *ngIf="storeInfo().banners && (storeInfo().banners?.length ?? 0) > 0"
-          class="w-100 rounded"
-          style="height: 35px"
+      <div
+        class="ms-md-4 w-100 w-md-75 h-100 card shadow-lg border border-dark border-3"
+      >
+        <div
+          class="card-header bg-dark text-light fw-bolder border-dark border-bottom border-2 rounded-0"
         >
+          <i>Live Preview: Desktop</i>
+        </div>
+        <div class="w-100 h-100 card-body p-0" style="overflow-y: scroll">
           <div
-            *ngIf="storeInfo().bannerStyle == 1"
-            class="w-100 h-100"
-            id="outer"
+            *ngIf="storeInfo().banners && (storeInfo().banners?.length ?? 0) > 0"
+            class="w-100 rounded"
+            style="height: 35px"
           >
-            <div class="w-100 h-100">
-              <div class="w-100 h-100 loop">
-                <div class="d-flex w-100 h-100 align-items-center" id="content">
+            <div
+              *ngIf="storeInfo().bannerStyle == 1"
+              class="w-100 h-100"
+              id="outer"
+            >
+              <div class="w-100 h-100">
+                <div class="w-100 h-100 loop">
                   <div
-                    class="d-flex h-100 align-items-center"
-                    *ngFor="let _ of arrLength()"
+                    class="d-flex w-100 h-100 align-items-center"
+                    id="content"
                   >
-                    <h2
-                      *ngFor="let banner of storeInfo().banners"
-                      style.color="{{ bannerTheme(banner)!.color }}"
-                      style.background-color="{{
-                        bannerTheme(banner)!.bg_color
-                      }}"
-                      class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
-                      style="
-                        font-size: calc(
-                          14px + (16 - 14) * (100vh - 400px) / (800 - 400)
-                        );
-                      "
+                    <div
+                      class="d-flex h-100 align-items-center"
+                      *ngFor="let _ of arrLength()"
                     >
-                      <div *ngIf="banner.text != ''">
-                        {{(banner.text ?? '')}}
-                      </div>
-                      <mat-icon
-                        class="mt-2"
-                        *ngIf="banner.icon != ''"
-                        style="font-size: inherit"
+                      <h2
+                        *ngFor="let banner of storeInfo().banners"
+                        style.color="{{ bannerTheme(banner)!.color }}"
+                        style.background-color="{{
+                          bannerTheme(banner)!.bg_color
+                        }}"
+                        class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
+                        style="
+                          font-size: calc(
+                            14px + (16 - 14) * (100vh - 400px) / (800 - 400)
+                          );
+                        "
                       >
-                        <span class="ms-1 material-icons-outlined">
-                          {{ banner.icon }}
-                        </span>
-                      </mat-icon>
-                    </h2>
+                        <div *ngIf="banner.text != ''">
+                          {{(banner.text ?? '')}}
+                        </div>
+                        <mat-icon
+                          class="mt-2"
+                          *ngIf="banner.icon != ''"
+                          style="font-size: inherit"
+                        >
+                          <span class="ms-1 material-icons-outlined">
+                            {{ banner.icon }}
+                          </span>
+                        </mat-icon>
+                      </h2>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div
-            *ngIf="storeInfo().bannerStyle == 0"
-            class="w-100 h-100"
-            style.background-color="{{ bannerTheme()!.bg_color }}"
-          >
             <div
-              class="h-100 w-100 d-flex justify-content-between align-items-center"
-              style="position: relative"
+              *ngIf="storeInfo().bannerStyle == 0"
+              class="w-100 h-100"
+              style.background-color="{{ bannerTheme()!.bg_color }}"
             >
-              <div class="w-100 h-100 d-flex">
-                <drag-scroll
-                  #carousel
-                  class="w-100 h-100"
-                  [scrollbar-hidden]="true"
-                  [indexChanged]="didMove()"
-                >
-                  <div
-                    drag-scroll-item
-                    class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-                    *ngFor="let banner of storeInfo().banners"
-                  >
-                    <h2
-                      style.color="{{ bannerTheme(banner)!.color }}"
-                      class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
-                      [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
-                      style="
-                        font-size: calc(
-                          14px + (16 - 14) * (100vw - 400px) / (800 - 400)
-                        );
-                      "
-                    >
-                      <div *ngIf="banner.text != ''" class="mb-1">
-                        {{(banner.text ?? 'fs')}}
-                      </div>
-                      <mat-icon
-                        *ngIf="banner.icon != ''"
-                        style="font-size: inherit"
-                      >
-                        <span class="ms-1 material-icons-outlined">
-                          {{ banner.icon }}
-                        </span>
-                      </mat-icon>
-                    </h2>
-                  </div>
-                </drag-scroll>
-              </div>
               <div
-                class="w-100 d-flex justify-content-between align-items-center"
-                style="position: absolute"
+                class="h-100 w-100 d-flex justify-content-between align-items-center"
+                style="position: relative"
               >
-                <a
-                  *ngIf="(storeInfo().banners?.length ?? 0) > 1"
-                  class="d-none d-md-block"
-                  role="button"
-                  (click)="moveLeft()"
-                >
-                  <mat-icon
-                    class="ms-3 ms-md-5 mt-1"
-                    style.color="{{ bannerTheme()!.color }}"
+                <div class="w-100 h-100 d-flex">
+                  <drag-scroll
+                    #carousel
+                    class="w-100 h-100"
+                    [scrollbar-hidden]="true"
+                    [indexChanged]="didMove()"
                   >
-                    <span
-                      class="material-icons-outlined"
-                      style="font-size: 30px"
+                    <div
+                      drag-scroll-item
+                      class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
+                      *ngFor="let banner of storeInfo().banners"
                     >
-                      chevron_left
-                    </span>
-                  </mat-icon>
-                </a>
-                <a
-                  *ngIf="(storeInfo().banners?.length ?? 0) > 1"
-                  class="d-none d-md-block"
-                  role="button"
-                  (click)="moveRight()"
+                      <h2
+                        style.color="{{ bannerTheme(banner)!.color }}"
+                        class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
+                        [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
+                        style="
+                          font-size: calc(
+                            14px + (16 - 14) * (100vw - 400px) / (800 - 400)
+                          );
+                        "
+                      >
+                        <div *ngIf="banner.text != ''" class="mb-1">
+                          {{(banner.text ?? 'fs')}}
+                        </div>
+                        <mat-icon
+                          *ngIf="banner.icon != ''"
+                          style="font-size: inherit"
+                        >
+                          <span class="ms-1 material-icons-outlined">
+                            {{ banner.icon }}
+                          </span>
+                        </mat-icon>
+                      </h2>
+                    </div>
+                  </drag-scroll>
+                </div>
+                <div
+                  class="w-100 d-flex justify-content-between align-items-center"
+                  style="position: absolute"
                 >
-                  <mat-icon
-                    class="me-3 me-md-5 mt-1"
-                    style.color="{{ bannerTheme()!.color }}"
+                  <a
+                    *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+                    class="d-none d-md-block"
+                    role="button"
+                    (click)="moveLeft()"
                   >
-                    <span
-                      class="material-icons-outlined"
-                      style="font-size: 30px"
+                    <mat-icon
+                      class="ms-3 ms-md-5 mt-1"
+                      style.color="{{ bannerTheme()!.color }}"
                     >
-                      chevron_right
-                    </span>
-                  </mat-icon>
-                </a>
+                      <span
+                        class="material-icons-outlined"
+                        style="font-size: 30px"
+                      >
+                        chevron_left
+                      </span>
+                    </mat-icon>
+                  </a>
+                  <a
+                    *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+                    class="d-none d-md-block"
+                    role="button"
+                    (click)="moveRight()"
+                  >
+                    <mat-icon
+                      class="me-3 me-md-5 mt-1"
+                      style.color="{{ bannerTheme()!.color }}"
+                    >
+                      <span
+                        class="material-icons-outlined"
+                        style="font-size: 30px"
+                      >
+                        chevron_right
+                      </span>
+                    </mat-icon>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <header
-          class="bg-{{ storeInfo().colorStyle!.back_code }} py-6 w-100"
-          role="button"
-          (click)="fileInputB.click()"
-          style="height: fit-content"
-        >
-          <img
-            class="w-100 h-100"
-            [src]="layoutForm.controls.header.value?.toString() ?? storeInfo()!.themeLink?.toString()"
-          />
-        </header>
-        <section
-          class="py-5 pb-0 w-100 mb-0"
-          style.background-color="{{ selectedTheme()!.bg_color }}"
-        >
-          <!-- (cdkDropListDropped)="drop($event)" -->
-          <div
-            cdkDropList
-            class="ms-0 mb-0 h-100"
-            (cdkDropListDropped)="drop($event)"
+          <header
+            class="bg-{{ storeInfo().colorStyle!.back_code }} py-6 w-100"
+            role="button"
+            (click)="fileInputB.click()"
+            style="height: fit-content"
           >
+            <img
+              class="w-100 h-100"
+              [src]="layoutForm.controls.header.value?.toString() ?? storeInfo()!.themeLink?.toString()"
+            />
+          </header>
+          <section
+            class="py-5 pb-0 w-100 mb-0"
+            style.background-color="{{ selectedTheme()!.bg_color }}"
+          >
+            <!-- (cdkDropListDropped)="drop($event)" -->
             <div
-              class="pb-4 block"
-              style.background-color="{{ selectedTheme()!.bg_color }}"
-              *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
-              id='p-{{i}}'
-              cdkDrag
-              role="button"
-              (click)="edit(i)"
-              [class.highlight]='hoverIndex != undefined && hoverIndex == i'
+              cdkDropList
+              class="ms-0 mb-0 h-100"
+              (cdkDropListDropped)="drop($event)"
             >
-              <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
               <div
-                *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
-                class="d-flex align-items-center justify-content-center pb-1 mb-5"
-                style="height: 50px; font-weight: bold; font-size: 30px"
-                style.color="{{ selectedTheme()!.color }}"
+                class="pb-4 block"
+                style.background-color="{{ selectedTheme()!.bg_color }}"
+                *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
+                id="p-{{ i }}"
+                cdkDrag
+                role="button"
+                (click)="edit(i)"
+                [class.highlight]="hoverIndex != undefined && hoverIndex == i"
               >
-                <p
-                  class="text-center text-{{
-                    storeInfo().colorStyle!.text_code
-                  }}"
-                  style="line-height: 1.2em"
-                  [style.font-family]="storeInfo().fontName!"
-                >
-                  {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
-                </p>
-              </div>
-              <div
-                class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
-              >
+                <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
                 <div
-                  class="col"
-                  *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
+                  *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
+                  class="d-flex align-items-center justify-content-center pb-1 mb-5"
+                  style="height: 50px; font-weight: bold; font-size: 30px"
+                  style.color="{{ selectedTheme()!.color }}"
+                >
+                  <p
+                    class="text-center text-{{
+                      storeInfo().colorStyle!.text_code
+                    }}"
+                    style="line-height: 1.2em"
+                    [style.font-family]="storeInfo().fontName!"
+                  >
+                    {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
+                  </p>
+                </div>
+                <div
+                  class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
                 >
                   <div
-                    class="card h-100 bg-{{
-                      storeInfo().colorStyle!.back_code
-                    }}"
-                    [class.border-secondary]="
-                      storeInfo()!.colorStyle!.text_code == 'light'
-                    "
+                    class="col"
+                    *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
                   >
-                    <!-- Product image-->
-                    <a role="button"
-                      ><img
-                        class="card-img-top"
-                        src="{{(product.url?.toString() ?? &quot;&quot;)}}"
-                        alt="ok"
-                    /></a>
-                    <!-- Product details-->
-                    <div class="card-body p-2 pb-0">
-                      <div class="text-center">
-                        <!-- Product name-->
-                        <h4
-                          class="fw-bolder"
-                          style="font-size: small"
-                          [style.font-family]="storeInfo().fontName!"
-                          [style.font-size.px]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
-                          [class.my-5]='titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row) != 12 && ((aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1) <= 2'
-                        >
-                          <a
-                            style="text-decoration: none"
-                            style.color="{{ selectedTheme()!.color }}"
-                            role="button"
-                            >{{ product.name }}</a
-                          >
-                        </h4>
-                        <!-- Product price-->
-                      </div>
-                    </div>
-                    <!-- Product actions-->
                     <div
-                      class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+                      class="card h-100 bg-{{
+                        storeInfo().colorStyle!.back_code
+                      }}"
+                      [class.border-secondary]="
+                        storeInfo()!.colorStyle!.text_code == 'light'
+                      "
                     >
-                      <p
-                        *ngIf="autoCoupon(product)"
-                        class="text-center fw-bolder d-flex justify-content-center align-items-center"
-                        style="font-size: 15px"
-                        [style.font-family]="storeInfo().fontName!"
+                      <!-- Product image-->
+                      <a role="button"
+                        ><img
+                          class="card-img-top"
+                          src="{{(product.url?.toString() ?? &quot;&quot;)}}"
+                          alt="ok"
+                      /></a>
+                      <!-- Product details-->
+                      <div class="card-body p-2 pb-0">
+                        <div class="text-center">
+                          <!-- Product name-->
+                          <h4
+                            class="fw-bolder"
+                            style="font-size: small"
+                            [style.font-family]="storeInfo().fontName!"
+                            [style.font-size.px]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                            [class.my-5]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row) != 12 && ((aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1) <= 2"
+                          >
+                            <a
+                              style="text-decoration: none"
+                              style.color="{{ selectedTheme()!.color }}"
+                              role="button"
+                              >{{ product.name }}</a
+                            >
+                          </h4>
+                          <!-- Product price-->
+                        </div>
+                      </div>
+                      <!-- Product actions-->
+                      <div
+                        class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
                       >
-                        <!-- <mat-icon
+                        <p
+                          *ngIf="autoCoupon(product)"
+                          class="text-center fw-bolder d-flex justify-content-center align-items-center"
+                          style="font-size: 15px"
+                          [style.font-family]="storeInfo().fontName!"
+                        >
+                          <!-- <mat-icon
                                              class="mt-2" 
                                              style="font-size:15px" 
                                              [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
@@ -723,77 +761,82 @@
                                             >
                                                 loyalty
                                             </mat-icon> -->
-                        <b class="old-price">
-                          {{formatPrice((product.price ?? 0) / 100)}}
-                        </b>
-                      </p>
-                      <div
-                        class="text-center d-flex justify-content-center align-items-center w-100"
-                      >
-                        <a
-                          [style.font-family]="storeInfo().fontName!"
-                          [style.font-size.px]="fontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
-                          class="btn btn-outline-{{
-                            storeInfo().colorStyle!.text_code
-                          }} bad w-100 mt-auto text-center"
-                          style="font-weight: bold; max-width: 50vh"
-                          role="button"
+                          <b class="old-price">
+                            {{formatPrice((product.price ?? 0) / 100)}}
+                          </b>
+                        </p>
+                        <div
+                          class="text-center d-flex justify-content-center align-items-center w-100"
                         >
-                          {{ formatPrice(mainPrice(product)) }}
-                        </a>
+                          <a
+                            [style.font-family]="storeInfo().fontName!"
+                            [style.font-size.px]="fontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                            class="btn btn-outline-{{
+                              storeInfo().colorStyle!.text_code
+                            }} bad w-100 mt-auto text-center"
+                            style="font-weight: bold; max-width: 50vh"
+                            role="button"
+                          >
+                            {{ formatPrice(mainPrice(product)) }}
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
-                *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 1"
-                style="pointer-events: none"
-              >
                 <div
-                  class="col"
-                  style="margin-bottom: 2px"
-                  *ngFor="let img of (aRow.index == i ? aRow?.row : undefined)?.imgs ?? row.imgs ?? []"
+                  class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                  *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 1"
+                  style="pointer-events: none"
                 >
                   <div
-                    class="d-block align-items-center text-center text-sm-start w-100"
+                    class="col"
+                    style="margin-bottom: 2px"
+                    *ngFor="let img of (aRow.index == i ? aRow?.row : undefined)?.imgs ?? row.imgs ?? []"
                   >
-                    <a class="ms-0 me-0" role="button"
-                      ><img
-                        style="border-radius: 2.5%"
-                        src="{{ img }}"
-                        style="width: 100%; height: auto"
-                        alt="Product"
-                    /></a>
+                    <div
+                      class="d-block align-items-center text-center text-sm-start w-100"
+                    >
+                      <a class="ms-0 me-0" role="button"
+                        ><img
+                          style="border-radius: 2.5%"
+                          src="{{ img }}"
+                          style="width: 100%; height: auto"
+                          alt="Product"
+                      /></a>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="w-100 mx-0"
-                *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
-                style="pointer-events: none"
-              >
                 <div
-                  class="m-3"
-                  [style.font-family]="storeInfo().fontName!"
-                  style.color="{{ selectedTheme()!.color }}"
-                  [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                  class="w-100 mx-0"
+                  *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
+                  style="pointer-events: none"
                 >
-                
+                  <div
+                    class="m-3"
+                    [style.font-family]="storeInfo().fontName!"
+                    style.color="{{ selectedTheme()!.color }}"
+                    [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                  ></div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
         </div>
-        <div class="card-footer bg-dark text-muted text-center p-2 border-dark border-top border-2 rounded-0" style="height: 60px;">
-            <img class="h-100" style="object-fit: contain; aspect-ratio: 1/1;" src='/assets/thred_desktop.png'>
+        <div
+          class="card-footer bg-dark text-muted text-center p-2 border-dark border-top border-2 rounded-0"
+          style="height: 60px"
+        >
+          <img
+            class="h-100"
+            style="object-fit: contain; aspect-ratio: 1/1"
+            src="/assets/thred_desktop.png"
+          />
         </div>
       </div>
     </div>
     <div *ngIf="!loaded" style="height: 100vh"></div>
-</mat-dialog-content>
+  </mat-dialog-content>
 </div>
 <!-- <div class="w-100" mat-dialog-actions>
 
@@ -811,4 +854,3 @@
         </div>
     </div>
 </div> -->
-

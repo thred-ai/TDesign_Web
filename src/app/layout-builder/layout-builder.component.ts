@@ -272,8 +272,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ];
 
   images = new Array<{
-    isActive: boolean;
-    img: string;
+    isActive: boolean,
+    img: string,
+    link: string
   }>();
 
   grid: Array<{
@@ -394,11 +395,13 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
 
-    const promises = (matchingRow.imgs ?? []).map(async (image) => {
+    const promises = (matchingRow.imgs ?? []).map(async (image: string, index: number) => {
       let img = {
         isActive: true,
         img: image.toString(),
+        link: (matchingRow.imgLinks ?? [])[index]?.toString() ?? ''
       };
+      console.log(img)
       this.images.push(img);
     });
     await Promise.all(promises);
@@ -436,6 +439,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           this.images.push({
             isActive: false,
             img: '',
+            link: ''
           });
         }
       }
@@ -465,13 +469,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     );
   }
 
-  removeImg(img: { isActive: boolean; img: string }) {
+  removeImg(img: { isActive: boolean; img: string, link: string }) {
     img.img = '';
     img.isActive = false;
 
     let index = this.images.indexOf(img);
     this.setRow();
     moveItemInArray(this.images, index, this.images.length - 1);
+    
   }
 
   fileChangeEvent(
@@ -479,6 +484,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     image: {
       isActive: boolean;
       img: string;
+      link: string
     }
   ): void {
     const modalRef = this.modalService.open(CropperComponent, { size: 'lg' });
@@ -543,6 +549,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             this.images.push({
               isActive: false,
               img: '',
+              link: ''
             });
           }
         }
@@ -572,6 +579,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         let imgs = (this.images ?? [])
           .filter((i) => i.img != undefined && i.img.trim() != '')
           .map((i) => i.img);
+        let imgLinks = (this.images ?? [])
+          .filter((i) => i.link != undefined && i.link.trim() != '')
+          .map((i) => i.link);
+
         let products = this.prods ?? [];
 
         if (
@@ -593,7 +604,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             Object.assign([], imgs),
             matchGrid,
             html,
-            ''
+            '',
+            imgLinks
           );
 
           if (
@@ -660,6 +672,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let imgs = (this.images ?? [])
       .filter((i) => i.img != undefined && i.img.trim() != '')
       .map((i) => i.img);
+    let imgLinks = (this.images ?? [])
+      .filter((i) => i.link != undefined && i.link.trim() != '')
+      .map((i) => i.link);
+
+
+
     let products = this.prods ?? [];
 
     let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '2x1';
@@ -674,7 +692,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       Object.assign([], imgs),
       matchGrid,
       html,
-      ''
+      '',
+      imgLinks
     );
 
     if (products.find((i) => i == '0') || products.find((i) => i == '1')) {

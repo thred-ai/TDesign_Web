@@ -289,6 +289,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.routingService.routeToHome(Globals.storeInfo.username, this.getStoreName().isCustom)
   }
 
+  routeToImgLink(link?: string){
+    this.setOptions()
+    if (Globals.storeInfo.username && link)
+    this.routingService.linkImgPressed(Globals.storeInfo.username, link, this.getStoreName().isCustom)
+  }
+
   routeToOrders(){
     if (Globals.storeInfo.username)
     this.routingService.routeToOrders(Globals.storeInfo.username, this.getStoreName().isCustom)

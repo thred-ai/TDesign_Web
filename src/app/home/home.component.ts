@@ -130,6 +130,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     }).slice(0, 4);
   }
 
+  imgLinkPressed(link?: string){
+    this.rootComponent.routeToImgLink(link)
+  }
 
   constructor(
   @Inject(PLATFORM_ID) private platformID: Object,
@@ -198,9 +201,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       };
 
       setTimeout(() => {
-        if (isPlatformBrowser(this.platformID)){
-            this.spinner.hide()
-        };
+         this.spinner.hide()
       }, 1500);
     }
   }
