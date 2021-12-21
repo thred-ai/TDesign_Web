@@ -7,6 +7,7 @@ import {
   ElementRef,
   ChangeDetectorRef,
   SecurityContext,
+  PLATFORM_ID,
 } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Order } from '../models/order.model';
@@ -32,6 +33,7 @@ import { CropperComponent } from '../cropper/cropper.component';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-layout-builder',
@@ -76,30 +78,61 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     showToolbar: true,
     placeholder: 'Enter text here...',
     defaultParagraphSeparator: '',
-    defaultFontName: '',
+    defaultFontName: this.storeInfo().fontName ?? '',
     defaultFontSize: '',
     uploadUrl: 'v1/image',
     uploadWithCredentials: false,
     sanitize: false,
     toolbarPosition: 'top',
     toolbarHiddenButtons: [
-      ['insertImage', 'insertVideo', 'toggleEditorMode', 'heading', 'fontName'],
+      [
+        'insertImage',
+        'insertVideo',
+        'toggleEditorMode',
+        'heading',
+        'subscript',
+        'superscript',
+        'indent',
+        'outdent',
+        'undo',
+        'redo',
+        'insertHorizontalRule',    
+      ],
     ],
+    fonts: this.storeFonts(),
   };
+
+  //'fontName'
 
   title = 'LAUNCHING LAYOUT BUILDER';
 
   prods: Array<string> = [];
+
+
+  storeFonts(){
+
+    var fonts: Array<{
+      class: string,
+      name: string
+    }> = []
+
+    Globals.fonts.forEach(font => {
+      fonts.push({
+        class: font.split(' ').join('-'),
+        name: font
+      })
+    })
+    return fonts
+  }
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
     if (value != '0' && value != '1') {
       this.prods.push(value);
-    }
-    else{
-      this.prods = [value]
-      console.log('smart')
+    } else {
+      this.prods = [value];
+      console.log('smart');
     }
     // Clear the input value
     event.chipInput!.clear();
@@ -113,20 +146,19 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (index >= 0) {
       this.prods.splice(index, 1);
     }
-    this.setRow()
+    this.setRow();
   }
 
-  hoverIndex?: number = undefined
+  hoverIndex?: number = undefined;
 
-  changeStyle($event: Event, index: number){
+  changeStyle($event: Event, index: number) {
     // this.color = $event.type == 'mouseover' ? 'yellow' : 'red';
     let p = document.getElementById('p-' + index);
 
-    if ($event.type == 'mouseover') { 
-      this.hoverIndex = index
+    if ($event.type == 'mouseover') {
+      this.hoverIndex = index;
       setTimeout(async () => {
         if (p) {
-          
           p.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
@@ -136,9 +168,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           console.log('blamk');
         }
       }, 0);
-    }
-    else{
-      this.hoverIndex = undefined
+    } else {
+      this.hoverIndex = undefined;
     }
   }
 
@@ -162,15 +193,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   selected(event: MatAutocompleteSelectedEvent): void {
     if (event.option.value != '0' && event.option.value != '1') {
       this.prods.push(event.option.value);
-    }
-    else{
-      this.prods = [event.option.value]
-      console.log('smart')
+    } else {
+      this.prods = [event.option.value];
+      console.log('smart');
     }
 
     this.productInput!.nativeElement.value = '';
 
-    this.setRow()
+    this.setRow();
     this.productCtrl.setValue(null);
   }
 
@@ -190,7 +220,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private loadService: LoadService,
     private cdr: ChangeDetectorRef,
-    public sanitizer: DomSanitizer
+    public sanitizer: DomSanitizer,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformID: Object
   ) {
     this.admin = data.admin;
     this.rootComponent = data.rootComponent;
@@ -268,6 +300,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('a');
+
+    if (isPlatformBrowser(this.platformID)) {
+      if (this.document.body.removeAllListeners) {
+        this.document.body.removeAllListeners('click');
+      }
+    }
 
     console.log(this.storeInfo().homeRows);
 
@@ -526,8 +564,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       case false:
         let name = (this.rowForm.controls.title.value as string) ?? '';
         let type = (this.rowForm.controls.type.value as number) ?? 0;
-        let html = (this.rowForm.controls.htmlText.value ?? '').replace(/style="/g, 'style="overflow-wrap: break-word;')
-        
+        let html = (this.rowForm.controls.htmlText.value ?? '').replace(
+          /style="/g,
+          'style="overflow-wrap: break-word;'
+        );
+
         let imgs = (this.images ?? [])
           .filter((i) => i.img != undefined && i.img.trim() != '')
           .map((i) => i.img);
@@ -596,8 +637,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   rowText(row: Row, format = false) {
     let replaced = row.html ?? '';
 
-    if (format){
-      replaced = replaced.replace(/size=/g, '').replace(/<font >/g, '').replace(/style="/g, 'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; ')
+    if (format) {
+      replaced = replaced
+        .replace(/size=/g, '')
+        .replace(/<font >/g, '')
+        .replace(
+          /style="/g,
+          'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; '
+        );
     }
     return this.sanitizer.bypassSecurityTrustHtml(replaced);
   }
@@ -605,7 +652,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   setRow(gridVal?: string) {
     let name = (this.rowForm.controls.title.value as string) ?? '';
     let type = (this.rowForm.controls.type.value as number) ?? 0;
-    let html = (this.rowForm.controls.htmlText.value ?? '').replace(/style="/g, 'style="overflow-wrap: break-word;')
+    let html = (this.rowForm.controls.htmlText.value ?? '').replace(
+      /style="/g,
+      'style="overflow-wrap: break-word;'
+    );
 
     let imgs = (this.images ?? [])
       .filter((i) => i.img != undefined && i.img.trim() != '')
@@ -630,7 +680,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
       row.products = [];
       row.smart_products = parseInt(products[0]);
-      console.log('smart2')
+      console.log('smart2');
     }
 
     this.aRow.row = row;

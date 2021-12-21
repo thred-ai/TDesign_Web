@@ -24,7 +24,7 @@
     class="d-flex justify-content-between align-items-center"
     *ngIf="loaded"
   >
-    <h2 class="me-2 text-center d-none d-md-block">Drag/Drop to Rearrange</h2>
+    <h2 class="me-2 text-center d-none d-md-block">{{editingBlock == undefined ? 'Drag/Drop to Rearrange' : 'Edit Block'}}</h2>
     <div class="d-flex justify-content-between align-items-center">
       <a
         role="button"
@@ -250,7 +250,7 @@
               <form [formGroup]="rowForm" novalidate>
                 <mat-form-field class="w-100 h-100">
                   <mat-placeholder class="placeholder"
-                    >Header Text</mat-placeholder
+                    >Block Header Title (Optional)</mat-placeholder
                   >
                   <input
                     type="text"
