@@ -8,7 +8,7 @@
 </div>
 
 
-<nav *ngIf="isBrowser() && !isAdmin() && !isLanding()" [hidden]="storeInfo().username == undefined" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.nav_code}} bg-{{storeInfo().colorStyle!.back_code}} w-100">
+<nav *ngIf="isBrowser() && !isAdmin() && !isLanding()" [hidden]="storeInfo().username == undefined || storeInfo().username == ''" class="navbar navbar-expand-lg navbar-{{storeInfo().colorStyle!.nav_code}} bg-{{storeInfo().colorStyle!.back_code}} w-100">
     <div class="container-fluid d-flex justify-content-between px-2 w-100 text-start" style="min-height: 50px;" [class.my-2]='isAdmin()'  [class.px-md-3]='isAdmin()' [class.px-md-5]='!isAdmin()'>
 
         <div class="d-flex justify-content-start">

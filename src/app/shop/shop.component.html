@@ -14,7 +14,7 @@
   </h3>
   </ngx-spinner>
 
-  <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
+  <header *ngIf="isBrowser()" [hidden]="storeInfo().username == undefined || storeInfo().username == ''" [hidden]="storeInfo().username == undefined || storeInfo().username == ''" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
     <img class="w-100 h-100" [src]='storeInfo()!.shopLinkTop?.toString() ?? storeInfo()!.themeLink?.toString()'>
   </header>
   <!-- Section-->

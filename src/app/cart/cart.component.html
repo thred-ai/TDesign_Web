@@ -13,7 +13,7 @@ style.color = "{{selectedIndicator()!.color}}"
 </h3>
 </ngx-spinner>
   <!-- Header-->
-  <header *ngIf="isBrowser()" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
+  <header *ngIf="isBrowser()" [hidden]="storeInfo().username == undefined || storeInfo().username == ''" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
     <img class="w-100 h-100" [src]='storeInfo()!.themeLink?.toString()'>
   </header>
   

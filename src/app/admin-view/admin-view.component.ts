@@ -2526,62 +2526,63 @@ isSpinning = false
     
     async init() {
   
-      let user = (await this.loadService.isLoggedIn())
-      let uid = user?.uid
-      let isAnon = user?.isAnonymous ?? false
+
+      if (isPlatformBrowser(this.platformID)){
+        let user = (await this.loadService.isLoggedIn())
+        let uid = user?.uid
+        let isAnon = user?.isAnonymous ?? false
+    
+        this.signedIn = uid != undefined && !isAnon
   
-      this.signedIn = uid != undefined && !isAnon
-
-      if (!this.bankInfo){
-        this.loadService.getBankInfo(async (bankInfo: any) => {
-          this.bankInfo = bankInfo ?? ''
-          this.cdr.detectChanges()
-        })
-      }
-      if (!this.subInfo){
-        this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
-          if (!this.subInfo){
-            this.subInfo = subInfo ?? ''
-          }
-          this.canTrial = canTrial
-          this.cdr.detectChanges()
-        })
-      }
-      if (!this.orders){
-        this.loadService.getAllOrders(async (arr: Array<Order>) => {
-          this.orders = arr ?? []
-          this.orderTable?.renderRows()
-          this.cdr.detectChanges()
-        })
-      }
-      if (!this.emailSubs){
-        this.loadService.getEmailSubs(uid, async (arr: Array<Dict<any>>) => {
-          this.emailSubs = arr as Array<{
-            email: string,
-            name: string,
-            timestamp: string
-          }> ?? []
-          this.addSubs()
-          this.cdr.detectChanges()
-        })
-      }
-      if (!this.phoneSubs){
-        this.loadService.getNumSubs(uid, async (arr: Array<Dict<any>>) => {
-
-          this.phoneSubs = arr as Array<{
-            phone: string,
-            name: string,
-            timestamp: string
-          }> ?? []
-          this.addSubs()
-          this.cdr.detectChanges()
-        })
-      }
-      if (!this.inventory){
-        this.getInventory()
-      }
-      
-      this.router.queryParams
+        if (!this.bankInfo){
+          this.loadService.getBankInfo(async (bankInfo: any) => {
+            this.bankInfo = bankInfo ?? ''
+            this.cdr.detectChanges()
+          })
+        }
+        if (!this.subInfo){
+          this.loadService.getSubInfo(async (subInfo: any, canTrial?: boolean) => {
+            if (!this.subInfo){
+              this.subInfo = subInfo ?? ''
+            }
+            this.canTrial = canTrial
+            this.cdr.detectChanges()
+          })
+        }
+        if (!this.orders){
+          this.loadService.getAllOrders(async (arr: Array<Order>) => {
+            this.orders = arr ?? []
+            this.orderTable?.renderRows()
+            this.cdr.detectChanges()
+          })
+        }
+        if (!this.emailSubs){
+          this.loadService.getEmailSubs(uid, async (arr: Array<Dict<any>>) => {
+            this.emailSubs = arr as Array<{
+              email: string,
+              name: string,
+              timestamp: string
+            }> ?? []
+            this.addSubs()
+            this.cdr.detectChanges()
+          })
+        }
+        if (!this.phoneSubs){
+          this.loadService.getNumSubs(uid, async (arr: Array<Dict<any>>) => {
+  
+            this.phoneSubs = arr as Array<{
+              phone: string,
+              name: string,
+              timestamp: string
+            }> ?? []
+            this.addSubs()
+            this.cdr.detectChanges()
+          })
+        }
+        if (!this.inventory){
+          this.getInventory()
+        }
+        this.router.queryParams
       .subscribe(params => {
 
         let selected = params.selected as string
@@ -2610,6 +2611,7 @@ isSpinning = false
         }
       }
     );
+      }
 
     const storeInfo = this.getStoreName()
     this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom)

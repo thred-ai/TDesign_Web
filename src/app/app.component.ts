@@ -604,18 +604,24 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   setBodyColor(color?: string){
-    if (document.getElementById('body')){
-      document.getElementById('body')?.classList.add('bg-' + (color ?? this.storeInfo().colorStyle.back_code))
+    if (isPlatformBrowser(this.platformID)){
+      if (document.getElementById('body')){
+        document.getElementById('body')?.classList.add('bg-' + (color ?? this.storeInfo().colorStyle.back_code))
+      }
+    }
+  }
+
+  addConfig(){
+    this.setBodyColor('dark')
+      this.createLinkForFavURL('https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media')
+      if (this.interval){
+        clearInterval(this.interval)
     }
   }
 
   activateComponent(event: any){
     if (event.constructor.name == 'LandingComponent'){
-      this.setBodyColor('dark')
-      this.createLinkForFavURL('https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media')
-      if (this.interval){
-        clearInterval(this.interval)
-      }
+      this.addConfig()
       event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, Free.", "shopmythred.com")
     }
   }
@@ -623,30 +629,30 @@ export class AppComponent implements OnInit, AfterViewInit {
   shake = false
 
   createLinkForFavURL(url: string) {
-    if (document.getElementById('appIcon')){
-      document.getElementById('appIcon')!.setAttribute('href', url)
+    if (isPlatformBrowser(this.platformID)){
+      if (document.getElementById('appIcon')){
+        document.getElementById('appIcon')!.setAttribute('href', url)
+      }
+      else{
+        let link: HTMLLinkElement = this.doc.createElement('link');
+        link.setAttribute('rel', 'icon');
+        link.setAttribute('id', 'appIcon');
+        link.setAttribute("type", "image/x-icon")
+        link.setAttribute('href', url);
+        this.doc.head.appendChild(link);
+      }
+      if (document.getElementById('appleIcon')){
+        document.getElementById('appleIcon')!.setAttribute('href', url)
+      }
+      else{
+        let link2: HTMLLinkElement = this.doc.createElement('link');
+        link2.setAttribute('rel', 'apple-touch-icon');
+        link2.setAttribute('id', 'appleIcon');
+        link2.setAttribute("type", "image/x-icon")
+        link2.setAttribute('href', url);
+        this.doc.head.appendChild(link2);
+      }
     }
-    else{
-      let link: HTMLLinkElement = this.doc.createElement('link');
-      link.setAttribute('rel', 'icon');
-      link.setAttribute('id', 'appIcon');
-      link.setAttribute("type", "image/x-icon")
-      link.setAttribute('href', url);
-      this.doc.head.appendChild(link);
-    }
-    if (document.getElementById('appleIcon')){
-      document.getElementById('appleIcon')!.setAttribute('href', url)
-    }
-    else{
-      let link2: HTMLLinkElement = this.doc.createElement('link');
-      link2.setAttribute('rel', 'apple-touch-icon');
-      link2.setAttribute('id', 'appleIcon');
-      link2.setAttribute("type", "image/x-icon")
-      link2.setAttribute('href', url);
-      this.doc.head.appendChild(link2);
-    }
-
-
   }
 
   getLinkImg(name: string){
