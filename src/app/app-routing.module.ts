@@ -39,8 +39,6 @@ var routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     preloadingStrategy: PreloadAllModules,
-    relativeLinkResolution: 'legacy',
-    useHash: true,
     initialNavigation: 'enabled',
     scrollPositionRestoration: 'enabled',
     paramsInheritanceStrategy: 'always'

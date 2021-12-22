@@ -1,12 +1,12 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppRoutingModule } from '../app-routing.module';
 import { CommonModule } from "@angular/common";
-import { AngularFireAnalyticsModule } from '@angular/fire/analytics';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAnalyticsModule } from '@angular/fire/compat/analytics';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { Globals } from '../globals';
 import { MatCardModule } from '@angular/material/card';
 import { NgxSpinnerModule } from "ngx-spinner";
-import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { InvalidPageComponent } from './invalid-page.component';
 import { Routes, RouterModule } from '@angular/router';
 

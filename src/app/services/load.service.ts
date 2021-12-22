@@ -1,7 +1,7 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { AngularFirestore, DocumentData } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
-import firebase from 'firebase/app';
+import { AngularFirestore, DocumentData } from '@angular/fire/compat/firestore';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import firebase from 'firebase/compat/app';
 import { Product } from '../models/product.model';
 import { Template } from '../models/template.model';
 import { TemplateSide } from '../models/template-side.model';
@@ -16,8 +16,8 @@ import { ShippingInfo } from '../models/shipping-address.model';
 import { BillingInfo } from '../models/billing-address.model';
 import { Inventory } from '../models/inventory.model';
 
-import { AngularFireFunctions } from '@angular/fire/functions';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFireFunctions } from '@angular/fire/compat/functions';
+import { AngularFireStorage } from '@angular/fire/compat/storage';
 
 import { v4 as uuid } from 'uuid';
 import { StripeService, StripeCardComponent } from 'ngx-stripe';
@@ -2366,7 +2366,7 @@ export class LoadService {
 
       // const task = await this.storage.upload(filePath, byteArray);
       const task = await ref.put(byteArray);
-      const url = await task.ref.getDownloadURL();
+      const url = new URL(await task.ref.getDownloadURL())
 
       if (type == 'theme') {
         Globals.userInfo!.themeLink = url;
@@ -2567,7 +2567,7 @@ export class LoadService {
 
     // const task = await this.storage.upload(filePath, byteArray);
     const task = await ref.put(byteArray);
-    const url = await task.ref.getDownloadURL();
+    const url = new URL(await task.ref.getDownloadURL());
     Globals.userInfo!.dpID = picID;
     Globals.userInfo!.profileLink = url;
 

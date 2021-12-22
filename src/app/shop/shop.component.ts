@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, Inject, OnDestroy } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Product } from 'src/app/models/product.model';
 
 import { ActivatedRoute, Router } from '@angular/router';
