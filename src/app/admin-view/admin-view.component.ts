@@ -2517,6 +2517,13 @@ isSpinning = false
           text: 'CONFIRMED'
         }
       }
+      else if (order.status == 'cancelled'){
+        return {
+          color: 'secondary',
+          icon: 'cancel',
+          text: 'CANCELLED'
+        }
+      }
       return {
         color: 'success',
         icon: 'local_shipping',

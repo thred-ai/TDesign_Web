@@ -33,6 +33,7 @@ export class ViewOrderAdminComponent implements OnInit {
 
   }
 
+
   close(){
     this.dialogRef.close()
   }
@@ -149,6 +150,17 @@ export class ViewOrderAdminComponent implements OnInit {
       this.order.trackingLink = this.orderForm.controls.tracking.value ?? ''
       await this.loadService.updateOrder(this.order)
       this.toast("Order Updated!")
+    }
+    else{
+      this.toast("Error! Try again later.")
+    }
+  }
+
+  async cancelOrder(){
+    if (this.order){
+      this.order.status = 'cancelled'
+      await this.loadService.updateOrder(this.order)
+      this.toast("Order Cancelled!")
     }
     else{
       this.toast("Error! Try again later.")
