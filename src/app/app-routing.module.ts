@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { Globals } from './globals';
 
 
@@ -38,6 +38,9 @@ var routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
+    preloadingStrategy: PreloadAllModules,
+    relativeLinkResolution: 'legacy',
+    useHash: true,
     initialNavigation: 'enabled',
     scrollPositionRestoration: 'enabled',
     paramsInheritanceStrategy: 'always'
