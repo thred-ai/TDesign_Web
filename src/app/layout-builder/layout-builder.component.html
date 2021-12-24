@@ -331,8 +331,7 @@
                     [cdkDragDisabled]="!image.isActive"
                   >
                     <div
-                      class="h-100 w-100"
-                      [class.p-1]="image.isActive"
+                      class="h-100 w-100 p-1"
                       style="position: relative"
                     >
                       <a
@@ -344,26 +343,7 @@
                           style="object-fit: contain"
                           src="{{ image.img }}"
                           alt="ok"
-                      /></a>
-
-                      <mat-form-field class="w-100 my-1">
-                        <mat-placeholder class="placeholder"
-                          >Image Click URL</mat-placeholder
-                        >
-                        <input
-                          type="text"
-                          matInput
-                          [ngModelOptions]="{standalone: true}"
-                          [(ngModel)]='image.link'
-                          style="font-size: small;"
-                          class="text-dark"
-                        />
-                        <mat-icon role="button" matSuffix
-                          >link</mat-icon
-                        >
-                      </mat-form-field>
-
-
+                      /></a>                  
 
 
 
@@ -391,6 +371,22 @@
                           <mat-icon>add_circle</mat-icon>
                         </a>
                       </div>
+                      <mat-form-field class="w-100 my-1">
+                        <mat-placeholder class="placeholder"
+                          >Image Click URL</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          [ngModelOptions]="{standalone: true}"
+                          [(ngModel)]='image.link'
+                          style="font-size: small;"
+                          class="text-dark"
+                        />
+                        <mat-icon role="button" matSuffix
+                          >link</mat-icon
+                        >
+                      </mat-form-field>
                       <input
                         #fileInput
                         type="file"
