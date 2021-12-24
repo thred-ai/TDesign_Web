@@ -2543,7 +2543,8 @@ isSpinning = false
   
         if (!this.bankInfo){
           this.loadService.getBankInfo(async (bankInfo: any) => {
-            this.bankInfo = bankInfo ?? ''
+            console.log(bankInfo)
+            this.bankInfo = bankInfo.payouts_enabled ? bankInfo.payouts_enabled : ""
             this.cdr.detectChanges()
           })
         }
