@@ -36,6 +36,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     })[0].img
   }
 
+  matchingStyle(style?: number){
+    console.log(style)
+    if (style == 0){
+      return 'rounded-pill'
+    }
+    if (style == 1){
+      return 'rounded'
+    }
+    if (style == 2){
+      return 'rounded-0'
+    }
+    return 'rounded-circle'
+  }
+
   autoCoupon(product: Product){
     var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
       if(a.amt < b.amt) { return 1; }

@@ -1,3 +1,5 @@
+import { Button } from './button.model'
+
 export class Row {
 
     text?: string
@@ -9,6 +11,7 @@ export class Row {
     grid_row?: number
     html?: string
     animations?: string
+    buttons?: Array<Button>
 
     constructor(
       text?: string,
@@ -19,7 +22,8 @@ export class Row {
       grid_row?: number,
       html?: string,
       animations?: string,
-      imgLinks?: Array<string>
+      imgLinks?: Array<string>,
+      buttons?: Array<Button>
     ) {
 
       this.text = text
@@ -31,5 +35,6 @@ export class Row {
       this.html = html ?? ''
       this.animations = animations ?? ''
       this.imgLinks = imgLinks ?? []
+      this.buttons = buttons ?? []
     }
 }

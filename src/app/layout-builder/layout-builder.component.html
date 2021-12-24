@@ -191,6 +191,28 @@
                         </div>
                       </div>
                       <div
+                        class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
+                        *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 3"
+                        style="pointer-events: none"
+                      >
+                        <div
+                          class="col text-center mt-1"
+                          *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
+                        >
+                          <a
+                            *ngIf="button.text?.trim() != ''"
+                            class="text-center fw-bolder p-1 px-2 btn {{
+                              matchingStyle(button.style)
+                            }} mw-100 my-auto"
+                            style="text-decoration: none; font-size: 5px"
+                            style.background-color="{{ button.bg_color }}"
+                            style.color="{{ button.text_color }}"
+                          >
+                            {{ button.text }}
+                          </a>
+                        </div>
+                      </div>
+                      <div
                         class="w-100 mx-0"
                         *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
                         style="pointer-events: none"
@@ -317,35 +339,80 @@
                   </mat-select>
                 </mat-form-field>
 
-                <!-- <div class="w-100" *ngIf="rowForm.controls.type.value == 3">
-                  <mat-form-field class="w-100 h-100">
-                    <mat-placeholder class="placeholder"
-                      >Button Text</mat-placeholder
-                    >
-                    <input
-                      type="text"
-                      matInput
-                      formControlName="title"
-                      class="text-dark"
-                    />
-                  </mat-form-field>
-                  <mat-form-field class="w-100 my-1">
-                    <mat-placeholder class="placeholder"
-                      >Button Click URL</mat-placeholder
-                    >
-                    <input
-                      type="text"
-                      matInput
-                      [ngModelOptions]="{standalone: true}"
-                      [(ngModel)]='image.link'
-                      style="font-size: small;"
-                      class="text-dark"
-                    />
-                    <mat-icon role="button" matSuffix
-                      >link</mat-icon
-                    >
-                  </mat-form-field>
-                </div> -->
+                <div
+                  cdkDropList
+                  class="rounded shadow bg-light w-100 h-100 px-1"
+                  (cdkDropListDropped)="drop($event, false, true)"
+                  style="overflow-y: scroll"
+                  *ngIf="rowForm.controls.type.value == 3"
+                >
+                  <div
+                    class="example-box p-2 my-1 bg-white rounded"
+                    *ngFor="let button of buttons"
+                    cdkDrag
+                  >
+                    <div class="h-100 w-100 " style="position: relative">
+                      <a
+                        role="button"
+                        class="btn"
+                        style.background-color="button.bg_color ?? 'black'"
+                        style.color="button.text_color ?? 'light'"
+                      >
+                      </a>
+                      <!-- (click)="removeImg(image)" -->
+                      <!-- *ngIf="image.isActive && canCancel()" -->
+
+                      <div style="position: absolute; top: 0; right: 0" *ngIf="canCancel(true)">
+                        <a class="ani-style" role="button" (click)="removeBtn(button)"
+                          ><mat-icon>cancel</mat-icon></a
+                        >
+                      </div>
+
+                      <mat-form-field class="w-100 my-1">
+                        <mat-placeholder class="placeholder"
+                          >Button Text</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="button.text"
+                          style="font-size: small"
+                          class="text-dark"
+                        />
+                      </mat-form-field>
+                      <mat-form-field class="w-100" appearance="outline">
+                        <mat-label>Button Style</mat-label>
+                        <mat-select
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="button.style"
+                        >
+                          <mat-option
+                            *ngFor="let btnType of btnTypes"
+                            [value]="btnType.code"
+                          >
+                            <!-- <mat-icon >{{type.icon}}</mat-icon> -->
+                            {{ btnType.name }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field class="w-100 my-1">
+                        <mat-placeholder class="placeholder"
+                          >Button Click URL</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="button.link"
+                          style="font-size: small"
+                          class="text-dark"
+                        />
+                        <mat-icon role="button" matSuffix>link</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
 
                 <div
                   cdkDropList
@@ -360,10 +427,7 @@
                     cdkDrag
                     [cdkDragDisabled]="!image.isActive"
                   >
-                    <div
-                      class="h-100 w-100 p-1"
-                      style="position: relative"
-                    >
+                    <div class="h-100 w-100 p-1" style="position: relative">
                       <a
                         *ngIf="image.isActive"
                         role="button"
@@ -373,9 +437,7 @@
                           style="object-fit: contain"
                           src="{{ image.img }}"
                           alt="ok"
-                      /></a>                  
-
-
+                      /></a>
 
                       <div style="position: absolute; top: 0; right: 0">
                         <a
@@ -408,14 +470,12 @@
                         <input
                           type="text"
                           matInput
-                          [ngModelOptions]="{standalone: true}"
-                          [(ngModel)]='image.link'
-                          style="font-size: small;"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="image.link"
+                          style="font-size: small"
                           class="text-dark"
                         />
-                        <mat-icon role="button" matSuffix
-                          >link</mat-icon
-                        >
+                        <mat-icon role="button" matSuffix>link</mat-icon>
                       </mat-form-field>
                       <input
                         #fileInput
@@ -831,6 +891,29 @@
                           alt="Product"
                       /></a>
                     </div>
+                  </div>
+                </div>
+                <div
+                  class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
+                  *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 3"
+                  style="pointer-events: none"
+                >
+                  <div
+                    class="col text-center mt-3"
+                    *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
+                  >
+                    <a
+                      role="button"
+                      *ngIf="button.text?.trim() != ''"
+                      class="text-center fw-bolder px-3 btn {{
+                        matchingStyle(button.style)
+                      }} mw-100 my-auto"
+                      style="text-decoration: none"
+                      style.background-color="{{ button.bg_color }}"
+                      style.color="{{ button.text_color }}"
+                    >
+                      {{ button.text }}
+                    </a>
                   </div>
                 </div>
                 <div

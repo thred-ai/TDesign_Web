@@ -2,53 +2,106 @@
 <router-outlet></router-outlet>
 
 <ngx-spinner
-*ngIf="isBrowser()" 
-bdColor = '{{selectedIndicator().bg_color}}'
-size = "large"
-color = '{{selectedIndicator().color}}'
-type = {{selectedIndicator().name}} 
-[fullScreen] = "true"
-style.color = "{{selectedIndicator()!.color}}"
+  *ngIf="isBrowser()"
+  bdColor="{{ selectedIndicator().bg_color }}"
+  size="large"
+  color="{{ selectedIndicator().color }}"
+  type="{{ selectedIndicator().name }}"
+  [fullScreen]="true"
+  style.color="{{ selectedIndicator()!.color }}"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">{{storeInfo()?.fullName}}
-</h3>
+  <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">
+    {{ storeInfo()?.fullName }}
+  </h3>
 </ngx-spinner>
 
-  <!-- Header-->
-  <header *ngIf="isBrowser()" [hidden]="storeInfo().username == undefined || storeInfo().username == ''" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
-    <img class="w-100 h-100" [src]='storeInfo()!.homeLinkTop?.toString() ?? storeInfo()!.themeLink?.toString()'>
-  </header>
-  <!-- Section-->
-  <section *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
-     
-    
-    <div>
-
-        <div class="w-100 mb-5" *ngFor='let row of storeInfo()?.homeRows ?? []'>
-            <div *ngIf='(row.text ?? "").trim() != ""' class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
-                <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
-                  {{row.text}}
-                </p>
-            </div>
-            <div class="w-100" *ngIf='row.type == 0'>
-                
-                <div class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center">
-                    <div class="col" *ngFor="let product of products(row.smart_products, row.products)">
-                        <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}"  [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                            <!-- Product image-->
-                            <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{(product.url?.toString() ?? "")}}' alt='ok'/></a>
-                            <!-- Product details-->
-                            <div class="card-body p-2 pb-0">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!" [style.font-size.px]="titleFontSize(row)" [class.my-5]='titleFontSize(row) != "inherit" && (row.grid_row ?? 1) <= 2'><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}"  role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
-                                    <!-- Product price-->
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
-                                <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                                    <!-- <mat-icon
+<!-- Header-->
+<header
+  *ngIf="isBrowser()"
+  [hidden]="storeInfo().username == undefined || storeInfo().username == ''"
+  class="bg-{{ storeInfo().colorStyle!.back_code }} py-6"
+  style="height: fit-content"
+>
+  <img
+    class="w-100 h-100"
+    [src]="storeInfo()!.homeLinkTop?.toString() ?? storeInfo()!.themeLink?.toString()"
+  />
+</header>
+<!-- Section-->
+<section
+  *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0"
+  class="py-5"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
+>
+  <div>
+    <div class="w-100 mb-5" *ngFor="let row of storeInfo()?.homeRows ?? []">
+      <div
+        *ngIf='(row.text ?? "").trim() != ""'
+        class="d-flex align-items-center justify-content-center pb-1 mb-5"
+        style="height: 50px; font-weight: bold; font-size: 30px"
+        style.color="{{ selectedTheme()!.color }}"
+      >
+        <p
+          class="text-center text-{{ storeInfo().colorStyle!.text_code }}"
+          style="line-height: 1.2em"
+          [style.font-family]="storeInfo().fontName!"
+        >
+          {{ row.text }}
+        </p>
+      </div>
+      <div class="w-100" *ngIf="row.type == 0">
+        <div
+          class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center"
+        >
+          <div
+            class="col"
+            *ngFor="let product of products(row.smart_products, row.products)"
+          >
+            <div
+              class="card h-100 bg-{{ storeInfo().colorStyle!.back_code }}"
+              [class.border-secondary]="
+                storeInfo()!.colorStyle!.text_code == 'light'
+              "
+            >
+              <!-- Product image-->
+              <a role="button" (click)="routeToProduct(product.productID)"
+                ><img
+                  class="card-img-top"
+                  src="{{(product.url?.toString() ?? &quot;&quot;)}}"
+                  alt="ok"
+              /></a>
+              <!-- Product details-->
+              <div class="card-body p-2 pb-0">
+                <div class="text-center">
+                  <!-- Product name-->
+                  <h4
+                    class="fw-bolder"
+                    [style.font-family]="storeInfo().fontName!"
+                    [style.font-size.px]="titleFontSize(row)"
+                    [class.my-5]='titleFontSize(row) != "inherit" && (row.grid_row ?? 1) <= 2'
+                  >
+                    <a
+                      style="text-decoration: none"
+                      style.color="{{ selectedTheme()!.color }}"
+                      role="button"
+                      (click)="routeToProduct(product.productID)"
+                      >{{ product.name }}</a
+                    >
+                  </h4>
+                  <!-- Product price-->
+                </div>
+              </div>
+              <!-- Product actions-->
+              <div
+                class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+              >
+                <p
+                  *ngIf="autoCoupon(product)"
+                  class="text-center fw-bolder d-flex justify-content-center align-items-center"
+                  style="font-size: 15px"
+                  [style.font-family]="storeInfo().fontName!"
+                >
+                  <!-- <mat-icon
                                      class="mt-2" 
                                      style="font-size:15px" 
                                      [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
@@ -57,53 +110,88 @@ style.color = "{{selectedIndicator()!.color}}"
                                     >
                                         loyalty
                                     </mat-icon> -->
-                                    <b class="old-price">
-                                        {{formatPrice((product.price ?? 0) / 100)}}
-                                    </b>
-                                </p>
-                                <div class="text-center d-flex justify-content-center align-items-center w-100" >
-                                    <a 
-                                    [style.font-family]="storeInfo().fontName!" 
-                                    [style.font-size.px]="fontSize(row)" 
-                                    class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} bad w-100 mt-auto text-center" 
-                                    style="font-weight:bold; max-width: 50vh;" 
-                                    role="button" 
-                                    (click)="routeToProduct(product.productID)"
-                                    >
-                                    {{formatPrice(mainPrice(product))}}
-                                    </a>
-                                </div>                    
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    
-
-            <div class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0" *ngIf='row.type == 1'>
-                <div class="col mb-1" *ngFor="let img of row.imgs ?? []; index as i">
-                    <div class="d-block align-items-center text-center text-sm-start w-100">
-                        <a class="ms-0 me-0" role="button" (click)="imgLinkPressed((row.imgLinks ?? [])[i])"><img style="border-radius: 2.5%;" src="{{img}}" style="width: 100%; height: auto;" alt="Product"/></a>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="w-100 mx-0"
-                *ngIf="row.type == 2"
-              >
+                  <b class="old-price">
+                    {{formatPrice((product.price ?? 0) / 100)}}
+                  </b>
+                </p>
                 <div
-                  class="m-3"
-                  [style.font-family]="storeInfo().fontName!"
-                  style.color="{{ selectedTheme()!.color }}"
-                  [innerHTML]="rowText(row)"
+                  class="text-center d-flex justify-content-center align-items-center w-100"
                 >
-                
+                  <a
+                    [style.font-family]="storeInfo().fontName!"
+                    [style.font-size.px]="fontSize(row)"
+                    class="btn btn-outline-{{
+                      storeInfo().colorStyle!.text_code
+                    }} bad w-100 mt-auto text-center"
+                    style="font-weight: bold; max-width: 50vh"
+                    role="button"
+                    (click)="routeToProduct(product.productID)"
+                  >
+                    {{ formatPrice(mainPrice(product)) }}
+                  </a>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div
+        class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+        *ngIf="row.type == 1"
+      >
+        <div class="col mb-1" *ngFor="let img of row.imgs ?? []; index as i">
+          <div
+            class="d-block align-items-center text-center text-sm-start w-100"
+          >
+            <a
+              class="ms-0 me-0"
+              role="button"
+              (click)="imgLinkPressed((row.imgLinks ?? [])[i])"
+              ><img
+                style="border-radius: 2.5%"
+                src="{{ img }}"
+                style="width: 100%; height: auto"
+                alt="Product"
+            /></a>
+          </div>
+        </div>
+      </div>
 
-<!--     
+      <div
+        class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
+        *ngIf="row.type == 3"
+      >
+        <div
+          class="col text-center mt-3"
+          *ngFor="let button of row.buttons ?? []; index as i"
+        >
+          <a
+            role="button"
+            *ngIf="button.text?.trim() != ''"
+            class="text-center fw-bolder px-3 btn {{
+              matchingStyle(button.style)
+            }} mw-100 my-auto"
+            style="text-decoration: none"
+            style.background-color="{{ button.bg_color }}"
+            style.color="{{ button.text_color }}"
+            (click)="imgLinkPressed((row.buttons ?? [])[i].link)"
+          >
+            {{ button.text }}
+          </a>
+        </div>
+      </div>
+
+      <div class="w-100 mx-0" *ngIf="row.type == 2">
+        <div
+          class="m-3"
+          [style.font-family]="storeInfo().fontName!"
+          style.color="{{ selectedTheme()!.color }}"
+          [innerHTML]="rowText(row)"
+        ></div>
+      </div>
+
+      <!--     
             <div class="w-100" *ngIf='row.type == 0'>
                 <div class="w-100 d-flex align-items-center justify-content-center pb-4 mb-5 mt-5 pt-5" style="height: 50px; font-weight: bold;font-size:30px">
                     <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">
@@ -144,31 +232,52 @@ style.color = "{{selectedIndicator()!.color}}"
                     </div>
                 </div>
             </div> -->
-        </div>
     </div>
-  </section>
-  <section *ngIf="isBrowser() && storeInfo()?.username && (!storeInfo()?.active || storeProducts?.length == 0)" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
-     
-    
-    <div class="container mt-5">
-
-        <div class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
-            <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
-              COMING SOON
-            </p>
-        </div>
-        <div>
-            <div class="d-block align-items-center pt-0">
-                <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{(storeInfo()!.homeLink?.toString() ?? '')}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
-                </div>
-            </div>
-        </div>
-
-        
+  </div>
+</section>
+<section
+  *ngIf="
+    isBrowser() &&
+    storeInfo()?.username &&
+    (!storeInfo()?.active || storeProducts?.length == 0)
+  "
+  class="py-5"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
+>
+  <div class="container mt-5">
+    <div
+      class="d-flex align-items-center justify-content-center pb-1 mb-5"
+      style="height: 50px; font-weight: bold; font-size: 30px"
+      style.color="{{ selectedTheme()!.color }}"
+    >
+      <p
+        class="text-center text-{{ storeInfo().colorStyle!.text_code }}"
+        style="line-height: 1.2em"
+        [style.font-family]="storeInfo().fontName!"
+      >
+        COMING SOON
+      </p>
     </div>
-  </section>
-  <!-- Footer-->
-  <!-- Bootstrap core JS-->
-  <script *ngIf="isBrowser();" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Core theme JS-->
-  <script *ngIf="isBrowser();" src="js/scripts.js"></script>
+    <div>
+      <div class="d-block align-items-center pt-0">
+        <div class="d-block align-items-center text-center text-sm-start">
+          <a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"
+            ><img
+              style="border-radius: 2.5%"
+              src="{{(storeInfo()!.homeLink?.toString() ?? '')}}"
+              style="max-width: 100%; height: auto"
+              alt="Product"
+          /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Footer-->
+<!-- Bootstrap core JS-->
+<script
+  *ngIf="isBrowser()"
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+></script>
+<!-- Core theme JS-->
+<script *ngIf="isBrowser()" src="js/scripts.js"></script>
