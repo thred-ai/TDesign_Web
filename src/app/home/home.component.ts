@@ -37,7 +37,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   matchingStyle(style?: number){
-    console.log(style)
     if (style == 0){
       return 'rounded-pill'
     }
