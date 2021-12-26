@@ -132,7 +132,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     var fonts: Array<string> = []
 
     Globals.fonts.forEach(font => {
-      fonts.push(font.split(' ').join('-'))
+      fonts.push(font)
     })
     return fonts
   }
