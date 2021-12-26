@@ -74,53 +74,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     height: 200,
     toolbar: [
         ['misc', ['undo', 'redo']],
-        ['style', ['bold', 'italic', 'underline', 'clear']],
-        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+        [['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
         ['fontsize', ['fontname', 'fontsize', 'color']],
         ['para', ['style', 'ul', 'ol', 'paragraph', 'height']],
-        ['insert', ['table', 'link', 'hr']]
+        ['insert', ['table', 'hr']]
     ],
     fontNames: this.storeFonts()
   }
-
-  editorConfig: AngularEditorConfig = {
-    editable: true,
-    spellcheck: true,
-    height: 'auto',
-    minHeight: '100',
-    maxHeight: 'auto',
-    width: 'auto',
-    minWidth: '0',
-    translate: 'yes',
-    enableToolbar: true,
-    showToolbar: true,
-    placeholder: 'Enter text here...',
-    defaultParagraphSeparator: '',
-    defaultFontName: this.storeInfo().fontName ?? '',
-    defaultFontSize: '',
-    uploadUrl: 'v1/image',
-    uploadWithCredentials: false,
-    sanitize: false,
-    toolbarPosition: 'top',
-    toolbarHiddenButtons: [
-      [
-        'insertImage',
-        'insertVideo',
-        'toggleEditorMode',
-        'heading',
-        'subscript',
-        'superscript',
-        'indent',
-        'outdent',
-        'undo',
-        'redo',
-        'insertHorizontalRule',    
-      ],
-    ],
-    // fonts: this.storeFonts(),
-  };
-
-  //'fontName'
 
   title = 'LAUNCHING LAYOUT BUILDER';
 

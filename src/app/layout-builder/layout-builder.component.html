@@ -68,7 +68,7 @@
               >
                 <div
                   *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
-                  class="m-0 d-flex justify-content-between align-items-top"
+                  class="m-0 d-flex justify-content-between align-items-center"
                   cdkDrag
                   (click)="edit(i)"
                 >
@@ -307,8 +307,7 @@
                   </mat-select>
                 </mat-form-field>
 
-                <div [ngxSummernote]="config" formControlName="htmlText"></div>
-
+                <div *ngIf="rowForm.controls.type.value == 2" [ngxSummernote]="config" formControlName="htmlText"></div>
 
                 <mat-form-field
                   class="w-100"
