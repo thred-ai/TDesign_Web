@@ -307,14 +307,8 @@
                   </mat-select>
                 </mat-form-field>
 
-                <angular-editor
-                  *ngIf="rowForm.controls.type.value == 2"
-                  class="mb-4 h-100"
-                  formControlName="htmlText"
-                  [config]="editorConfig"
-                  style="background-color: red"
-                >
-                </angular-editor>
+                <div [ngxSummernote]="config" formControlName="htmlText"></div>
+
 
                 <mat-form-field
                   class="w-100"

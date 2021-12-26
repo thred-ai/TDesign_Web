@@ -44,6 +44,7 @@ import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.co
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';
+import { NgxSummernoteModule } from 'ngx-summernote';
 
 const routes: Routes = [
   {
@@ -100,6 +101,7 @@ const routes: Routes = [
     MatTabsModule,
     MatTableModule,
     AngularEditorModule,
+    NgxSummernoteModule,
     RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

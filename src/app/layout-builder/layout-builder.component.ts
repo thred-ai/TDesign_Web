@@ -35,6 +35,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Button } from '../models/button.model';
+import { SummernoteOptions } from 'ngx-summernote/lib/summernote-options';
 
 @Component({
   selector: 'app-layout-builder',
@@ -66,6 +67,21 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     grid: [null],
     buttons: [null]
   });
+
+  config: SummernoteOptions = {
+    placeholder: '',
+    tabsize: 2,
+    height: 200,
+    toolbar: [
+        ['misc', ['undo', 'redo']],
+        ['style', ['bold', 'italic', 'underline', 'clear']],
+        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'clear']],
+        ['fontsize', ['fontname', 'fontsize', 'color']],
+        ['para', ['style', 'ul', 'ol', 'paragraph', 'height']],
+        ['insert', ['table', 'link', 'hr']]
+    ],
+    fontNames: this.storeFonts()
+  }
 
   editorConfig: AngularEditorConfig = {
     editable: true,
@@ -101,7 +117,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         'insertHorizontalRule',    
       ],
     ],
-    fonts: this.storeFonts(),
+    // fonts: this.storeFonts(),
   };
 
   //'fontName'
@@ -113,16 +129,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   storeFonts(){
 
-    var fonts: Array<{
-      class: string,
-      name: string
-    }> = []
+    var fonts: Array<string> = []
 
     Globals.fonts.forEach(font => {
-      fonts.push({
-        class: font.split(' ').join('-'),
-        name: font
-      })
+      fonts.push(font.split(' ').join('-'))
     })
     return fonts
   }
