@@ -70,17 +70,7 @@ export class LandingComponent implements OnInit {
 
   async route(signedIn: boolean){
     if (signedIn){
-      if (await this.loadService.authenticated() && !((await this.loadService.isLoggedIn())?.isAnonymous)){
-        this.loadService.myCallback = () => {
-
-          Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
-          this.rootComponent.routeToProfile()
-        }
-        await this.loadService.getCustomer()
-      }
-      else{
-        window.location.href = "shopmythred.com/thred/home"
-      }
+      this.rootComponent.accountPressed()
     }
     else{
       window.scrollTo(0, 0);
