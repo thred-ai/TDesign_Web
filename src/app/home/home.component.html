@@ -54,7 +54,7 @@
           class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center"
         >
           <div
-            class="col"
+            class="col mb-3"
             *ngFor="let product of products(row.smart_products, row.products)"
           >
             <div
@@ -101,15 +101,6 @@
                   style="font-size: 15px"
                   [style.font-family]="storeInfo().fontName!"
                 >
-                  <!-- <mat-icon
-                                     class="mt-2" 
-                                     style="font-size:15px" 
-                                     [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
-                                     [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
-                                     [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
-                                    >
-                                        loyalty
-                                    </mat-icon> -->
                   <b class="old-price">
                     {{formatPrice((product.price ?? 0) / 100)}}
                   </b>
@@ -187,51 +178,9 @@
           class="m-3"
           [style.font-family]="storeInfo().fontName!"
           style.color="{{ selectedTheme()!.color }}"
-          [innerHTML]="rowText(row)"
+          [innerHTML]="row.html ?? '' | safeTextRows"
         ></div>
       </div>
-
-      <!--     
-            <div class="w-100" *ngIf='row.type == 0'>
-                <div class="w-100 d-flex align-items-center justify-content-center pb-4 mb-5 mt-5 pt-5" style="height: 50px; font-weight: bold;font-size:30px">
-                    <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">
-                      FEATURED
-                    </p>
-                </div>
-        
-                <div class="row gx-3 gx-lg-3 row-cols-1 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <div class="col mb-5" *ngFor="let product of featuredProducts()">
-                        <div class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                            <a role="button" (click)="routeToProduct(product.productID)"><img class="card-img-top" src='{{(product.url?.toString() ?? "")}}' alt='ok'/></a>
-                            <div class="card-body p-2 pb-0">
-                                <div class="text-center">
-                                    <h4 class="fw-bolder" [style.font-family]="storeInfo().fontName!" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" (click)="routeToProduct(product.productID)">{{product.name}}</a></h4>
-                                </div>
-                            </div>
-                            <div class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent">
-                                <p *ngIf='autoCoupon(product)' class="text-center fw-bolder d-flex justify-content-center align-items-center" style="font-size:15px" [style.font-family]="storeInfo().fontName!">
-                                    
-                                    <b class="old-price">
-                                        {{formatPrice((product.price ?? 0) / 100)}}
-                                    </b>
-                                </p>
-                                <div class="text-center" >
-                                    <a 
-                                    [style.font-family]="storeInfo().fontName!" 
-                                    class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto d-flex justify-content-center text-center" 
-                                    [class.new-price]='autoCoupon(product)' 
-                                    style="font-weight:bold;" 
-                                    role="button" 
-                                    (click)="routeToProduct(product.productID)"
-                                    >
-                                    {{formatPrice(mainPrice(product))}}
-                                    </a>
-                                </div>                    
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
     </div>
   </div>
 </section>

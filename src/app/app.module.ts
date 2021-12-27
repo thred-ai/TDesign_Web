@@ -26,6 +26,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PopupComponent } from './popup/popup.component';
 import { MatInputModule } from '@angular/material/input';
 import { InViewportModule } from 'ng-in-viewport';
+import { ApplicationPipesModule } from './shared/applicationPipes.module';
+import { SafeTextRowsPipe } from './safe-text-rows.pipe';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,7 @@ import { InViewportModule } from 'ng-in-viewport';
     PopupDialogComponent,
     ModelViewerComponent,
     PopupComponent,
-    PhoneMaskDirective
+    PhoneMaskDirective,
   ],
   imports: [
     CommonModule,
@@ -57,7 +59,7 @@ import { InViewportModule } from 'ng-in-viewport';
     LoginModule,
     PixelModule.forRoot({pixelId: '646165189889348'}),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
-    InViewportModule
+    InViewportModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

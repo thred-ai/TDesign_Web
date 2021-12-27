@@ -26,7 +26,7 @@ import { RoutingService } from '../services/routing.service';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
 import { Coupon } from '../models/coupon.model';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Banner } from '../models/banner.model';
 import { EditBannerComponent } from '../edit-banner/edit-banner.component';
@@ -36,7 +36,6 @@ import {PageEvent} from '@angular/material/paginator'
 import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
 import { MatTable } from '@angular/material/table';
 import { Order } from '../models/order.model';
-import { ViewOrderInfoComponent } from '../view-order-info/view-order-info.component';
 import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { Row } from '../models/row.model';
@@ -196,8 +195,11 @@ mainPrice(product: Product){
   return (product.price ?? 0) / 100
 }
 
+intValue?: number = undefined
+
 showLayoutModal(){
 
+  console.log('bui')
 
   const modalRef = this.dialog.open(LayoutBuilderComponent, {
     width: '97.5vw',
@@ -211,14 +213,96 @@ showLayoutModal(){
     },
   });
 
-  let sub = modalRef.afterClosed().subscribe(layouts => {
+  let sub = modalRef.afterClosed().subscribe(async layouts => {
     sub.unsubscribe()
     if (layouts && layouts != '0'){
-      this.toast("Layout Saved!")      
+      this.intValue = 20
+      var isFinished = false
+      let interval = setInterval(() => {
+        if (this.intValue){
+          if (!isFinished){
+            if (this.intValue < 80){
+              this.intValue += 1
+            }
+            else{
+              this.intValue = 80
+            }
+          }
+          else{
+            this.intValue = 100
+            clearInterval(interval)
+          }
+        }
+      }, 0.1);
+
+
+      const promises = layouts.rows.map(async (r: Row) => {
+        if (r.type == 1) {
+          let promises2 = (r.imgs ?? []).map(async (i: string, index: number) => {
+            if (
+              !this.loadService.isBase64(i?.replace(/^[\w\d;:\/]+base64\,/g, ''))
+            ) {
+              var im = (await this.getBase64ImageFromUrl(i?.toString())) as any;
+              (r.imgs ?? [])[index] = im;
+            }
+          });
+          await Promise.all(promises2);
+        }
+      });
+      await Promise.all(promises);
+  
+      this.loadService.addLayout(
+        layouts.rows,
+        layouts.header,
+        (success) => {
+          // this.spinner.hide('loader');
+          // this.title = 'LAUNCHING LAYOUT BUILDER';
+          this.toast("Layout Saved!")      
+          isFinished = true
+          this.intValue = undefined
+        },
+        Globals.storeInfo.uid
+      );
+
+
+
+
     }
     else if (layouts == '0'){
       this.toast("Unable to save layout! Try Again Later.")      
     }
+  });
+}
+
+async getBase64ImageFromUrl(imageUrl: string) {
+  return new Promise((resolve, reject) => {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', imageUrl, true);
+    xhr.responseType = 'arraybuffer';
+
+    xhr.onerror = function (e) {
+      alert('error');
+    };
+
+    xhr.onload = function (e) {
+      if (this.status == 200) {
+        var uInt8Array = new Uint8Array(this.response);
+        var i = uInt8Array.length;
+        var biStr = new Array(i);
+        while (i--) {
+          biStr[i] = String.fromCharCode(uInt8Array[i]);
+        }
+        var data = biStr.join('');
+        var base64 = window.btoa(data);
+
+        xhr.onerror = function (e) {
+          reject(e);
+        };
+
+        resolve('data:image/png;base64,' + base64);
+      }
+    };
+    xhr.send();
   });
 }
 

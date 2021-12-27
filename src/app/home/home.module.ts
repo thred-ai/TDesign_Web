@@ -6,6 +6,7 @@ import { Globals } from '../globals';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { Routes, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 
 const routes: Routes = [
   {
@@ -17,7 +18,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     CommonModule,
@@ -25,8 +26,7 @@ const routes: Routes = [
     MatIconModule,
     NgxSpinnerModule,
     RouterModule.forChild(routes),
-
-
+    ApplicationPipesModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

@@ -30,7 +30,6 @@ import { Observable } from 'rxjs';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from '../cropper/cropper.component';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
@@ -54,6 +53,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return Globals.storeInfo;
   }
 
+  animations(){
+    return Globals.rowAnimations
+  }
+
   layoutForm = this.fb.group({
     header: [null],
     rows: [[]],
@@ -65,7 +68,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     imgs: [[]],
     type: [null],
     grid: [null],
-    buttons: [null]
+    buttons: [null],
+    animations: [null]
   });
 
   config: SummernoteOptions = {
@@ -198,9 +202,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformID: Object
   ) {
     this.admin = data.admin;
-    this.rootComponent = data.rootComponent;
+    // this.rootComponent = data.rootComponent;
 
-    this.spinner.show('loader');
+    // this.spinner.show('loader');
 
     for (let i = 1; i < 5; i++) {
       for (let j = 1; j < 5; j++) {
@@ -302,6 +306,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       }
     }
 
+    console.log(this.rowText('<p style="overflow-wrap: break-word;overflow-wrap: break-word;text-align: center; "><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word; font-family: &quot;Permanent Marker&quot;; font-size: 36px;"><font color="#00c4f5">Forever Immortal</font></span></p><p style="overflow-wrap: break-word;overflow-wrap: break-word;text-align: center; "><span style="overflow-wrap: break-word;overflow-wrap: break-word; font-family: &quot;Saira Stencil One&quot;; font-size: 24px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;"><font color="#9cc6ef">BUILT FOR LEGENDS, BY LEGENDS</font></span><font face="Permanent Marker"><span style="overflow-wrap: break-word;overflow-wrap: break-word;font-size: 18px;"></span></font></p>'))
+
     console.log(this.storeInfo().homeRows);
 
     this.layoutForm.controls.rows.setValue(
@@ -332,37 +338,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  async getBase64ImageFromUrl(imageUrl: string) {
-    return new Promise((resolve, reject) => {
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', imageUrl, true);
-      xhr.responseType = 'arraybuffer';
-
-      xhr.onerror = function (e) {
-        alert('error');
-      };
-
-      xhr.onload = function (e) {
-        if (this.status == 200) {
-          var uInt8Array = new Uint8Array(this.response);
-          var i = uInt8Array.length;
-          var biStr = new Array(i);
-          while (i--) {
-            biStr[i] = String.fromCharCode(uInt8Array[i]);
-          }
-          var data = biStr.join('');
-          var base64 = window.btoa(data);
-
-          xhr.onerror = function (e) {
-            reject(e);
-          };
-
-          resolve('data:image/png;base64,' + base64);
-        }
-      };
-      xhr.send();
-    });
-  }
+  
 
   async edit(index: number) {
     if (this.editingBlock == index) {
@@ -713,20 +689,20 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     index: undefined,
   };
 
-  rowText(row: Row, format = false) {
-    let replaced = row.html ?? '';
+  rowText(row: string) {
 
-    if (format) {
-      replaced = replaced
-        .replace(/size=/g, '')
-        .replace(/<font >/g, '')
+      let replaced = row
+        .replace(/px/g, '15px')
         .replace(
           /style="/g,
           'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; '
         );
-    }
-    return this.sanitizer.bypassSecurityTrustHtml(replaced);
+
+        return replaced
   }
+
+
+  
 
   setRow(gridVal?: string) {
     let name = (this.rowForm.controls.title.value as string) ?? '';
@@ -809,39 +785,15 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
     let header = (this.layoutForm.controls.header.value as string) ?? '';
 
-    this.spinner.show('loader');
-    this.title = 'SAVING LAYOUT';
+    // this.spinner.show('loader');
+    // this.title = 'SAVING LAYOUT';
 
-    const promises = rowInfo.map(async (r) => {
-      if (r.type == 1) {
-        let promises2 = (r.imgs ?? []).map(async (i: string, index: number) => {
-          if (
-            !this.loadService.isBase64(i?.replace(/^[\w\d;:\/]+base64\,/g, ''))
-          ) {
-            var im = (await this.getBase64ImageFromUrl(i?.toString())) as any;
-            (r.imgs ?? [])[index] = im;
-          }
-        });
-        await Promise.all(promises2);
-      }
+    this.dialogRef.close({
+      rows: rowInfo,
+      header: header
     });
-    await Promise.all(promises);
 
-    this.loadService.addLayout(
-      rowInfo,
-      header,
-      (success) => {
-        this.spinner.hide('loader');
-        this.title = 'LAUNCHING LAYOUT BUILDER';
-
-        if (success) {
-          this.dialogRef.close(rowInfo);
-        } else {
-          this.dialogRef.close('0');
-        }
-      },
-      Globals.storeInfo.uid
-    );
+  
   }
 
   drop(event: any, isImage = false, isButton = false) {

@@ -228,7 +228,7 @@
                           "
                           style.color="{{ selectedTheme()!.color }}"
                           [style.font-family]="storeInfo().fontName!"
-                          [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row, true)"
+                          [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).html | safeTextRows: true"
                         ></div>
                       </div>
                       <div
@@ -307,7 +307,11 @@
                   </mat-select>
                 </mat-form-field>
 
-                <div *ngIf="rowForm.controls.type.value == 2" [ngxSummernote]="config" formControlName="htmlText"></div>
+                <div
+                  *ngIf="rowForm.controls.type.value == 2"
+                  [ngxSummernote]="config"
+                  formControlName="htmlText"
+                ></div>
 
                 <mat-form-field
                   class="w-100"
@@ -344,7 +348,7 @@
                     *ngFor="let button of buttons"
                     cdkDrag
                   >
-                    <div class="h-100 w-100 " style="position: relative">
+                    <div class="h-100 w-100" style="position: relative">
                       <a
                         role="button"
                         class="btn"
@@ -355,8 +359,14 @@
                       <!-- (click)="removeImg(image)" -->
                       <!-- *ngIf="image.isActive && canCancel()" -->
 
-                      <div style="position: absolute; top: 0; right: 0" *ngIf="canCancel(true)">
-                        <a class="ani-style" role="button" (click)="removeBtn(button)"
+                      <div
+                        style="position: absolute; top: 0; right: 0"
+                        *ngIf="canCancel(true)"
+                      >
+                        <a
+                          class="ani-style"
+                          role="button"
+                          (click)="removeBtn(button)"
                           ><mat-icon>cancel</mat-icon></a
                         >
                       </div>
@@ -551,6 +561,30 @@
                       {{ product.name }}
                     </mat-option>
                   </mat-autocomplete>
+                </mat-form-field>
+                <mat-form-field class="w-100 my-3" appearance="outline">
+                  <mat-label>Scroll Animation</mat-label>
+                  <mat-select
+                    formControlName="animations"
+                    (selectionChange)="changed($event)"
+                  >
+                    <mat-optgroup
+                      style="display: block"
+                      class="text-dark bg-light"
+                      *ngFor="let anim of animations()"
+                      [label]="anim.name"
+                    >
+                    <!-- [selected]="cTheme.name == theme" -->
+
+                      <mat-option
+                        class="not-empty-select text-dark bg-light"
+                        *ngFor="let a of anim.animations"
+                        [value]="a"
+                      >
+                        {{ a }}
+                      </mat-option>
+                    </mat-optgroup>
+                  </mat-select>
                 </mat-form-field>
               </form>
               <div class="mt-2">
@@ -782,7 +816,7 @@
                   class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
                 >
                   <div
-                    class="col"
+                    class="col mb-3"
                     *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
                   >
                     <div
@@ -831,18 +865,6 @@
                           style="font-size: 15px"
                           [style.font-family]="storeInfo().fontName!"
                         >
-                          <!-- <mat-icon
-                                             class="mt-2" 
-                                             style="font-size:15px" 
-                                             [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
-                                             [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
-                                             [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
-                                            >
-                                                loyalty
-                                            </mat-icon> -->
-                          <b class="old-price">
-                            {{formatPrice((product.price ?? 0) / 100)}}
-                          </b>
                         </p>
                         <div
                           class="text-center d-flex justify-content-center align-items-center w-100"
@@ -918,7 +940,7 @@
                     class="m-3"
                     [style.font-family]="storeInfo().fontName!"
                     style.color="{{ selectedTheme()!.color }}"
-                    [innerHTML]="rowText((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                    [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).html | safeTextRows"
                   ></div>
                 </div>
               </div>

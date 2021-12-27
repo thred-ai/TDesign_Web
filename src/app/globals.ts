@@ -47,6 +47,47 @@ export class Globals {
     }
   ]
 
+  public static rowAnimations = [
+    {
+        name: 'Fade',
+        animations: [
+            'fade-up',
+            'fade-down',
+            'fade-right',
+            'fade-left',
+            'fade-up-right',
+            'fade-up-left',
+            'fade-down-right',
+            'fade-down-left'
+        ]
+    },
+    {
+        name: 'Flip',
+        animations: [
+            'flip-left',
+            'flip-right',
+            'flip-up',
+            'flip-down',
+        ]
+    },
+    {
+        name: 'Zoom',
+        animations: [
+            'zoom-in',
+            'zoom-in-up',
+            'zoom-in-down',
+            'zoom-in-left',
+            'zoom-in-right',
+            'zoom-out',
+            'zoom-out-up',
+            'zoom-out-down',
+            'zoom-in-right',
+            'zoom-out-right',
+            'zoom-out-left',
+        ]
+    }
+  ]
+
   public static selectedOrder?: Order = new Order()
 
   public static selectedBlog?: Blog = new Blog()

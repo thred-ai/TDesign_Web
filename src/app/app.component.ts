@@ -29,6 +29,7 @@ import { Banner } from './models/banner.model';
 import { Popup } from './models/popup.model';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupComponent } from './popup/popup.component';
+import * as AOS from 'aos';
 
 @Component({
   selector: 'app-root',
@@ -580,6 +581,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     private dialog: MatDialog,
     ) {
       this.check()
+
+      if (isPlatformBrowser(this.platformID)){
+        AOS.init();
+      }
     }
 
     async check(){
@@ -736,9 +741,13 @@ repeatContent(el: HTMLElement, till: number) {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR 
 
+
     this.loadService.rootComponent = this
     this.setOptions()
 
+    // if (isPlatformBrowser(this.platformID)){
+    //   AOS.init();
+    // }
 
     // this._router.events
     //       .subscribe(

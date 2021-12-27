@@ -31,7 +31,6 @@ export class LandingComponent implements OnInit {
   ngOnInit(): void {
     
     if (isPlatformBrowser(this.platformID)){
-      AOS.init();
       this.isSignedIn()
       this.router.queryParams
       .subscribe(params => {

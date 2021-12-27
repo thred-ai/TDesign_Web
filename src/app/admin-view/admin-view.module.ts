@@ -43,8 +43,10 @@ import {MatTableModule} from '@angular/material/table';
 import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
-import { AngularEditorModule } from '@kolkov/angular-editor';
 import { NgxSummernoteModule } from 'ngx-summernote';
+import { ApplicationPipesModule } from '../shared/applicationPipes.module';
+import { SafeTextRowsPipe } from '../safe-text-rows.pipe';
+
 
 const routes: Routes = [
   {
@@ -100,9 +102,9 @@ const routes: Routes = [
     MatDialogModule,
     MatTabsModule,
     MatTableModule,
-    AngularEditorModule,
     NgxSummernoteModule,
     RouterModule.forChild(routes),
+    ApplicationPipesModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
