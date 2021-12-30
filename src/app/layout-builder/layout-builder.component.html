@@ -15,7 +15,7 @@
     style.color="{{ selectedIndicator()!.color }}"
     [name]="'loader'"
   >
-    <h3 [style.font-family]="storeInfo().fontName!" class="text-center mt-5">
+    <h3 [style.font-family]="storeInfo.fontName!" class="text-center mt-5">
       {{ title }}
     </h3>
   </ngx-spinner>
@@ -70,6 +70,7 @@
                   *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
                   class="m-0 d-flex justify-content-between align-items-center"
                   cdkDrag
+
                   (click)="edit(i)"
                 >
                   <div
@@ -92,7 +93,7 @@
                       (mouseover)="changeStyle($event, i)"
                       (mouseout)="changeStyle($event, i)"
                       style="position: relative"
-                      style.background-color="{{ selectedTheme()!.bg_color }}"
+                      style.background-color="{{ selectedTheme!.bg_color }}"
                     >
                       <div
                         *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
@@ -103,14 +104,14 @@
                           font-size: 4px;
                           pointer-events: none;
                         "
-                        style.color="{{ selectedTheme()!.color }}"
+                        style.color="{{ selectedTheme!.color }}"
                       >
                         <p
                           class="text-center text-{{
-                            storeInfo().colorStyle!.text_code
+                            storeInfo.colorStyle!.text_code
                           }}"
                           style="line-height: 1.2em"
-                          [style.font-family]="storeInfo().fontName!"
+                          [style.font-family]="storeInfo.fontName!"
                         >
                           {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
                         </p>
@@ -121,21 +122,21 @@
                       >
                         <div
                           class="col mb-2"
-                          *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
-                        >
+                          *ngFor="let product of (([] | productsPipe: {products: (admin?.storeProducts) ?? [], row: aRow.index == i ? aRow?.row : row}) ?? [])"
+                          >
                           <div
                             class="card h-100 bg-{{
-                              storeInfo().colorStyle!.back_code
+                              storeInfo.colorStyle!.back_code
                             }}"
                             [class.border-secondary]="
-                              storeInfo()!.colorStyle!.text_code == 'light'
+                              storeInfo!.colorStyle!.text_code == 'light'
                             "
                           >
                             <!-- Product image-->
                             <a role="button"
                               ><img
                                 class="card-img-top"
-                                src="{{(product.url?.toString() ?? &quot;&quot;)}}"
+                                src="{{(product.url | stringPipe)}}"
                                 alt="ok"
                             /></a>
                             <!-- Product details-->
@@ -145,9 +146,9 @@
                                 class="text-center d-flex justify-content-center align-items-center w-100"
                               >
                                 <a
-                                  [style.font-family]="storeInfo().fontName!"
+                                  [style.font-family]="storeInfo.fontName!"
                                   class="btn w-100 text-center text-{{
-                                    storeInfo().colorStyle!.text_code
+                                    storeInfo.colorStyle!.text_code
                                   }}"
                                   style="
                                     font-weight: bold;
@@ -200,7 +201,7 @@
                           *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
                         >
                           <a
-                            *ngIf="button.text?.trim() != ''"
+                            *ngIf="button.text != ''"
                             class="text-center fw-bolder p-1 px-2 btn {{
                               matchingStyle(button.style)
                             }} mw-100 my-auto"
@@ -226,8 +227,8 @@
                             word-break: break-all;
                             padding-right: 2px;
                           "
-                          style.color="{{ selectedTheme()!.color }}"
-                          [style.font-family]="storeInfo().fontName!"
+                          style.color="{{ selectedTheme!.color }}"
+                          [style.font-family]="storeInfo.fontName!"
                           [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).html | safeTextRows: true"
                         ></div>
                       </div>
@@ -347,6 +348,7 @@
                     class="example-box p-2 my-1 bg-white rounded"
                     *ngFor="let button of buttons"
                     cdkDrag
+
                   >
                     <div class="h-100 w-100" style="position: relative">
                       <a
@@ -623,12 +625,12 @@
         </div>
         <div class="w-100 h-100 card-body p-0" style="overflow-y: scroll">
           <div
-            *ngIf="storeInfo().banners && (storeInfo().banners?.length ?? 0) > 0"
+            *ngIf="storeInfo.banners && (storeInfo.banners?.length ?? 0) > 0"
             class="w-100 rounded"
             style="height: 35px"
           >
             <div
-              *ngIf="storeInfo().bannerStyle == 1"
+              *ngIf="storeInfo.bannerStyle == 1"
               class="w-100 h-100"
               id="outer"
             >
@@ -643,10 +645,10 @@
                       *ngFor="let _ of arrLength()"
                     >
                       <h2
-                        *ngFor="let banner of storeInfo().banners"
-                        style.color="{{ bannerTheme(banner)!.color }}"
+                        *ngFor="let banner of storeInfo.banners"
+                        style.color="{{ (banner | storeBanner: ds?.currIndex ?? 0).color }}"
                         style.background-color="{{
-                          bannerTheme(banner)!.bg_color
+                          (banner | storeBanner: ds?.currIndex ?? 0).bg_color
                         }}"
                         class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
                         style="
@@ -675,9 +677,9 @@
             </div>
 
             <div
-              *ngIf="storeInfo().bannerStyle == 0"
+              *ngIf="storeInfo.bannerStyle == 0"
               class="w-100 h-100"
-              style.background-color="{{ bannerTheme()!.bg_color }}"
+              style.background-color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).bg_color }}"
             >
               <div
                 class="h-100 w-100 d-flex justify-content-between align-items-center"
@@ -693,12 +695,12 @@
                     <div
                       drag-scroll-item
                       class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-                      *ngFor="let banner of storeInfo().banners"
+                      *ngFor="let banner of storeInfo.banners"
                     >
                       <h2
-                        style.color="{{ bannerTheme(banner)!.color }}"
+                        style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
                         class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
-                        [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
+                        [class.my-auto]="(storeInfo.banners?.length ?? 0) == 1"
                         style="
                           font-size: calc(
                             14px + (16 - 14) * (100vw - 400px) / (800 - 400)
@@ -725,14 +727,14 @@
                   style="position: absolute"
                 >
                   <a
-                    *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+                    *ngIf="(storeInfo.banners?.length ?? 0) > 1"
                     class="d-none d-md-block"
                     role="button"
                     (click)="moveLeft()"
                   >
                     <mat-icon
                       class="ms-3 ms-md-5 mt-1"
-                      style.color="{{ bannerTheme()!.color }}"
+                      style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
                     >
                       <span
                         class="material-icons-outlined"
@@ -743,14 +745,14 @@
                     </mat-icon>
                   </a>
                   <a
-                    *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+                    *ngIf="(storeInfo.banners?.length ?? 0) > 1"
                     class="d-none d-md-block"
                     role="button"
                     (click)="moveRight()"
                   >
                     <mat-icon
                       class="me-3 me-md-5 mt-1"
-                      style.color="{{ bannerTheme()!.color }}"
+                      style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
                     >
                       <span
                         class="material-icons-outlined"
@@ -765,19 +767,19 @@
             </div>
           </div>
           <header
-            class="bg-{{ storeInfo().colorStyle!.back_code }} py-6 w-100"
+            class="bg-{{ storeInfo.colorStyle!.back_code }} py-6 w-100"
             role="button"
             (click)="fileInputB.click()"
             style="height: fit-content"
           >
             <img
               class="w-100 h-100"
-              [src]="layoutForm.controls.header.value?.toString() ?? storeInfo()!.themeLink?.toString()"
+              [src]="(layoutForm.controls.header.value | stringPipe) ?? (storeInfo!.themeLink | stringPipe)"
             />
           </header>
           <section
             class="py-5 pb-0 w-100 mb-0"
-            style.background-color="{{ selectedTheme()!.bg_color }}"
+            style.background-color="{{ selectedTheme!.bg_color }}"
           >
             <!-- (cdkDropListDropped)="drop($event)" -->
             <div
@@ -787,27 +789,27 @@
             >
               <div
                 class="pb-4 block"
-                style.background-color="{{ selectedTheme()!.bg_color }}"
+                style.background-color="{{ selectedTheme!.bg_color }}"
                 *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
                 id="p-{{ i }}"
-                cdkDrag
+                cdkDrag              
                 role="button"
                 (click)="edit(i)"
                 [class.highlight]="hoverIndex != undefined && hoverIndex == i"
               >
                 <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
                 <div
-                  *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "").trim() != ""'
+                  *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "") != ""'
                   class="d-flex align-items-center justify-content-center pb-1 mb-5"
                   style="height: 50px; font-weight: bold; font-size: 30px"
-                  style.color="{{ selectedTheme()!.color }}"
+                  style.color="{{ selectedTheme!.color }}"
                 >
                   <p
                     class="text-center text-{{
-                      storeInfo().colorStyle!.text_code
+                      storeInfo.colorStyle!.text_code
                     }}"
                     style="line-height: 1.2em"
-                    [style.font-family]="storeInfo().fontName!"
+                    [style.font-family]="storeInfo.fontName!"
                   >
                     {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
                   </p>
@@ -817,21 +819,21 @@
                 >
                   <div
                     class="col mb-3"
-                    *ngFor="let product of products((aRow.index == i ? aRow?.row : undefined)?.smart_products ?? row.smart_products, (aRow.index == i ? aRow?.row : undefined)?.products ?? row.products)"
+                    *ngFor="let product of (([] | productsPipe: {products: (admin?.storeProducts) ?? [], row: aRow.index == i ? aRow?.row : row}) ?? [])"
                   >
                     <div
                       class="card h-100 bg-{{
-                        storeInfo().colorStyle!.back_code
+                        storeInfo.colorStyle!.back_code
                       }}"
                       [class.border-secondary]="
-                        storeInfo()!.colorStyle!.text_code == 'light'
+                        storeInfo!.colorStyle!.text_code == 'light'
                       "
                     >
                       <!-- Product image-->
                       <a role="button"
                         ><img
                           class="card-img-top"
-                          src="{{(product.url?.toString() ?? &quot;&quot;)}}"
+                          src="{{(product.url | stringPipe)}}"
                           alt="ok"
                       /></a>
                       <!-- Product details-->
@@ -841,13 +843,13 @@
                           <h4
                             class="fw-bolder"
                             style="font-size: small"
-                            [style.font-family]="storeInfo().fontName!"
+                            [style.font-family]="storeInfo.fontName!"
                             [style.font-size.px]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
                             [class.my-5]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row) != 12 && ((aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1) <= 2"
                           >
                             <a
                               style="text-decoration: none"
-                              style.color="{{ selectedTheme()!.color }}"
+                              style.color="{{ selectedTheme!.color }}"
                               role="button"
                               >{{ product.name }}</a
                             >
@@ -863,17 +865,17 @@
                           *ngIf="autoCoupon(product)"
                           class="text-center fw-bolder d-flex justify-content-center align-items-center"
                           style="font-size: 15px"
-                          [style.font-family]="storeInfo().fontName!"
+                          [style.font-family]="storeInfo.fontName!"
                         >
                         </p>
                         <div
                           class="text-center d-flex justify-content-center align-items-center w-100"
                         >
                           <a
-                            [style.font-family]="storeInfo().fontName!"
+                            [style.font-family]="storeInfo.fontName!"
                             [style.font-size.px]="fontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
                             class="btn btn-outline-{{
-                              storeInfo().colorStyle!.text_code
+                              storeInfo.colorStyle!.text_code
                             }} bad w-100 mt-auto text-center"
                             style="font-weight: bold; max-width: 50vh"
                             role="button"
@@ -919,7 +921,7 @@
                   >
                     <a
                       role="button"
-                      *ngIf="button.text?.trim() != ''"
+                      *ngIf="button.text != ''"
                       class="text-center fw-bolder px-3 btn {{
                         matchingStyle(button.style)
                       }} mw-100 my-auto"
@@ -937,9 +939,10 @@
                   style="pointer-events: none"
                 >
                   <div
-                    class="m-3"
-                    [style.font-family]="storeInfo().fontName!"
-                    style.color="{{ selectedTheme()!.color }}"
+                    class="m-3 h-100"
+
+                    [style.font-family]="storeInfo.fontName!"
+                    style.color="{{ selectedTheme!.color }}"
                     [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).html | safeTextRows"
                   ></div>
                 </div>

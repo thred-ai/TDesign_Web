@@ -2178,7 +2178,7 @@ export class LoadService {
             var split = url.split('&token=');
             url = split[0];
             //firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2FProducts%2F' + productID + '%2Flink_' + productID + '.png?alt=media
-            https: if (image.type.includes('link')) {
+            if (image.type.includes('link')) {
               images.push({
                 img: url,
                 index: index,

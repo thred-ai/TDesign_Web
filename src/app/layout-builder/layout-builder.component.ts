@@ -49,9 +49,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   editingBlock?: number;
 
-  storeInfo() {
-    return Globals.storeInfo;
-  }
+  storeInfo = Globals.storeInfo;
 
   animations(){
     return Globals.rowAnimations
@@ -297,31 +295,27 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.rootComponent = undefined;
   }
 
+  selectedTheme: Dict<any> = {}
+
+
   ngOnInit(): void {
     console.log('a');
+    this.selectedTheme = this.selectedThemeFn()
 
-    if (isPlatformBrowser(this.platformID)) {
-      if (this.document.body.removeAllListeners) {
-        this.document.body.removeAllListeners('click');
-      }
-    }
-
-    console.log(this.rowText('<p style="overflow-wrap: break-word;overflow-wrap: break-word;text-align: center; "><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word; font-family: &quot;Permanent Marker&quot;; font-size: 36px;"><font color="#00c4f5">Forever Immortal</font></span></p><p style="overflow-wrap: break-word;overflow-wrap: break-word;text-align: center; "><span style="overflow-wrap: break-word;overflow-wrap: break-word; font-family: &quot;Saira Stencil One&quot;; font-size: 24px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;"><font color="#9cc6ef">BUILT FOR LEGENDS, BY LEGENDS</font></span><font face="Permanent Marker"><span style="overflow-wrap: break-word;overflow-wrap: break-word;font-size: 18px;"></span></font></p>'))
-
-    console.log(this.storeInfo().homeRows);
+    console.log(this.storeInfo.homeRows);
 
     this.layoutForm.controls.rows.setValue(
-      Object.assign([], this.storeInfo().homeRows ?? [])
+      Object.assign([], this.storeInfo.homeRows ?? [])
     );
     this.layoutForm.controls.header.setValue(
-      this.storeInfo().homeLinkTop ?? this.storeInfo().themeLink
+      this.storeInfo.homeLinkTop ?? this.storeInfo.themeLink
     );
 
     setTimeout(() => {
       this.loaded = true;
       this.spinner.hide('loader');
     }, 500);
-    if (this.storeInfo()?.banners.length > 0) {
+    if (this.storeInfo?.banners.length > 0) {
       this.setInterval();
     }
     this.cdr.detectChanges();
@@ -429,7 +423,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1) - this.buttons.length;
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
-          this.buttons.push(new Button(this.selectedTheme().bg_color, '', this.selectedTheme().color, 0, ''));
+          this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, ''));
         }
       }
     }
@@ -531,7 +525,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   removeBtn(btn: Button){
     let index = this.buttons.indexOf(btn);
-    this.buttons[index] = new Button(this.selectedTheme().bg_color, '', this.selectedTheme().color, 0, '')
+    this.buttons[index] = new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '')
     this.setRow();
     moveItemInArray(this.images, index, this.images.length - 1);
   }
@@ -585,7 +579,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         console.log(this.buttons.length)
         for (let i = 0; i < newSize; i++) {
           if (!this.buttons[i]) {
-            this.buttons.push(new Button(this.selectedTheme().bg_color, '', this.selectedTheme().color, 0, ''));
+            this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, ''));
           }
         }
       } else if (newSize < this.buttons.length) {
@@ -846,7 +840,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   autoCoupon(product: Product) {
-    var autoCoupon = this.storeInfo()
+    var autoCoupon = this.storeInfo
       .coupons?.filter((coupon) => {
         return coupon.products.includes(product.productID) && coupon.auto;
       })
@@ -926,7 +920,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return prod;
   }
 
-  selectedTheme() {
+  selectedThemeFn() {
     let co = Globals.storeInfo?.colorStyle?.btn_color;
     let bco = Globals.storeInfo?.colorStyle?.bg_color;
     let name = Globals.storeInfo?.colorStyle?.name;
@@ -952,7 +946,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   moveRight() {
-    if (this.ds?.currIndex == (this.storeInfo().banners?.length ?? 0) - 1) {
+    if (this.ds?.currIndex == (this.storeInfo.banners?.length ?? 0) - 1) {
       this.ds?.moveTo(0);
     } else {
       this.ds?.moveRight();
@@ -1005,34 +999,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   arrLength() {
-    if (this.storeInfo().banners.length == 0) {
+    if (this.storeInfo.banners.length == 0) {
       return [];
     }
 
-    return Array(12 / this.storeInfo().banners.length).fill(0);
+    return Array(12 / this.storeInfo.banners.length).fill(0);
   }
 
-  bannerTheme(banner?: Banner) {
-    if (!banner) {
-      banner = this.storeInfo().banners[this.ds?.currIndex ?? 0];
-    }
-
-    let co = banner.color;
-    let bco = banner.bg_color;
-    let text = banner.text;
-
-    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
-
-    let bg_color =
-      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bco[3] + ')';
-
-    var theme: Dict<string> = {
-      text: text,
-      color: color,
-      bg_color: bg_color,
-    };
-    return theme;
-  }
+  
 
   newArrivalProducts() {
     return this.admin?.storeProducts

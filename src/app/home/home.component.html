@@ -33,8 +33,9 @@
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
-  <div>
-    <div class="w-100 mb-5" *ngFor="let row of storeInfo()?.homeRows ?? []">
+  <div class="w-100">
+    <div class="w-100 mb-5" *ngFor="let row of storeInfo()?.homeRows ?? []"
+    >
       <div
         *ngIf='(row.text ?? "").trim() != ""'
         class="d-flex align-items-center justify-content-center pb-1 mb-5"
@@ -49,7 +50,7 @@
           {{ row.text }}
         </p>
       </div>
-      <div class="w-100" *ngIf="row.type == 0">
+      <div class="w-100" *ngIf="row.type == 0" data-aos="fade-right" data-aos-duration="200">
         <div
           class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center"
         >

@@ -19,7 +19,6 @@ export class SafeTextRowsPipe implements PipeTransform {
           /style="/g,
           'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; '
         );
-        console.log(replaced)
     }
     return this.sanitizer.bypassSecurityTrustHtml(replaced);
   }
