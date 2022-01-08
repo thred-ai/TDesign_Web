@@ -51,6 +51,7 @@ var routes: Routes = [
     initialNavigation: 'enabled',
     scrollPositionRestoration: 'enabled',
     paramsInheritanceStrategy: 'always'
+    
 })],
   exports: [RouterModule]
 })
