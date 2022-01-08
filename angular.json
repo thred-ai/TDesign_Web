@@ -198,37 +198,10 @@
           "builder": "@nguniversal/builders:prerender",
           "options": {
             "routes": [
-              "/",
-              "/home",
-              "/my-store",
-              "/products",
-              "/products/**",
-              "/about",
-              "/shipping-address",
-              "/billing-info",
-              "/review-order",
-              "/orders",
-              "/orders/order",
-              "/my-store/billing",
-              "/not-found",
-              "/404",
-
-              "/**/",
-              "/**/home",
-              "/**/my-store",
-              "/**/products",
-              "/**/products/**",
-              "/**/about",
-              "/**/shipping-address",
-              "/**/billing-info",
-              "/**/review-order",
-              "/**/orders",
-              "/**/orders/order",
-              "/**/my-store/billing",
-              "/**/not-found",
-              "/**/404"
+              "/"
+    
             ],
-            "guessRoutes": false
+            "guessRoutes": true
           },
           "configurations": {
             "production": {
