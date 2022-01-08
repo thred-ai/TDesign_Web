@@ -1260,7 +1260,7 @@ showSocialModal(logo: {
 
   
   addPageToList(){
-    
+
   }
 
   getTypeImages(templateCode: string, inv?: Inventory) {

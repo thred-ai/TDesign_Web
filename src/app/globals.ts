@@ -436,7 +436,7 @@ public static fonts = [
     },
     {
         'name': 'Oklahoma',
-        'abbreviation': 'OK'
+        'abbreviation': 'localhost:4200'
     },
     {
         'name': 'Oregon',

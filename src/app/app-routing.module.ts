@@ -50,8 +50,8 @@ var routes: Routes = [
     preloadingStrategy: PreloadAllModules,
     initialNavigation: 'enabled',
     scrollPositionRestoration: 'enabled',
-    paramsInheritanceStrategy: 'always'
-    
+    paramsInheritanceStrategy: 'always',
+    onSameUrlNavigation: 'reload'
 })],
   exports: [RouterModule]
 })

@@ -30,7 +30,7 @@ export class RoutingService {
 
     let condition =
       imgLink.includes('shopmythred.com') ||
-      imgLink.includes('localhost:4200') ||
+      imgLink.includes('ok') ||
       imgLink.includes(globalThis.location.host);
 
     let word = '';
@@ -77,8 +77,8 @@ export class RoutingService {
 
   redirectTo(uri:string, shouldRefresh = true){
     if (shouldRefresh){
-      this._router.navigateByUrl('not-found', {skipLocationChange: true}).then(()=>
-      this._router.navigate([uri]))
+      this._router.navigateByUrl('not-found').then(()=>
+      this._router.navigateByUrl(uri))
       return
     }
     this._router.navigateByUrl(uri)
@@ -102,7 +102,7 @@ export class RoutingService {
 
   routeToHome(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('home', false);
+      this.redirectTo('home', true);
       return;
     }
     this.redirectTo(storeName + '/' + 'home');
@@ -118,7 +118,7 @@ export class RoutingService {
 
   routeToShop(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('products', false);
+      this.redirectTo('products', true);
       return;
     }
     this.redirectTo(storeName + '/' + 'products');
@@ -126,7 +126,7 @@ export class RoutingService {
 
   routeToAbout(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('about', false);
+      this.redirectTo('about', true);
       return;
     }
     this.redirectTo(storeName + '/' + 'about');

@@ -624,6 +624,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.addConfig()
       event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, Free.", "shopmythred.com")
     }
+    // else if (event.constructor.name == 'HomeComponent'){
+    //   console.log('visa')
+    //   event.ngOnInit()
+    // }
+    // console.log(event)
   }
 
   shake = false

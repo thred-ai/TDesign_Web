@@ -819,7 +819,7 @@ style.color = "{{selectedIndicator()!.color}}"
             {{err}}
         </p>
         <div class="d-flex justify-content-center mt-3">
-            <button (click)="save()" class="btn btn-dark d-flex" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{popup?.ctaBtnTitle ?? 'OK'}}</button>
+            <button (click)="save()" class="btn btn-dark d-flex" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{popup?.ctaBtnTitle ?? 'localhost:4200'}}</button>
             <button (click)="close()" class="btn btn-dark d-flex mx-1" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{popup?.exitBtnTitle ?? 'NO'}}</button>
         </div>
     </mat-dialog-content>
