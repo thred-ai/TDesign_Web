@@ -45,7 +45,6 @@ import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-ord
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 import { NgxSummernoteModule } from 'ngx-summernote';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
-import { SafeTextRowsPipe } from '../safe-text-rows.pipe';
 
 
 const routes: Routes = [

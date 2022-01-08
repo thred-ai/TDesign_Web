@@ -74,6 +74,7 @@ export class DesignComponent implements OnInit {
       return
     }
     else{
+
       this.finishedDesigning(undefined, inv)
     }
   }
@@ -274,6 +275,8 @@ export class DesignComponent implements OnInit {
             isCustom: true,
             images: images
           }
+
+          console.log(inv)
 
       
           let product = await this.loadService.createProduct(mappedData)

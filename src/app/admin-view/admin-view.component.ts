@@ -40,6 +40,7 @@ import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.co
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { Row } from '../models/row.model';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
+import { Page } from '../models/page.model';
 
 
 @Component({
@@ -197,7 +198,17 @@ mainPrice(product: Product){
 
 intValue?: number = undefined
 
-showLayoutModal(){
+
+deletePage(page: Page){
+
+  this.openPopup("Are you sure?", "Your page '" + page.title +  "' will be removed forever. This action cannot be undone.", '', 'Yes, Remove', 'Never Mind', async () => {
+    this.loadService.deletePage(page, success => {
+      this.toast("Page Removed!")      
+    }, Globals.storeInfo.uid)
+  })
+}
+
+showLayoutModal(page?: Page){
 
   console.log('bui')
 
@@ -208,6 +219,7 @@ showLayoutModal(){
     maxWidth: '100vw',
     panelClass: 'app-full-bleed-sm-dialog',
     data: {
+      page: page,
       rootComponent: this.rootComponent, 
       admin: this
     },
@@ -253,23 +265,19 @@ showLayoutModal(){
   
       this.loadService.addLayout(
         layouts.rows,
-        layouts.header,
+        layouts.name,
+        layouts.url,
         (success) => {
-          // this.spinner.hide('loader');
-          // this.title = 'LAUNCHING LAYOUT BUILDER';
-          this.toast("Layout Saved!")      
+          this.toast("Page Added!")      
           isFinished = true
           this.intValue = undefined
-        },
+        }, page?.id, 
         Globals.storeInfo.uid
       );
 
-
-
-
     }
     else if (layouts == '0'){
-      this.toast("Unable to save layout! Try Again Later.")      
+      this.toast("Unable to save Page! Try Again Later.")      
     }
   });
 }
@@ -634,7 +642,146 @@ showSocialModal(logo: {
 
   state: string = 'default';
 
-  organizeByMonth(set: Array<Dict<any>>, type: string){
+  leapYear(year: number){
+    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+  }
+
+  organizeMonth(set: Array<Dict<any>>, type: string){
+
+    var months = new Array<{
+      name: string,
+      value: number
+    }>()
+
+    //SPLIT SALES INTO SEPERATE ARRAYS BY YEAR
+
+    let sets = Array<Array<Dict<any>>>()
+
+      set.forEach((data) => {
+        let timestamp = data.timestamp as Date
+        let year = timestamp?.getFullYear()
+        var result = sets.find(obj => {
+          var years = obj.find(obj2 => {
+            return (obj2.timestamp as Date)?.getFullYear() == year
+          })
+          return years != undefined
+        })
+        if (result){
+          sets[sets.indexOf(result)].push(data)
+        }
+        else{
+          sets.push([data])
+        }
+      })
+
+    Globals.months.forEach((month) => {      
+
+      //IF MONTH AND YEAR ARE UNDEFINED FOR A GIVEN INTERVAL, PUT IN AN EMPTY FILLER VALUE OF 0
+
+      sets.forEach(s => {
+        var result = s.find(obj => {
+          return Globals.months[obj.timestamp?.getMonth()] == month
+        })
+
+        if (!result){
+
+          var time = s.find(obj => {
+            return obj.timestamp != undefined
+          })
+          var d = new Date(time?.timestamp?.getFullYear(), Globals.months.indexOf(month), 1)
+          if (type == "Products Sold"){
+            set.push(new ProductInCart(undefined, undefined, 0, undefined, d, undefined, undefined, 0))
+          }
+          else if (type == "Gross Revenue"){
+            set.push(new ProductInCart(undefined, undefined, 0, undefined, d, undefined, undefined, 0))
+          }
+          else if (type == "Net Profit"){
+            set.push(new ProductInCart(undefined, undefined, 0, undefined, d, undefined, undefined, 0))
+          }
+          else if (type == "Onboarded Users (Affiliate)"){
+            set.push({affiliate: "", timestamp: d})
+          }
+          else if (type == "Affiliate Revenue"){
+            set.push({affiliate: "", timestamp: d})
+          }
+          else if (type == "Store Views"){
+            set.push({views: 0, timestamp: d})
+          }
+          else if (type == "Abandoned Carts"){
+            set.push({dropCarts: 0, timestamp: d})
+          }
+        }
+      })
+    })
+
+    //SORT SALES BY TIMESTAMP
+
+    set.sort(function(a, b){
+      if(a.timestamp! < b.timestamp!) { return -1; }
+      if(a.timestamp! > b.timestamp!) { return 1; }
+      return 0;
+    })
+
+    //REMOVE EMPTY MONTHS THAT ARE IN THE FUTURE
+
+    set = set.filter(obj => {
+      return new Date() >= obj.timestamp!
+    })
+
+    //APPEND TO FINAL SERIES ARRAY
+
+    set.forEach((data) => {
+      let month = Globals.months[data.timestamp?.getMonth()].substring(0,3) + " " + data.timestamp!.getFullYear()
+      var result = months.find(obj => {
+        return obj?.name === month
+      })
+
+      let value = 0
+
+      if (type == "Products Sold"){
+        value = data.quantity ?? 0
+      }
+      else if (type == "Gross Revenue"){
+        value = data.product?.price ?? 0
+      }
+      else if (type == "Net Profit"){
+        value = data.profit ?? 0
+        if (isNaN(value)){
+          value = 0
+        }
+      }
+      else if (type == "Onboarded Users (Affiliate)"){
+        if (data.affiliate != ""){
+          value = 1
+        }
+      }
+      else if (type == "Affiliate Revenue"){
+        if (data.affiliate != ""){
+          value = 37 / 2
+        }
+      }
+      else if (type == "Store Views"){
+        value = data.views
+      }
+      else if (type == "Abandoned Carts"){
+        value = data.dropCarts
+      }
+
+      if (result){
+        months[months.indexOf(result)].value += value ?? 0
+      }
+      else{
+        months.push({
+          name: month,
+          value: value ?? 0
+        })
+      }
+    })
+
+    return months
+  }
+
+  organizeAllTime(set: Array<Dict<any>>, type: string){
 
     var months = new Array<{
       name: string,
@@ -823,7 +970,7 @@ showSocialModal(logo: {
 
 
     if (!(this.miscItems.some(e => e?.name === name))){
-      let set = this.organizeByMonth(data_set, name)
+      let set = this.organizeAllTime(data_set, name)
   
       var index = 0
       if (name == "Store Views"){
@@ -869,7 +1016,7 @@ showSocialModal(logo: {
 
 
     if (!(this.items.some(e => e?.name === name))){
-      let set = this.organizeByMonth(data_set, name)
+      let set = this.organizeAllTime(data_set, name)
 
   
       var index = 0
@@ -972,16 +1119,11 @@ showSocialModal(logo: {
       ]
     },  
     {
-      Category: "PAGES",
+      Category: "ORGANIZE",
       Options: [
         {
-          "Title": "HOME",
-          "Icon": "home",
-          "Active": false
-        },
-        {
-          "Title": "SHOP",
-          "Icon": "store",
+          "Title": "PAGES",
+          "Icon": "layers",
           "Active": false
         },
       ]
@@ -1117,6 +1259,9 @@ showSocialModal(logo: {
   }
 
   
+  addPageToList(){
+    
+  }
 
   getTypeImages(templateCode: string, inv?: Inventory) {
 
@@ -1429,13 +1574,7 @@ isSpinning = false
     banners: [[[]]],
     style: [null, Validators.required]
   });
-
-  homeForm = this.fb.group({
-    slogan: [null, Validators.required],
-    themeImg: [null],
-    homeImg: [null],
-    rows: [[]],
-  });
+  
 
   shopForm = this.fb.group({
     themeImg: [null],
@@ -1494,15 +1633,16 @@ isSpinning = false
     this.storeForm.controls.bio.setValue(Globals.userInfo?.bio ?? "")
 
 
-    this.homeForm.controls.slogan.setValue(Globals.userInfo?.slogan ?? "")
     this.themeForm.controls.loadingIndicator.setValue(Globals.userInfo?.loading?.name ?? "")
 
     this.themeForm.controls.themeImg.setValue(Globals.userInfo?.themeLink?.toString())
 
 
-    this.homeForm.controls.homeImg.setValue(Globals.userInfo?.homeLink?.toString())
-    this.homeForm.controls.themeImg.setValue(Globals.userInfo?.homeLinkTop?.toString())
-    this.homeForm.controls.rows.setValue(Globals.userInfo?.homeRows ?? [])
+    // this.homeForm.controls.homeImg.setValue(Globals.userInfo?.homeLink?.toString())
+    // this.homeForm.controls.themeImg.setValue(Globals.userInfo?.homeLinkTop?.toString())
+
+
+
 
     this.shopForm.controls.themeImg.setValue(Globals.userInfo?.shopLinkTop?.toString())
 
@@ -1541,14 +1681,14 @@ isSpinning = false
 
   fontSize(row: Row){
     if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
-      return 'inherit'
+      return "6"
     }
     return (0.5 / this.colCount(row)) * 100
   }
 
   titleFontSize(row: Row){
     if (this.rootComponent.isMobile() || this.colCount(row) >= 2){
-      return 'inherit'
+      return "6"
     }
     return (0.3 / this.colCount(row)) * 100
   }
@@ -1650,30 +1790,6 @@ isSpinning = false
             sub.unsubscribe()
             if (img != '0'){
               this.themeForm.controls.themeImg.setValue(img)
-            }
-          })
-        }
-        else if (type == "Home_Background"){
-          // modalRef.componentInstance.ratio = 1.78
-          modalRef.componentInstance.width = 2560
-          modalRef.componentInstance.height = 1440
-
-          let sub = modalRef.dismissed.subscribe((img: string) => {
-            sub.unsubscribe()
-            if (img != '0'){
-              this.homeForm.controls.themeImg.setValue(img)
-            }
-          })
-        }
-        else if (type == "Home_Promotion"){
-          // modalRef.componentInstance.ratio = 1.78
-          modalRef.componentInstance.width = 2560
-          modalRef.componentInstance.height = 1440
-
-          let sub = modalRef.dismissed.subscribe((img: string) => {
-            sub.unsubscribe()
-            if (img != '0'){
-              this.homeForm.controls.homeImg.setValue(img)
             }
           })
         }
@@ -2007,23 +2123,23 @@ isSpinning = false
     }
     else{
       if (this.getSelectedPanel().Title == 'HOME'){
-        data = {
-          slogan: this.homeForm.controls.slogan.value,
-        }
-        var images = new Array<Dict<string>>()
-        if (this.homeForm.controls.themeImg.value && this.isBase64(this.homeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-            images.push({
-              "type" : "home_top",
-              "img" : this.homeForm.controls.themeImg.value
-            })
-        }
-        if (this.homeForm.controls.homeImg.value && this.isBase64(this.homeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-          images.push({
-            "type" : "home",
-            "img" : this.homeForm.controls.homeImg.value
-          })
-        }
-        data.images = images
+        // data = {
+        //   slogan: this.homeForm.controls.slogan.value,
+        // }
+        // var images = new Array<Dict<string>>()
+        // if (this.homeForm.controls.themeImg.value && this.isBase64(this.homeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+        //     images.push({
+        //       "type" : "home_top",
+        //       "img" : this.homeForm.controls.themeImg.value
+        //     })
+        // }
+        // if (this.homeForm.controls.homeImg.value && this.isBase64(this.homeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
+        //   images.push({
+        //     "type" : "home",
+        //     "img" : this.homeForm.controls.homeImg.value
+        //   })
+        // }
+        // data.images = images
       }
   
       else if (this.getSelectedPanel().Title == 'SHOP'){
@@ -2192,12 +2308,6 @@ isSpinning = false
       return 
     }
 
-    if (section == 1 && index == 0){
-
-      this.showLayoutModal()
-
-      return
-    }
 
     if (this.isMobile()){
       this.classApplied = false
@@ -2718,6 +2828,14 @@ isSpinning = false
 
       
   
+    }
+
+    storeURL(){
+      let l = this.getStoreName()
+      if (l.isCustom){
+        return l.link
+      }
+      return 'shopmythred.com/' + l.link
     }
 
 

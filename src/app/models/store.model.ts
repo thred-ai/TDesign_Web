@@ -7,6 +7,7 @@ import { Popup } from './popup.model'
 
 import { Globals } from '../globals'
 import { Row } from './row.model'
+import { Page } from './page.model'
 
 export class Store {
     uid?: string
@@ -49,7 +50,8 @@ export class Store {
     banners: Array<Banner> = []
     bannerStyle?: number = 0
     popups?: Array<Popup>
-    homeRows?: Array<Row>
+    
+    pages?: Array<Page> = []
     orders?: number = 0
 
     constructor(
@@ -96,6 +98,7 @@ export class Store {
       bannerStyle?: number,
       popups?: Array<Popup>,
       homeRows?: Array<Row>,
+      pages?: Array<Page>,
       orders?: number,
       ) {
 
@@ -103,7 +106,7 @@ export class Store {
       this.dpID = dpID;
       this.username = username;
       this.fullName = fullName;
-      this.bio = bio;
+      this.bio = bio && bio.trim() != '' ? bio : 'Hello! ' + this.fullName + ' was made for creative trail blazers like you. The dreamers who seek new adventures that warp reality and transcend time. Our lust for life lives on through our unique pieces. Here’s your chance to display inspiration, love, heartache, vibes in the form of a unique piece of clothing/accessory not found anywhere else in the world but here… With a purchase of ' + this.fullName + ' you show the world that you are a free thinker, and belong to the tribe of dreamers. We welcome you with open arms. We are ' + this.fullName + '.'
       this.notifID = notifID;
       this.userFollowing = userFollowing;
       this.userLiked = userLiked;
@@ -148,6 +151,7 @@ export class Store {
 
       // this.colorStyle = colorStyle ?? new StoreTheme('Red','light','dark',[255.0, 0.0, 0.0, 1],[10.0, 10.0, 10.0, 1])
 
+
       let s: {
         name: string;
         link: string;
@@ -174,11 +178,27 @@ export class Store {
       this.bannerStyle = bannerStyle ?? 0
 
       this.popups = popups ?? []
-      this.homeRows = homeRows ?? [
-        new Row('NEW ARRIVALS', undefined, 0, 0, undefined, 4),
-        new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
-        new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
+
+
+      console.log(colorStyle)
+
+      this.pages = pages ?? [
+        new Page('home', 'Home', '1', 'home', homeRows ?? [
+          new Row('NEW ARRIVALS', undefined, 0, 0, undefined, 4),
+          new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
+          new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
+        ]),
+        new Page('about', 'About', '2', 'about', [
+          new Row('ABOUT US', undefined, undefined, 2, undefined, 1, '<div style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;text-align: center;"><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;font-family: &quot;' + this.fontName + '&quot;; font-size: 36px;"><br></font></span></div><div class="text-' + this.colorStyle.text_code + '" style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;text-align: center;"><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;font-family: &quot;' + this.fontName + '&quot;; font-size: 18px;">' + this.bio + '</font></span></div>', undefined, [], []),
+          // new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
+          // new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
+        ]),
+        new Page('products', 'Products', '3', 'products', [
+          new Row('All Products', undefined, 2, 0, undefined, 4),
+        ])
       ]
+
+
       this.orders = orders ?? 0
     }
 }

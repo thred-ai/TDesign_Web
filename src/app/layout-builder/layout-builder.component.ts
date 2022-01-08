@@ -9,7 +9,7 @@ import {
   SecurityContext,
   PLATFORM_ID,
 } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Order } from '../models/order.model';
 import { Globals } from '../globals';
 import { Country } from '../models/shipping-country.model';
@@ -56,8 +56,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   layoutForm = this.fb.group({
-    header: [null],
     rows: [[]],
+    name: [null, [Validators.required]],
+    url: [null, [Validators.required]]
   });
 
   rowForm = this.fb.group({
@@ -103,7 +104,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    if (value != '0' && value != '1') {
+    if (value != '0' && value != '1' && value != '2') {
       this.prods.push(value);
     } else {
       this.prods = [value];
@@ -154,6 +155,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     } else if (id === '0') {
       return 'NEWEST PRODUCTS';
     }
+    else if (id === '2') {
+      return 'ALL PRODUCTS';
+    }
     return this.admin?.storeProducts?.find((product) => {
       return product.productID == id;
     })?.name;
@@ -161,12 +165,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   allSelected() {
     return this.prods.find((j) => {
-      return j == '1' || j == '0';
+      return j == '1' || j == '0' || j == '2';
     });
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    if (event.option.value != '0' && event.option.value != '1') {
+    if (event.option.value != '0' && event.option.value != '1' && event.option.value != '2') {
       this.prods.push(event.option.value);
     } else {
       this.prods = [event.option.value];
@@ -200,9 +204,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformID: Object
   ) {
     this.admin = data.admin;
-    // this.rootComponent = data.rootComponent;
+    this.rootComponent = data.rootComponent;
 
-    // this.spinner.show('loader');
+    this.spinner.show('loader');
 
     for (let i = 1; i < 5; i++) {
       for (let j = 1; j < 5; j++) {
@@ -302,13 +306,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     console.log('a');
     this.selectedTheme = this.selectedThemeFn()
 
-    console.log(this.storeInfo.homeRows);
 
     this.layoutForm.controls.rows.setValue(
-      Object.assign([], this.storeInfo.homeRows ?? [])
+      Object.assign([], this.data.page?.rows ?? [])
     );
-    this.layoutForm.controls.header.setValue(
-      this.storeInfo.homeLinkTop ?? this.storeInfo.themeLink
+
+    this.layoutForm.controls.name.setValue(
+      this.data.page?.title
+    );
+
+    this.layoutForm.controls.url.setValue(
+      this.data.page?.url ? this.data.page?.url : null
     );
 
     setTimeout(() => {
@@ -486,20 +494,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     });
   }
 
-  fileChangeBannerEvent(event: any): void {
-    const modalRef = this.modalService.open(CropperComponent, { size: 'lg' });
-    modalRef.componentInstance.imageChangedEvent = event;
-
-    modalRef.componentInstance.width = 2560;
-    modalRef.componentInstance.height = 1140;
-
-    let sub = modalRef.dismissed.subscribe((img: string) => {
-      sub.unsubscribe();
-      if (img != '0') {
-        this.layoutForm.controls.header.setValue(img);
-      }
-    });
-  }
 
   canCancel(isBtn = false) {
     if (isBtn){
@@ -644,12 +638,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             btns
           );
 
+          console.log(products)
+
           if (
             products.find((i) => i == '0') ||
-            products.find((i) => i == '1')
+            products.find((i) => i == '1') || 
+            products.find((i) => i == '2')
           ) {
             row.products = [];
             row.smart_products = parseInt(products[0]);
+            console.log(row.smart_products)
+
           }
 
           if (this.editingBlock != undefined) {
@@ -720,6 +719,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     let products = this.prods ?? [];
 
+
     let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '1x1';
 
     let matchGrid = this.grid.find((g) => g.name == grid)?.row;
@@ -737,7 +737,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       btns
     );
 
-    if (products.find((i) => i == '0') || products.find((i) => i == '1')) {
+    if (products.find((i) => i == '0') || products.find((i) => i == '1') || products.find((i) => i == '2')) {
       row.products = [];
       row.smart_products = parseInt(products[0]);
       console.log('smart2');
@@ -777,14 +777,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.finishedEditing();
 
     let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    let header = (this.layoutForm.controls.header.value as string) ?? '';
+    let name = (this.layoutForm.controls.name.value as String) ?? 'Page';
+    let url = (this.layoutForm.controls.url.value as String) ?? 'new-page';
 
+    console.log(rowInfo)
     // this.spinner.show('loader');
     // this.title = 'SAVING LAYOUT';
 
     this.dialogRef.close({
       rows: rowInfo,
-      header: header
+      url: url,
+      name: name
     });
 
   
@@ -1034,5 +1037,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         return 0;
       })
       .slice(0, 4);
+  }
+
+  allProducts() {
+    return this.admin?.storeProducts
   }
 }

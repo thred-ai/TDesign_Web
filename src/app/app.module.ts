@@ -28,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { InViewportModule } from 'ng-in-viewport';
 import { ApplicationPipesModule } from './shared/applicationPipes.module';
 import { SafeTextRowsPipe } from './safe-text-rows.pipe';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { SafeTextRowsPipe } from './safe-text-rows.pipe';
 
     NgbModule,
     MatInputModule,
+    MatSelectModule,
 
     NgxSpinnerModule,
     DragScrollModule,
@@ -71,15 +73,19 @@ export class AppModule {
     if (globalThis.location){
         request = globalThis.location.host
     }
+    
     if (request != 'localhost:4200' && request != 'shopmythred.com' && request != ""){
       router.config = [
         { path: '', redirectTo: 'home', pathMatch: 'full'},
         { path: 'not-found', loadChildren: () => import('./invalid-page/invalid-page.module').then((m) => m.InvalidPageModule), pathMatch: 'full' },
         { path: 'not-found/home', redirectTo: 'not-found', pathMatch: 'full' },
       
-        { path: 'home', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
+        // { path: 'home', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
+
+
+
+
         { path: 'about', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule)},
-        { path: 'products', loadChildren: () => import('./shop/shop.module').then((m) => m.ShopModule)},
         // { path: ':user/blogs', module:  BlogsModule},
         { path: 'products/:product', loadChildren: () => import('./product/product.module').then((m) => m.ProductModule)},
         { path: 'orders/:order', loadChildren: () => import('./view-order-info/view-order-info.module').then((m) => m.ViewOrderInfoModule)},
@@ -94,6 +100,12 @@ export class AppModule {
         { path: 'review-order', loadChildren: () => import('./checkout/checkout.module').then((m) => m.CheckoutModule)},
         { path: 'my-store', loadChildren: () => import('./admin-view/admin-view.module').then((m) => m.AdminViewModule)},
         { path: '404', loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule), pathMatch: 'full' },
+
+
+        { path: ':page', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
+
+        { path: 'products', loadChildren: () => import('./shop/shop.module').then((m) => m.ShopModule)},
+
       ]
     }
   }

@@ -20,7 +20,7 @@ export class SafeTextRowsPipe implements PipeTransform {
           'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; '
         );
     }
-    return this.sanitizer.bypassSecurityTrustHtml(replaced);
+    return this.sanitizer.bypassSecurityTrustHtml(replaced.replace(/style="/g, 'style="white-space: initial; '));
   }
 
 }

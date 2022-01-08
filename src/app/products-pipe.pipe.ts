@@ -15,6 +15,9 @@ export class ProductsPipePipe implements PipeTransform {
       } else if (data.row.smart_products == 1) {
         return this.featuredProducts(data.products);
       }
+      else if (data.row.smart_products == 2) {
+        return this.allProducts(data.products);
+      }
     }
     var prod = Array<Product>();
     data.row.products?.forEach((p: string) => {
@@ -54,5 +57,9 @@ export class ProductsPipePipe implements PipeTransform {
         return 0;
       })
       .slice(0, 4);
+  }
+
+  allProducts(products: Array<Product>) {
+    return products
   }
 }

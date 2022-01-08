@@ -63,8 +63,8 @@ style.color = "{{selectedIndicator()!.color}}"
             <!-- <a type="submit" href="#" class="btn btn-primary mt-5 mb-5">Create Account</a>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> -->
             <div class="w-100">
-              <h2 *ngIf='storeVal() != ""' class="w-100 m-0 p-0 text-center text-secondary">shopmythred.com/{{storeVal()}}</h2>
-              <h2 *ngIf='storeVal() == ""' class="w-100 p-0 m-0 text-center">14 day free trial included</h2>
+              <h2 *ngIf='isLanding && storeVal() != ""' class="w-100 m-0 p-0 text-center text-secondary">shopmythred.com/{{storeVal()}}</h2>
+              <h2 *ngIf='isLanding && storeVal() == ""' class="w-100 p-0 m-0 text-center">14 day free trial included</h2>
                 <div class="col">
                   <button  [style.font-family]="storeInfo().fontName!" type="submit" role='button' (click)="useEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
                 </div>

@@ -66,8 +66,9 @@ export class PopupComponent implements OnInit {
   }
 
   popupForm = this.fb.group({
-    email: [null],
+    email: [null, [Validators.required]],
     name: [null],
+    countryCode: [null],
     sms: [null, [Validators.pattern(/^\(\d{3}\)\s\d{3}-\d{4}$/),Validators.required]],
   });
 
@@ -103,7 +104,7 @@ export class PopupComponent implements OnInit {
     this.spinner.show('popupSpinner')
 
     const data = (this.popup?.type == 0 || this.popup?.type == 2) ? 0 : 1
-    var info = (this.popup?.type == 0 || this.popup?.type == 2) ? this.popupForm.controls.email.value : this.popupForm.controls.sms.value
+    var info = (this.popup?.type == 0 || this.popup?.type == 2) ? this.popupForm.controls.email.value : ('+' + (this.popupForm.controls.countryCode.value ?? "1") + " ") + this.popupForm.controls.sms.value
 
     this.loadService.saveData(data, info, success => {
       this.spinner.hide('popupSpinner')

@@ -5,7 +5,6 @@ import { Template } from './models/template.model';
 import { Globals } from './globals';
 import { ActivatedRoute, Router, NavigationEnd, Event as NavigationEvent, RoutesRecognized, ActivationStart, NavigationStart, RouterEvent } from '@angular/router';
 import { LoadService, Dict } from './services/load.service';
-import { ShopComponent } from './shop/shop.component';
 import { HomeComponent } from './home/home.component';
 import { ProductComponent } from './product/product.component';
 import { isPlatformBrowser, isPlatformServer, DOCUMENT } from '@angular/common';
@@ -79,10 +78,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     // this.selectedColor = this.selectedTemplate?.colors[this.ds?.currIndex ?? 0]
   }
 
-
   changeIcon() {
     document.getElementById('appIcon')!.setAttribute('href', 'https://www.google.com/favicon.ico')
-
   }
 
   hasPixel = false
@@ -522,8 +519,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 
     return (
-      this.router.snapshot.firstChild?.params == ShopComponent 
-      || 
       product != undefined
       ||
       this.router.snapshot.firstChild?.routeConfig?.path?.includes("products")

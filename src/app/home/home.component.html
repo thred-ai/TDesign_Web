@@ -16,25 +16,15 @@
 </ngx-spinner>
 
 <!-- Header-->
-<header
-  *ngIf="isBrowser()"
-  [hidden]="storeInfo().username == undefined || storeInfo().username == ''"
-  class="bg-{{ storeInfo().colorStyle!.back_code }} py-6"
-  style="height: fit-content"
->
-  <img
-    class="w-100 h-100"
-    [src]="storeInfo()!.homeLinkTop?.toString() ?? storeInfo()!.themeLink?.toString()"
-  />
-</header>
+
 <!-- Section-->
 <section
   *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0"
-  class="py-5"
+  class="py-5 pt-0"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
   <div class="w-100">
-    <div class="w-100 mb-5" *ngFor="let row of storeInfo()?.homeRows ?? []"
+    <div class="w-100 mb-5" *ngFor="let row of homeRows ?? []"
     >
       <div
         *ngIf='(row.text ?? "").trim() != ""'
@@ -50,13 +40,14 @@
           {{ row.text }}
         </p>
       </div>
-      <div class="w-100" *ngIf="row.type == 0" data-aos="fade-right" data-aos-duration="200">
+      <!-- data-aos="fade-right" data-aos-duration="200" -->
+      <div class="w-100" *ngIf="row.type == 0" >
         <div
           class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center"
         >
           <div
             class="col mb-3"
-            *ngFor="let product of products(row.smart_products, row.products)"
+            *ngFor="let product of (([] | productsPipe: {products: (storeProducts) ?? [], row: row}) ?? [])"
           >
             <div
               class="card h-100 bg-{{ storeInfo().colorStyle!.back_code }}"
@@ -176,7 +167,7 @@
 
       <div class="w-100 mx-0" *ngIf="row.type == 2">
         <div
-          class="m-3"
+          class="p-3"
           [style.font-family]="storeInfo().fontName!"
           style.color="{{ selectedTheme()!.color }}"
           [innerHTML]="row.html ?? '' | safeTextRows"

@@ -40,6 +40,7 @@ import { Coupon } from '../models/coupon.model';
 import { Banner } from '../models/banner.model';
 import { Popup } from '../models/popup.model';
 import { Row } from '../models/row.model';
+import { Page } from '../models/page.model';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -468,7 +469,7 @@ export class LoadService {
         let username = docData['Username'] as string; //COMMENTER'S USERNAME
         let fullName = docData['Full_Name'] as string;
         let bio = docData['Bio'] as string;
-        let notifID = docData['Notification ID'] as string;
+        let notifID = docData['Notification_ID'] as string;
         let userFollowing = (docData['Following_List'] as Array<string>) ?? [];
         let usersBlocking = (docData['Users_Blocking'] as Array<string>) ?? [];
         let followerCount = (docData['Followers_Count'] as number) ?? 0;
@@ -494,6 +495,13 @@ export class LoadService {
         let bannerStyle = (docData['banner_style'] as number) ?? 0;
         let popups = (docData['Popups'] as Array<Popup>) ?? [];
         let homeRows = docData['rows'] as Array<Row>;
+
+        var pages = docData['pages'] as Array<Page>
+  
+
+
+
+
         let orders = (docData['Orders'] as number) ?? 0;
 
         var coupons = new Array<Coupon>();
@@ -554,7 +562,15 @@ export class LoadService {
           this.getDefaultURL(),
           undefined,
           undefined,
-          undefined,
+          new StoreTheme(
+            style?.name,
+            style?.back_code,
+            style?.text_code,
+            style?.nav_code,
+            style?.class,
+            this.parseColor(style?.bg_color),
+            this.parseColor(style?.btn_color)
+          ),
           font,
           socials,
           finalURL,
@@ -565,7 +581,8 @@ export class LoadService {
           bannerStyle,
           popups,
           homeRows,
-          orders
+          pages,
+          orders,
         );
 
         if (banners.length > 0) {
@@ -593,9 +610,11 @@ export class LoadService {
             Globals.storeInfo!.themeLink = new URL(this.getThemeURL(uid));
           } else if (type == 'home') {
             Globals.storeInfo!.homeLink = new URL(this.getHomeURL(uid));
+
             if (!homeRows) {
-              Globals.storeInfo!.homeRows![1].imgs?.push(this.getHomeURL(uid));
+              Globals.storeInfo!.pages![0].rows![1].imgs?.push(this.getHomeURL(uid));
             }
+
           } else if (type == 'action') {
             Globals.storeInfo!.actionLink = new URL(this.getActionURL(uid));
           } else if (type == 'home_top') {
@@ -614,18 +633,6 @@ export class LoadService {
         if (loading?.bg_color) {
           Globals.storeInfo.loading!.bg_color = this.parseColor(
             loading.bg_color
-          );
-        }
-
-        if (style) {
-          Globals.storeInfo.colorStyle = new StoreTheme(
-            style?.name,
-            style?.back_code,
-            style?.text_code,
-            style?.nav_code,
-            style?.class,
-            this.parseColor(style?.bg_color),
-            this.parseColor(style?.btn_color)
           );
         }
       } else {
@@ -794,6 +801,9 @@ export class LoadService {
             let bannerStyle = (docData['banner_style'] as number) ?? 0;
             let popups = (docData['Popups'] as Array<Popup>) ?? [];
             let homeRows = docData['rows'] as Array<Row>;
+
+            var pages = docData['pages'] as Array<Page>
+
             let orders = (docData['Orders'] as number) ?? 0;
 
             var coupons = new Array<Coupon>();
@@ -862,7 +872,15 @@ export class LoadService {
               this.getDefaultURL(),
               undefined,
               undefined,
-              undefined,
+              new StoreTheme(
+                style?.name,
+                style?.back_code,
+                style?.text_code,
+                style?.nav_code,
+                style?.class,
+                this.parseColor(style?.bg_color),
+                this.parseColor(style?.btn_color)
+              ),
               font,
               socials,
               finalURL,
@@ -873,9 +891,13 @@ export class LoadService {
               bannerStyle,
               popups,
               homeRows,
-              orders
+              pages,
+              orders,
             );
 
+
+
+            
             let list = (docData['image_list'] as Array<string>) ?? [];
 
             list.forEach((type) => {
@@ -884,9 +906,7 @@ export class LoadService {
               } else if (type == 'home') {
                 Globals.userInfo!.homeLink = new URL(this.getHomeURL(uid));
                 if (!homeRows) {
-                  Globals.userInfo!.homeRows![1].imgs?.push(
-                    this.getHomeURL(uid)
-                  );
+                  Globals.userInfo!.pages![0].rows![1].imgs?.push(this.getHomeURL(uid));
                 }
               } else if (type == 'action') {
                 Globals.userInfo!.actionLink = new URL(this.getActionURL(uid));
@@ -1962,6 +1982,7 @@ export class LoadService {
 
     if ((inv.code ?? '').trim() == '') {
       data['id'] = uuid().replace('-', '');
+      inv.code = data.id
     }
 
     if ((inv.id ?? '').trim() == '') {
@@ -2670,27 +2691,42 @@ export class LoadService {
     callback(true);
   }
 
-  async addLayout(
-    layout: Array<Row>,
-    homeTopImg: string,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    if (homeTopImg) {
-      let h = homeTopImg?.toString()?.replace(/^[\w\d;:\/]+base64\,/g, '');
-      if (this.isBase64(h)) {
-        await this.saveStore({
-          images: [
-            {
-              type: 'home_top',
-              img: homeTopImg,
-            },
-          ],
-        });
+
+  async deletePage(page: Page, callback: (success: boolean) => any, uid?: string){
+    var pages = JSON.parse(JSON.stringify((Globals.userInfo?.pages ?? [])))
+
+    let i = pages.findIndex((p: any) => p.id == page.id)
+
+    pages.splice(i, 1);
+
+    var data = {
+      pages: pages,
+    };
+
+    if (uid && data) {
+      await this.db.collection('Users').doc(uid).update(data);
+      if (data.pages) {
+        Globals.userInfo!.pages = data.pages ?? []
+        Globals.storeInfo = Globals.userInfo!;
       }
     }
+    callback(true)
+  }
 
-    var finalLayout = JSON.parse(JSON.stringify(layout));
+
+  async addLayout(
+    layout: Array<Row>,
+    name: string,
+    url: string,
+    callback: (success: boolean) => any,
+    id?: string,
+    uid?: string,
+  ) {
+
+
+
+    let finalLayout = JSON.parse(JSON.stringify(layout));
+
 
     const promises1 = finalLayout.map(async (row: Row, mainIndex: number) => {
       const promises2 = (row.imgs ?? []).map(
@@ -2699,7 +2735,7 @@ export class LoadService {
             var url = image;
             url = (await this.uploadLayoutImages(
               image,
-              'home_' + mainIndex.toString() + '_' + index.toString(),
+              id + '_' + mainIndex.toString() + '_' + index.toString(),
               uid
             )) as string;
             var split = url.split('&token=');
@@ -2714,16 +2750,36 @@ export class LoadService {
 
     await Promise.all(promises1);
 
+
+    var pages = JSON.parse(JSON.stringify((Globals.userInfo?.pages ?? [])))
+
+    let i = pages.findIndex((p: any) => p.id == id)
+
+    console.log(id)
+    console.log(pages)
+    if (i > -1){
+      pages[i].rows = finalLayout
+      pages[i].title = name
+      pages[i].url = url
+      pages[i].name = name.toLowerCase()
+    }
+    else{
+      pages.push(
+        JSON.parse(JSON.stringify(new Page(name.toLowerCase(), name, uuid().replace('-', ''), url, finalLayout)))
+      )
+    }
+
     var data = {
-      rows: finalLayout,
+      pages: pages,
     };
 
     console.log(data);
+    console.log(uid)
 
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
-      if (data.rows) {
-        Globals.userInfo!.homeRows = data.rows;
+      if (data.pages) {
+        Globals.userInfo!.pages = data.pages ?? []
         Globals.storeInfo = Globals.userInfo!;
       }
     }

@@ -147,6 +147,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.rootComponent.routeToImgLink(link)
   }
 
+  homeRows: Array<Row> = []
+
   constructor(
   @Inject(PLATFORM_ID) private platformID: Object,
   private cdr: ChangeDetectorRef,
@@ -163,6 +165,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   private location: PlatformLocation
 
   ) {
+      // const routeParams = this.router.snapshot.paramMap;
+      // const storeID = routeParams.get('page') as string;
+      // let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows ?? []
+      // this.homeRows = rows
   }
   ngOnDestroy(): void {
     this.loadService.adminComponent = undefined
@@ -248,7 +254,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   callback(){ 
     if (Globals.storeInfo.username){
+
       this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
+      const routeParams = this.router.snapshot.paramMap;
+      const storeID = routeParams.get('page') as string;
+      let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows ?? []
+      this.homeRows = rows
+
+
+
+
       this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
       if (isPlatformBrowser(this.platformID)){
         this.showSpinner()
@@ -384,7 +399,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
     this.metaService.updateTag({property: 'description', content: description})
-
   }
 
 }

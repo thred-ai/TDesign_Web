@@ -39,10 +39,10 @@ export class RoutingService {
     if (availableLinks.find((i) => i == split[split.length - 1]) && condition) {
       word = split[split.length - 1];
       if (isCustom) {
-        this._router.navigateByUrl(word);
+        this.redirectTo(word);
         return;
       }
-      this._router.navigateByUrl(storeName + '/' + word);
+      this.redirectTo(storeName + '/' + word);
       return;
     } else if (
       availableLinks.find((i) => i == split[split.length - 2]) &&
@@ -53,10 +53,10 @@ export class RoutingService {
 
       word = category + '/' + id;
       if (isCustom) {
-        this._router.navigateByUrl(word);
+        this.redirectTo(word);
         return;
       }
-      this._router.navigateByUrl(storeName + '/' + word);
+      this.redirectTo(storeName + '/' + word);
       return;
     }
     const link = document.createElement('a');
@@ -75,60 +75,69 @@ export class RoutingService {
     link.remove();
   }
 
+  redirectTo(uri:string, shouldRefresh = true){
+    if (shouldRefresh){
+      this._router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this._router.navigate([uri]))
+      return
+    }
+    this._router.navigateByUrl(uri)
+  }
+
   routeTo404(isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('404');
+      this.redirectTo('404');
       return;
     }
-    this._router.navigateByUrl('not-found');
+    this.redirectTo('not-found');
   }
 
   routeToStore404(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('not-found');
+      this.redirectTo('not-found');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'not-found');
+    this.redirectTo(storeName + '/' + 'not-found');
   }
 
   routeToHome(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('home');
+      this.redirectTo('home');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'home');
+    this.redirectTo(storeName + '/' + 'home');
   }
 
   routeToOrders(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('orders');
+      this.redirectTo('orders');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'orders');
+    this.redirectTo(storeName + '/' + 'orders');
   }
 
   routeToShop(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('products');
+      this.redirectTo('products');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'products');
+    this.redirectTo(storeName + '/' + 'products');
   }
 
   routeToAbout(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('about');
+      this.redirectTo('about');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'about');
+    this.redirectTo(storeName + '/' + 'about');
   }
 
   routeToCart(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('cart');
+      this.redirectTo('cart');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'cart');
+    this.redirectTo(storeName + '/' + 'cart');
   }
 
   routeToProduct(
@@ -137,25 +146,25 @@ export class RoutingService {
     isCustom: boolean = false
   ) {
     if (isCustom) {
-      this._router.navigateByUrl('products/' + productID);
+      this.redirectTo('products/' + productID);
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'products/' + productID);
+    this.redirectTo(storeName + '/' + 'products/' + productID);
   }
 
   routeToOrder(orderID: string, storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('orders/' + orderID);
+      this.redirectTo('orders/' + orderID);
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'orders/' + orderID);
+    this.redirectTo(storeName + '/' + 'orders/' + orderID);
   }
 
   routeToProfile(
     storeName: string,
     isCustom: boolean = false,
     selected?: string,
-    externalURL?: string
+    externalURL?: string,
   ) {
     var url = '';
     if (externalURL) {
@@ -174,39 +183,39 @@ export class RoutingService {
       if (selected) {
         url += '?selected=' + selected;
       }
-      this._router.navigateByUrl(url);
+      this.redirectTo(url, false);
     }
   }
 
   routeToShipping(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('/shipping-address');
+      this.redirectTo('/shipping-address');
       return;
     }
-    this._router.navigateByUrl(storeName + '/shipping-address');
+    this.redirectTo(storeName + '/shipping-address');
   }
 
   routeToReview(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('review-order');
+      this.redirectTo('review-order');
       return;
     }
-    this._router.navigateByUrl(storeName + '/' + 'review-order');
+    this.redirectTo(storeName + '/' + 'review-order');
   }
 
   routeToBilling(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('/billing-info');
+      this.redirectTo('/billing-info');
       return;
     }
-    this._router.navigateByUrl(storeName + '/billing-info');
+    this.redirectTo(storeName + '/billing-info');
   }
 
   routeToBillingAdmin(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this._router.navigateByUrl('my-store/billing');
+      this.redirectTo('my-store/billing');
       return;
     }
-    this._router.navigateByUrl(storeName + '/my-store/billing');
+    this.redirectTo(storeName + '/my-store/billing');
   }
 }

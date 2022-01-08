@@ -44,6 +44,764 @@ style.color = "{{selectedIndicator()!.color}}"
                            style.color="{{selectedTheme()!.color}}"
                     >
                 </mat-form-field>
+                
+                <mat-form-field *ngIf='field.type == 2' class="h-100 w-100">
+
+                <mat-select formControlName="countryCode" style.color="{{selectedTheme()!.color}}">
+                    <mat-select-trigger
+                      class="text-{{ storeInfo().colorStyle!.text_code }}"
+                    >
+                      +{{ popupForm.controls.countryCode.value }}
+                    </mat-select-trigger>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1">🇺🇸 +1</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                    }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+44">🇬🇬 +44</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+93">🇦🇫 +93</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+358">🇦🇽 +358</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+355">🇦🇱 +355</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+213">🇩🇿 +213</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1684">🇦🇸 +1684</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+376">🇦🇩 +376</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+244">🇦🇴 +244</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1264">🇦🇮 +1264</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+672">🇦🇶 +672</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1268">🇦🇬 +1268</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+54">🇦🇷 +54</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+374">🇦🇲 +374</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+297">🇦🇼 +297</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+61">🇦🇺 +61</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+43">🇦🇹 +43</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+994">🇦🇿 +994</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1242">🇧🇸 +1242</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+973">🇧🇭 +973</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+880">🇧🇩 +880</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1246">🇧🇧 +1246</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+375">🇧🇾 +375</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+32">🇧🇪 +32</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+501">🇧🇿 +501</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+229">🇧🇯 +229</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1441">🇧🇲 +1441</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+975">🇧🇹 +975</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+591">🇧🇴 +591</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+387">🇧🇦 +387</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+267">🇧🇼 +267</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+47">🇧🇻 +47</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+55">🇧🇷 +55</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+246">🇮🇴 +246</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+673">🇧🇳 +673</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+359">🇧🇬 +359</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+226">🇧🇫 +226</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+257">🇧🇮 +257</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+855">🇰🇭 +855</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+237">🇨🇲 +237</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1">🇨🇦 +1</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+238">🇨🇻 +238</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+345">🇰🇾 +345</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+236">🇨🇫 +236</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+235">🇹🇩 +235</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+56">🇨🇱 +56</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+86">🇨🇳 +86</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+61">🇨🇽 +61</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+61">🇨🇨 +61</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+57">🇨🇴 +57</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+269">🇰🇲 +269</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+242">🇨🇬 +242</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+243">🇨🇩 +243</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+682">🇨🇰 +682</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+506">🇨🇷 +506</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+225">🇨🇮 +225</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+385">🇭🇷 +385</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+53">🇨🇺 +53</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+357">🇨🇾 +357</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+420">🇨🇿 +420</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+45">🇩🇰 +45</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+253">🇩🇯 +253</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1767">🇩🇲 +1767</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1849">🇩🇴 +1849</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+593">🇪🇨 +593</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+20">🇪🇬 +20</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+503">🇸🇻 +503</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+240">🇬🇶 +240</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+291">🇪🇷 +291</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+372">🇪🇪 +372</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+251">🇪🇹 +251</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+500">🇫🇰 +500</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+298">🇫🇴 +298</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+679">🇫🇯 +679</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+358">🇫🇮 +358</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+33">🇫🇷 +33</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+594">🇬🇫 +594</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+689">🇵🇫 +689</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+262">🇹🇫 +262</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+241">🇬🇦 +241</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+220">🇬🇲 +220</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+995">🇬🇪 +995</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+49">🇩🇪 +49</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+233">🇬🇭 +233</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+350">🇬🇮 +350</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+30">🇬🇷 +30</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+299">🇬🇱 +299</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1473">🇬🇩 +1473</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+590">🇬🇵 +590</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1671">🇬🇺 +1671</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+502">🇬🇹 +502</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+224">🇬🇳 +224</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+245">🇬🇼 +245</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+592">🇬🇾 +592</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+509">🇭🇹 +509</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+672">🇭🇲 +672</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+379">🇻🇦 +379</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+504">🇭🇳 +504</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+852">🇭🇰 +852</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+36">🇭🇺 +36</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+354">🇮🇸 +354</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+91">🇮🇳 +91</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+62">🇮🇩 +62</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+98">🇮🇷 +98</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+964">🇮🇶 +964</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+353">🇮🇪 +353</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+44">🇮🇲 +44</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+972">🇮🇱 +972</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+39">🇮🇹 +39</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1876">🇯🇲 +1876</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+81">🇯🇵 +81</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+44">🇯🇪 +44</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+962">🇯🇴 +962</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+7">🇰🇿 +7</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+254">🇰🇪 +254</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+686">🇰🇮 +686</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+850">🇰🇵 +850</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+82">🇰🇷 +82</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+383">🇽🇰 +383</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+965">🇰🇼 +965</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+996">🇰🇬 +996</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+856">🇱🇦 +856</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+371">🇱🇻 +371</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+961">🇱🇧 +961</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+266">🇱🇸 +266</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+231">🇱🇷 +231</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+218">🇱🇾 +218</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+423">🇱🇮 +423</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+370">🇱🇹 +370</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+352">🇱🇺 +352</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+853">🇲🇴 +853</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+389">🇲🇰 +389</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+261">🇲🇬 +261</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+265">🇲🇼 +265</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+60">🇲🇾 +60</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+960">🇲🇻 +960</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+223">🇲🇱 +223</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+356">🇲🇹 +356</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+692">🇲🇭 +692</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+596">🇲🇶 +596</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+222">🇲🇷 +222</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+230">🇲🇺 +230</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+262">🇾🇹 +262</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+52">🇲🇽 +52</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+691">🇫🇲 +691</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+373">🇲🇩 +373</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+377">🇲🇨 +377</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+976">🇲🇳 +976</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+382">🇲🇪 +382</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1664">🇲🇸 +1664</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+212">🇲🇦 +212</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+258">🇲🇿 +258</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+95">🇲🇲 +95</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+264">🇳🇦 +264</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+674">🇳🇷 +674</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+977">🇳🇵 +977</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+31">🇳🇱 +31</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+599"> +599</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+687">🇳🇨 +687</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+64">🇳🇿 +64</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+505">🇳🇮 +505</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+227">🇳🇪 +227</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+234">🇳🇬 +234</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+683">🇳🇺 +683</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+672">🇳🇫 +672</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1670">🇲🇵 +1670</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+47">🇳🇴 +47</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+968">🇴🇲 +968</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+92">🇵🇰 +92</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+680">🇵🇼 +680</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+970">🇵🇸 +970</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+507">🇵🇦 +507</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+675">🇵🇬 +675</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+595">🇵🇾 +595</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+51">🇵🇪 +51</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+63">🇵🇭 +63</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+64">🇵🇳 +64</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+48">🇵🇱 +48</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+351">🇵🇹 +351</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1939">🇵🇷 +1939</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+974">🇶🇦 +974</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+40">🇷🇴 +40</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+7">🇷🇺 +7</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+250">🇷🇼 +250</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+262">🇷🇪 +262</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+590">🇧🇱 +590</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+290">🇸🇭 +290</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1869">🇰🇳 +1869</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1758">🇱🇨 +1758</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+590">🇲🇫 +590</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+508">🇵🇲 +508</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1784">🇻🇨 +1784</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+685">🇼🇸 +685</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+378">🇸🇲 +378</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+239">🇸🇹 +239</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+966">🇸🇦 +966</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+221">🇸🇳 +221</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+381">🇷🇸 +381</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+248">🇸🇨 +248</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+232">🇸🇱 +232</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+65">🇸🇬 +65</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+421">🇸🇰 +421</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+386">🇸🇮 +386</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+677">🇸🇧 +677</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+252">🇸🇴 +252</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+27">🇿🇦 +27</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+211">🇸🇸 +211</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+500">🇬🇸 +500</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+34">🇪🇸 +34</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+94">🇱🇰 +94</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+249">🇸🇩 +249</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+597">🇸🇷 +597</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+47">🇸🇯 +47</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+268">🇸🇿 +268</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+46">🇸🇪 +46</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+41">🇨🇭 +41</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+963">🇸🇾 +963</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+886">🇹🇼 +886</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+992">🇹🇯 +992</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+255">🇹🇿 +255</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+66">🇹🇭 +66</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+670">🇹🇱 +670</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+228">🇹🇬 +228</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+690">🇹🇰 +690</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+676">🇹🇴 +676</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1868">🇹🇹 +1868</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+216">🇹🇳 +216</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+90">🇹🇷 +90</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+993">🇹🇲 +993</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1649">🇹🇨 +1649</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+688">🇹🇻 +688</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+256">🇺🇬 +256</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+380">🇺🇦 +380</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+971">🇦🇪 +971</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+44">🇬🇧 +44</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+598">🇺🇾 +598</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+998">🇺🇿 +998</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+678">🇻🇺 +678</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+58">🇻🇪 +58</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+84">🇻🇳 +84</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1284">🇻🇬 +1284</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+1340">🇻🇮 +1340</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+681">🇼🇫 +681</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+967">🇾🇪 +967</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+260">🇿🇲 +260</mat-option>
+                    <mat-option class='not-empty-select text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+263">🇿🇼 +263</mat-option>
+                </mat-select>
+                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Country Code</mat-placeholder>
+
+                </mat-form-field>
+
+
+
+
+
+
+
                 <mat-form-field *ngIf='field.type == 2' class="h-100 w-100">
                     <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Phone Number</mat-placeholder>
                     <input

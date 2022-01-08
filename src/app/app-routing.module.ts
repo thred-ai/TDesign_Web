@@ -12,11 +12,15 @@ var routes: Routes = [
   { path: 'not-found/home', redirectTo: '', pathMatch: 'full' },
 
   { path: ':user', redirectTo: '/:user/home', pathMatch: 'full'},
-  { path: ':user/home', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
-  { path: ':user/about', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule)},
-  { path: ':user/products', loadChildren: () => import('./shop/shop.module').then((m) => m.ShopModule)},
-  // { path: ':user/blogs', module:  BlogsModule},
+
+
+  // { path: ':user/home', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
+
+
+  // { path: ':user/about', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule)},
   { path: ':user/products/:product', loadChildren: () => import('./product/product.module').then((m) => m.ProductModule)},
+
+
   { path: ':user/orders/:order', loadChildren: () => import('./view-order-info/view-order-info.module').then((m) => m.ViewOrderInfoModule)},
   { path: ':user/orders', loadChildren: () => import('./view-order/view-order.module').then((m) => m.ViewOrderModule)},
 
@@ -30,7 +34,12 @@ var routes: Routes = [
   { path: ':user/not-found', loadChildren: () => import('./invalid-page/invalid-page.module').then((m) => m.InvalidPageModule)},
   { path: ':user/my-store', loadChildren: () => import('./admin-view/admin-view.module').then((m) => m.AdminViewModule)},
   { path: 'not-found/404', redirectTo: '', pathMatch: 'full' },
-  {path: ':user/:404', redirectTo: '/:user/not-found'}
+
+  { path: ':user/:page', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
+
+  { path: ':user/:404', redirectTo: '/:user/not-found'},
+
+  { path: ':user/products', loadChildren: () => import('./shop/shop.module').then((m) => m.ShopModule)}
 
 ]
 
