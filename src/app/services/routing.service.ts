@@ -102,7 +102,7 @@ export class RoutingService {
 
   routeToHome(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('home');
+      this.redirectTo('home', false);
       return;
     }
     this.redirectTo(storeName + '/' + 'home');
@@ -118,7 +118,7 @@ export class RoutingService {
 
   routeToShop(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('products');
+      this.redirectTo('products', false);
       return;
     }
     this.redirectTo(storeName + '/' + 'products');
@@ -126,7 +126,7 @@ export class RoutingService {
 
   routeToAbout(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('about');
+      this.redirectTo('about', false);
       return;
     }
     this.redirectTo(storeName + '/' + 'about');
