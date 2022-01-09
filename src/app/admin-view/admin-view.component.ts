@@ -1102,6 +1102,8 @@ showSocialModal(logo: {
   fonts(){return Globals.fonts}
 
 
+
+
   panels = [
     {
       Category: "DASHBOARD",
@@ -1119,11 +1121,16 @@ showSocialModal(logo: {
       ]
     },  
     {
-      Category: "ORGANIZE",
+      Category: "LAYOUT",
       Options: [
         {
           "Title": "PAGES",
           "Icon": "layers",
+          "Active": false
+        },
+        {
+          "Title": "MENU",
+          "Icon": "list",
           "Active": false
         },
       ]

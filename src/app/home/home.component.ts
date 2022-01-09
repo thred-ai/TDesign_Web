@@ -398,7 +398,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
-    this.metaService.updateTag({property: 'description', content: description})
+    this.metaService.updateTag({name: 'description', content: description})
   }
 
 }

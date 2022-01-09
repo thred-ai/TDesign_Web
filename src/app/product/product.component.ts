@@ -503,7 +503,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       newTitle += " - " + Globals.storeInfo?.fullName ?? ""
     }
     this.titleService.setTitle(newTitle)
-    this.metaService.updateTag({property: 'description', content: description})
+    this.metaService.updateTag({name: 'description', content: description})
   }
 
 
