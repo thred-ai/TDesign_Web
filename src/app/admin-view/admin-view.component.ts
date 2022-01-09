@@ -41,7 +41,27 @@ import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-ord
 import { Row } from '../models/row.model';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 import { Page } from '../models/page.model';
+import {
+  ChartComponent,
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexXAxis,
+  ApexDataLabels,
+  ApexYAxis,
+  ApexLegend,
+  ApexFill
+} from "ng-apexcharts";
 
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  dataLabels: ApexDataLabels;
+  yaxis: ApexYAxis;
+  colors: string[];
+  legend: ApexLegend;
+  fill: ApexFill;
+};
 
 @Component({
   selector: 'app-admin-view',
@@ -59,6 +79,9 @@ import { Page } from '../models/page.model';
 })
 export class AdminViewComponent implements OnInit, OnDestroy {
   
+  public chartOptions?: Partial<ChartOptions>;
+
+
 
 activeAffiliates = new Array<{
   affiliate: string,
@@ -785,7 +808,7 @@ showSocialModal(logo: {
 
     var months = new Array<{
       name: string,
-      value: number
+      data: number
     }>()
 
     //SPLIT SALES INTO SEPERATE ARRAYS BY YEAR
@@ -794,6 +817,7 @@ showSocialModal(logo: {
 
       set.forEach((data) => {
         let timestamp = data.timestamp as Date
+        console.log(timestamp)
         let year = timestamp?.getFullYear()
         var result = sets.find(obj => {
           var years = obj.find(obj2 => {
@@ -820,10 +844,10 @@ showSocialModal(logo: {
 
         if (!result){
 
-          var time = s.find(obj => {
+          var d = s.find(obj => {
             return obj.timestamp != undefined
-          })
-          var d = new Date(time?.timestamp?.getFullYear(), Globals.months.indexOf(month), 1)
+          })?.timestamp
+          console.log(d)
           if (type == "Products Sold"){
             set.push(new ProductInCart(undefined, undefined, 0, undefined, d, undefined, undefined, 0))
           }
@@ -866,7 +890,7 @@ showSocialModal(logo: {
     //APPEND TO FINAL SERIES ARRAY
 
     set.forEach((data) => {
-      let month = Globals.months[data.timestamp?.getMonth()].substring(0,3) + " " + data.timestamp!.getFullYear()
+      let month = (data.timestamp)
       var result = months.find(obj => {
         return obj?.name === month
       })
@@ -903,12 +927,12 @@ showSocialModal(logo: {
       }
 
       if (result){
-        months[months.indexOf(result)].value += value ?? 0
+        months[months.indexOf(result)].data += value ?? 0
       }
       else{
         months.push({
-          name: month,
-          value: value ?? 0
+          name: month.toISOString(),
+          data: value ?? 0
         })
       }
     })
@@ -980,36 +1004,71 @@ showSocialModal(logo: {
         index = 4
       }
 
-      let item = {
+
+      // let item = {
+      //   name: name,
+      //   legend: true,
+      //   showLabels: true,
+      //   animations: true,
+      //   xAxis: true,
+      //   yAxis: true,
+      //   index: index,
+      //   showYAxisLabel:  true,
+      //   showXAxisLabel: true,
+      //   xAxisLabel: set[0]?.name + '  ➜  ' + "TODAY",
+      //   yAxisLabel:  'Population',
+      //   timeline: true,
+      //   shouldDisplay: set.length != 0,
+      //   customColors:[
+      //     { 
+      //       name: name,
+      //       value: '#1ac6ff'
+      //     }
+      //   ],
+      //   series: [
+      //     {
+      //       "name": name,
+      //       "series": set
+      //     }
+      //   ]
+      // }
+      // this.miscItems.push(item)
+
+      
+      this.miscItems.push({
         name: name,
-        legend: true,
-        showLabels: true,
-        animations: true,
-        xAxis: true,
-        yAxis: true,
         index: index,
-        showYAxisLabel:  true,
-        showXAxisLabel: true,
-        xAxisLabel: set[0]?.name + '  ➜  ' + "TODAY",
-        yAxisLabel:  'Population',
-        timeline: true,
         shouldDisplay: set.length != 0,
-        customColors:[
-          { 
-            name: name,
-            value: '#1ac6ff'
-          }
-        ],
         series: [
-          {
-            "name": name,
-            "series": set
-          }
-        ]
+        {
+          name: name,
+          data: set.map(s => s.data)
+        },
+      ],
+      chart: {
+        height: 250,
+        type: "area"
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "smooth"
+      },
+      xaxis: {
+        type: "datetime",
+        categories: set.map(s => s.name)
+      },
+      tooltip: {
+        x: {
+          format: "dd/MM/yy HH:mm"
+        }
       }
-      this.miscItems.push(item)
+    })
     }
   }
+
+  
 
 
   addChart(name: string, data_set: Array<ProductInCart>){
@@ -1023,6 +1082,7 @@ showSocialModal(logo: {
 
       if (name == "Products Sold"){
         index = 2
+        console.log(set)
       }
       else if (name == "Gross Revenue"){
         index = 1
@@ -1039,32 +1099,107 @@ showSocialModal(logo: {
 
       let item = {
         name: name,
-        legend: true,
-        showLabels: true,
-        animations: true,
-        xAxis: true,
-        yAxis: true,
         index: index,
-        showYAxisLabel:  true,
-        showXAxisLabel: true,
-        xAxisLabel: set[0]?.name + '  ➜  ' + "TODAY",
-        yAxisLabel:  'Population',
-        timeline: true,
         shouldDisplay: set.length != 0,
-        customColors:[
-          { 
-            name: name,
-            value: '#1ac6ff'
-          }
-        ],
         series: [
-          {
-            "name": name,
-            "series": set
-          }
-        ]
+        {
+          name: name,
+          data: set.map(s => s.data)
+        },
+      ],
+      chart: {
+        height: 250,
+        type: "area"
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "smooth"
+      },
+      xaxis: {
+        type: "datetime",
+        categories: set.map(s => s.name)
+      },
+      yaxis: {},
+      tooltip: {
+        x: {
+          format: "dd/MM/yy HH:mm"
+        }
       }
+    }
+
+    if (index != 2){
+      item.yaxis = {
+        labels: {
+          formatter: function (value: number) {
+            function formatPrice(price: number, short = false, order?: Order){
+              var priceAsString = new String(Number((price * ((Globals.selectedCurrency?.rate ?? 1))).toFixed(2)).toLocaleString('en'))
+              if (!short){
+                priceAsString = new String(Number((price * ((Globals.selectedCurrency?.rate ?? 1))).toFixed(2)))
+              }
+              let index = priceAsString.indexOf(".")
+              
+              switch (index){
+                case priceAsString.length - 1:
+                    priceAsString += "00"
+                    break
+                case -1:
+                    priceAsString += ".00"
+                    break
+                case priceAsString.length - 2:
+                    priceAsString += "0"
+                    break
+                default:
+                    break
+              }
+              return getCurrencyForCountry((Globals.selectedCurrency?.name) != "US", Globals.selectedCurrency) + priceAsString
+          }
+            
+          function getCurrencyForCountry(shouldShowName: boolean, country?: Country){
+          
+            var returnItem = country?.currency_symbol ?? "$"
+            if (shouldShowName) returnItem = (country?.name ?? '') + " " + returnItem
+          
+            return returnItem
+          }
+
+            return formatPrice(value)
+          }
+        },
+      }
+    }
+      
       this.items.push(item)
+
+      // let item = {
+      //   name: name,
+      //   legend: true,
+      //   showLabels: true,
+      //   animations: true,
+      //   xAxis: true,
+      //   yAxis: true,
+      //   index: index,
+      //   showYAxisLabel:  true,
+      //   showXAxisLabel: true,
+      //   xAxisLabel: set[0]?.name + '  ➜  ' + "TODAY",
+      //   yAxisLabel:  'Population',
+      //   timeline: true,
+      //   shouldDisplay: set.length != 0,
+      //   customColors:[
+      //     { 
+      //       name: name,
+      //       value: '#1ac6ff'
+      //     }
+      //   ],
+      //   series: [
+      //     {
+      //       "name": name,
+      //       "series": set
+      //     }
+      //   ]
+      // }
+      // this.items.push(item)
     }
   }
 
@@ -1413,7 +1548,7 @@ showSocialModal(logo: {
       })
     }
   }
-
+  @ViewChild('chartObj') chart?: ChartComponent;
 
   getInventory(){
     if (this.inventory != undefined) return
@@ -1463,11 +1598,11 @@ showSocialModal(logo: {
     return (this.inventory?.filter(obj => { return template.productCode == obj.code }))![0]
   }
 
-  totalElement(series: Array<Dict<any>>){
+  totalElement(series: Array<number>){
 
     var total = 0
     series.forEach(item => {
-      total += item.value as number
+      total += item
     })
     return total
   }

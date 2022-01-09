@@ -39,7 +39,7 @@ export class LandingComponent implements OnInit {
       })
     } 
     this.rootComponent.addConfig()
-    this.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, Free.", "shopmythred.com")
+    this.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Join Thred and launch your e-commerce store quickly and easily.", "shopmythred.com")
     // if (!Globals.userInfo?.username){
     // }
   }
@@ -64,7 +64,7 @@ export class LandingComponent implements OnInit {
     this.metaService.updateTag({property: 'og:url', content: url})
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
-    this.metaService.updateTag({property: 'description', content: description})
+    this.metaService.updateTag({name: 'description', content: description})
   }
 
   async route(signedIn: boolean){

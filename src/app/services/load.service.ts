@@ -3827,7 +3827,7 @@ export class LoadService {
             let price = (docData.amount as number) / quantity;
             let profit = (docData.moneyToMerchant as number) / 100;
             let timestamp = (docData.timestamp as firebase.firestore.Timestamp)?.toDate();
-
+            let currency = (docData.currency) as string
             let product = new Product(
               uid,
               productID,
