@@ -1,6 +1,4 @@
 <div style="position: relative" class="h-100">
-
-
   <ngx-spinner
     bdColor="{{ selectedIndicator().bg_color }}"
     size="large"
@@ -22,22 +20,34 @@
     <h2 class="me-2 text-center d-none d-md-block">
       {{ editingBlock == undefined ? "Drag/Drop to Rearrange" : "Edit Block" }}
     </h2>
-    <form [formGroup]="layoutForm" novalidate class="d-none d-md-flex align-items-center justify-content-center w-50 mt-2 mb-0">
-      <mat-form-field class="w-100 text-center my-0" style="font-size: small;" appearance='outline' floatLabel='never'>
-       
+
+    <form
+      [formGroup]="layoutForm"
+      novalidate
+      class="d-none d-md-flex align-items-center justify-content-center w-50 mt-2 mb-0"
+    >
+      <mat-form-field
+        class="w-100 text-center my-0"
+        style="font-size: small"
+        appearance="outline"
+        floatLabel="never"
+      >
         <input
-        formControlName='name'
+          formControlName="name"
           type="text"
           matInput
           placeholder="Page Name (ex. 'New-Product')"
           class="text-dark"
         />
       </mat-form-field>
-      <mat-form-field class="w-100 text-center my-0 ms-2" style="font-size: small;" appearance='outline' floatLabel='never'>
-       
+      <mat-form-field
+        class="w-100 text-center my-0 ms-2"
+        style="font-size: small"
+        appearance="outline"
+        floatLabel="never"
+      >
         <input
-        formControlName='url'
-
+          formControlName="url"
           type="text"
           matInput
           placeholder="Page URL (ex. 'new-product')"
@@ -81,7 +91,6 @@
                   *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
                   class="m-0 d-flex justify-content-between align-items-center"
                   cdkDrag
-
                   (click)="edit(i)"
                 >
                   <div
@@ -134,7 +143,7 @@
                         <div
                           class="col mb-2"
                           *ngFor="let product of (([] | productsPipe: {products: (admin?.storeProducts) ?? [], row: aRow.index == i ? aRow?.row : row}) ?? [])"
-                          >
+                        >
                           <div
                             class="card h-100 bg-{{
                               storeInfo.colorStyle!.back_code
@@ -147,7 +156,7 @@
                             <a role="button"
                               ><img
                                 class="card-img-top"
-                                src="{{(product.url | stringPipe)}}"
+                                src="{{ product.url | stringPipe }}"
                                 alt="ok"
                             /></a>
                             <!-- Product details-->
@@ -224,6 +233,28 @@
                           </a>
                         </div>
                       </div>
+                      <div
+                        class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                        *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 4"
+                      >
+                        <div
+                          class="col mb-1"
+                          *ngFor="let vid of ((aRow.index == i ? aRow?.row : undefined) ?? row).vids ?? []; index as i"
+                        >
+                          <div
+                            class="d-block align-items-center text-center text-sm-start w-100"
+                          >
+                            <a class="ms-0 me-0" role="button">
+                              <iframe
+                                [src]="(vid | videoPipe) | safeUrl"
+                                width="100%"
+                                style="aspect-ratio: 16/9"
+                              ></iframe>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+
                       <div
                         class="w-100 mx-0"
                         *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
@@ -359,7 +390,6 @@
                     class="example-box p-2 my-1 bg-white rounded"
                     *ngFor="let button of buttons"
                     cdkDrag
-
                   >
                     <div class="h-100 w-100" style="position: relative">
                       <a
@@ -503,6 +533,66 @@
                   </div>
                 </div>
 
+                <div
+                  cdkDropList
+                  class="rounded shadow bg-light w-100 h-100"
+                  (cdkDropListDropped)="drop($event, true)"
+                  style="overflow-y: scroll"
+                  *ngIf="rowForm.controls.type.value == 4"
+                >
+                  <div
+                    class="example-box"
+                    *ngFor="let vid of videos"
+                    cdkDrag
+                    [cdkDragDisabled]="!vid.isActive"
+                  >
+                    <div class="h-100 w-100 p-1" style="position: relative">
+                      <a class="ms-0 me-0" role="button" *ngIf="vid.isActive">
+                        <iframe
+                          [src]="vid.link | videoPipe | safeUrl"
+                          width="100%"
+                          style="aspect-ratio: 16/9"
+                        ></iframe>
+                      </a>
+
+                      <div style="position: absolute; top: 0; right: 0">
+                        <a *ngIf="vid.isActive" class="ani-style" role="button"
+                          ><mat-icon>cancel</mat-icon></a
+                        >
+                      </div>
+
+                      <div
+                        *ngIf="!vid.isActive"
+                        class="cdk-drag-placeholder w-100 m-0"
+                        style="aspect-ratio: 16/9"
+                      >
+                        <a
+                          class="h-100 w-100 d-flex ani-style justify-content-center align-items-center"
+                          style="text-decoration: none"
+                          role="button"
+                        >
+                          <mat-icon>add_circle</mat-icon>
+                        </a>
+                      </div>
+                      <mat-form-field class="w-100 my-1">
+                        <mat-placeholder class="placeholder"
+                          >Video URL</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="vid.link"
+                          (keyup)="vidChangeEvent($event, vid)"
+                          style="font-size: small"
+                          class="text-dark"
+                        />
+                        <mat-icon role="button" matSuffix>link</mat-icon>
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+
                 <mat-form-field
                   *ngIf="rowForm.controls.type.value == 0"
                   class="w-100"
@@ -634,341 +724,362 @@
         </div>
       </div>
       <div class="ms-md-4 w-100 w-md-75 h-100">
-        <div
-        class="card shadow-lg border border-dark border-3 h-100 w-100"
-      >
-        <div
-          class="card-header bg-dark text-light fw-bolder border-dark border-bottom border-2 rounded-0"
-        >
-          <i>Live Preview: Desktop</i>
-        </div>
-        <div class="w-100 h-100 card-body p-0" style="overflow-y: scroll" style.background-color="{{ selectedTheme!.bg_color }}">
+        <div class="card shadow-lg border border-dark border-3 h-100 w-100">
           <div
-            *ngIf="storeInfo.banners && (storeInfo.banners?.length ?? 0) > 0"
-            class="w-100 rounded"
-            style="height: 35px"
+            class="card-header bg-dark text-light fw-bolder border-dark border-bottom border-2 rounded-0"
           >
-            <div
-              *ngIf="storeInfo.bannerStyle == 1"
-              class="w-100 h-100"
-              id="outer"
-            >
-              <div class="w-100 h-100">
-                <div class="w-100 h-100 loop">
-                  <div
-                    class="d-flex w-100 h-100 align-items-center"
-                    id="content"
-                  >
-                    <div
-                      class="d-flex h-100 align-items-center"
-                      *ngFor="let _ of arrLength()"
-                    >
-                      <h2
-                        *ngFor="let banner of storeInfo.banners"
-                        style.color="{{ (banner | storeBanner: ds?.currIndex ?? 0).color }}"
-                        style.background-color="{{
-                          (banner | storeBanner: ds?.currIndex ?? 0).bg_color
-                        }}"
-                        class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
-                        style="
-                          font-size: calc(
-                            14px + (16 - 14) * (100vh - 400px) / (800 - 400)
-                          );
-                        "
-                      >
-                        <div *ngIf="banner.text != ''">
-                          {{(banner.text ?? '')}}
-                        </div>
-                        <mat-icon
-                          class="mt-2"
-                          *ngIf="banner.icon != ''"
-                          style="font-size: inherit"
-                        >
-                          <span class="ms-1 material-icons-outlined">
-                            {{ banner.icon }}
-                          </span>
-                        </mat-icon>
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              *ngIf="storeInfo.bannerStyle == 0"
-              class="w-100 h-100"
-              style.background-color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).bg_color }}"
-            >
-              <div
-                class="h-100 w-100 d-flex justify-content-between align-items-center"
-                style="position: relative"
-              >
-                <div class="w-100 h-100 d-flex">
-                  <drag-scroll
-                    #carousel
-                    class="w-100 h-100"
-                    [scrollbar-hidden]="true"
-                    [indexChanged]="didMove()"
-                  >
-                    <div
-                      drag-scroll-item
-                      class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-                      *ngFor="let banner of storeInfo.banners"
-                    >
-                      <h2
-                        style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
-                        class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
-                        [class.my-auto]="(storeInfo.banners?.length ?? 0) == 1"
-                        style="
-                          font-size: calc(
-                            14px + (16 - 14) * (100vw - 400px) / (800 - 400)
-                          );
-                        "
-                      >
-                        <div *ngIf="banner.text != ''" class="mb-1">
-                          {{(banner.text ?? 'fs')}}
-                        </div>
-                        <mat-icon
-                          *ngIf="banner.icon != ''"
-                          style="font-size: inherit"
-                        >
-                          <span class="ms-1 material-icons-outlined">
-                            {{ banner.icon }}
-                          </span>
-                        </mat-icon>
-                      </h2>
-                    </div>
-                  </drag-scroll>
-                </div>
-                <div
-                  class="w-100 d-flex justify-content-between align-items-center"
-                  style="position: absolute"
-                >
-                  <a
-                    *ngIf="(storeInfo.banners?.length ?? 0) > 1"
-                    class="d-none d-md-block"
-                    role="button"
-                    (click)="moveLeft()"
-                  >
-                    <mat-icon
-                      class="ms-3 ms-md-5 mt-1"
-                      style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
-                    >
-                      <span
-                        class="material-icons-outlined"
-                        style="font-size: 30px"
-                      >
-                        chevron_left
-                      </span>
-                    </mat-icon>
-                  </a>
-                  <a
-                    *ngIf="(storeInfo.banners?.length ?? 0) > 1"
-                    class="d-none d-md-block"
-                    role="button"
-                    (click)="moveRight()"
-                  >
-                    <mat-icon
-                      class="me-3 me-md-5 mt-1"
-                      style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
-                    >
-                      <span
-                        class="material-icons-outlined"
-                        style="font-size: 30px"
-                      >
-                        chevron_right
-                      </span>
-                    </mat-icon>
-                  </a>
-                </div>
-              </div>
-            </div>
+            <i>Live Preview: Desktop</i>
           </div>
-          <section
-            class="py-0 w-100 mb-0"
+          <div
+            class="w-100 h-100 card-body p-0"
+            style="overflow-y: scroll"
             style.background-color="{{ selectedTheme!.bg_color }}"
           >
-            <!-- (cdkDropListDropped)="drop($event)" -->
             <div
-              cdkDropList
-              class="ms-0 mb-0 h-100"
-              (cdkDropListDropped)="drop($event)"
+              *ngIf="storeInfo.banners && (storeInfo.banners?.length ?? 0) > 0"
+              class="w-100 rounded"
+              style="height: 35px"
             >
               <div
-                class="pb-4 block"
-                style.background-color="{{ selectedTheme!.bg_color }}"
-                *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
-                id="p-{{ i }}"
-                cdkDrag              
-                role="button"
-                (click)="edit(i)"
-                [class.highlight]="hoverIndex != undefined && hoverIndex == i"
+                *ngIf="storeInfo.bannerStyle == 1"
+                class="w-100 h-100"
+                id="outer"
               >
-                <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
-                <div
-                  *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "") != ""'
-                  class="d-flex align-items-center justify-content-center pb-1 mb-5"
-                  style="height: 50px; font-weight: bold; font-size: 30px"
-                  style.color="{{ selectedTheme!.color }}"
-                >
-                  <p
-                    class="text-center text-{{
-                      storeInfo.colorStyle!.text_code
-                    }}"
-                    style="line-height: 1.2em"
-                    [style.font-family]="storeInfo.fontName!"
-                  >
-                    {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
-                  </p>
-                </div>
-                <div
-                  class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
-                >
-                  <div
-                    class="col mb-3"
-                    *ngFor="let product of (([] | productsPipe: {products: (admin?.storeProducts) ?? [], row: aRow.index == i ? aRow?.row : row}) ?? [])"
-                  >
+                <div class="w-100 h-100">
+                  <div class="w-100 h-100 loop">
                     <div
-                      class="card h-100 bg-{{
-                        storeInfo.colorStyle!.back_code
-                      }}"
-                      [class.border-secondary]="
-                        storeInfo!.colorStyle!.text_code == 'light'
-                      "
+                      class="d-flex w-100 h-100 align-items-center"
+                      id="content"
                     >
-                      <!-- Product image-->
-                      <a role="button"
-                        ><img
-                          class="card-img-top"
-                          src="{{(product.url | stringPipe)}}"
-                          alt="ok"
-                      /></a>
-                      <!-- Product details-->
-                      <div class="card-body p-2 pb-0">
-                        <div class="text-center">
-                          <!-- Product name-->
-                          <h4
-                            class="fw-bolder"
-                            style="font-size: small"
-                            [style.font-family]="storeInfo.fontName!"
-                            [style.font-size.px]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
-                            [class.my-5]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row) != 12 && ((aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1) <= 2"
-                          >
-                            <a
-                              style="text-decoration: none"
-                              style.color="{{ selectedTheme!.color }}"
-                              role="button"
-                              >{{ product.name }}</a
-                            >
-                          </h4>
-                          <!-- Product price-->
-                        </div>
-                      </div>
-                      <!-- Product actions-->
                       <div
-                        class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+                        class="d-flex h-100 align-items-center"
+                        *ngFor="let _ of arrLength()"
                       >
-                        <p
-                          *ngIf="autoCoupon(product)"
-                          class="text-center fw-bolder d-flex justify-content-center align-items-center"
-                          style="font-size: 15px"
-                          [style.font-family]="storeInfo.fontName!"
+                        <h2
+                          *ngFor="let banner of storeInfo.banners"
+                          style.color="{{ (banner | storeBanner: ds?.currIndex ?? 0).color }}"
+                          style.background-color="{{
+                          (banner | storeBanner: ds?.currIndex ?? 0).bg_color
+                        }}"
+                          class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
+                          style="
+                            font-size: calc(
+                              14px + (16 - 14) * (100vh - 400px) / (800 - 400)
+                            );
+                          "
                         >
-                        </p>
-                        <div
-                          class="text-center d-flex justify-content-center align-items-center w-100"
-                        >
-                          <a
-                            [style.font-family]="storeInfo.fontName!"
-                            [style.font-size.px]="fontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
-                            class="btn btn-outline-{{
-                              storeInfo.colorStyle!.text_code
-                            }} bad w-100 mt-auto text-center"
-                            style="font-weight: bold; max-width: 50vh"
-                            role="button"
+                          <div *ngIf="banner.text != ''">
+                            {{(banner.text ?? '')}}
+                          </div>
+                          <mat-icon
+                            class="mt-2"
+                            *ngIf="banner.icon != ''"
+                            style="font-size: inherit"
                           >
-                            {{ formatPrice(mainPrice(product)) }}
-                          </a>
-                        </div>
+                            <span class="ms-1 material-icons-outlined">
+                              {{ banner.icon }}
+                            </span>
+                          </mat-icon>
+                        </h2>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+
+              <div
+                *ngIf="storeInfo.bannerStyle == 0"
+                class="w-100 h-100"
+                style.background-color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).bg_color }}"
+              >
                 <div
-                  class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
-                  *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 1"
-                  style="pointer-events: none"
+                  class="h-100 w-100 d-flex justify-content-between align-items-center"
+                  style="position: relative"
                 >
-                  <div
-                    class="col"
-                    style="margin-bottom: 2px"
-                    *ngFor="let img of (aRow.index == i ? aRow?.row : undefined)?.imgs ?? row.imgs ?? []"
-                  >
-                    <div
-                      class="d-block align-items-center text-center text-sm-start w-100"
+                  <div class="w-100 h-100 d-flex">
+                    <drag-scroll
+                      #carousel
+                      class="w-100 h-100"
+                      [scrollbar-hidden]="true"
+                      [indexChanged]="didMove()"
                     >
-                      <a class="ms-0 me-0" role="button"
-                        ><img
-                          style="border-radius: 2.5%"
-                          src="{{ img }}"
-                          style="width: 100%; height: auto"
-                          alt="Product"
-                      /></a>
-                    </div>
+                      <div
+                        drag-scroll-item
+                        class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
+                        *ngFor="let banner of storeInfo.banners"
+                      >
+                        <h2
+                          style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
+                          class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
+                          [class.my-auto]="(storeInfo.banners?.length ?? 0) == 1"
+                          style="
+                            font-size: calc(
+                              14px + (16 - 14) * (100vw - 400px) / (800 - 400)
+                            );
+                          "
+                        >
+                          <div *ngIf="banner.text != ''" class="mb-1">
+                            {{(banner.text ?? 'fs')}}
+                          </div>
+                          <mat-icon
+                            *ngIf="banner.icon != ''"
+                            style="font-size: inherit"
+                          >
+                            <span class="ms-1 material-icons-outlined">
+                              {{ banner.icon }}
+                            </span>
+                          </mat-icon>
+                        </h2>
+                      </div>
+                    </drag-scroll>
                   </div>
-                </div>
-                <div
-                  class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
-                  *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 3"
-                  style="pointer-events: none"
-                >
                   <div
-                    class="col text-center mt-3"
-                    *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
+                    class="w-100 d-flex justify-content-between align-items-center"
+                    style="position: absolute"
                   >
                     <a
+                      *ngIf="(storeInfo.banners?.length ?? 0) > 1"
+                      class="d-none d-md-block"
                       role="button"
-                      *ngIf="button.text != ''"
-                      class="text-center fw-bolder px-3 btn {{
-                        matchingStyle(button.style)
-                      }} mw-100 my-auto"
-                      style="text-decoration: none"
-                      style.background-color="{{ button.bg_color }}"
-                      style.color="{{ button.text_color }}"
+                      (click)="moveLeft()"
                     >
-                      {{ button.text }}
+                      <mat-icon
+                        class="ms-3 ms-md-5 mt-1"
+                        style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
+                      >
+                        <span
+                          class="material-icons-outlined"
+                          style="font-size: 30px"
+                        >
+                          chevron_left
+                        </span>
+                      </mat-icon>
+                    </a>
+                    <a
+                      *ngIf="(storeInfo.banners?.length ?? 0) > 1"
+                      class="d-none d-md-block"
+                      role="button"
+                      (click)="moveRight()"
+                    >
+                      <mat-icon
+                        class="me-3 me-md-5 mt-1"
+                        style.color="{{ (storeInfo.banners[this.ds?.currIndex ?? 0] | storeBanner: this.ds?.currIndex ?? 0).color }}"
+                      >
+                        <span
+                          class="material-icons-outlined"
+                          style="font-size: 30px"
+                        >
+                          chevron_right
+                        </span>
+                      </mat-icon>
                     </a>
                   </div>
                 </div>
-                <div
-                  class="w-100 mx-0"
-                  *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
-                  style="pointer-events: none"
-                >
-                  <div
-                    class="p-3 h-100"
-
-                    [style.font-family]="storeInfo.fontName!"
-                    style.color="{{ selectedTheme!.color }}"
-                    [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).html | safeTextRows"
-                  ></div>
-                </div>
               </div>
             </div>
-          </section>
+            <section
+              class="py-0 w-100 mb-0"
+              style.background-color="{{ selectedTheme!.bg_color }}"
+            >
+              <!-- (cdkDropListDropped)="drop($event)" -->
+              <div
+                cdkDropList
+                class="ms-0 mb-0 h-100"
+                (cdkDropListDropped)="drop($event)"
+              >
+                <div
+                  class="pb-4 block"
+                  style.background-color="{{ selectedTheme!.bg_color }}"
+                  *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
+                  id="p-{{ i }}"
+                  cdkDrag
+                  role="button"
+                  (click)="edit(i)"
+                  [class.highlight]="hoverIndex != undefined && hoverIndex == i"
+                >
+                  <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
+                  <div
+                    *ngIf='((aRow.index == i ? aRow?.row : undefined)?.text ?? row.text ?? "") != ""'
+                    class="d-flex align-items-center justify-content-center pb-1 mb-5"
+                    style="height: 50px; font-weight: bold; font-size: 30px"
+                    style.color="{{ selectedTheme!.color }}"
+                  >
+                    <p
+                      class="text-center text-{{
+                        storeInfo.colorStyle!.text_code
+                      }}"
+                      style="line-height: 1.2em"
+                      [style.font-family]="storeInfo.fontName!"
+                    >
+                      {{(aRow.index == i ? aRow?.row : undefined)?.text ?? row.text}}
+                    </p>
+                  </div>
+                  <div
+                    class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center"
+                  >
+                    <div
+                      class="col mb-3"
+                      *ngFor="let product of (([] | productsPipe: {products: (admin?.storeProducts) ?? [], row: aRow.index == i ? aRow?.row : row}) ?? [])"
+                    >
+                      <div
+                        class="card h-100 bg-{{
+                          storeInfo.colorStyle!.back_code
+                        }}"
+                        [class.border-secondary]="
+                          storeInfo!.colorStyle!.text_code == 'light'
+                        "
+                      >
+                        <!-- Product image-->
+                        <a role="button"
+                          ><img
+                            class="card-img-top"
+                            src="{{ product.url | stringPipe }}"
+                            alt="ok"
+                        /></a>
+                        <!-- Product details-->
+                        <div class="card-body p-2 pb-0">
+                          <div class="text-center">
+                            <!-- Product name-->
+                            <h4
+                              class="fw-bolder"
+                              style="font-size: small"
+                              [style.font-family]="storeInfo.fontName!"
+                              [style.font-size.px]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                              [class.my-5]="titleFontSize((aRow.index == i ? aRow?.row : undefined) ?? row) != 12 && ((aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1) <= 2"
+                            >
+                              <a
+                                style="text-decoration: none"
+                                style.color="{{ selectedTheme!.color }}"
+                                role="button"
+                                >{{ product.name }}</a
+                              >
+                            </h4>
+                            <!-- Product price-->
+                          </div>
+                        </div>
+                        <!-- Product actions-->
+                        <div
+                          class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+                        >
+                          <p
+                            *ngIf="autoCoupon(product)"
+                            class="text-center fw-bolder d-flex justify-content-center align-items-center"
+                            style="font-size: 15px"
+                            [style.font-family]="storeInfo.fontName!"
+                          ></p>
+                          <div
+                            class="text-center d-flex justify-content-center align-items-center w-100"
+                          >
+                            <a
+                              [style.font-family]="storeInfo.fontName!"
+                              [style.font-size.px]="fontSize((aRow.index == i ? aRow?.row : undefined) ?? row)"
+                              class="btn btn-outline-{{
+                                storeInfo.colorStyle!.text_code
+                              }} bad w-100 mt-auto text-center"
+                              style="font-weight: bold; max-width: 50vh"
+                              role="button"
+                            >
+                              {{ formatPrice(mainPrice(product)) }}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 1"
+                    style="pointer-events: none"
+                  >
+                    <div
+                      class="col"
+                      style="margin-bottom: 2px"
+                      *ngFor="let img of (aRow.index == i ? aRow?.row : undefined)?.imgs ?? row.imgs ?? []"
+                    >
+                      <div
+                        class="d-block align-items-center text-center text-sm-start w-100"
+                      >
+                        <a class="ms-0 me-0" role="button"
+                          ><img
+                            style="border-radius: 2.5%"
+                            src="{{ img }}"
+                            style="width: 100%; height: auto"
+                            alt="Product"
+                        /></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 3"
+                    style="pointer-events: none"
+                  >
+                    <div
+                      class="col text-center mt-3"
+                      *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
+                    >
+                      <a
+                        role="button"
+                        *ngIf="button.text != ''"
+                        class="text-center fw-bolder px-3 btn {{
+                          matchingStyle(button.style)
+                        }} mw-100 my-auto"
+                        style="text-decoration: none"
+                        style.background-color="{{ button.bg_color }}"
+                        style.color="{{ button.text_color }}"
+                      >
+                        {{ button.text }}
+                      </a>
+                    </div>
+                  </div>
+                  <div
+                    class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 4"
+                  >
+                    <div
+                      class="col mb-1"
+                      *ngFor="let vid of ((aRow.index == i ? aRow?.row : undefined) ?? row).vids ?? []; index as i"
+                    >
+                      <div
+                        class="d-block align-items-center text-center text-sm-start w-100"
+                      >
+                        <a class="ms-0 me-0" role="button">
+                          <iframe
+                            [src]="vid | videoPipe | safeUrl"
+                            width="100%"
+                            style="aspect-ratio: 16/9"
+                          ></iframe>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="w-100 mx-0"
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 2"
+                    style="pointer-events: none"
+                  >
+                    <div
+                      class="p-3 h-100"
+                      [style.font-family]="storeInfo.fontName!"
+                      style.color="{{ selectedTheme!.color }}"
+                      [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).html | safeTextRows"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div
+            class="card-footer bg-dark text-muted text-center p-2 border-dark border-top border-2 rounded-0"
+            style="height: 60px"
+          >
+            <img
+              class="h-100"
+              style="object-fit: contain; aspect-ratio: 1/1"
+              src="/assets/thred_desktop.png"
+            />
+          </div>
         </div>
-        <div
-          class="card-footer bg-dark text-muted text-center p-2 border-dark border-top border-2 rounded-0"
-          style="height: 60px"
-        >
-          <img
-            class="h-100"
-            style="object-fit: contain; aspect-ratio: 1/1"
-            src="/assets/thred_desktop.png"
-          />
-        </div>
-      </div>
       </div>
     </div>
     <div *ngIf="!loaded" style="height: 100vh"></div>

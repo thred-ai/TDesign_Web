@@ -8,6 +8,8 @@ import { safeHtmlPipe } from '../safeHtml.pipe';
 import { LiveEarthPipePipe } from '../live-earth-pipe.pipe';
 import { LiveEarthViewPipePipe } from '../live-earth-view-pipe.pipe';
 import { LiloadedAllProductsPipePipe } from '../liloaded-all-products-pipe.pipe';
+import { VideoPipePipe } from '../video-pipe.pipe';
+import { SafeUrlPipe } from '../safe-url.pipe';
 
 @NgModule({
   imports: [
@@ -23,6 +25,8 @@ import { LiloadedAllProductsPipePipe } from '../liloaded-all-products-pipe.pipe'
     LiveEarthPipePipe,
     LiveEarthViewPipePipe,
     LiloadedAllProductsPipePipe,
+    VideoPipePipe,
+    SafeUrlPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -34,6 +38,8 @@ import { LiloadedAllProductsPipePipe } from '../liloaded-all-products-pipe.pipe'
     LiveEarthPipePipe,
     LiveEarthViewPipePipe,
     LiloadedAllProductsPipePipe,
+    VideoPipePipe,
+    SafeUrlPipe
   ]
 })
 export class ApplicationPipesModule {}

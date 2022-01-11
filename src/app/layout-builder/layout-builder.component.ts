@@ -245,6 +245,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       code: 1,
     },
     {
+      name: 'Video Block',
+      code: 4,
+    },
+    {
       name: 'Product Block',
       code: 0,
     },
@@ -272,6 +276,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   images = new Array<{
     isActive: boolean,
     img: string,
+    link: string
+  }>();
+
+  videos = new Array<{
+    isActive: boolean,
     link: string
   }>();
 
@@ -382,6 +391,16 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     });
     await Promise.all(promises);
 
+
+    const promises2 = (matchingRow.vids ?? []).map(async (link: string) => {
+      let vid = {
+        isActive: true,
+        link: link.toString()
+      };
+      this.videos.push(vid);
+    });
+    await Promise.all(promises2);
+
     let row = matchingRow.grid_row ?? 1;
     console.log(matchingRow)
     let count = Math.ceil((this.images ?? []).length / row);
@@ -398,6 +417,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     }
     if (count == 0) {
       count = Math.ceil((this.buttons ?? []).length / row);
+    }
+
+    if (count == 0) {
+      count = Math.ceil((this.videos ?? []).length / row);
     }
 
     if (count == 0) {
@@ -419,6 +442,20 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           this.images.push({
             isActive: false,
             img: '',
+            link: ''
+          });
+        }
+      }
+    }
+    if (matchingRow.type == 4) {
+      let matchGrid = this.grid.find((g) => g.name == name);
+
+      let diff =
+        (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1) - this.videos.length;
+      if (diff > 0) {
+        for (let i = 0; i < diff; i++) {
+          this.videos.push({
+            isActive: false,
             link: ''
           });
         }
@@ -494,6 +531,24 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     });
   }
 
+  vidChangeEvent(
+    event: any,
+    vid: {
+      isActive: boolean;
+      link: string
+    }
+  ): void {
+
+    console.log(event.target.value)
+    console.log(this.videos)
+
+    vid.link = event.target.value;
+    vid.isActive = (event.target.value && event.target.value.trim() != "");
+
+    this.setRow();
+
+  }
+
 
   canCancel(isBtn = false) {
     if (isBtn){
@@ -561,6 +616,26 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         this.images = this.images.slice(0, newSize);
       }
     }
+    else if (type == 4) {
+      let matchGrid = this.grid.find((g) => g.name == event.value);
+
+      let newSize = (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1);
+
+      console.log(newSize);
+
+      if (newSize > this.videos.length) {
+        for (let i = 0; i < newSize; i++) {
+          if (!this.videos[i]) {
+            this.videos.push({
+              isActive: false,
+              link: ''
+            });
+          }
+        }
+      } else if (newSize < this.videos.length) {
+        this.videos = this.videos.slice(0, newSize);
+      }
+    }
     else if (type == 3){
       let matchGrid = this.grid.find((g) => g.name == event.value);
 
@@ -607,6 +682,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         let imgs = (this.images ?? [])
           .filter((i) => i.img != undefined && i.img.trim() != '')
           .map((i) => i.img);
+        let vids = (this.videos ?? [])
+          .filter((i) => i.link != undefined && i.link.trim() != '')
+          .map((i) => i.link);
         let btns = this.buttons ?? []
         let imgLinks = (this.images ?? [])
           .filter((i) => i.link != undefined && i.link.trim() != '')
@@ -618,6 +696,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           !(
             (type == 0 && products.length == 0) ||
             (type == 1 && imgs.length == 0) ||
+            (type == 4 && vids.length == 0) ||
             (type == 2 && html.trim() == '')
           )
         ) {
@@ -635,7 +714,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             html,
             '',
             imgLinks,
-            btns
+            btns,
+            vids
           );
 
           console.log(products)
@@ -668,6 +748,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.rowForm.reset();
     this.prods = [];
     this.images = [];
+    this.videos = []
     this.buttons = []
     this.editingBlock = undefined;
     this.aRow.row = undefined;
@@ -682,17 +763,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     index: undefined,
   };
 
-  rowText(row: string) {
-
-      let replaced = row
-        .replace(/px/g, '15px')
-        .replace(
-          /style="/g,
-          'style="word-wrap:break-word; word-break: break-all; text-overflow: ellipsis; margin-right: 5px; '
-        );
-
-        return replaced
-  }
 
 
   
@@ -708,7 +778,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let imgs = (this.images ?? [])
       .filter((i) => i.img != undefined && i.img.trim() != '')
       .map((i) => i.img);
-
+    let vids = (this.videos ?? [])
+      .filter((i) => i.link != undefined && i.link.trim() != '')
+      .map((i) => i.link);
     let imgLinks = (this.images ?? [])
       .filter((i) => i.link != undefined && i.link.trim() != '')
       .map((i) => i.link);
@@ -724,6 +796,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     let matchGrid = this.grid.find((g) => g.name == grid)?.row;
 
+    console.log(type)
     let row = new Row(
       name,
       Object.assign([], products),
@@ -734,7 +807,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       html,
       '',
       imgLinks,
-      btns
+      btns,
+      vids
     );
 
     if (products.find((i) => i == '0') || products.find((i) => i == '1') || products.find((i) => i == '2')) {

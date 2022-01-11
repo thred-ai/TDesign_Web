@@ -23,6 +23,7 @@
   class="py-5 pt-0"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
+
   <div class="w-100">
     <div class="w-100 mb-5" *ngFor="let row of homeRows ?? []"
     >
@@ -162,6 +163,25 @@
           >
             {{ button.text }}
           </a>
+        </div>
+      </div>
+
+
+      <div
+        class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+        *ngIf="row.type == 4"
+      >
+        <div class="col mb-1" *ngFor="let vid of row.vids ?? []; index as i">
+          <div
+            class="d-block align-items-center text-center text-sm-start w-100"
+          >
+            <a
+              class="ms-0 me-0"
+              role="button"
+              >
+              <iframe [src]="(vid | videoPipe) | safeUrl" width="100%" style="aspect-ratio: 16/9;"></iframe>
+          </a>
+          </div>
         </div>
       </div>
 

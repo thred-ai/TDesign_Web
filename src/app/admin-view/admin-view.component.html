@@ -1278,6 +1278,28 @@
                     </div>
 
                     <div
+                      class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                      *ngIf="row.type == 4"
+                    >
+                      <div
+                        class="col mb-1"
+                        *ngFor="let vid of row.vids ?? []; index as i"
+                      >
+                        <div
+                          class="d-block align-items-center text-center text-sm-start w-100"
+                        >
+                          <a class="ms-0 me-0" role="button">
+                            <iframe
+                              [src]="vid | videoPipe | safeUrl"
+                              width="100%"
+                              style="aspect-ratio: 16/9"
+                            ></iframe>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
                       class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
                       *ngIf="row.type == 3"
                     >
@@ -2979,6 +3001,7 @@
                         >{{formatPrice((subInfo?.plan.amount ?? 0) / 100)
 
 
+
                         }}/{{subInfo?.plan.interval ?? 'month'}}</a
                       ></mat-hint
                     >
@@ -2991,6 +3014,7 @@
                         >FREE
                         <b style="color: #6c757d"
                           >({{formatPrice((subInfo?.plan.amount ?? 0) / 100)
+
 
 
                           }}/{{subInfo?.plan.interval ?? 'month'}} after
@@ -3342,43 +3366,61 @@
         </div>
       </div>
 
-      <div *ngIf="getSelectedPanel()?.Title == 'LIVE VIEW'" class="w-100" style="height: 100vh; overflow: hidden; position: relative;">
-        <iframe *ngIf='orders && (true | liloadedAllProductsPipe : orders ?? [])' style="width:100%; height: 100%; position: absolute;" [srcdoc]="((str | liveEarthPipe : orders) | liveEarthViewPipe : views()) | safeHtml">
+      <div
+        *ngIf="getSelectedPanel()?.Title == 'LIVE VIEW'"
+        class="w-100"
+        style="height: 100vh; overflow: hidden; position: relative"
+      >
+        <iframe
+          *ngIf="orders && (true | liloadedAllProductsPipe : orders ?? [])"
+          style="width: 100%; height: 100%; position: absolute"
+          [srcdoc]="
+            str | liveEarthPipe: orders | liveEarthViewPipe: views() | safeHtml
+          "
+        >
         </iframe>
-        <div style="top: 10px; left: 10px; position: absolute; ">
-          <h1 style="color: white;">
-            <b>LIVE VIEW • {{storeInfo()?.fullName}}</b>
+        <div style="top: 10px; left: 10px; position: absolute">
+          <h1 style="color: white">
+            <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
           </h1>
-          
-            <a
-              role="button"
-              class="side d-flex m-0 align-items-center justify-content-start"
-              style="font-size: large"
-            >
-              <mat-icon [inline]='true' class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle" style="background-color: rgb(48, 184, 48); aspect-ratio: 1;">
-                <span class="material-icons-outlined m-0 text-white">
-                  attach_money
-                </span>
-              </mat-icon>
-              <p class="my-0" style="color: white;">
-                Total Sales • <b>{{totalSales()}}</b>
-              </p>
-            </a>
 
-            <a
-              role="button"
-              class="side d-flex mt-2 align-items-center justify-content-start"
-              style="font-size: large"
+          <a
+            role="button"
+            class="side d-flex m-0 align-items-center justify-content-start"
+            style="font-size: large"
+          >
+            <mat-icon
+              [inline]="true"
+              class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+              style="background-color: rgb(48, 184, 48); aspect-ratio: 1"
             >
-              <mat-icon [inline]='true' class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle" style="background-color: rgb(201, 33, 27); aspect-ratio: 1;">
-                <span class="material-icons-outlined m-0 text-white">
-                  person_outline
-                </span>
-              </mat-icon>
-              <p class="my-0" style="color: white;">
-                Total Views • <b>{{totalViews()}}</b>
-              </p>
-            </a>
+              <span class="material-icons-outlined m-0 text-white">
+                attach_money
+              </span>
+            </mat-icon>
+            <p class="my-0" style="color: white">
+              Total Sales • <b>{{ totalSales() }}</b>
+            </p>
+          </a>
+
+          <a
+            role="button"
+            class="side d-flex mt-2 align-items-center justify-content-start"
+            style="font-size: large"
+          >
+            <mat-icon
+              [inline]="true"
+              class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+              style="background-color: rgb(201, 33, 27); aspect-ratio: 1"
+            >
+              <span class="material-icons-outlined m-0 text-white">
+                person_outline
+              </span>
+            </mat-icon>
+            <p class="my-0" style="color: white">
+              Total Views • <b>{{ totalViews() }}</b>
+            </p>
+          </a>
         </div>
       </div>
 
@@ -3399,337 +3441,337 @@
             </ng-template>
             <ng-template matTabContent>
               <div
-              class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
-            >
-              <div class="col mb-2">
-                <div
-                  class="card bg-{{ storeInfo().colorStyle!.back_code }}"
-                  [class.border-secondary]="
-                    storeInfo()!.colorStyle!.text_code == 'light'
-                  "
-                >
-                  <p
-                    class="text-center text-{{
-                      storeInfo().colorStyle!.text_code
-                    }} px-2 mx-2 my-2"
-                    style="font-weight: bolder"
-                  >
-                    NEW ORDERS
-                  </p>
-                  <h2
-                    class="text-center fw-bolder"
-                    style="font-size: x-large"
-                    style.color="{{ selectedTheme()!.color }}"
-                  >
-                    {{ orderCount() }}
-                  </h2>
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
+              >
+                <div class="col mb-2">
                   <div
-                    class="card-body d-flex justify-content-center align-items-center my-2"
-                    style="height: 300px; overflow-y: scroll"
+                    class="card bg-{{ storeInfo().colorStyle!.back_code }}"
+                    [class.border-secondary]="
+                      storeInfo()!.colorStyle!.text_code == 'light'
+                    "
                   >
-                    <table
-                      *ngIf="orderLoaded() && orders && (orders?.length ?? 0) > 0"
-                      #orderTable
-                      mat-table
-                      [dataSource]="orderSlice()"
-                      class="w-100 h-100 bg-{{
-                        storeInfo().colorStyle!.back_code
-                      }}"
+                    <p
+                      class="text-center text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} px-2 mx-2 my-2"
+                      style="font-weight: bolder"
                     >
-                      <ng-container matColumnDef="name">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            storeInfo().colorStyle!.text_code
-                          }} px-1"
-                        >
-                          Name
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style="border-bottom-style: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          class="px-1"
-                        >
-                          {{(element.address?.name ?? '')?.trim() == '' ? 'Not Provided' : element.address?.name}}
-                        </td>
-                        <td
-                          mat-footer-cell
-                          *matFooterCellDef
-                          style="border-bottom-style: none"
-                        ></td>
-                      </ng-container>
-                      <ng-container matColumnDef="value">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            storeInfo().colorStyle!.text_code
-                          }} px-1"
-                        >
-                          Value
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style="border-bottom-style: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          class="px-1"
-                        >
-                          {{ orderTotal(element) }}
-                        </td>
-                        <td
-                          mat-footer-cell
-                          *matFooterCellDef
-                          style="border-bottom-style: none"
-                        ></td>
-                      </ng-container>
-                      <ng-container matColumnDef="status">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            storeInfo().colorStyle!.text_code
-                          }} px-1"
-                        >
-                          Status
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style="border-bottom-style: none"
-                        >
-                          <button
-                            (click)="viewOrder(element)"
-                            class="btn rounded-pill d-flex mx-1 btn-{{
-                              matchingElem(element).color
-                            }} text-light fw-bolder"
-                            style="font-size: small"
+                      NEW ORDERS
+                    </p>
+                    <h2
+                      class="text-center fw-bolder"
+                      style="font-size: x-large"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      {{ orderCount() }}
+                    </h2>
+                    <div
+                      class="card-body d-flex justify-content-center align-items-center my-2"
+                      style="height: 300px; overflow-y: scroll"
+                    >
+                      <table
+                        *ngIf="orderLoaded() && orders && (orders?.length ?? 0) > 0"
+                        #orderTable
+                        mat-table
+                        [dataSource]="orderSlice()"
+                        class="w-100 h-100 bg-{{
+                          storeInfo().colorStyle!.back_code
+                        }}"
+                      >
+                        <ng-container matColumnDef="name">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              storeInfo().colorStyle!.text_code
+                            }} px-1"
                           >
-                            {{ matchingElem(element).text }}
-                            <mat-icon class="ms-2" [inline]="true">
+                            Name
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style="border-bottom-style: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            class="px-1"
+                          >
+                            {{(element.address?.name ?? '')?.trim() == '' ? 'Not Provided' : element.address?.name}}
+                          </td>
+                          <td
+                            mat-footer-cell
+                            *matFooterCellDef
+                            style="border-bottom-style: none"
+                          ></td>
+                        </ng-container>
+                        <ng-container matColumnDef="value">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              storeInfo().colorStyle!.text_code
+                            }} px-1"
+                          >
+                            Value
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style="border-bottom-style: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            class="px-1"
+                          >
+                            {{ orderTotal(element) }}
+                          </td>
+                          <td
+                            mat-footer-cell
+                            *matFooterCellDef
+                            style="border-bottom-style: none"
+                          ></td>
+                        </ng-container>
+                        <ng-container matColumnDef="status">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              storeInfo().colorStyle!.text_code
+                            }} px-1"
+                          >
+                            Status
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style="border-bottom-style: none"
+                          >
+                            <button
+                              (click)="viewOrder(element)"
+                              class="btn rounded-pill d-flex mx-1 btn-{{
+                                matchingElem(element).color
+                              }} text-light fw-bolder"
+                              style="font-size: small"
+                            >
+                              {{ matchingElem(element).text }}
+                              <mat-icon class="ms-2" [inline]="true">
+                                <span class="material-icons-outlined">
+                                  {{ matchingElem(element).icon }}
+                                </span>
+                              </mat-icon>
+                            </button>
+                          </td>
+                          <td
+                            mat-footer-cell
+                            *matFooterCellDef
+                            style="border-bottom-style: none"
+                          ></td>
+                          <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
+                        </ng-container>
+                        <ng-container matColumnDef="action">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{ storeInfo().colorStyle!.text_code }}"
+                          ></th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            class="d-flex h-100 justify-content-end align-items-center"
+                            style="border-bottom-style: none"
+                          >
+                            <mat-icon
+                              role="button"
+                              (click)="viewOrder(element)"
+                              class="ms-2 h-100 d-flex h-100 justify-content-end align-items-center"
+                              style.color="{{ selectedTheme()!.color }}"
+                            >
                               <span class="material-icons-outlined">
-                                {{ matchingElem(element).icon }}
+                                chevron_right
                               </span>
                             </mat-icon>
-                          </button>
-                        </td>
-                        <td
-                          mat-footer-cell
-                          *matFooterCellDef
-                          style="border-bottom-style: none"
-                        ></td>
-                        <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
-                      </ng-container>
-                      <ng-container matColumnDef="action">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{ storeInfo().colorStyle!.text_code }}"
-                        ></th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          class="d-flex h-100 justify-content-end align-items-center"
-                          style="border-bottom-style: none"
-                        >
-                          <mat-icon
-                            role="button"
-                            (click)="viewOrder(element)"
-                            class="ms-2 h-100 d-flex h-100 justify-content-end align-items-center"
-                            style.color="{{ selectedTheme()!.color }}"
+                          </td>
+                          <td
+                            mat-footer-cell
+                            *matFooterCellDef
+                            class="d-flex h-100 justify-content-end align-items-center"
+                            style="border-bottom-style: none"
                           >
-                            <span class="material-icons-outlined">
-                              chevron_right
-                            </span>
-                          </mat-icon>
-                        </td>
-                        <td
-                          mat-footer-cell
-                          *matFooterCellDef
-                          class="d-flex h-100 justify-content-end align-items-center"
-                          style="border-bottom-style: none"
-                        >
-                          <button
-                            (click)="viewAllOrders()"
-                            class="btn d-flex justify-content-end align-items-center px-0 me-1 py-0 mb-0 text-end fw-bolder text-{{
-                              storeInfo().colorStyle!.text_code
-                            }}"
-                            style="font-size: small"
-                          >
-                            VIEW ALL
-                            <mat-icon
-                              class="ms-0 d-flex align-items-center justify-content-center"
-                              style="font-size: large"
+                            <button
+                              (click)="viewAllOrders()"
+                              class="btn d-flex justify-content-end align-items-center px-0 me-1 py-0 mb-0 text-end fw-bolder text-{{
+                                storeInfo().colorStyle!.text_code
+                              }}"
+                              style="font-size: small"
                             >
-                              history
-                            </mat-icon>
-                          </button>
-                        </td>
+                              VIEW ALL
+                              <mat-icon
+                                class="ms-0 d-flex align-items-center justify-content-center"
+                                style="font-size: large"
+                              >
+                                history
+                              </mat-icon>
+                            </button>
+                          </td>
 
-                        <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
-                      </ng-container>
+                          <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
+                        </ng-container>
 
-                      <tr
-                        mat-header-row
-                        *matHeaderRowDef="displayedColumns"
-                      ></tr>
-                      <tr
-                        mat-row
-                        *matRowDef="let row; columns: displayedColumns"
-                      ></tr>
-                      <tr
-                        mat-footer-row
-                        *matFooterRowDef="displayedColumns"
-                      ></tr>
-                    </table>
-                    <div
-                      *ngIf="orderLoaded() && orders && (orders?.length ?? 0) == 0"
-                      class="text-center"
-                    >
-                      <h4
-                        class="fw-bolder"
-                        style="font-size: x-large; line-height: 1em"
+                        <tr
+                          mat-header-row
+                          *matHeaderRowDef="displayedColumns"
+                        ></tr>
+                        <tr
+                          mat-row
+                          *matRowDef="let row; columns: displayedColumns"
+                        ></tr>
+                        <tr
+                          mat-footer-row
+                          *matFooterRowDef="displayedColumns"
+                        ></tr>
+                      </table>
+                      <div
+                        *ngIf="orderLoaded() && orders && (orders?.length ?? 0) == 0"
+                        class="text-center"
                       >
-                        <a
-                          style="text-decoration: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          role="button"
-                          >Nothing to display here.<br /><mat-icon
-                            class="mt-2"
-                            style.color="{{ selectedTheme()!.color }}"
-                            >sentiment_dissatisfied</mat-icon
-                          ></a
+                        <h4
+                          class="fw-bolder"
+                          style="font-size: x-large; line-height: 1em"
                         >
-                      </h4>
-                      <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                          <a
+                            style="text-decoration: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            role="button"
+                            >Nothing to display here.<br /><mat-icon
+                              class="mt-2"
+                              style.color="{{ selectedTheme()!.color }}"
+                              >sentiment_dissatisfied</mat-icon
+                            ></a
+                          >
+                        </h4>
+                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="col mb-2">
-                <div
-                  class="card bg-{{ storeInfo().colorStyle!.back_code }}"
-                  [class.border-secondary]="
-                    storeInfo()!.colorStyle!.text_code == 'light'
-                  "
-                >
-                  <p
-                    class="text-center text-{{
-                      storeInfo().colorStyle!.text_code
-                    }} px-2 mx-2 my-2"
-                    style="font-weight: bolder"
-                  >
-                    SUBSCRIBERS
-                  </p>
-                  <h2
-                    class="text-center fw-bolder"
-                    style="font-size: x-large"
-                    style.color="{{ selectedTheme()!.color }}"
-                  >
-                    {{(emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)}}
-                  </h2>
-
+                <div class="col mb-2">
                   <div
-                    class="card-body d-flex justify-content-center align-items-center my-2"
-                    style="height: 300px; position: relative"
+                    class="card bg-{{ storeInfo().colorStyle!.back_code }}"
+                    [class.border-secondary]="
+                      storeInfo()!.colorStyle!.text_code == 'light'
+                    "
                   >
-                    <ngx-charts-pie-chart
-                      *ngIf="pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0"
-                      [results]="pieInfo"
-                      [explodeSlices]="explodeSlices"
-                      [doughnut]="true"
-                      [customColors]="[{name: 'Email Subscribers',value: '#1ac6ff'},{name: 'SMS Subscribers',value: selectedTheme()!.color ?? ''}]"
-                      [gradient]="true"
-                    >
-                    </ngx-charts-pie-chart>
-                    <mat-icon
-                      role="button"
-                      (click)="selectSetting(1, 0)"
-                      class="w-100 h-auto text-center h1 text-{{
+                    <p
+                      class="text-center text-{{
                         storeInfo().colorStyle!.text_code
-                      }}"
-                      *ngIf="pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0"
-                      style="position: absolute"
-                      >groups</mat-icon
+                      }} px-2 mx-2 my-2"
+                      style="font-weight: bolder"
                     >
+                      SUBSCRIBERS
+                    </p>
+                    <h2
+                      class="text-center fw-bolder"
+                      style="font-size: x-large"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      {{(emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)}}
+                    </h2>
+
                     <div
-                      *ngIf="
-                        emailSubs &&
-                        phoneSubs &&
-                        emailSubs!.length + phoneSubs!.length == 0
-                      "
-                      class="text-center"
+                      class="card-body d-flex justify-content-center align-items-center my-2"
+                      style="height: 300px; position: relative"
                     >
-                      <h4
-                        class="fw-bolder"
-                        style="font-size: x-large; line-height: 1em"
+                      <ngx-charts-pie-chart
+                        *ngIf="pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0"
+                        [results]="pieInfo"
+                        [explodeSlices]="explodeSlices"
+                        [doughnut]="true"
+                        [customColors]="[{name: 'Email Subscribers',value: '#1ac6ff'},{name: 'SMS Subscribers',value: selectedTheme()!.color ?? ''}]"
+                        [gradient]="true"
                       >
-                        <a
-                          style="text-decoration: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          role="button"
-                          >Nothing to display here.<br /><mat-icon
-                            class="mt-2"
-                            style.color="{{ selectedTheme()!.color }}"
-                            >sentiment_dissatisfied</mat-icon
-                          ></a
+                      </ngx-charts-pie-chart>
+                      <mat-icon
+                        role="button"
+                        (click)="selectSetting(1, 0)"
+                        class="w-100 h-auto text-center h1 text-{{
+                          storeInfo().colorStyle!.text_code
+                        }}"
+                        *ngIf="pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0"
+                        style="position: absolute"
+                        >groups</mat-icon
+                      >
+                      <div
+                        *ngIf="
+                          emailSubs &&
+                          phoneSubs &&
+                          emailSubs!.length + phoneSubs!.length == 0
+                        "
+                        class="text-center"
+                      >
+                        <h4
+                          class="fw-bolder"
+                          style="font-size: x-large; line-height: 1em"
                         >
-                      </h4>
-                      <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                          <a
+                            style="text-decoration: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            role="button"
+                            >Nothing to display here.<br /><mat-icon
+                              class="mt-2"
+                              style.color="{{ selectedTheme()!.color }}"
+                              >sentiment_dissatisfied</mat-icon
+                            ></a
+                          >
+                        </h4>
+                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start m-2 m-md-3 m-lg-3"
-            >
-              <div class="col mb-2" *ngFor="let item of charts(false, true)">
-                <div
-                  class="card bg-{{ storeInfo().colorStyle!.back_code }}"
-                  [class.border-secondary]="
-                    storeInfo()!.colorStyle!.text_code == 'light'
-                  "
-                >
-                  <p
-                    class="text-center text-{{
-                      storeInfo().colorStyle!.text_code
-                    }} px-2 mx-2 my-2"
-                    style="font-weight: bolder"
-                  >
-                    {{ item.series[0].name.toUpperCase() }}
-                  </p>
-                  <h2
-                    class="text-center fw-bolder"
-                    style="font-size: x-large"
-                    style.color="{{ selectedTheme()!.color }}"
-                  >
-                    {{
-                      formatGraphElement(
-                        totalElement(item.series[0].data),
-                        item.series[0].name
-                      )
-                    }}
-                  </h2>
+              <div
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start m-2 m-md-3 m-lg-3"
+              >
+                <div class="col mb-2" *ngFor="let item of charts(false, true)">
                   <div
-                    class="card-body my-2"
-                    style="height: 250px"
-                    id="chart"
+                    class="card bg-{{ storeInfo().colorStyle!.back_code }}"
+                    [class.border-secondary]="
+                      storeInfo()!.colorStyle!.text_code == 'light'
+                    "
                   >
-                    <apx-chart
-                    *ngIf="item.shouldDisplay"
-                      [series]="item.series"
-                      [chart]="item.chart"
-                      [xaxis]="item.xaxis"
-                      [yaxis]="item.yaxis"
-                      [stroke]="item.stroke"
-                      [tooltip]="item.tooltip"
-                      [dataLabels]="item.dataLabels"
-                    ></apx-chart>
-                    <!-- <ngx-charts-area-chart
+                    <p
+                      class="text-center text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} px-2 mx-2 my-2"
+                      style="font-weight: bolder"
+                    >
+                      {{ item.series[0].name.toUpperCase() }}
+                    </p>
+                    <h2
+                      class="text-center fw-bolder"
+                      style="font-size: x-large"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      {{
+                        formatGraphElement(
+                          totalElement(item.series[0].data),
+                          item.series[0].name
+                        )
+                      }}
+                    </h2>
+                    <div
+                      class="card-body my-2"
+                      style="height: 250px"
+                      id="chart"
+                    >
+                      <apx-chart
+                        *ngIf="item.shouldDisplay"
+                        [series]="item.series"
+                        [chart]="item.chart"
+                        [xaxis]="item.xaxis"
+                        [yaxis]="item.yaxis"
+                        [stroke]="item.stroke"
+                        [tooltip]="item.tooltip"
+                        [dataLabels]="item.dataLabels"
+                      ></apx-chart>
+                      <!-- <ngx-charts-area-chart
                       *ngIf="item.shouldDisplay"
                       [results]="item.series"
                       [xAxis]="true"
@@ -3760,36 +3802,36 @@
                         </h2>
                       </ng-template>
                     </ngx-charts-area-chart> -->
-                    <div *ngIf="!item.shouldDisplay" class="text-center">
-                      <h4
-                        class="fw-bolder"
-                        style="font-size: x-large; line-height: 1em"
-                      >
-                        <a
-                          style="text-decoration: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          role="button"
-                          >Nothing to display here.<br /><mat-icon
-                            class="mt-2"
-                            style.color="{{ selectedTheme()!.color }}"
-                            >sentiment_dissatisfied</mat-icon
-                          ></a
+                      <div *ngIf="!item.shouldDisplay" class="text-center">
+                        <h4
+                          class="fw-bolder"
+                          style="font-size: x-large; line-height: 1em"
                         >
-                      </h4>
-                      <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                          <a
+                            style="text-decoration: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            role="button"
+                            >Nothing to display here.<br /><mat-icon
+                              class="mt-2"
+                              style.color="{{ selectedTheme()!.color }}"
+                              >sentiment_dissatisfied</mat-icon
+                            ></a
+                          >
+                        </h4>
+                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                      </div>
                     </div>
+                    <p
+                      *ngIf="item.shouldDisplay"
+                      style.color="{{ selectedTheme()!.color }}"
+                      class="text-center px-2 mx-2 my-2"
+                      style="font-weight: bold; font-size: smaller"
+                    >
+                      <!-- {{ item.xAxisLabel.toUpperCase() }} -->
+                    </p>
                   </div>
-                  <p
-                    *ngIf="item.shouldDisplay"
-                    style.color="{{ selectedTheme()!.color }}"
-                    class="text-center px-2 mx-2 my-2"
-                    style="font-weight: bold; font-size: smaller"
-                  >
-                    <!-- {{ item.xAxisLabel.toUpperCase() }} -->
-                  </p>
                 </div>
               </div>
-            </div>
             </ng-template>
           </mat-tab>
           <mat-tab>
@@ -3807,51 +3849,51 @@
             </ng-template>
             <ng-template matTabContent>
               <div
-              class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
-            >
-              <div class="col mb-2" *ngFor="let item of charts()">
-                <div
-                  class="card bg-{{ storeInfo().colorStyle!.back_code }}"
-                  [class.border-secondary]="
-                    storeInfo()!.colorStyle!.text_code == 'light'
-                  "
-                >
-                <p
-                class="text-center text-{{
-                  storeInfo().colorStyle!.text_code
-                }} px-2 mx-2 my-2"
-                style="font-weight: bolder"
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
               >
-                {{ item.series[0].name.toUpperCase() }}
-              </p>
-              <h2
-                class="text-center fw-bolder"
-                style="font-size: x-large"
-                style.color="{{ selectedTheme()!.color }}"
-              >
-                {{
-                  formatGraphElement(
-                    totalElement(item.series[0].data),
-                    item.series[0].name
-                  )
-                }}
-              </h2>
-              <div
-                class="card-body my-2"
-                style="height: 300px"
-                id="chart"
-              >
-                <apx-chart
-                *ngIf="item.shouldDisplay"
-                  [series]="item.series"
-                  [chart]="item.chart"
-                  [xaxis]="item.xaxis"
-                  [yaxis]="item.yaxis"
-                  [stroke]="item.stroke"
-                  [tooltip]="item.tooltip"
-                  [dataLabels]="item.dataLabels"
-                ></apx-chart>
-                    <!-- <ngx-charts-area-chart
+                <div class="col mb-2" *ngFor="let item of charts()">
+                  <div
+                    class="card bg-{{ storeInfo().colorStyle!.back_code }}"
+                    [class.border-secondary]="
+                      storeInfo()!.colorStyle!.text_code == 'light'
+                    "
+                  >
+                    <p
+                      class="text-center text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} px-2 mx-2 my-2"
+                      style="font-weight: bolder"
+                    >
+                      {{ item.series[0].name.toUpperCase() }}
+                    </p>
+                    <h2
+                      class="text-center fw-bolder"
+                      style="font-size: x-large"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      {{
+                        formatGraphElement(
+                          totalElement(item.series[0].data),
+                          item.series[0].name
+                        )
+                      }}
+                    </h2>
+                    <div
+                      class="card-body my-2"
+                      style="height: 300px"
+                      id="chart"
+                    >
+                      <apx-chart
+                        *ngIf="item.shouldDisplay"
+                        [series]="item.series"
+                        [chart]="item.chart"
+                        [xaxis]="item.xaxis"
+                        [yaxis]="item.yaxis"
+                        [stroke]="item.stroke"
+                        [tooltip]="item.tooltip"
+                        [dataLabels]="item.dataLabels"
+                      ></apx-chart>
+                      <!-- <ngx-charts-area-chart
                       *ngIf="item.shouldDisplay"
                       [results]="item.series"
                       [xAxis]="true"
@@ -3883,26 +3925,26 @@
                         </h2>
                       </ng-template>
                     </ngx-charts-area-chart> -->
-                    <div *ngIf="!item.shouldDisplay" class="text-center">
-                      <h4
-                        class="fw-bolder"
-                        style="font-size: x-large; line-height: 1em"
-                      >
-                        <a
-                          style="text-decoration: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          role="button"
-                          >Nothing to display here.<br /><mat-icon
-                            class="mt-2"
-                            style.color="{{ selectedTheme()!.color }}"
-                            >sentiment_dissatisfied</mat-icon
-                          ></a
+                      <div *ngIf="!item.shouldDisplay" class="text-center">
+                        <h4
+                          class="fw-bolder"
+                          style="font-size: x-large; line-height: 1em"
                         >
-                      </h4>
-                      <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                          <a
+                            style="text-decoration: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            role="button"
+                            >Nothing to display here.<br /><mat-icon
+                              class="mt-2"
+                              style.color="{{ selectedTheme()!.color }}"
+                              >sentiment_dissatisfied</mat-icon
+                            ></a
+                          >
+                        </h4>
+                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                      </div>
                     </div>
-                  </div>
-                  <!-- <p
+                    <!-- <p
                     *ngIf="item.shouldDisplay"
                     style.color="{{ selectedTheme()!.color }}"
                     class="text-center px-2 mx-2 my-2"
@@ -3910,9 +3952,9 @@
                   >
                     {{ item.xAxisLabel.toUpperCase() }}
                   </p> -->
+                  </div>
                 </div>
               </div>
-            </div>
             </ng-template>
           </mat-tab>
         </mat-tab-group>
