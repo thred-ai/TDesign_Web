@@ -10,7 +10,7 @@ import { Country } from '../models/shipping-country.model';
 import { Globals } from '../globals';
 import { isPlatformBrowser } from '@angular/common';
 import { Blog } from '../models/blog.model';
-import { first, skip, map } from 'rxjs/operators';
+import { first, skip, map, switchMap } from 'rxjs/operators';
 import { ProductInCart } from '../models/product-in-cart.model';
 import { ShippingInfo } from '../models/shipping-address.model';
 import { BillingInfo } from '../models/billing-address.model';
@@ -3599,19 +3599,19 @@ export class LoadService {
 
   async getCoords(){
 
-    //
-    // var url = "http://localhost:8010/proxy/json";
-    // let coords = (await this.http.get(url, {responseType: 'json'}).toPromise()) as Dict<any>
-
-    // let latitude = coords.latitude
-    // let longitude = coords.longitude
+      let value = await this.http.get('https://jsonip.com').toPromise() as Dict<any>
 
 
-    let returnCoords = {
-      LATITUDE: undefined,
-      LONGITUDE: undefined
-    }
-    return returnCoords
+      let url = `https://api.ipstack.com/${value.ip}?access_key=5b5f96aced42e6b1c95ab24d96f704c5`
+      let coords = await this.http.get(url).toPromise() as Dict<any>;
+
+      console.log(coords)
+      let returnCoords = {
+        LATITUDE: coords.latitude,
+        LONGITUDE: coords.longitude
+      }
+      return returnCoords
+
   }
 
   async getOrders(callback: (orders: Array<Order>) => any) {
