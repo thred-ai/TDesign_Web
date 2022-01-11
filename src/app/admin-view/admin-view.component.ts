@@ -2785,7 +2785,7 @@ isSpinning = false
                   inv.name = name
                 }
               });
-              this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
+              // this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
               this.hideSpinner()
               this.setForm()
               this.showWelcomeModal()
@@ -2861,11 +2861,8 @@ isSpinning = false
         url += urlLink
     
         link.href = url
-        this.spinner.hide("adminSpinner")
+        window.open(urlLink,"_self")
 
-        link.setAttribute('visibility', 'hidden')
-        link.click()
-        link.remove()
       })
     }
 
