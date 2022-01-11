@@ -30,6 +30,12 @@
               "src/assets",
               "src/.well-known/apple-developer-merchantid-domain-association",
               "src/.well-known/apple-app-site-association",
+              "src/miniature.earth.core.js",
+              "src/miniature.earth.js",
+              "src/hologram",
+              "src/src",
+              "src/modules",
+
               {
                 "glob": "**/*.js",
                 "input": "node_modules/@webcomponents/webcomponentsjs",
@@ -116,7 +122,12 @@
               "src/favicon.ico",
               "src/assets",
               "src/.well-known/apple-developer-merchantid-domain-association",
-              "src/.well-known/apple-app-site-association"
+              "src/.well-known/apple-app-site-association",
+              "src/miniature.earth.core.js",
+              "src/miniature.earth.js",
+              "src/hologram",
+              "src/src",
+              "src/modules"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",

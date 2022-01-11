@@ -1,3 +1,4 @@
+import { Dict } from '../services/load.service'
 
 export class ShippingInfo {
   name: string
@@ -11,6 +12,7 @@ export class ShippingInfo {
   phone_num: string
   country_code: string
   email: string
+  coords?: Dict<number>
 
   constructor(
     name?: string,
@@ -23,8 +25,8 @@ export class ShippingInfo {
     postal?: string,
     phone_num?: string,
     country_code?: string,
-    email?: string
-
+    email?: string,
+    coords?: Dict<number>
     ) {
 
     this.name = name ?? ""
@@ -38,6 +40,9 @@ export class ShippingInfo {
     this.unit = unit
     this.country_code = country_code ?? ""
     this.email = email ?? ""
-
+    this.coords = coords ?? {
+      LONGITUDE: -118.243683,
+      LATITUDE: 34.052235
+    }
   }
 }

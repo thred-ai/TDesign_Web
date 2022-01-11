@@ -9,6 +9,7 @@ import { ShippingInfo } from './models/shipping-address.model'
 import { BillingInfo } from './models/billing-address.model'
 import { Order } from './models/order.model'
 import { StoreTheme } from './models/theme.model'
+import { Dict } from './services/load.service'
 
 @Injectable({
   providedIn: 'root',
@@ -99,8 +100,8 @@ export class Globals {
   public static productsSold?: Array<ProductInCart> = []
 
   public static views?: Array<{
-      views: number,
-      timestamp: Date
+      views: Dict<any>,
+      timestamp: Date,
   }> = []
 
   public static dropCarts?: Array<{

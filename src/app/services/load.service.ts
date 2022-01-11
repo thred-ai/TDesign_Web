@@ -41,6 +41,7 @@ import { Banner } from '../models/banner.model';
 import { Popup } from '../models/popup.model';
 import { Row } from '../models/row.model';
 import { Page } from '../models/page.model';
+import { HttpClient } from '@angular/common/http';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -59,7 +60,7 @@ export class LoadService {
     private storage: AngularFireStorage,
     private stripeService: StripeService,
     private snackBar: MatSnackBar,
-    private pixel: PixelService
+    private http: HttpClient,
   ) {}
 
   rootComponent?: AppComponent;
@@ -98,11 +99,15 @@ export class LoadService {
   hideCart = false;
   shouldShowCurrency = false;
 
-  logView() {
+  async logView() {
     if (!Globals.didLog && Globals.storeInfo.uid) {
       Globals.didLog = true;
+      let coords = await this.getCoords() ?? {
+        LONGITUDE: -118.243683,
+        LATITUDE: 34.052235
+      }
       this.functions
-        .httpsCallable('updateView')({ storeUID: Globals.storeInfo.uid! })
+        .httpsCallable('updateView')({ storeUID: Globals.storeInfo.uid!, coords: coords })
         .pipe(first())
         .subscribe(
           async (resp) => {
@@ -1371,6 +1376,7 @@ export class LoadService {
     callback: (order_id: string, client_secret: string, err?: any) => any,
     coupon?: Coupon
   ) {
+
     var data = {
       merchant_uid: storeID,
       isCard: isCard,
@@ -1389,6 +1395,7 @@ export class LoadService {
           callback(resp.order_id, resp.client_secret);
         },
         (err) => {
+          console.log(err)
           callback('', '', err);
         }
       );
@@ -3534,6 +3541,7 @@ export class LoadService {
           let country_code = address.country_code as string;
           const uid = docData.uid as string;
           let trackingUrl = docData.tracking_url as string;
+          let coords = docData.coords as Dict<number>;
 
           // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100
 
@@ -3550,7 +3558,8 @@ export class LoadService {
             postalCode,
             phone,
             country_code,
-            email
+            email,
+            coords
           );
 
           let tax = taxNum ?? (taxPercent ?? 0) * subtotal;
@@ -3585,6 +3594,24 @@ export class LoadService {
       callback(orders);
       if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
     });
+  }
+
+
+  async getCoords(){
+
+    //https://geolocation-db.com/
+    var url = "http://localhost:8010/proxy/json";
+    let coords = (await this.http.get(url, {responseType: 'json'}).toPromise()) as Dict<any>
+
+    let latitude = coords.latitude
+    let longitude = coords.longitude
+
+
+    let returnCoords = {
+      LATITUDE: latitude,
+      LONGITUDE: longitude
+    }
+    return returnCoords
   }
 
   async getOrders(callback: (orders: Array<Order>) => any) {
@@ -3700,6 +3727,7 @@ export class LoadService {
       .collection('Users/' + uid + '/Orders/' + order.orderID + '/Purchases')
       .valueChanges()
       .subscribe((docDatas) => {
+      
         docDatas.forEach((doc, index) => {
           const docData = doc as DocumentData;
           if (docData) {
@@ -3761,10 +3789,20 @@ export class LoadService {
         docDatas.forEach((doc, index) => {
           const docData = doc as DocumentData;
           if (docData) {
-            let time = docData.time as Array<Date>;
+            let time = docData.time as Array<any>;
             let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
             let length = time.length;
-            Globals.views?.push({ views: length, timestamp: timestamp });
+
+            time.forEach(t => {
+              let p = (t instanceof firebase.firestore.Timestamp) ? (t as firebase.firestore.Timestamp).toDate() : (t.time as firebase.firestore.Timestamp).toDate()
+              let v = (t instanceof firebase.firestore.Timestamp) ? {
+                LONGITUDE: -118.243683,
+                LATITUDE: 34.052235
+              } : t.coords
+
+              Globals.views?.push({ views: [{ view: 1, coords: v}], timestamp: p });
+
+            })
           }
         });
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
@@ -3898,75 +3936,107 @@ export class LoadService {
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
       }
 
-      docDatas.forEach((doc) => {
-        const docData = doc as DocumentData;
-        if (docData) {
-          let uid = docData.UID as string;
-          let productID = docData.Product_ID as string;
-          let timestamp = (docData.Timestamp as firebase.firestore.Timestamp).toDate();
-          let description = docData.Description as string;
-          let name = docData.Name as string;
+      var product: Product = new Product()
 
-          let blurred = docData.Blurred as boolean;
-          let templateColor = docData.Template_Color as string;
 
-          let likes = docData.Likes as number;
-
-          let comments = docData.Comments as number;
-          let isPublic = (docData.Public as boolean) ?? true;
-          let productType = (docData.Type as string) ?? 'ATC1000';
-          let displaySide = (docData.Side as string) ?? 'front';
-          let sides = (docData['Sides'] as Array<string>) ?? ['Front'];
-          let priceCents = docData.Price_Cents as number;
-          let isAvailable = (docData.Available as boolean) ?? false;
-
-          let images = (docData['Images'] as Array<any>) ?? [
-            { index: 0, img: this.getURL(uid, productID) },
-          ];
-          let custom = (docData.Custom as boolean) ?? false;
-
-          let product = new Product(
-            uid,
-            productID,
-            description,
-            productID,
-            timestamp,
-            '',
-            blurred,
-            priceCents,
-            name,
-            templateColor,
-            likes,
-            false,
-            comments,
-            isAvailable,
-            isPublic,
-            productType,
-            displaySide,
-            sides,
-            this.getURL(uid, productID),
-            images,
-            custom
-          );
-
-          if (saleProduct && Globals.productsSold != undefined) {
-            saleProduct.product = product;
-          } else {
-            if (cartProduct) {
-              cartProduct.product = product;
-            } else {
-              if (orderProduct) {
-                product.price = orderProduct.product?.price ?? 0;
-                orderProduct.product = product;
-              } else if (selectedProduct) {
-                selectedProduct.product = product;
-              }
-              if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-            }
+      if (docDatas.length > 0){
+        docDatas.forEach((doc) => {
+          const docData = doc as DocumentData;
+          if (docData) {
+            let uid = docData.UID as string;
+            let productID = docData.Product_ID as string;
+            let timestamp = (docData.Timestamp as firebase.firestore.Timestamp).toDate();
+            let description = docData.Description as string;
+            let name = docData.Name as string;
+  
+            let blurred = docData.Blurred as boolean;
+            let templateColor = docData.Template_Color as string;
+  
+            let likes = docData.Likes as number;
+  
+            let comments = docData.Comments as number;
+            let isPublic = (docData.Public as boolean) ?? true;
+            let productType = (docData.Type as string) ?? 'ATC1000';
+            let displaySide = (docData.Side as string) ?? 'front';
+            let sides = (docData['Sides'] as Array<string>) ?? ['Front'];
+            let priceCents = docData.Price_Cents as number;
+            let isAvailable = (docData.Available as boolean) ?? false;
+  
+            let images = (docData['Images'] as Array<any>) ?? [
+              { index: 0, img: this.getURL(uid, productID) },
+            ];
+            let custom = (docData.Custom as boolean) ?? false;
+  
+            product = new Product(
+              uid,
+              productID,
+              description,
+              productID,
+              timestamp,
+              '',
+              blurred,
+              priceCents,
+              name,
+              templateColor,
+              likes,
+              false,
+              comments,
+              isAvailable,
+              isPublic,
+              productType,
+              displaySide,
+              sides,
+              this.getURL(uid, productID),
+              images,
+              custom
+            );
           }
+        });
+      }
+      else{
+        product = new Product(
+          '',
+          productID,
+          '',
+          productID,
+          undefined,
+          '',
+          false,
+          0,
+          'Cannot Load',
+          undefined,
+          0,
+          false,
+          0,
+          false,
+          false,
+          '',
+          '',
+          [],
+          this.getURL(productID, productID),
+          [],
+          false
+        );
+      }
+
+
+
+      if (saleProduct && Globals.productsSold != undefined) {
+        saleProduct.product = product;
+      } else {
+        if (cartProduct) {
+          cartProduct.product = product;
+        } else {
+          if (orderProduct) {
+            product.price = orderProduct.product?.price ?? 0;
+            orderProduct.product = product;
+          } else if (selectedProduct) {
+            selectedProduct.product = product;
+          }
+          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
         }
-        callback();
-      });
+      }
+      callback();
     });
   }
 

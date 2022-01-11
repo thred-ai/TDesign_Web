@@ -26,9 +26,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PopupComponent } from './popup/popup.component';
 import { MatInputModule } from '@angular/material/input';
 import { InViewportModule } from 'ng-in-viewport';
-import { ApplicationPipesModule } from './shared/applicationPipes.module';
-import { SafeTextRowsPipe } from './safe-text-rows.pipe';
 import { MatSelectModule } from '@angular/material/select';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -62,6 +61,8 @@ import { MatSelectModule } from '@angular/material/select';
     PixelModule.forRoot({pixelId: '646165189889348'}),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
     InViewportModule,
+    HttpClientModule
+    
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
