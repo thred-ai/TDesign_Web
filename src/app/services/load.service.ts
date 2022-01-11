@@ -3599,8 +3599,8 @@ export class LoadService {
 
   async getCoords(){
 
-    //https://geolocation-db.com/
-    var url = "http://localhost:8010/proxy/json";
+    //
+    var url = "https://geolocation-db.com/json";
     let coords = (await this.http.get(url, {responseType: 'json'}).toPromise()) as Dict<any>
 
     let latitude = coords.latitude
