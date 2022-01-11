@@ -3600,16 +3600,16 @@ export class LoadService {
   async getCoords(){
 
     //
-    var url = "https://geolocation-db.com/json";
-    let coords = (await this.http.get(url, {responseType: 'json'}).toPromise()) as Dict<any>
+    // var url = "http://localhost:8010/proxy/json";
+    // let coords = (await this.http.get(url, {responseType: 'json'}).toPromise()) as Dict<any>
 
-    let latitude = coords.latitude
-    let longitude = coords.longitude
+    // let latitude = coords.latitude
+    // let longitude = coords.longitude
 
 
     let returnCoords = {
-      LATITUDE: latitude,
-      LONGITUDE: longitude
+      LATITUDE: undefined,
+      LONGITUDE: undefined
     }
     return returnCoords
   }
