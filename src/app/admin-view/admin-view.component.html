@@ -3264,67 +3264,52 @@
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'AFFILIATE'" class="h-100">
+
+        
         <div
           class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
         >
           <div class="col mb-2" *ngFor="let item of charts(true)">
             <div
-              class="card bg-{{ storeInfo().colorStyle!.back_code }}"
+              class="card bg-{{ storeInfo().colorStyle!.back_code }} w-100"
               [class.border-secondary]="
                 storeInfo()!.colorStyle!.text_code == 'light'
               "
             >
-              <p
-                class="text-center text-{{
-                  storeInfo().colorStyle!.text_code
-                }} px-2 mx-2 my-2"
-                style="font-weight: bolder"
-              >
-                {{ item.series[0].name.toUpperCase() }}
-              </p>
-              <h2
-                class="text-center fw-bolder"
-                style="font-size: x-large"
-                style.color="{{ selectedTheme()!.color }}"
-              >
-                {{
-                  formatGraphElement(
-                    totalElement(item.series[0].series),
-                    item.series[0].name
-                  )
-                }}
-              </h2>
+            <p
+            class="text-center text-{{
+              storeInfo().colorStyle!.text_code
+            }} px-2 mx-2 my-2"
+            style="font-weight: bolder"
+          >
+            {{ item.series[0].name.toUpperCase() }}
+          </p>
+          <h2
+            class="text-center fw-bolder"
+            style="font-size: x-large"
+            style.color="{{ selectedTheme()!.color }}"
+          >
+            {{
+              formatGraphElement(
+                totalElement(item.series[0].data),
+                item.series[0].name
+              )
+            }}
+          </h2>
               <div
-                class="card-body d-flex justify-content-center align-items-center my-2"
-                style="height: 300px"
+                class="card-body d-flex justify-content-center align-items-center my-2 w-100 mx-0"
+                style="height: 250px"
               >
-                <ngx-charts-area-chart
-                  *ngIf="item.shouldDisplay"
-                  [results]="item.series"
-                  [xAxis]="true"
-                  [yAxis]="false"
-                  [gradient]="true"
-                  [customColors]="item.customColors"
-                  [showXAxisLabel]="false"
-                  [showYAxisLabel]="false"
-                  [xAxisLabel]="item.xAxisLabel"
-                  [xAxisTickFormatting]="formatPercent"
-                  [yAxisLabel]="item.yAxisLabel"
-                  style.fill="{{ selectedTheme()!.color }}"
-                >
-                  >
-                  <ng-template #tooltipTemplate let-model="model">
-                    {{ model.series }} • {{ model.name }}
-                    <h2>{{ formatGraphElement(model.value, model.series) }}</h2>
-                  </ng-template>
-
-                  <ng-template #seriesTooltipTemplate let-model="model">
-                    {{ model[0].series }}
-                    <h2>
-                      {{ formatGraphElement(model[0].value, model[0].series) }}
-                    </h2>
-                  </ng-template>
-                </ngx-charts-area-chart>
+              <apx-chart
+              *ngIf="item.shouldDisplay"
+              [series]="item.series"
+              [chart]="item.chart"
+              [xaxis]="item.xaxis"
+              [yaxis]="item.yaxis"
+              [stroke]="item.stroke"
+              [tooltip]="item.tooltip"
+              [dataLabels]="item.dataLabels"
+            ></apx-chart>
                 <div *ngIf="!item.shouldDisplay" class="text-center">
                   <h4
                     class="fw-bolder"
@@ -3353,14 +3338,6 @@
                   </a>
                 </div>
               </div>
-              <p
-                *ngIf="item.shouldDisplay"
-                style.color="{{ selectedTheme()!.color }}"
-                class="text-center px-2 mx-2 my-2"
-                style="font-weight: bold; font-size: smaller"
-              >
-                {{ item.xAxisLabel.toUpperCase() }}
-              </p>
             </div>
           </div>
         </div>
@@ -3771,37 +3748,6 @@
                         [tooltip]="item.tooltip"
                         [dataLabels]="item.dataLabels"
                       ></apx-chart>
-                      <!-- <ngx-charts-area-chart
-                      *ngIf="item.shouldDisplay"
-                      [results]="item.series"
-                      [xAxis]="true"
-                      [yAxis]="false"
-                      [gradient]="true"
-                      [customColors]="item.customColors"
-                      [showXAxisLabel]="false"
-                      [showYAxisLabel]="false"
-                      [xAxisLabel]="item.xAxisLabel"
-                      [xAxisTickFormatting]="formatPercent"
-                      [yAxisLabel]="item.yAxisLabel"
-                      style.fill="{{ selectedTheme()!.color }}"
-                    >
-                      >
-                      <ng-template #tooltipTemplate let-model="model">
-                        {{ model.series }} • {{ model.name }}
-                        <h2>
-                          {{ formatGraphElement(model.value, model.series) }}
-                        </h2>
-                      </ng-template>
-
-                      <ng-template #seriesTooltipTemplate let-model="model">
-                        {{ model[0].series }}
-                        <h2>
-                          {{
-                            formatGraphElement(model[0].value, model[0].series)
-                          }}
-                        </h2>
-                      </ng-template>
-                    </ngx-charts-area-chart> -->
                       <div *ngIf="!item.shouldDisplay" class="text-center">
                         <h4
                           class="fw-bolder"
