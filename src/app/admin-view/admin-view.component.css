@@ -22,6 +22,12 @@
     background: #1b1b1b;
 }
 
+.footer-link{
+    line-height:1.2em; 
+    color: #808385;
+    text-decoration: none;
+  }
+
 #sidebar ul.components {
     padding: 20px 0;
     border-bottom: 1px solid #47748b;

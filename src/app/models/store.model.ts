@@ -53,6 +53,8 @@ export class Store {
     
     pages?: Array<Page> = []
     orders?: number = 0
+    header?: Array<string> = []
+    footer?: Array<Dict<any>> = []
 
     constructor(
       uid?: string, 
@@ -100,6 +102,8 @@ export class Store {
       homeRows?: Array<Row>,
       pages?: Array<Page>,
       orders?: number,
+      header?: Array<string>,
+      footer?: Array<Dict<any>>
       ) {
 
       this.uid = uid
@@ -145,6 +149,24 @@ export class Store {
         bg_color: [255.0, 255.0, 255.0, 0.98]
       }
 
+      this.header = header ?? ['1', '2', '3']
+      this.footer = footer ?? [
+        {
+          link: [
+            '1',
+            '2',
+            '3',
+          ]
+        },
+        {
+          link: []
+        },
+        {
+          link: []
+        }
+      ]
+
+      
       this.colorStyle = colorStyle ?? new StoreTheme('Light','light','dark', 'light', 'simple', [255.0, 255.0, 255.0, 1],[10.0, 10.0, 10.0, 1])
       this.fontName = fontName ?? 'Montserrat'//"Roboto"
       // this.colorStyle = colorStyle ?? new StoreTheme('Dark','dark','light',[10.0, 10.0, 10.0, 1],[255.0, 255.0, 255.0, 1])

@@ -108,6 +108,15 @@ export class RoutingService {
     this.redirectTo(storeName + '/' + 'home');
   }
 
+
+  routeToDynamicLink(storeName: string, link: string, isCustom: boolean = false,) {
+    if (isCustom) {
+      this.redirectTo(link, true);
+      return;
+    }
+    this.redirectTo(storeName + '/' + link);
+  }
+
   routeToOrders(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
       this.redirectTo('orders');

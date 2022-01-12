@@ -25,6 +25,14 @@ font-size: 1.25vw;
   text-decoration: none;
 }
 
+.no-bar {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.no-bar::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
 .footer-link :hover{
   color: #a2a4a5;
 }

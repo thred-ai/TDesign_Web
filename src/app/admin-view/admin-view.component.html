@@ -1010,143 +1010,15 @@
         </form>
       </div>
 
-      <div *ngIf="getSelectedPanel()?.Title == 'MENU'" class="py-3 w-100">
-        <h2 class="text-start mx-3" style.color="{{ selectedTheme()!.color }}">
-          <i>Menu Bar Preview</i>
-        </h2>
-        <nav
-          class="navbar navbar-expand-lg navbar-{{
-            storeInfo().colorStyle!.nav_code
-          }} bg-{{ storeInfo().colorStyle!.back_code }} mx-3"
-        >
-          <div
-            class="container-fluid d-flex justify-content-between px-2 w-100 text-start px-md-5"
-            style="min-height: 50px"
-          >
-            <div class="d-flex justify-content-start">
-              <img class="set-img" [src]="storeInfo().profileLink" />
-              <a
-                class="navbar-brand px-2 text-{{
-                  storeInfo().colorStyle!.text_code
-                }}"
-                role="button"
-                style="font-size: small"
-                [style.font-family]="storeInfo().fontName!"
-                >{{ storeInfo().fullName }}</a
-              >
-            </div>
-
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item">
-                  <a
-                    data-bs-toggle="collapse"
-                    data-bs-target=".navbar-collapse.show"
-                    class="nav-link"
-                    aria-current="page"
-                    role="button"
-                    [style.font-family]="storeInfo().fontName!"
-                    >HOME</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a
-                    data-bs-toggle="collapse"
-                    data-bs-target=".navbar-collapse.show"
-                    class="nav-link"
-                    role="button"
-                    [style.font-family]="storeInfo().fontName!"
-                    >ABOUT</a
-                  >
-                </li>
-                <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo().username}}/blogs">Blogs</a></li> -->
-
-                <!-- <li *ngIf="isShopComponent(); else elseBlock" class="nav-item dropdown">
-                          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" [style.font-family]="storeInfo().fontName!">SHOP</a>
-                          <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
-                              <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">All Products</a></li>
-                              <li><hr class="dropdown-divider" /></li>
-                              <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
-                          </ul>
-                      </li> -->
-                <li class="nav-item">
-                  <a
-                    data-bs-toggle="collapse"
-                    data-bs-target=".navbar-collapse.show"
-                    class="nav-link"
-                    role="button"
-                    [style.font-family]="storeInfo().fontName!"
-                    >SHOP</a
-                  >
-                </li>
-              </ul>
-
-              <ul class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0">
-                <li class="d-flex">
-                  <div class="nav-item dropdown">
-                    <button
-                      id="navbarDropdown"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                      class="btn me-2"
-                    >
-                      <img
-                        class="rounded-circle set-img"
-                        src="/assets/account_{{
-                          storeInfo().colorStyle!.text_code
-                        }}.png"
-                      />
-                    </button>
-                    <!-- <ul class="dropdown-menu mb-2"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
-                                  <li *ngIf='storeInfo().uid == userInfo()?.uid'><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role='button' (click)= "accountPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[0]?.Title}}</a></li>
-                                  <li *ngFor="let option of settings(true)"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)= "routeToOrders()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">{{option.Title}}</a></li>
-                                  <li><a *ngIf='!signedIn' data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item fw-bold text-success" style="font-size: smaller;" role=button (click)= "signInPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[profileSettings.length-1]?.Title}}</a></li>
-                                  <li><a *ngIf='signedIn' data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item fw-bold text-danger" style="font-size: smaller;" role=button (click)= "signOutPressed()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!" >{{settings(false)[profileSettings.length-1]?.Title}}</a></li>
-                              </ul> -->
-                  </div>
-                </li>
-                <li class="d-flex mt-1 mb-1">
-                  <a
-                    data-bs-toggle="collapse"
-                    data-bs-target=".navbar-collapse.show"
-                    class="btn btn-outline-{{
-                      storeInfo().colorStyle!.text_code
-                    }}"
-                    role="button"
-                    [style.font-family]="storeInfo().fontName!"
-                  >
-                    MY BAG
-                    <span
-                      class="badge bg-{{
-                        storeInfo().colorStyle!.text_code
-                      }} text-{{
-                        storeInfo().colorStyle!.back_code
-                      }} ms-1 rounded-pill"
-                      [style.font-family]="storeInfo().fontName!"
-                      >0</span
-                    >
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
-      </div>
-
       <div *ngIf="getSelectedPanel()?.Title == 'PAGES'" class="py-3 w-100">
         <!-- [indexChanged]="didMove()" -->
         <!-- [scrollbar-hidden]="true" -->
+        <h2
+          class="text-start mx-3 mt-3"
+          style.color="{{ selectedTheme()!.color }}"
+        >
+          <i>Page Previews</i>
+        </h2>
         <div class="d-flex justify-content-center align-items-center w-100">
           <a
             role="button"
@@ -1165,7 +1037,7 @@
         </div>
 
         <div
-          class="row gx-0 gx-md-2 gx-lg-2 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-0"
+          class="row gx-0 gx-md-2 gx-lg-2 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start mx-2 mx-md-3 mx-lg-3 mb-5"
         >
           <div
             class="col w-100 w-md-50 my-2"
@@ -1367,17 +1239,37 @@
                       storeInfo().colorStyle!.text_code
                     }} rounded-pill fw-bolder"
                   >
-                    EDIT PAGE
+                    EDIT
                   </a>
+
+
                   <a
                     role="button"
-                    class="ms-2 btn btn btn-secondary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    class="ms-2 btn btn btn-{{inMenu(page.id) ? 'success' : 'secondary'}} rounded-circle p-2 d-flex align-items-center justify-content-center"
                     style="aspect-ratio: 1"
+                    (click)="configureHeader(page.id)"
                   >
-                    <mat-icon style.color="{{ selectedTheme()!.color }}"
-                      >list</mat-icon
+                    <mat-icon
+                      style.color="{{ selectedTheme()!.color }}"
+                      >border_top</mat-icon
                     >
+
                   </a>
+
+                  <a
+                    role="button"
+                    class="ms-2 btn btn btn-{{inFooter(page.id) ? 'success' : 'secondary'}} rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    style="aspect-ratio: 1"
+                    (click)="configureFooter(page.id)"
+                  >
+                  <mat-icon
+                  style.color="{{ selectedTheme()!.color }}"
+                  >border_bottom</mat-icon
+                >
+
+                  </a>
+
+
                   <a
                     role="button"
                     (click)="deletePage(page)"
@@ -1395,6 +1287,308 @@
             </div>
           </div>
         </div>
+
+        <h2
+          class="text-start mx-3 mt-3"
+          style.color="{{ selectedTheme()!.color }}"
+        >
+          <i>Menu Bar Preview</i>
+        </h2>
+
+        <form [formGroup]="headerForm" novalidate>
+          <nav
+            class="navbar navbar-expand-lg navbar-{{
+              storeInfo().colorStyle!.nav_code
+            }} bg-{{ storeInfo().colorStyle!.back_code }} mx-3 mb-5"
+          >
+            <div
+              class="container-fluid d-flex justify-content-between px-2 w-100 text-start px-md-5"
+              style="min-height: 50px"
+            >
+              <div class="d-flex justify-content-start">
+                <img class="set-img" [src]="storeInfo().profileLink" />
+                <a
+                  class="navbar-brand px-2 text-{{
+                    storeInfo().colorStyle!.text_code
+                  }}"
+                  role="button"
+                  style="font-size: small"
+                  [style.font-family]="storeInfo().fontName!"
+                  >{{ storeInfo().fullName }}</a
+                >
+              </div>
+
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul
+                  class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 no-bar"
+                  style="overflow-x: scroll"
+                  cdkDropList
+                  cdkDropListOrientation="horizontal"
+                  (cdkDropListDropped)="dropHeaderLink($event)"
+                >
+                  <li
+                    cdkDrag
+                    *ngFor="let l of headerForm.controls.links.value ?? []"
+                    class="nav-item d-flex align-items-center justify-content-center"
+                  >
+                    <a
+                      data-bs-toggle="collapse"
+                      data-bs-target=".navbar-collapse.show"
+                      class="nav-link"
+                      aria-current="page"
+                      role="button"
+                      [style.font-family]="storeInfo().fontName!"
+                      >{{ headerName(l) }}</a
+                    >
+                  </li>
+                  <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo().username}}/blogs">Blogs</a></li> -->
+
+                  <!-- <li *ngIf="isShopComponent(); else elseBlock" class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" [style.font-family]="storeInfo().fontName!">SHOP</a>
+                      <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
+                          <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">All Products</a></li>
+                          <li><hr class="dropdown-divider" /></li>
+                          <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
+                      </ul>
+                  </li> -->
+                  <!-- <li [hidden]="selectedCurrency() == undefined || !shouldShowCurrency()" class="nav-item dropdown">
+                      <a  class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">{{selectedCurrency()?.flag ?? ""}}</a>
+                      <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
+                          <li *ngFor="let currency of availableCurrencies()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" style.color="{{selectedTheme()!.color}}" role=button (click)="updateCurrency(currency)" [style.font-family]="storeInfo().fontName!" >{{currency.name}} {{currency.flag}}</a></li>
+                      </ul>
+                  </li> -->
+                </ul>
+
+                <ul class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 p-0">
+                  <li class="d-flex">
+                    <div class="nav-item dropdown">
+                      <button
+                        id="navbarDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        class="btn me-2"
+                      >
+                        <img
+                          class="rounded-circle set-img"
+                          src="/assets/account_{{
+                            storeInfo().colorStyle!.text_code
+                          }}.png"
+                        />
+                      </button>
+                    </div>
+                  </li>
+                  <li class="d-flex mt-1 mb-1" style="flex-shrink: 0">
+                    <a
+                      data-bs-toggle="collapse"
+                      data-bs-target=".navbar-collapse.show"
+                      class="btn btn-outline-{{
+                        storeInfo().colorStyle!.text_code
+                      }}"
+                      role="button"
+                      [style.font-family]="storeInfo().fontName!"
+                    >
+                      MY BAG
+                      <span
+                        class="badge bg-{{
+                          storeInfo().colorStyle!.text_code
+                        }} text-{{
+                          storeInfo().colorStyle!.back_code
+                        }} ms-1 rounded-pill"
+                        [style.font-family]="storeInfo().fontName!"
+                        >0</span
+                      >
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        </form>
+
+        <h2
+          class="text-start mx-3 mt-3"
+          style.color="{{ selectedTheme()!.color }}"
+        >
+          <i>Footer Preview</i>
+        </h2>
+
+          <footer class="py-5 mx-3 bg-{{ storeInfo().colorStyle!.back_code }}">
+            <div
+              class="container-fluid px-3 w-100 d-block justify-content-center"
+            >
+              <div class="d-block d-md-flex justify-content-between">
+                <div
+                  class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
+                >
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/visacard.png"
+                      />
+                    </a>
+                  </div>
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/mastercard.png"
+                      />
+                    </a>
+                  </div>
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/amexcard.png"
+                      />
+                    </a>
+                  </div>
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/thredcard.png"
+                      />
+                    </a>
+                  </div>
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/applecard.png"
+                      />
+                    </a>
+                  </div>
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/googlecard.png"
+                      />
+                    </a>
+                  </div>
+                  <div class="col mb-2 mx-2" [style.width.px]="50">
+                    <a role="button">
+                      <img
+                        style="object-fit: contain; height: 25px"
+                        [style.width.px]="50"
+                        alt="ok"
+                        src="assets/microsoftcard.png"
+                      />
+                    </a>
+                  </div>
+                </div>
+
+                <div
+                  class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
+                >
+                  <div
+                    class="col mb-4 mx-3"
+                    *ngFor="let social of storeInfo().socials"
+                    [style.width.px]="45"
+                  >
+                    <a role="button">
+                      <img
+                        class="rounded-circle"
+                        style="object-fit: contain"
+                        [style.width.px]="45"
+                        alt="ok"
+                        [src]="getLinkImg(social.name)"
+                      />
+                    </a>
+                  </div>
+                </div>
+
+                <div class="w-100 d-none d-md-block">
+                  <div>
+                    <div
+                    class="w-100 row row-cols-3 justify-content-end"
+                    cdkDropListGroup
+                  >
+                    <div
+                      class="col m-0 mx-2"
+                      style="width: fit-content"
+                      *ngFor='let col of footerCols'
+                      cdkDrag
+                      cdkDropList
+                      [cdkDropListData]="col.link"
+                      (cdkDropListDropped)="dropFooterRow($event)"
+                    >
+                      <a class="footer-link" role="button" *ngFor='let link of col.link; index as j' cdkDrag
+                      
+                      >
+                        <p [style.font-family]="storeInfo().fontName!">
+                          {{headerName(link)}}
+                        </p>
+                      </a>
+                    </div>                
+                  </div>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
+                  <div class="col mb-4 mx-2" [style.width.px]="50">
+                      
+                  </div>
+                  <div class="col mb-4 mx-2" [style.width.px]="50">
+                      
+                  </div>
+                  <div class="col mb-4 mx-2" [style.width.px]="50">
+                      
+                  </div>
+                  <div class="col mb-4 mx-2" [style.width.px]="50">
+                      
+                  </div>
+                  <div class="col mb-4 mx-2" [style.width.px]="50">
+                      
+                  </div>
+              </div> -->
+            </div>
+            <div class="container">
+              <p
+                class="m-0 text-center text-{{
+                  storeInfo().colorStyle!.text_code
+                }}"
+                [style.font-family]="storeInfo().fontName!"
+              >
+                &copy; {{ storeInfo().fullName }} 2022
+              </p>
+            </div>
+            <div class="container">
+              <p
+                class="m-0 text-center text-{{
+                  storeInfo().colorStyle!.text_code
+                }}"
+                [style.font-family]="storeInfo().fontName!"
+              >
+                Powered by Thred
+              </p>
+            </div>
+          </footer>
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'BANNERS'" class="py-3">
@@ -3002,6 +3196,7 @@
 
 
 
+
                         }}/{{subInfo?.plan.interval ?? 'month'}}</a
                       ></mat-hint
                     >
@@ -3014,6 +3209,7 @@
                         >FREE
                         <b style="color: #6c757d"
                           >({{formatPrice((subInfo?.plan.amount ?? 0) / 100)
+
 
 
 
@@ -3264,8 +3460,6 @@
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'AFFILIATE'" class="h-100">
-
-        
         <div
           class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
         >
@@ -3276,40 +3470,40 @@
                 storeInfo()!.colorStyle!.text_code == 'light'
               "
             >
-            <p
-            class="text-center text-{{
-              storeInfo().colorStyle!.text_code
-            }} px-2 mx-2 my-2"
-            style="font-weight: bolder"
-          >
-            {{ item.series[0].name.toUpperCase() }}
-          </p>
-          <h2
-            class="text-center fw-bolder"
-            style="font-size: x-large"
-            style.color="{{ selectedTheme()!.color }}"
-          >
-            {{
-              formatGraphElement(
-                totalElement(item.series[0].data),
-                item.series[0].name
-              )
-            }}
-          </h2>
+              <p
+                class="text-center text-{{
+                  storeInfo().colorStyle!.text_code
+                }} px-2 mx-2 my-2"
+                style="font-weight: bolder"
+              >
+                {{ item.series[0].name.toUpperCase() }}
+              </p>
+              <h2
+                class="text-center fw-bolder"
+                style="font-size: x-large"
+                style.color="{{ selectedTheme()!.color }}"
+              >
+                {{
+                  formatGraphElement(
+                    totalElement(item.series[0].data),
+                    item.series[0].name
+                  )
+                }}
+              </h2>
               <div
                 class="card-body d-flex justify-content-center align-items-center my-2 w-100 mx-0"
                 style="height: 250px"
               >
-              <apx-chart
-              *ngIf="item.shouldDisplay"
-              [series]="item.series"
-              [chart]="item.chart"
-              [xaxis]="item.xaxis"
-              [yaxis]="item.yaxis"
-              [stroke]="item.stroke"
-              [tooltip]="item.tooltip"
-              [dataLabels]="item.dataLabels"
-            ></apx-chart>
+                <apx-chart
+                  *ngIf="item.shouldDisplay"
+                  [series]="item.series"
+                  [chart]="item.chart"
+                  [xaxis]="item.xaxis"
+                  [yaxis]="item.yaxis"
+                  [stroke]="item.stroke"
+                  [tooltip]="item.tooltip"
+                  [dataLabels]="item.dataLabels"
+                ></apx-chart>
                 <div *ngIf="!item.shouldDisplay" class="text-center">
                   <h4
                     class="fw-bolder"

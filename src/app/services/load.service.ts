@@ -505,6 +505,8 @@ export class LoadService {
   
 
 
+        var header = docData['header_links'] as Array<string>
+        var footer = docData['footer_links'] as Array<Dict<string>>
 
 
         let orders = (docData['Orders'] as number) ?? 0;
@@ -588,6 +590,8 @@ export class LoadService {
           homeRows,
           pages,
           orders,
+          header,
+          footer
         );
 
         if (banners.length > 0) {
@@ -808,6 +812,8 @@ export class LoadService {
             let homeRows = docData['rows'] as Array<Row>;
 
             var pages = docData['pages'] as Array<Page>
+            var header = docData['header_links'] as Array<string>
+            var footer = docData['footer_links'] as Array<Dict<string>>
 
             let orders = (docData['Orders'] as number) ?? 0;
 
@@ -898,6 +904,8 @@ export class LoadService {
               homeRows,
               pages,
               orders,
+              header,
+              footer
             );
 
 
@@ -2856,6 +2864,29 @@ export class LoadService {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.Coupons) {
         Globals.userInfo!.coupons = data.Coupons;
+        Globals.storeInfo = Globals.userInfo!;
+      }
+    }
+    callback(true);
+  }
+
+  async saveHeader(
+    header: Array<string>,
+    footer: Array<Dict<string>>,
+    callback: (success: boolean) => any,
+    uid?: string
+  ) {
+
+
+    var data = {
+      header_links: header,
+      footer_links: footer,
+    };
+    if (uid && data) {
+      await this.db.collection('Users').doc(uid).update(data);
+      if (data.header_links) {
+        Globals.userInfo!.header = data.header_links;
+        Globals.userInfo!.footer = data.footer_links;
         Globals.storeInfo = Globals.userInfo!;
       }
     }

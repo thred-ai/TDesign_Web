@@ -27,7 +27,7 @@ import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
 import { Coupon } from '../models/coupon.model';
 import { MatDialog } from '@angular/material/dialog';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Banner } from '../models/banner.model';
 import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 import { Popup } from '../models/popup.model';
@@ -98,6 +98,10 @@ canTrial?: boolean = true
 
 invTitle = 'FULFILLED BY THRED'
 
+
+headerName(h: string){
+  return this.storeInfo()?.pages?.find(p => p.id == h)?.title ?? ''
+}
 
 socials(){
   return Globals.socials
@@ -1307,11 +1311,6 @@ showSocialModal(logo: {
           "Icon": "layers",
           "Active": false
         },
-        {
-          "Title": "MENU",
-          "Icon": "list",
-          "Active": false
-        },
       ]
     },
     {
@@ -1411,7 +1410,16 @@ showSocialModal(logo: {
     },
   ]
 
-  
+  inMenu(h?: string){
+    let headers = this.headerForm.controls.links.value
+
+    return headers.find((l: string) => l == h) != undefined
+  }
+
+  inFooter(h?: string){
+
+    return this.footerCols.find((l: Dict<any>) => l.link.find((k: string) => k == h)) != undefined
+  }
 
 
   getBillingAddressFirst(){
@@ -1420,6 +1428,53 @@ showSocialModal(logo: {
     return name
   }
 
+  getLinkImg(name: string){
+    return Globals.socials.filter(obj => { 
+      return obj.name == name
+    })[0].img
+  }
+
+  configureFooter(h?: string){
+
+    if (h != undefined){
+      let isAdding = this.footerCols.find((l: Dict<any>) => l.link.find((k: string) => k == h)) == undefined
+
+      if (isAdding){
+        this.footerCols[0].link.push(h)
+      }
+      else{
+        let i = this.footerCols.findIndex((l: Dict<any>) => l.link.find((k: string) => k == h))
+        let j = this.footerCols[i].link.findIndex((l: string) => l == h)
+
+        console.log(h)
+
+        if (i >= 0 && j >= 0){
+          this.footerCols[i].link.splice(j, 1)
+        }
+      }
+    }
+  }
+
+  configureHeader(h?: string){
+    let headers = this.headerForm.controls.links.value
+
+    if (h != undefined){
+      let isAdding = headers.find((l: string) => l == h) == undefined
+
+      if (isAdding){
+        headers.push(h)
+      }
+      else{
+        let i = headers.findIndex((l: string) => l == h)
+        console.log(h)
+
+        if (i >= 0){
+          headers.splice(i, 1)
+        }
+      }
+    }
+    this.headerForm.controls.links.setValue(headers)
+  }
 
   defaultBio = ""
   color = ""
@@ -1794,6 +1849,12 @@ isSpinning = false
   marketingForm = this.fb.group({
     pixel: [null, Validators.required],
   });
+
+  headerForm = this.fb.group({
+    links: [[], Validators.required],
+  });
+
+  footerCols: Array<Dict<any>> = []
   
   getSelectedPanel(){
     let selected = this.panels.filter(panel => panel.Options?.filter(option => option.Active).length != 0)[0]?.Options.filter(option => option?.Active)[0]
@@ -1859,6 +1920,8 @@ isSpinning = false
 
     this.bannerForm.controls.style.setValue(Globals.userInfo?.bannerStyle ?? 0)
 
+    this.headerForm.controls.links.setValue(Globals.userInfo?.header ?? [])
+    this.footerCols = Globals.userInfo?.footer ?? []
 
     this.theme = Globals.userInfo?.colorStyle?.name?.toString() ?? 'Light'
 
@@ -2282,6 +2345,24 @@ isSpinning = false
     this.bannerForm.controls.banners.setValue(arr)
   }
 
+  dropHeaderLink(event: CdkDragDrop<string[]>) {
+    let arr = this.headerForm.controls.links.value
+    moveItemInArray(arr, event.previousIndex, event.currentIndex);
+    this.headerForm.controls.links.setValue(arr)
+  }
+
+
+  dropFooterRow(event: CdkDragDrop<any>) {
+
+
+    if(event.previousContainer == event.container){
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+    }
+     
+  }
+
   selectedTheme(){
     
     let co = Globals.storeInfo?.colorStyle?.btn_color
@@ -2309,6 +2390,15 @@ isSpinning = false
     this.saveStore()
   }
 
+  saveHeader(){
+    let header = this.headerForm.controls.links.value ?? []
+
+    this.loadService.saveHeader(header, this.footerCols, success => {
+      if (success){
+        this.toast('Store Header Updated!')
+      }
+    }, Globals.storeInfo.uid)
+  }
 
   async saveStore(){
 
@@ -2316,6 +2406,9 @@ isSpinning = false
 
     if (this.getSelectedPanel().Title == 'STORE'){
       this.saveProfile()
+    }
+    if (this.getSelectedPanel().Title == 'PAGES'){
+      this.saveHeader()
     }
     else{
       if (this.getSelectedPanel().Title == 'HOME'){
@@ -2469,7 +2562,8 @@ isSpinning = false
       'HOME',
       'SHOP',
       'THEMES',
-      'BANNERS'
+      'BANNERS',
+      'PAGES'
     ]
     return list.find(l => { return l == title})
   }

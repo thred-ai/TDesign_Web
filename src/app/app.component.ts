@@ -619,6 +619,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  headerName(h: string){
+    return this.storeInfo()?.pages?.find(p => p.id == h)?.title ?? ''
+  }
+
+  routeToLink(h: string){
+    let link = this.storeInfo()?.pages?.find(p => p.id == h)?.url ?? 'home'
+
+    if (Globals.storeInfo.username)
+    this.routingService.routeToDynamicLink(Globals.storeInfo.username, link, this.getStoreName().isCustom)
+  }
+
   activateComponent(event: any){
     if (event.constructor.name == 'LandingComponent'){
       this.addConfig()
