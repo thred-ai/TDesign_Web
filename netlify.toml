@@ -12,7 +12,10 @@
   #  to = "/index.html"
   #  status = 200
 
-
+[[redirects]]
+  from = "/410"
+  to = "/not-found"
+  status = 410
 
 [[redirects]]
   from = "/*"

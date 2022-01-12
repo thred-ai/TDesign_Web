@@ -48,9 +48,13 @@ export class InvalidPageComponent implements OnInit {
     return isPlatformBrowser(this.platformID)
   }
 
+  routeToLink(link: string){
+    this.rootComponent.routeToLink(link)
+  }
+
   ngOnInit(): void {
     if (this.response){
-      this.response.statusCode = 410
+      // this.response.statusCode = 410
       this.response.status(410)
     }
     this.init()

@@ -94,7 +94,7 @@ export class RoutingService {
 
   routeToStore404(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      this.redirectTo('not-found');
+      this.redirectTo('410');
       return;
     }
     this.redirectTo(storeName + '/' + 'not-found');

@@ -260,6 +260,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       const storeID = routeParams.get('page') as string;
       let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows
 
+      this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+
       if (rows && rows != []){
         this.homeRows = rows
       }
@@ -270,7 +272,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-      this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
       if (isPlatformBrowser(this.platformID)){
         this.showSpinner()
         this.loadService.logView()
