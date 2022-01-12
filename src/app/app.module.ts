@@ -28,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { InViewportModule } from 'ng-in-viewport';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
+import { ApplicationPipesModule } from './shared/applicationPipes.module';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { HttpClientModule } from '@angular/common/http';
     PixelModule.forRoot({pixelId: '646165189889348'}),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
     InViewportModule,
-    HttpClientModule
+    HttpClientModule,
+    ApplicationPipesModule
     
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
@@ -105,7 +107,6 @@ export class AppModule {
 
         { path: ':page', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
 
-        { path: 'products', loadChildren: () => import('./shop/shop.module').then((m) => m.ShopModule)},
 
       ]
     }

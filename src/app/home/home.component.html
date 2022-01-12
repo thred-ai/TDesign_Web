@@ -57,7 +57,7 @@
               "
             >
               <!-- Product image-->
-              <a role="button" (click)="routeToProduct(product.productID)"
+              <a role="button" href='{{"/products/" + product.productID | storeChecker}}' (click)="routeToProduct(product.productID); false"
                 ><img
                   class="card-img-top"
                   src="{{(product.url?.toString() ?? &quot;&quot;)}}"
@@ -77,7 +77,8 @@
                       style="text-decoration: none"
                       style.color="{{ selectedTheme()!.color }}"
                       role="button"
-                      (click)="routeToProduct(product.productID)"
+                      href='{{"/products/" + product.productID | storeChecker}}'
+                      (click)="routeToProduct(product.productID); false"
                       >{{ product.name }}</a
                     >
                   </h4>
@@ -109,7 +110,8 @@
                     }} bad w-100 mt-auto text-center"
                     style="font-weight: bold; max-width: 50vh"
                     role="button"
-                    (click)="routeToProduct(product.productID)"
+                    href='{{"/products/" + product.productID | storeChecker}}'
+                    (click)="routeToProduct(product.productID); false"
                   >
                     {{ formatPrice(mainPrice(product)) }}
                   </a>

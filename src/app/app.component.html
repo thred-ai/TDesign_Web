@@ -71,7 +71,8 @@
             class="nav-link"
             aria-current="page"
             role="button"
-            (click)="routeToLink(l)"
+            (click)="routeToLink(l); false"
+            href='{{l | storeChecker : true}}'
             [style.font-family]="storeInfo().fontName!"
             >{{ headerName(l) }}</a
           >
@@ -471,7 +472,8 @@
                 class="footer-link"
                 role="button"
                 *ngFor="let link of col.link; index as j"
-                (click)='routeToLink(link)'
+                (click)='routeToLink(link); false'
+                href='{{link | storeChecker : true}}'
               >
                 <p [style.font-family]="storeInfo().fontName!">
                   {{ headerName(link) }}

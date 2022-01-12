@@ -30,7 +30,6 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { StoreTheme } from '../models/theme.model';
-import { ShopComponent } from '../shop/shop.component';
 import { AdminViewComponent } from '../admin-view/admin-view.component';
 import { HomeComponent } from '../home/home.component';
 import { AppComponent } from '../app.component';
@@ -1117,16 +1116,15 @@ export class LoadService {
     });
   }
 
-  shopComponent?: ShopComponent;
   adminComponent?: AdminViewComponent;
   homeComponent?: HomeComponent;
 
   setFilterProducts(products: Array<Product>) {
-    if (this.shopComponent) this.shopComponent.storeProducts = products;
+    // if (this.shopComponent) this.shopComponent.storeProducts = products;
   }
 
   addProduct(product: Product) {
-    if (this.shopComponent) this.shopComponent.storeProducts?.unshift(product);
+    // if (this.shopComponent) this.shopComponent.storeProducts?.unshift(product);
 
     if (this.adminComponent)
       this.adminComponent.storeProducts?.unshift(product);
@@ -1135,22 +1133,22 @@ export class LoadService {
   }
 
   editProduct(product: Product) {
-    if (this.shopComponent) {
-      let p = this.shopComponent.storeProducts?.find((obj) => {
-        return obj.productID == product.productID;
-      }) as Product;
+    // if (this.shopComponent) {
+    //   let p = this.shopComponent.storeProducts?.find((obj) => {
+    //     return obj.productID == product.productID;
+    //   }) as Product;
 
-      if (!p) {
-        this.addProduct(product);
-        return;
-      }
+    //   if (!p) {
+    //     this.addProduct(product);
+    //     return;
+    //   }
 
-      p.name = product.name;
-      p.description = product.description;
-      p.price = product.price;
-      p.url = product.url;
-      p.images = product.images;
-    }
+    //   p.name = product.name;
+    //   p.description = product.description;
+    //   p.price = product.price;
+    //   p.url = product.url;
+    //   p.images = product.images;
+    // }
 
     if (this.adminComponent) {
       let p = this.adminComponent.storeProducts?.find((obj) => {
@@ -1197,16 +1195,16 @@ export class LoadService {
   }
 
   removeProduct(product: Product) {
-    if (this.shopComponent) {
-      let p = this.shopComponent.storeProducts?.filter((obj) => {
-        return obj.productID == product.productID;
-      })[0] as Product;
+    // if (this.shopComponent) {
+    //   let p = this.shopComponent.storeProducts?.filter((obj) => {
+    //     return obj.productID == product.productID;
+    //   })[0] as Product;
 
-      let index = this.shopComponent.storeProducts?.indexOf(p);
-      if (index) {
-        this.shopComponent.storeProducts?.splice(index, 1);
-      }
-    }
+    //   let index = this.shopComponent.storeProducts?.indexOf(p);
+    //   if (index) {
+    //     this.shopComponent.storeProducts?.splice(index, 1);
+    //   }
+    // }
 
     if (this.adminComponent) {
       let p = this.adminComponent.storeProducts?.filter((obj) => {

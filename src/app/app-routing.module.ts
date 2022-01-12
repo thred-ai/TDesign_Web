@@ -39,7 +39,6 @@ var routes: Routes = [
 
   { path: ':user/:404', redirectTo: '/:user/not-found'},
 
-  { path: ':user/products', loadChildren: () => import('./shop/shop.module').then((m) => m.ShopModule)}
 
 ]
 

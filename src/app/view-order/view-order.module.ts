@@ -9,6 +9,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { ViewOrderComponent } from './view-order.component';
 import { Routes, RouterModule } from '@angular/router';
+import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 
 const routes: Routes = [
   {
@@ -27,7 +28,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     MatCardModule,
-    
+    ApplicationPipesModule,
     NgxSpinnerModule,
     RouterModule.forChild(routes)
   ],
