@@ -13,9 +13,15 @@
   #  status = 200
 
 [[redirects]]
+  from = "/not-found"
+  to = "/not-found"
+  status = 410
+
+[[redirects]]
   from = "/*"
   to = "/"
   status = 200
+
 
   ## (optional) Settings for Netlify Dev
   ## https://github.com/netlify/cli/blob/main/docs/netlify-dev.md#project-detection
