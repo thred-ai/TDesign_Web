@@ -14,7 +14,7 @@
 
 [[redirects]]
   from = "/410"
-  to = "/not-found"
+  to = "/404.html"
   status = 410
 
 [[redirects]]
