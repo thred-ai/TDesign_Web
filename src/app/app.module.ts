@@ -107,6 +107,7 @@ export class AppModule {
 
         { path: ':page', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
 
+        { path: '**', redirectTo: 'not-found' }
 
       ]
     }
