@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef, Optional } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 import { LoadService, Dict } from '../services/load.service';
@@ -6,6 +6,7 @@ import { Globals } from '../globals';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { AppComponent } from '../app.component';
 import { RoutingService } from '../services/routing.service';
+import { RESPONSE } from '@nguniversal/express-engine/tokens';
 
 @Component({
   selector: 'app-invalid-page',
@@ -24,7 +25,10 @@ export class InvalidPageComponent implements OnInit {
     private rootComponent: AppComponent,
     private _router: Router,
     private routingService: RoutingService,
-  ) {}
+    @Optional() @Inject(RESPONSE) private response: any
+  ) {
+    
+  }
 
   storeInfo(){return Globals.storeInfo}
 
@@ -45,6 +49,9 @@ export class InvalidPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.response){
+      this.response.statusCode = 410
+    }
     this.init()
   }
 

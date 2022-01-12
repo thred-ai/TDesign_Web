@@ -258,8 +258,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
       const routeParams = this.router.snapshot.paramMap;
       const storeID = routeParams.get('page') as string;
-      let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows ?? []
-      this.homeRows = rows
+      let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows
+
+      if (rows && rows != []){
+        this.homeRows = rows
+      }
+      else{
+        this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
+      }
 
 
 
