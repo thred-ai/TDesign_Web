@@ -12,15 +12,12 @@
   #  to = "/index.html"
   #  status = 200
 
-[[redirects]]
-  from = "/410"
-  to = "/404.html"
-  status = 410
+#[[redirects]]
+  #from = "/410"
+  #to = "/404.html"
+  #status = 410
 
-[[redirects]]
-  from = "/*"
-  to = "/"
-  status = 200
+
 
 
   ## (optional) Settings for Netlify Dev

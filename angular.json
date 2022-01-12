@@ -36,6 +36,7 @@
               "src/src",
               "src/modules",
               "src/404.html",
+              "src/_redirects",
               {
                 "glob": "**/*.js",
                 "input": "node_modules/@webcomponents/webcomponentsjs",
@@ -128,7 +129,8 @@
               "src/hologram",
               "src/src",
               "src/modules",
-              "src/404.html"
+              "src/404.html",
+              "src/_redirects"
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
