@@ -51,6 +51,7 @@ export class InvalidPageComponent implements OnInit {
   ngOnInit(): void {
     if (this.response){
       this.response.statusCode = 410
+      this.response.status(410)
     }
     this.init()
   }
