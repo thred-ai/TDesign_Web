@@ -504,6 +504,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     }
     this.titleService.setTitle(newTitle)
     this.metaService.updateTag({name: 'description', content: description})
+    this.metaService.removeTag("name='robots'");
+    this.metaService.removeTag("name='googlebot'");
   }
 
 

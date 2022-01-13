@@ -65,6 +65,8 @@ export class LandingComponent implements OnInit {
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
     this.metaService.updateTag({name: 'description', content: description})
+    this.metaService.removeTag("name='robots'");
+    this.metaService.removeTag("name='googlebot'");
   }
 
   async route(signedIn: boolean){

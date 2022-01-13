@@ -481,6 +481,8 @@ export class ShippingAddressComponent implements OnInit {
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
     this.metaService.updateTag({property: 'description', content: description})
+    this.metaService.removeTag("name='robots'");
+    this.metaService.removeTag("name='googlebot'");
 
   }
 

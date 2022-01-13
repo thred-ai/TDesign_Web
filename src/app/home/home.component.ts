@@ -406,6 +406,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
     this.metaService.updateTag({name: 'description', content: description})
+    this.metaService.removeTag("name='robots'");
+    this.metaService.removeTag("name='googlebot'");
   }
 
 }
