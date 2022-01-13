@@ -138,6 +138,8 @@ export class InvalidPageComponent implements OnInit {
     this.metaService.updateTag({property: 'og:description', content: description})
     this.titleService.setTitle(title)
     this.metaService.updateTag({property: 'description', content: description})
+    // this.metaService.addTag({name:"robots", content:"noindex,nofollow"})
+    // this.metaService.addTag({name:"googlebot", content:"noindex"})
   }
 
 

@@ -1,7 +1,6 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { Globals } from '../globals';
 
 @Injectable({
   providedIn: 'root',
@@ -95,7 +94,7 @@ export class RoutingService {
 
   routeToStore404(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
-      globalThis.window.open((Globals.storeInfo.customURL?.fullURL ?? '') + '/410', '_self')
+      this.redirectTo('not-found');
       return;
     }
     this.redirectTo(storeName + '/' + 'not-found');

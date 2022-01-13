@@ -102,13 +102,12 @@ export class AppModule {
       
         { path: 'review-order', loadChildren: () => import('./checkout/checkout.module').then((m) => m.CheckoutModule)},
         { path: 'my-store', loadChildren: () => import('./admin-view/admin-view.module').then((m) => m.AdminViewModule)},
-        // { path: '404', loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule), pathMatch: 'full' },
+        { path: '404', loadChildren: () => import('./landing/landing.module').then((m) => m.LandingModule), pathMatch: 'full' },
 
 
         { path: ':page', loadChildren: () => import('./home/home.module').then((m) => m.HomeModule)},
 
-        // { path: '410', redirectTo: 'not-found' },
-        { path: '**', redirectTo: '410' }
+        { path: '**', redirectTo: 'not-found' }
 
       ]
     }

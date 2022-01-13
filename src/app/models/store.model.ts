@@ -167,7 +167,9 @@ export class Store {
       ]
 
       
-      this.colorStyle = colorStyle ?? new StoreTheme('Light','light','dark', 'light', 'simple', [255.0, 255.0, 255.0, 1],[10.0, 10.0, 10.0, 1])
+      this.colorStyle = colorStyle && (colorStyle?.name ?? '').trim() != '' ? colorStyle : new StoreTheme('Light', 'light', 'dark', 'light', 'simple', [255.0, 255.0, 255.0, 1], [10.0, 10.0, 10.0, 1])
+
+
       this.fontName = fontName ?? 'Montserrat'//"Roboto"
       // this.colorStyle = colorStyle ?? new StoreTheme('Dark','dark','light',[10.0, 10.0, 10.0, 1],[255.0, 255.0, 255.0, 1])
 
