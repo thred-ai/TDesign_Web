@@ -488,7 +488,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.rowForm.controls.htmlText.setValue(matchingRow.html ?? '');
 
-    this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
 
     const promises = (matchingRow.imgs ?? []).map(async (image: string, index: number) => {
       let img = {
@@ -518,6 +517,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     console.log(name);
     this.rowForm.controls.grid.setValue(name);
+
+    this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
+
 
     if (matchingRow.type == 1) {
       let matchGrid = this.grid.find((g) => g.name == name);
@@ -551,16 +553,22 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (matchingRow.type == 3) {
       let matchGrid = this.grid.find((g) => g.name == name);
 
+      console.log(matchGrid)
+      console.log(matchingRow.type)
+
       let diff =
         (matchGrid?.row ?? 1) - this.buttons.length;
 
         console.log(diff)
+        
       if (diff > 0) {
-        for (let i = 0; i < diff; i++) {
-          this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
-        }
+        // for (let i = 0; i < diff; i++) {
+        //   this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
+        // }
       }
     }
+
+
     setTimeout(async () => {
       let p = document.getElementById('p-' + index);
       if (p) {
@@ -681,11 +689,23 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return 'rounded-circle'
   }
 
-  changed(event?: any) {
-    let type = this.rowForm.controls.type.value ?? 1;
+  changed(event?: any, event2?: any) {
+    let type = this.rowForm.controls.type.value ?? event2;
+    let grid = this.rowForm.controls.grid.value ?? event;
+
+    if (!type){
+
+      type = event2.value
+    }
+    if (!grid){
+
+      grid = event.value
+    }
+
+    console.log(type)
 
     if (type == 1) {
-      let matchGrid = this.grid.find((g) => g.name == event.value);
+      let matchGrid = this.grid.find((g) => g.name == grid);
 
       let newSize = (matchGrid?.row ?? 1);
 
@@ -706,7 +726,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       }
     }
     else if (type == 4) {
-      let matchGrid = this.grid.find((g) => g.name == event.value);
+      let matchGrid = this.grid.find((g) => g.name == grid);
 
       let newSize = (matchGrid?.row ?? 1);
 
@@ -726,7 +746,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       }
     }
     else if (type == 3){
-      let matchGrid = this.grid.find((g) => g.name == event.value);
+      let matchGrid = this.grid.find((g) => g.name == grid);
 
       let newSize = (matchGrid?.row ?? 1);
 
@@ -912,7 +932,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   addBlock() {
     let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    rows.push(new Row('', [], undefined, 0, [], 1));
+    rows.push(new Row('', [], undefined, 0, [], 1, "", "", [], [], []));
     this.layoutForm.controls.rows.setValue(rows);
 
     this.edit(rows.length - 1);

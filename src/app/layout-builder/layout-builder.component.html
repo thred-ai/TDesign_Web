@@ -266,7 +266,6 @@
                       <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Name</mat-placeholder>
                       <input type="text"
                              matInput
-                             formControlName="name"
                              class="text-{{storeInfo.colorStyle!.text_code}}"
                              style.color="{{selectedTheme!.color}}"
                       >
@@ -275,7 +274,6 @@
                             <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Email</mat-placeholder>
                             <input type="email"
                                    matInput
-                                   formControlName="email"
                                    class="text-{{storeInfo.colorStyle!.text_code}}"
                                    style.color="{{selectedTheme!.color}}"
                             >
@@ -344,7 +342,7 @@
                   <mat-label>Block Type</mat-label>
                   <mat-select
                     formControlName="type"
-                    (selectionChange)="changed($event)"
+                    (selectionChange)="changed(undefined, $event)"
                   >
                     <mat-select-trigger
                       class="d-flex align-items-center"
@@ -1163,7 +1161,6 @@
                       <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Name</mat-placeholder>
                       <input type="text"
                              matInput
-                             formControlName="name"
                              class="text-{{storeInfo.colorStyle!.text_code}}"
                              style.color="{{selectedTheme!.color}}"
                       >
@@ -1172,7 +1169,6 @@
                             <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Email</mat-placeholder>
                             <input type="email"
                                    matInput
-                                   formControlName="email"
                                    class="text-{{storeInfo.colorStyle!.text_code}}"
                                    style.color="{{selectedTheme!.color}}"
                             >
