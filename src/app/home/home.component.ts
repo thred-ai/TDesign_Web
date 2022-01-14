@@ -270,7 +270,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
       if (page && rows && rows != []){
-        this.addTags(page.seo)
+        this.addTags(page)
 
         this.homeRows = rows
         this.page = page
@@ -453,20 +453,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   urlText(){
-    var url = 'https://shopmythred.com/' + this.storeInfo().username
+    var bURL = 'shopmythred.com/' + this.storeInfo().username
 
+    var url = bURL
 
-    if (this.storeInfo().customURL?.status == 2){
-      url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.fullURL! : url
-    }
+    // if (this.storeInfo().customURL?.status == 2){
+    //   url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.fullURL! : bURL
+    // }
 
     return url
   }
 
-  addTags(seo?: SEO){
+  addTags(page?: Page){
 
+    let seo = page?.seo
 
-    let title = (seo?.title ?? "").trim() != "" ? (seo?.title ?? "") : Globals.storeInfo.fullName ?? "Thred"
+    let title = (seo?.title ?? "").trim() != "" ? (seo?.title ?? "") : (Globals.storeInfo.fullName + '-' + page?.title) ?? "Thred"
 
 
     let metaTitle = (seo?.meta?.title ?? "").trim() != "" ? (seo?.meta?.title ?? "") : title
@@ -488,16 +490,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
 
-    if (url){
-      this.metaService.updateTag({property: 'og:url', content: url})
-    }
+    this.metaService.updateTag({property: 'og:url', content: url})
 
     if (seo?.keywords && seo.keywords.length > 0){
       var finalStr = ''
       seo.keywords.forEach((key, index) => {
         finalStr += key
 
-        if (index != seo.keywords.length - 1){
+        if (index != seo!.keywords.length - 1){
           finalStr += ", "
         }
       })
@@ -511,13 +511,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.titleService.setTitle(title)
     this.metaService.updateTag({name: 'description', content: description})
 
-    if (!(seo?.noIndex ?? false)){
-      this.metaService.removeTag("name='robots'");
-      this.metaService.removeTag("name='googlebot'");
-    }
-    else{
+    if (seo && seo.noIndex){
       this.metaService.addTag({name:"robots", content:"noindex,nofollow"})
       this.metaService.addTag({name:"googlebot", content:"noindex"})
+    }
+    else{
+      this.metaService.removeTag("name='robots'");
+      this.metaService.removeTag("name='googlebot'");
     }
   }
 
