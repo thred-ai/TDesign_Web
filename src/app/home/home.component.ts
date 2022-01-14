@@ -12,6 +12,7 @@ import { RoutingService } from '../services/routing.service';
 import { Row } from '../models/row.model';
 import { Page } from '../models/page.model';
 import { SEO } from '../models/seo.model';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -167,7 +168,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   private injector : Injector,
   private routingService: RoutingService,
   private sanitizer: DomSanitizer,
-  private location: PlatformLocation
+  private location: PlatformLocation,
+  private fb: FormBuilder
 
   ) {
       // const routeParams = this.router.snapshot.paramMap;
@@ -390,6 +392,52 @@ export class HomeComponent implements OnInit, OnDestroy {
         break
     }
     return this.numberWithCommas(this.getCurrencyForCountry(Globals.selectedCurrency!, Globals.selectedCurrency!.name != "US") + priceAsString)
+  }
+
+  popupForm = this.fb.group({
+    email: [null, [Validators.required]],
+    name: [null],
+    countryCode: [null],
+    sms: [null, [Validators.pattern(/^\(\d{3}\)\s\d{3}-\d{4}$/),Validators.required]],
+  });
+
+  err?: string
+
+  save(){
+    this.err = undefined
+
+    if (
+      (!this.popupForm.controls.email.value ||
+      this.popupForm.controls.email.value?.replace(" ", '') == '') &&
+      (!this.popupForm.controls.sms.value || 
+      this.popupForm.controls.sms.value?.replace(" ", '') == '')){
+        this.err = "1 or more field(s) are empty"
+        return 
+    }
+
+    // if (!this.popupForm.controls.name.value){
+    //   this.err = "Invalid Name"
+    //   return
+    // }
+
+    // && (this.popup?.type == 1 || this.popup?.type == 3)
+
+    // this.spinner.show('popupSpinner')
+
+    const data = 0//(this.popup?.type == 0 || this.popup?.type == 2) ? 0 : 1
+    var info = this.popupForm.controls.email.value // (this.popup?.type == 0 || this.popup?.type == 2) ? this.popupForm.controls.email.value : ('+' + (this.popupForm.controls.countryCode.value ?? "1") + " ") + this.popupForm.controls.sms.value
+
+    this.loadService.saveData(data, info, success => {
+      // this.spinner.hide('popupSpinner')
+      if (success){
+        // this.dialogRef.close()
+        this.rootComponent.routeToLink("home")
+      }
+      else{
+        this.err = "An Error Occured, Try Again Later"
+      }
+    }, this.popupForm.controls.name.value, Globals.storeInfo.uid)
+
   }
 
   numberWithCommas(x: string) {

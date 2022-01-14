@@ -47,6 +47,7 @@ import { NgxSummernoteModule } from 'ngx-summernote';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { MatRadioModule } from '@angular/material/radio';
+import { PhoneMaskDirective } from '../phone-mask.directive';
 
 
 const routes: Routes = [
@@ -76,6 +77,7 @@ const routes: Routes = [
     ViewAllOrderAdminComponent,
     LayoutBuilderComponent,
   ],
+
   imports: [
     CommonModule,
     MatCardModule,

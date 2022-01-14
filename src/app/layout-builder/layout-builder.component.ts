@@ -83,6 +83,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges()
   }
 
+
   layoutForm = this.fb.group({
     rows: [[]],
     name: [null, [Validators.required]],
@@ -319,6 +320,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       name: 'Product Block',
       code: 0,
     },
+    {
+      name: 'Email Collection Block',
+      code: 6,
+    },
+    // {
+    //   name: 'SMS Collection Block',
+    //   code: 5,
+    // },
   ];
 
   btnTypes = [

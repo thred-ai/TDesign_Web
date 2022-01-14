@@ -7,6 +7,11 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { Routes, RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 
 const routes: Routes = [
   {
@@ -26,7 +31,13 @@ const routes: Routes = [
     MatIconModule,
     NgxSpinnerModule,
     RouterModule.forChild(routes),
-    ApplicationPipesModule
+    ApplicationPipesModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
