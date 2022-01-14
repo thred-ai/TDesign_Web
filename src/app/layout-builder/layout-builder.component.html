@@ -192,7 +192,7 @@
                         </div>
                       </div>
                       <div
-                        class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
+                        class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 px-3 mb-1"
                         *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 3"
                         style="pointer-events: none"
                       >
@@ -202,9 +202,9 @@
                         >
                           <a
                             *ngIf="button.text != ''"
-                            class="text-center fw-bolder p-1 px-2 btn {{
+                            class="text-center fw-bolder p-1 px-3 btn {{
                               matchingStyle(button.style)
-                            }} w-100 my-auto"
+                            }} my-auto"
                             style="text-decoration: none; font-size: 5px"
                             style.background-color="{{ button.bg_color }}"
                             style.color="{{ button.text_color }}"
@@ -262,6 +262,15 @@
                       storeInfo.colorStyle!.text_code
                     }} bg-{{ storeInfo.colorStyle!.back_code }} mx-auto">
 
+                    <mat-form-field *ngIf='((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6' class="h-100 m-3 my-0 mb-0">
+                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Name</mat-placeholder>
+                      <input type="text"
+                             matInput
+                             formControlName="name"
+                             class="text-{{storeInfo.colorStyle!.text_code}}"
+                             style.color="{{selectedTheme!.color}}"
+                      >
+                  </mat-form-field>
                         <mat-form-field *ngIf='((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6' class="h-100 m-3 my-0">
                             <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Email</mat-placeholder>
                             <input type="email"
@@ -388,7 +397,7 @@
                 >
                   <div
                     class="example-box p-2 my-1 bg-white rounded"
-                    *ngFor="let button of buttons"
+                    *ngFor="let button of buttons; index as i"
                     cdkDrag
                   >
                     <div class="h-100 w-100" style="position: relative">
@@ -443,15 +452,30 @@
                         </mat-select>
                       </mat-form-field>
 
+                      <mat-radio-group class="w-100 my-4" [ngModelOptions]="{ standalone: true }"
+                      [(ngModel)]="button.submit">
+                        <div class="w-100">
+                          <mat-radio-button [value]="true" (change)="radioChangeBtn($event, i)"
+                            >Submit Button</mat-radio-button
+                          >
+                        </div>
+                        <div class="mt-2">
+                          <mat-radio-button [value]="false" (change)="radioChangeBtn($event, i)"
+                            >Standalone Button</mat-radio-button
+                          >
+                        </div>
+                      </mat-radio-group>
 
-                      <mat-form-field class="my-2 w-100" appearance="fill">
+
+
+                      <mat-form-field class="my-4 w-100" appearance="fill">
                         <mat-label>Font Size</mat-label>
                         <input matInput type="number" placeholder="Ex. 12" [ngModelOptions]="{ standalone: true }" [(ngModel)]="button.fontsize" min="5">
                         <span matSuffix>px</span>
                       </mat-form-field>
                       <mat-label class="placeholder mt-2 text-secondary"
                       style="font-size: small;"
-                      >Button Fill Color</mat-label
+                      >Button Text Color</mat-label
                       >
                       <div class="card w-100 mb-2">
                         <a role="button"
@@ -475,7 +499,7 @@
 
                       <mat-label class="placeholder mt-2 text-secondary"                       style="font-size: small;"
 
-                          >Button Text Color</mat-label
+                          >Button Fill Color</mat-label
                       >
                       <div class="card w-100 mb-2">
                         <a role="button"
@@ -1068,7 +1092,7 @@
                     </div>
                   </div>
                   <div
-                    class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center mw-100 ms-3 me-3 mb-1"
+                    class="row gx-0 row-cols-1 row-cols-md-{{(aRow.index == i ? aRow?.row : undefined)?.grid_row ?? row.grid_row ?? 1}} justify-content-center w-100 px-3 mb-1"
                     *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 3"
                     style="pointer-events: none"
                   >
@@ -1079,9 +1103,9 @@
                       <a
                         role="button"
                         *ngIf="button.text != ''"
-                        class="text-center fw-bolder px-3 btn {{
+                        class="text-center fw-bolder px-4 btn {{
                           matchingStyle(button.style)
-                        }} w-100 my-auto"
+                        }} my-auto"
                         style="text-decoration: none;"
                         [style.font-size.px]='button.fontsize'
                         style.background-color="{{ button.bg_color }}"
@@ -1135,7 +1159,16 @@
                       storeInfo.colorStyle!.text_code
                     }} bg-{{ storeInfo.colorStyle!.back_code }} mx-auto">
 
-                        <mat-form-field *ngIf='((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6' class="h-100 m-3">
+                    <mat-form-field *ngIf='((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6' class="h-100 m-3 mb-0">
+                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Name</mat-placeholder>
+                      <input type="text"
+                             matInput
+                             formControlName="name"
+                             class="text-{{storeInfo.colorStyle!.text_code}}"
+                             style.color="{{selectedTheme!.color}}"
+                      >
+                  </mat-form-field>
+                        <mat-form-field *ngIf='((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6' class="h-100 m-3 mt-0">
                             <mat-placeholder class="placeholder" [style.color] = 'selectedTheme!.color'>Email</mat-placeholder>
                             <input type="email"
                                    matInput
@@ -2016,7 +2049,7 @@
           <div class="col mt-4">
             <h2 class="h2 my-0">Navigation</h2>
             <h5 class="mt-0">
-              When False, the headers & footers of your store are hidden on this
+              When set to 'No Navigation', the headers & footers of your store are hidden on this
               page
             </h5>
             <mat-radio-group formControlName="isFullscreen">

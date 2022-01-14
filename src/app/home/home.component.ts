@@ -13,6 +13,7 @@ import { Row } from '../models/row.model';
 import { Page } from '../models/page.model';
 import { SEO } from '../models/seo.model';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Button } from '../models/button.model';
 
 @Component({
   selector: 'app-home',
@@ -148,6 +149,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   imgLinkPressed(link?: string){
     this.rootComponent.routeToImgLink(link)
+  }
+
+  btnPressed(btn: Button){
+    if (btn.submit ?? false){
+      this.save(() => {
+        this.imgLinkPressed(btn.link)
+      })
+    }
+    else{
+      this.imgLinkPressed(btn.link)
+    }
   }
 
   homeRows: Array<Row> = []
@@ -403,7 +415,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   err?: string
 
-  save(){
+  save(callback: () => any){
     this.err = undefined
 
     if (
@@ -427,11 +439,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     const data = 0//(this.popup?.type == 0 || this.popup?.type == 2) ? 0 : 1
     var info = this.popupForm.controls.email.value // (this.popup?.type == 0 || this.popup?.type == 2) ? this.popupForm.controls.email.value : ('+' + (this.popupForm.controls.countryCode.value ?? "1") + " ") + this.popupForm.controls.sms.value
 
+
+    callback()
+
     this.loadService.saveData(data, info, success => {
       // this.spinner.hide('popupSpinner')
       if (success){
         // this.dialogRef.close()
-        this.rootComponent.routeToLink("home")
       }
       else{
         this.err = "An Error Occured, Try Again Later"

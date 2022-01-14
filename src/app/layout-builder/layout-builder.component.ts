@@ -84,6 +84,15 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
 
+  radioChangeBtn(event: any, index: number) {
+    let val = event.value;
+
+    this.buttons[index].submit = val
+    this.setRow()
+    this.cdr.detectChanges()
+  }
+
+
   layoutForm = this.fb.group({
     rows: [[]],
     name: [null, [Validators.required]],
@@ -544,6 +553,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
       let diff =
         (matchGrid?.row ?? 1) - this.buttons.length;
+
+        console.log(diff)
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
           this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));

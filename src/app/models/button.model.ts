@@ -6,7 +6,7 @@ export class Button {
     style?: number
     link?: string
     fontsize?: number
-
+    submit?: boolean
 
     constructor(
       text_color?: string,
@@ -14,7 +14,8 @@ export class Button {
       bg_color?: string,
       style?: number,
       link?: string,
-      fontsize?: number
+      fontsize?: number,
+      submit: boolean = false
     ) {
       this.text_color = text_color ?? 'rgba(255,255,255,1)'
       this.bg_color = bg_color ?? 'rgba(10,10,10,1)'
@@ -22,5 +23,6 @@ export class Button {
       this.text = text ?? ''
       this.link = link ?? ''
       this.fontsize = fontsize ?? 15
+      this.submit = submit ?? false
     }
 }
