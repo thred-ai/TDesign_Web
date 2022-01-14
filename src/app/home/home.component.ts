@@ -457,9 +457,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     var url = bURL
 
-    // if (this.storeInfo().customURL?.status == 2){
-    //   url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.fullURL! : bURL
-    // }
+    if (this.storeInfo().customURL?.status == 2){
+      url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.host! : bURL
+    }
 
     return url
   }
