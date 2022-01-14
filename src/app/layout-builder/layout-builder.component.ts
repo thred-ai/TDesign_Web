@@ -939,7 +939,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   
       let metaTitle = (this.layoutForm.controls.metaTitle.value as string) ?? Globals.storeInfo.fullName ?? "";
       let metaDesc = (this.layoutForm.controls.metaDesc.value as string) ?? Globals.storeInfo.bio ?? "";
-      let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? 'shopmythred.com';
+      let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
       let metaPic = (this.layoutForm.controls.metaPic.value as string);
   
   
