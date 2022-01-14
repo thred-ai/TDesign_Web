@@ -452,6 +452,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     return returnItem
   }
 
+  urlText(){
+    var url = 'https://shopmythred.com/' + this.storeInfo().username
+
+
+    if (this.storeInfo().customURL?.status == 2){
+      url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.fullURL! : url
+    }
+
+    return url
+  }
 
   addTags(seo?: SEO){
 
@@ -469,7 +479,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     let imgUrl = (seo?.meta?.pic ?? "").trim() != "" ? (seo?.meta?.pic ?? "") : ((Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString())
 
-    let url = seo?.meta?.url
+    let url = (seo?.meta?.url ?? "").trim() != "" ? (seo?.meta?.url ?? "") : this.urlText()
+
+    
 
     this.metaService.updateTag({property: 'og:title', content: metaTitle});
     this.metaService.updateTag({property: 'og:image:width', content: '200'});

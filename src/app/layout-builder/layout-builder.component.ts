@@ -272,13 +272,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.spinner.show('loader');
 
     for (let i = 1; i < 5; i++) {
-      for (let j = 1; j < 5; j++) {
-        this.grid.push({
-          name: String(i) + 'x' + String(j),
-          row: i,
-          col: j,
-        });
-      }
+      this.grid.push({
+        name: String(i),
+        row: i,
+      });
     }
     this.filteredProducts = this.productCtrl.valueChanges.pipe(
       startWith(null),
@@ -365,7 +362,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   grid: Array<{
     name: string;
     row: number;
-    col: number;
   }> = [];
 
   matchingType(type: number) {
@@ -508,31 +504,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     let row = matchingRow.grid_row ?? 1;
     console.log(matchingRow)
-    let count = Math.ceil((this.images ?? []).length / row);
 
-    if (count == 0) {
-      count = Math.ceil(
-        (
-          this.products(
-            Number((this.prods as Array<string>)[0]),
-            (this.prods as Array<string>) ?? []
-          ) ?? []
-        ).length / row
-      );
-    }
-    if (count == 0) {
-      count = Math.ceil((this.buttons ?? []).length / row);
-    }
-
-    if (count == 0) {
-      count = Math.ceil((this.videos ?? []).length / row);
-    }
-
-    if (count == 0) {
-      count = 1;
-    }
-
-    let name = String(row) + 'x' + String(count);
+    let name = String(row);
 
     console.log(name);
     this.rowForm.controls.grid.setValue(name);
@@ -541,7 +514,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       let matchGrid = this.grid.find((g) => g.name == name);
 
       let diff =
-        (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1) - this.images.length;
+        (matchGrid?.row ?? 1) - this.images.length;
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
           this.images.push({
@@ -556,7 +529,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       let matchGrid = this.grid.find((g) => g.name == name);
 
       let diff =
-        (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1) - this.videos.length;
+        (matchGrid?.row ?? 1) - this.videos.length;
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
           this.videos.push({
@@ -570,10 +543,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       let matchGrid = this.grid.find((g) => g.name == name);
 
       let diff =
-        (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1) - this.buttons.length;
+        (matchGrid?.row ?? 1) - this.buttons.length;
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
-          this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, ''));
+          this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
         }
       }
     }
@@ -593,12 +566,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   height() {
     let matchGrid = this.grid.find(
-      (g) => g.name == this.rowForm.controls.grid.value ?? '1x1'
+      (g) => g.name == this.rowForm.controls.grid.value ?? '1'
     );
 
     return (
       (document.getElementById('label')?.offsetHeight ?? 0) /
-      ((matchGrid?.row ?? 1) * (matchGrid?.col ?? 1))
+      ((matchGrid?.row ?? 1))
     );
   }
 
@@ -679,7 +652,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   removeBtn(btn: Button){
     let index = this.buttons.indexOf(btn);
-    this.buttons[index] = new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '')
+    this.buttons[index] = new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12)
     this.setRow();
     moveItemInArray(this.images, index, this.images.length - 1);
   }
@@ -703,7 +676,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (type == 1) {
       let matchGrid = this.grid.find((g) => g.name == event.value);
 
-      let newSize = (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1);
+      let newSize = (matchGrid?.row ?? 1);
 
       console.log(newSize);
 
@@ -724,7 +697,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     else if (type == 4) {
       let matchGrid = this.grid.find((g) => g.name == event.value);
 
-      let newSize = (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1);
+      let newSize = (matchGrid?.row ?? 1);
 
       console.log(newSize);
 
@@ -744,7 +717,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     else if (type == 3){
       let matchGrid = this.grid.find((g) => g.name == event.value);
 
-      let newSize = (matchGrid?.row ?? 1) * (matchGrid?.col ?? 1);
+      let newSize = (matchGrid?.row ?? 1);
 
 
       if (newSize > this.buttons.length) {
@@ -753,7 +726,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         console.log(this.buttons.length)
         for (let i = 0; i < newSize; i++) {
           if (!this.buttons[i]) {
-            this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, ''));
+            this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
           }
         }
       } else if (newSize < this.buttons.length) {
@@ -805,7 +778,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             (type == 2 && html.trim() == '')
           )
         ) {
-          let grid = (this.rowForm.controls.grid.value as string) ?? '1x1';
+          let grid = (this.rowForm.controls.grid.value as string) ?? '1';
 
           let matchGrid = this.grid.find((g) => g.name == grid)?.row;
 
@@ -897,7 +870,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let products = this.prods ?? [];
 
 
-    let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '1x1';
+    let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '1';
 
     let matchGrid = this.grid.find((g) => g.name == grid)?.row;
 
@@ -1085,6 +1058,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     }
     return (0.5 / (row.grid_row ?? 1)) * 100;
   }
+
 
   titleFontSize(row: Row) {
     if (this.rootComponent?.isMobile() || (row.grid_row ?? 1) >= 2) {

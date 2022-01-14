@@ -188,7 +188,7 @@
         *ngIf="row.type == 3"
       >
         <div
-          class="col text-center mt-3"
+          class="col text-center mt-3 px-3"
           *ngFor="let button of row.buttons ?? []; index as i"
         >
           <a
@@ -196,9 +196,11 @@
             *ngIf="button.text?.trim() != ''"
             class="text-center fw-bolder px-3 btn {{
               matchingStyle(button.style)
-            }} mw-100 my-auto"
+            }} w-100 my-auto"
             style="text-decoration: none"
             style.background-color="{{ button.bg_color }}"
+            [style.font-size.px]='button.fontsize'
+
             style.color="{{ button.text_color }}"
             (click)="imgLinkPressed((row.buttons ?? [])[i].link)"
           >

@@ -39,7 +39,7 @@ export class LandingComponent implements OnInit {
       })
     } 
     this.rootComponent.addConfig()
-    this.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Join Thred and launch your e-commerce store quickly and easily.", "shopmythred.com")
+    // this.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Join Thred and launch your e-commerce store quickly and easily.", "shopmythred.com")
     // if (!Globals.userInfo?.username){
     // }
   }

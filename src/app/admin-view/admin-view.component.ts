@@ -235,6 +235,18 @@ deletePage(page: Page){
   })
 }
 
+
+urlText(){
+  var url = 'https://shopmythred.com/' + this.storeInfo().username
+
+
+  if (this.storeInfo().customURL?.status == 2){
+    url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.fullURL! : url
+  }
+
+  return url
+}
+
 showLayoutModal(page?: Page){
 
   console.log('bui')

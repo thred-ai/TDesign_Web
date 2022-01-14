@@ -197,14 +197,14 @@
                         style="pointer-events: none"
                       >
                         <div
-                          class="col text-center mt-1"
+                          class="col text-center mt-1 px-1"
                           *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
                         >
                           <a
                             *ngIf="button.text != ''"
                             class="text-center fw-bolder p-1 px-2 btn {{
                               matchingStyle(button.style)
-                            }} mw-100 my-auto"
+                            }} w-100 my-auto"
                             style="text-decoration: none; font-size: 5px"
                             style.background-color="{{ button.bg_color }}"
                             style.color="{{ button.text_color }}"
@@ -361,7 +361,7 @@
                   appearance="outline"
                   *ngIf="rowForm.controls.type.value != 2"
                 >
-                  <mat-label>Grid Size</mat-label>
+                  <mat-label>Items Per. Row</mat-label>
                   <mat-select
                     formControlName="grid"
                     (selectionChange)="changed($event)"
@@ -442,9 +442,67 @@
                           </mat-option>
                         </mat-select>
                       </mat-form-field>
-                      <mat-form-field class="w-100 my-1">
-                        <mat-placeholder class="placeholder"
-                          >Button Click URL</mat-placeholder
+
+
+                      <mat-form-field class="my-2 w-100" appearance="fill">
+                        <mat-label>Font Size</mat-label>
+                        <input matInput type="number" placeholder="Ex. 12" [ngModelOptions]="{ standalone: true }" [(ngModel)]="button.fontsize" min="5">
+                        <span matSuffix>px</span>
+                      </mat-form-field>
+                      <mat-label class="placeholder mt-2 text-secondary"
+                      style="font-size: small;"
+                      >Button Fill Color</mat-label
+                      >
+                      <div class="card w-100 mb-2">
+                        <a role="button"
+                        role="button" 
+                        class="btn w-100"
+                        [cpPosition]="'top'"
+                        [cpPositionRelativeToArrow]="true"
+                        [style.background]="button.text_color"
+                        (colorPickerSelect)="button.text_color = $event"
+                        [cpOutputFormat]="'rgba'"
+                        [cpOKButton]="true"
+                        [cpOKButtonText]="'SET COLOR'"
+                        [cpOKButtonClass]= "'btn btn-dark'"
+                        [cpSaveClickOutside]="false"
+                        [(colorPicker)]="button.text_color!"
+                        >
+                            <mat-icon class="mt-1">colorize</mat-icon>
+                        </a>
+                    </div>
+
+
+                      <mat-label class="placeholder mt-2 text-secondary"                       style="font-size: small;"
+
+                          >Button Text Color</mat-label
+                      >
+                      <div class="card w-100 mb-2">
+                        <a role="button"
+                        role="button" 
+                        class="btn w-100"
+                        [cpPosition]="'top'"
+                        [cpPositionRelativeToArrow]="true"
+                        [style.background]="button.bg_color"
+                        (colorPickerSelect)="button.bg_color = $event"
+                        [cpOutputFormat]="'rgba'"
+                        [cpOKButton]="true"
+                        [cpOKButtonText]="'SET COLOR'"
+                        [cpOKButtonClass]= "'btn btn-dark'"
+                        [cpSaveClickOutside]="false"
+                        [(colorPicker)]="button.bg_color!"
+                        >
+                            <mat-icon class="mt-1">colorize</mat-icon>
+                        </a>
+                    </div>
+                    
+
+
+                      <mat-form-field class="w-100 my-2" appearance="outline"
+                      >
+                        
+                        <mat-label class="placeholder"
+                          >Button Click URL</mat-label
                         >
                         <input
                           type="text"
@@ -1015,7 +1073,7 @@
                     style="pointer-events: none"
                   >
                     <div
-                      class="col text-center mt-3"
+                      class="col text-center mt-3 px-3"
                       *ngFor="let button of (aRow.index == i ? aRow?.row : undefined)?.buttons ?? row.buttons ?? []"
                     >
                       <a
@@ -1023,8 +1081,9 @@
                         *ngIf="button.text != ''"
                         class="text-center fw-bolder px-3 btn {{
                           matchingStyle(button.style)
-                        }} mw-100 my-auto"
-                        style="text-decoration: none"
+                        }} w-100 my-auto"
+                        style="text-decoration: none;"
+                        [style.font-size.px]='button.fontsize'
                         style.background-color="{{ button.bg_color }}"
                         style.color="{{ button.text_color }}"
                       >
@@ -1908,7 +1967,32 @@
     <div class="w-100 h-100 w-md-50 card shadow" style="overflow-y: scroll">
       <form [formGroup]="layoutForm" novalidate class="mx-3 mt-2 mb-0">
         <div class="row row-cols-1 my-4">
-          <div class="col">
+          <div class="col mt-0">
+            <div class="mt-2">
+              <h2 class="h2 my-0">URL</h2>
+              <h5 class="text-secondary my-0">The URL of your page</h5>
+              <mat-form-field
+                class="w-100 mt-4"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>Page URL</mat-label>
+
+                <input
+                  formControlName="url"
+                  type="text"
+                  matInput
+                  placeholder="Page URL (ex. 'home')"
+                  class="text-dark my-0"
+                />
+                <h3 matSuffix class="text-secondary">
+                  {{ urlText(false) }}
+                </h3>
+              </mat-form-field>
+            </div>
+            
+          </div>
+          <div class="col mt-0">
             <div class="mt-2">
               <h2 class="h2 my-0">Name</h2>
               <h5 class="my-0">This is only visible to you</h5>
@@ -2119,30 +2203,6 @@
 
             </div>
           </div>
-          <div class="col mt-0">
-            <div class="my-2">
-              <h2 class="h2 my-0">URL</h2>
-              <h5 class="text-secondary my-0">The URL of your page</h5>
-              <mat-form-field
-                class="w-100 mt-4"
-                style="font-size: small"
-                appearance="outline"
-              >
-                <mat-label>Page URL</mat-label>
-
-                <input
-                  formControlName="url"
-                  type="text"
-                  matInput
-                  placeholder="Page URL (ex. 'home')"
-                  class="text-dark"
-                />
-              </mat-form-field>
-            </div>
-            <h2 class="text-secondary h2 mb-0">
-              {{ urlText(false) }}
-            </h2>
-          </div>
         </div>
       </form>
     </div>
@@ -2172,7 +2232,7 @@
         <div class="col w-100 card shadow p-3 d-flex mt-3">
           <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
 
-          <div class="w-100 my-0 d-flex align-items-center justify-content-between" style="height: 150px;">
+          <div class="w-100 my-0 d-flex align-items-center justify-content-start" style="height: 150px;">
             <img
             class="h-100"
             style="object-fit: contain; aspect-ratio: 1;"
