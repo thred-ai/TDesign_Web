@@ -20,11 +20,13 @@
 <!-- Section-->
 <section
   *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0"
-  class="py-5 pt-0"
+  class="py-5 pt-0 w-100 h-100"
+  [class.fixed-top]='page?.fullscreen ?? false'
+  style="overflow-y: scroll;"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
 
-  <div class="w-100">
+  <div class="w-100 h-100">
     <div class="w-100 mb-5" *ngFor="let row of homeRows ?? []"
     >
       <div

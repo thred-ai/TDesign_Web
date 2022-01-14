@@ -252,7 +252,7 @@ showLayoutModal(page?: Page){
     },
   });
 
-  let sub = modalRef.afterClosed().subscribe(async layouts => {
+  let sub = modalRef.afterClosed().subscribe(async (layouts: any) => {
     sub.unsubscribe()
     if (layouts && layouts != '0'){
       this.intValue = 20
@@ -275,7 +275,7 @@ showLayoutModal(page?: Page){
       }, 0.1);
 
 
-      const promises = layouts.rows.map(async (r: Row) => {
+      const promises = layouts.page.rows.map(async (r: Row) => {
         if (r.type == 1) {
           let promises2 = (r.imgs ?? []).map(async (i: string, index: number) => {
             if (
@@ -290,18 +290,17 @@ showLayoutModal(page?: Page){
       });
       await Promise.all(promises);
   
-      this.loadService.addLayout(
-        layouts.rows,
-        layouts.name,
-        layouts.url,
-        (success) => {
-          this.toast("Page Added!")      
-          isFinished = true
-          this.intValue = undefined
-        }, page?.id, 
-        Globals.storeInfo.uid
-      );
-
+      if (layouts.page){
+        this.loadService.addLayout(
+          layouts.page,
+          (success) => {
+            this.toast("Page Added!")      
+            isFinished = true
+            this.intValue = undefined
+          }, 
+          Globals.storeInfo.uid
+        );
+      }
     }
     else if (layouts == '0'){
       this.toast("Unable to save Page! Try Again Later.")      

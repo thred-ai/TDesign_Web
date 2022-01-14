@@ -10,6 +10,8 @@ import { AppComponent } from '../app.component';
 import { NgxSpinnerService } from "ngx-spinner";
 import { RoutingService } from '../services/routing.service';
 import { Row } from '../models/row.model';
+import { Page } from '../models/page.model';
+import { SEO } from '../models/seo.model';
 
 @Component({
   selector: 'app-home',
@@ -148,6 +150,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   homeRows: Array<Row> = []
+  page?: Page
+
+
 
   constructor(
   @Inject(PLATFORM_ID) private platformID: Object,
@@ -258,12 +263,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
       const routeParams = this.router.snapshot.paramMap;
       const storeID = routeParams.get('page') as string;
-      let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows
+      let page = Globals.storeInfo.pages?.find(p => p.url == storeID)
+      let rows = page?.rows
 
-      this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
 
-      if (rows && rows != []){
+      if (page && rows && rows != []){
+        this.addTags(page.seo)
+
         this.homeRows = rows
+        this.page = page
       }
       else{
         this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
@@ -397,17 +405,60 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
 
-  addTags(title: string, imgUrl: string, description: string, url: string){
-    this.metaService.updateTag({property: 'og:title', content: title  + " - " + "Home"});
+  addTags(seo?: SEO){
+
+
+    let title = (seo?.title ?? "").trim() != "" ? (seo?.title ?? "") : Globals.storeInfo.fullName ?? "Thred"
+
+
+    let metaTitle = (seo?.meta?.title ?? "").trim() != "" ? (seo?.meta?.title ?? "") : title
+
+
+    let description = (seo?.description ?? "").trim() != "" ? (seo?.description ?? "") : Globals.storeInfo.bio ?? "Check out my Thred Store!"
+
+    let metaDescription = (seo?.meta?.description ?? "").trim() != "" ? (seo?.meta?.description ?? "") : description
+
+
+    let imgUrl = (seo?.meta?.pic ?? "").trim() != "" ? (seo?.meta?.pic ?? "") : ((Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString())
+
+    let url = seo?.meta?.url
+
+    this.metaService.updateTag({property: 'og:title', content: metaTitle});
     this.metaService.updateTag({property: 'og:image:width', content: '200'});
     this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
-    this.metaService.updateTag({property: 'og:url', content: url})
-    this.metaService.updateTag({property: 'og:description', content: description})
+
+    if (url){
+      this.metaService.updateTag({property: 'og:url', content: url})
+    }
+
+    if (seo?.keywords && seo.keywords.length > 0){
+      var finalStr = ''
+      seo.keywords.forEach((key, index) => {
+        finalStr += key
+
+        if (index != seo.keywords.length - 1){
+          finalStr += ", "
+        }
+      })
+      this.metaService.updateTag({name: 'keywords', content: finalStr})
+    }
+    else{
+      this.metaService.removeTag("name='keywords'");
+    }
+
+    this.metaService.updateTag({property: 'og:description', content: metaDescription})
     this.titleService.setTitle(title)
     this.metaService.updateTag({name: 'description', content: description})
-    this.metaService.removeTag("name='robots'");
-    this.metaService.removeTag("name='googlebot'");
+
+    if (!(seo?.noIndex ?? false)){
+      this.metaService.removeTag("name='robots'");
+      this.metaService.removeTag("name='googlebot'");
+    }
+    else{
+      this.metaService.addTag({name:"robots", content:"noindex,nofollow"})
+      this.metaService.addTag({name:"googlebot", content:"noindex"})
+    }
   }
 
 }

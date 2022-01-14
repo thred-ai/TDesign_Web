@@ -99,7 +99,7 @@ export class LoadService {
   shouldShowCurrency = false;
 
   async logView() {
-    if (!Globals.didLog && Globals.storeInfo.uid) {
+    if (!Globals.didLog && Globals.storeInfo.uid && isPlatformBrowser(this.platformID)) {
       Globals.didLog = true;
       let coords = await this.getCoords() ?? {
         LONGITUDE: -118.243683,
@@ -600,7 +600,7 @@ export class LoadService {
         let homePopup = popups.find((popup) => {
           return popup.trigger == 0;
         });
-        if (homePopup) {
+        if (homePopup && isPlatformBrowser(this.platformID)) {
           this.checkPopup(homePopup, uid, () => {
             if (!sessionStorage.getItem('home_popup')) {
               this.rootComponent?.showPopUp(homePopup!, 5000);
@@ -2728,33 +2728,29 @@ export class LoadService {
 
 
   async addLayout(
-    layout: Array<Row>,
-    name: string,
-    url: string,
+    page: Page,
     callback: (success: boolean) => any,
-    id?: string,
     uid?: string,
   ) {
 
 
 
-    let finalLayout = JSON.parse(JSON.stringify(layout));
 
 
-    const promises1 = finalLayout.map(async (row: Row, mainIndex: number) => {
+    const promises1 = (page.rows ?? []).map(async (row: Row, mainIndex: number) => {
       const promises2 = (row.imgs ?? []).map(
         async (image: string, index: number) => {
           if (this.isBase64(image?.replace(/^[\w\d;:\/]+base64\,/g, ''))) {
             var url = image;
             url = (await this.uploadLayoutImages(
               image,
-              id + '_' + mainIndex.toString() + '_' + index.toString(),
+              page.id + '_' + mainIndex.toString() + '_' + index.toString(),
               uid
             )) as string;
             var split = url.split('&token=');
             url = split[0];
 
-            (finalLayout[mainIndex].imgs ?? [])[index] = url;
+            ((page.rows ?? [])[mainIndex].imgs ?? [])[index] = url;
           }
         }
       );
@@ -2766,24 +2762,28 @@ export class LoadService {
 
     var pages = JSON.parse(JSON.stringify((Globals.userInfo?.pages ?? [])))
 
-    let i = pages.findIndex((p: any) => p.id == id)
+    let i = pages.findIndex((p: any) => p.id == page.id)
 
-    console.log(id)
-    console.log(pages)
     if (i > -1){
-      pages[i].rows = finalLayout
-      pages[i].title = name
-      pages[i].url = url
-      pages[i].name = name.toLowerCase()
+      pages[i].rows = page.rows ?? []
+      pages[i].title = page.name
+      pages[i].url = page.url
+      pages[i].name = page.name?.toLowerCase()
+      pages[i].fullscreen = page.fullscreen
+      pages[i].seo = page.seo
+
     }
     else{
+      page.id = uuid().replace('-', '')
       pages.push(
-        JSON.parse(JSON.stringify(new Page(name.toLowerCase(), name, uuid().replace('-', ''), url, finalLayout)))
+        JSON.parse(JSON.stringify(page))
       )
     }
 
+
+
     var data = {
-      pages: pages,
+      pages: JSON.parse(JSON.stringify(pages))
     };
 
     console.log(data);

@@ -35,6 +35,10 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Button } from '../models/button.model';
 import { SummernoteOptions } from 'ngx-summernote/lib/summernote-options';
+import { MatRadioChange } from '@angular/material/radio';
+import { Page } from '../models/page.model';
+import { SEO } from '../models/seo.model';
+import { MetaTag } from '../models/meta-tag.model';
 
 @Component({
   selector: 'app-layout-builder',
@@ -51,15 +55,50 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   storeInfo = Globals.storeInfo;
 
+  mode = 0
+
   animations(){
     return Globals.rowAnimations
+  }
+
+  urlText(showHttps = false){
+    var url = 'https://shopmythred.com/' + this.storeInfo.username
+
+
+    if (this.storeInfo.customURL?.status == 2){
+      url = this.storeInfo.customURL.fullURL != undefined ? this.storeInfo.customURL.fullURL : url
+    }
+
+    return url + '/' + (this.layoutForm.controls.url.value ? this.layoutForm.controls.url.value : '')
+  }
+
+  changeSetting(){
+    this.mode = this.mode == 0 ? 1 : 0
+  }
+
+  radioChange(event: any) {
+    let val = event.value;
+
+    this.layoutForm.controls.isFullscreen.setValue(val)
+    this.cdr.detectChanges()
   }
 
   layoutForm = this.fb.group({
     rows: [[]],
     name: [null, [Validators.required]],
-    url: [null, [Validators.required]]
+    url: [null, [Validators.required]],
+    isFullscreen: [null, [Validators.required]],
+
+    seoTitle: [null, [Validators.required]],
+    seoDesc: [null, [Validators.required]],
+    seoTags: [[], [Validators.required]],
+
+    metaTitle: [null, [Validators.required]],
+    metaDesc: [null, [Validators.required]],
+    metaURL: [null, [Validators.required]],
+    metaPic: [null, [Validators.required]],
   });
+
 
   rowForm = this.fb.group({
     title: [null],
@@ -116,6 +155,19 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.productCtrl.setValue(null);
   }
 
+  addTag(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    const tags: Array<string> = (this.layoutForm.controls.seoTags.value) ?? []
+
+    tags.push(value)
+    this.layoutForm.controls.seoTags.setValue(tags)
+
+    // Clear the input value
+    event.chipInput!.clear();
+    this.tagCtrl.setValue(null);
+  }
+
   remove(fruit: string): void {
     const index = this.prods.indexOf(fruit);
 
@@ -123,6 +175,16 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       this.prods.splice(index, 1);
     }
     this.setRow();
+  }
+
+  removeTag(fruit: string): void {
+    const tags = this.layoutForm.controls.seoTags.value ?? []
+    const index = tags.indexOf(fruit);
+
+    if (index >= 0) {
+      tags.splice(index, 1);
+    }
+    this.layoutForm.controls.seoTags.setValue(tags)
   }
 
   hoverIndex?: number = undefined;
@@ -229,6 +291,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   removable = true;
   productCtrl = new FormControl();
   filteredProducts: Observable<Product[]>;
+  tagCtrl = new FormControl();
+
+
+
+
   @ViewChild('productInput') productInput?: ElementRef<HTMLInputElement>;
 
   types = [
@@ -315,6 +382,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     console.log('a');
     this.selectedTheme = this.selectedThemeFn()
 
+    this.mode = 1
 
     this.layoutForm.controls.rows.setValue(
       Object.assign([], this.data.page?.rows ?? [])
@@ -326,6 +394,34 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.layoutForm.controls.url.setValue(
       this.data.page?.url ? this.data.page?.url : null
+    );
+
+    this.layoutForm.controls.url.setValue(
+      this.data.page?.url ? this.data.page?.url : null
+    );
+
+    this.layoutForm.controls.seoTitle.setValue(
+      this.data.page?.seo?.title ? this.data.page?.seo!.title : ((this.data.page?.title ?? "").trim() != "" ? (this.storeInfo.fullName + " - " + this.data.page?.title) : this.storeInfo.fullName)
+    );
+
+    this.layoutForm.controls.seoDesc.setValue(
+      this.data.page?.seo?.description ? this.data.page?.seo!.description : this.storeInfo.bio
+    );
+
+    this.layoutForm.controls.metaTitle.setValue(
+      this.data.page?.seo?.meta.title ? this.data.page?.seo!.meta.title : ((this.data.page?.title ?? "").trim() != "" ? (this.storeInfo.fullName + " - " + this.data.page?.title) : this.storeInfo.fullName)
+    );
+
+    this.layoutForm.controls.metaDesc.setValue(
+      this.data.page?.seo?.meta.description ? this.data.page?.seo!.meta.description : this.storeInfo.bio
+    );
+
+    this.layoutForm.controls.seoTags.setValue(
+      this.data.page?.seo?.keywords ? this.data.page?.seo!.keywords : []
+    );
+
+    this.layoutForm.controls.isFullscreen.setValue(
+      this.data.page?.fullscreen ? this.data.page?.fullscreen : false
     );
 
     setTimeout(() => {
@@ -850,21 +946,41 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   async close() {
     this.finishedEditing();
 
-    let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    let name = (this.layoutForm.controls.name.value as String) ?? 'Page';
-    let url = (this.layoutForm.controls.url.value as String) ?? 'new-page';
-
-    console.log(rowInfo)
-    // this.spinner.show('loader');
-    // this.title = 'SAVING LAYOUT';
-
-    this.dialogRef.close({
-      rows: rowInfo,
-      url: url,
-      name: name
-    });
-
+      let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
+      let name = (this.layoutForm.controls.name.value as string) ?? 'Page';
+      let url = (this.layoutForm.controls.url.value as string) ?? 'new-page';
+      
+      let fullscreen = (this.layoutForm.controls.isFullscreen.value as boolean) ?? false;
+      let seoTitle = (this.layoutForm.controls.seoTitle.value as string) ?? Globals.storeInfo.fullName ?? '';
+      let seoDesc = (this.layoutForm.controls.seoDesc.value as string) ?? Globals.storeInfo.bio ?? '';
+      let seoTags = (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
   
+      let metaTitle = (this.layoutForm.controls.metaTitle.value as string) ?? Globals.storeInfo.fullName ?? "";
+      let metaDesc = (this.layoutForm.controls.metaDesc.value as string) ?? Globals.storeInfo.bio ?? "";
+      let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? 'shopmythred.com';
+      let metaPic = (this.layoutForm.controls.metaPic.value as string);
+  
+  
+  
+  
+      // this.spinner.show('loader');
+      // this.title = 'SAVING LAYOUT';
+  
+      let meta = new MetaTag(metaTitle, metaDesc, metaURL, metaPic)
+  
+      let seo = new SEO(seoTitle, seoDesc, meta, seoTags, false)
+  
+      let page = new Page(name.toLowerCase(), name, this.data.page?.id ?? undefined, url, rowInfo, fullscreen, seo)
+  
+      console.log(page)
+  
+      this.dialogRef.close({
+        page: page
+      });
+  }
+
+  toast(m: string){
+    this.loadService.openSnackBar(m)
   }
 
   drop(event: any, isImage = false, isButton = false) {

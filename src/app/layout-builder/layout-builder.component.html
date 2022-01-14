@@ -18,44 +18,24 @@
     *ngIf="loaded"
   >
     <h2 class="me-2 text-center d-none d-md-block">
-      {{ editingBlock == undefined ? "Drag/Drop to Rearrange" : "Edit Block" }}
+      {{
+        mode == 0
+          ? editingBlock == undefined
+            ? "Drag/Drop to Rearrange"
+            : "Edit Block"
+          : "Edit Page"
+      }}
     </h2>
 
-    <form
-      [formGroup]="layoutForm"
-      novalidate
-      class="d-none d-md-flex align-items-center justify-content-center w-50 mt-2 mb-0"
-    >
-      <mat-form-field
-        class="w-100 text-center my-0"
-        style="font-size: small"
-        appearance="outline"
-        floatLabel="never"
-      >
-        <input
-          formControlName="name"
-          type="text"
-          matInput
-          placeholder="Page Name (ex. 'New-Product')"
-          class="text-dark"
-        />
-      </mat-form-field>
-      <mat-form-field
-        class="w-100 text-center my-0 ms-2"
-        style="font-size: small"
-        appearance="outline"
-        floatLabel="never"
-      >
-        <input
-          formControlName="url"
-          type="text"
-          matInput
-          placeholder="Page URL (ex. 'new-product')"
-          class="text-dark"
-        />
-      </mat-form-field>
-    </form>
     <div class="d-flex justify-content-between align-items-center">
+      <a
+        role="button"
+        (click)="changeSetting()"
+        class="btn-secondary p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
+        style="font-size: x-large; text-decoration: none"
+      >
+        <mat-icon>settings</mat-icon>
+      </a>
       <a
         role="button"
         (click)="close()"
@@ -73,7 +53,7 @@
       </a>
     </div>
   </div>
-  <mat-dialog-content class="h-100">
+  <mat-dialog-content *ngIf="mode == 0" class="h-100">
     <div
       class="w-100 h-100 d-block d-md-flex justify-content-between align-items-top"
       *ngIf="loaded"
@@ -246,7 +226,7 @@
                           >
                             <a class="ms-0 me-0" role="button">
                               <iframe
-                                [src]="(vid | videoPipe) | safeUrl"
+                                [src]="vid | videoPipe | safeUrl"
                                 width="100%"
                                 style="aspect-ratio: 16/9"
                               ></iframe>
@@ -736,7 +716,7 @@
             style.background-color="{{ selectedTheme!.bg_color }}"
           >
             <div
-              *ngIf="storeInfo.banners && (storeInfo.banners?.length ?? 0) > 0"
+              *ngIf="!(layoutForm.controls.isFullscreen.value ?? false) && storeInfo.banners && (storeInfo.banners?.length ?? 0) > 0"
               class="w-100 rounded"
               style="height: 35px"
             >
@@ -1083,6 +1063,299 @@
       </div>
     </div>
     <div *ngIf="!loaded" style="height: 100vh"></div>
+  </mat-dialog-content>
+  <mat-dialog-content
+    *ngIf="mode == 1"
+    class="w-100 h-100 d-block d-md-flex pb-4"
+  >
+    <div class="w-100 h-100 w-md-50 card shadow" style="overflow-y: scroll">
+      <form [formGroup]="layoutForm" novalidate class="mx-3 mt-2 mb-0">
+        <div class="row row-cols-1 my-4">
+          <div class="col">
+            <div class="mt-2">
+              <h2 class="h2 my-0">Name</h2>
+              <h5 class="my-0">This is only visible to you</h5>
+              <mat-form-field
+                class="w-100 mt-4"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>Page Name</mat-label>
+
+                <input
+                  formControlName="name"
+                  type="text"
+                  matInput
+                  placeholder="Page Name (ex. 'New-Product')"
+                  class="text-dark"
+                />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col mt-4">
+            <h2 class="h2 my-0">Navigation</h2>
+            <h5 class="mt-0">
+              When False, the headers & footers of your store are hidden on this
+              page
+            </h5>
+            <mat-radio-group formControlName="isFullscreen">
+              <div>
+                <mat-radio-button [value]="false" (change)="radioChange($event)"
+                  >Allows Navigation</mat-radio-button
+                >
+              </div>
+              <div class="mt-2">
+                <mat-radio-button [value]="true" (change)="radioChange($event)"
+                  >No Navigation</mat-radio-button
+                >
+              </div>
+            </mat-radio-group>
+          </div>
+          <div class="col mt-4">
+            <div class="my-2">
+              <h2 class="h2 my-0">SEO</h2>
+              <h5 class="my-0">The SEO content of your page</h5>
+              <mat-form-field
+                class="w-100 mt-4"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>SEO Title Tag</mat-label>
+
+                <input
+                  formControlName="seoTitle"
+                  type="text"
+                  matInput
+                  placeholder="SEO Title"
+                  class="text-dark"
+                />
+              </mat-form-field>
+              <mat-form-field
+                class="w-100 mt-0"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>SEO Description Tag</mat-label>
+
+                <textarea
+                  formControlName="seoDesc"
+                  type="text"
+                  matInput
+                  placeholder="SEO Description"
+                  class="text-dark"
+                  style="height: 100px"
+                ></textarea>
+              </mat-form-field>
+
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-label>SEO Keywords</mat-label>
+                <mat-chip-list #tagChipList aria-label="Keyword selection">
+                  <mat-chip
+                    *ngFor="let tag of layoutForm.controls.seoTags.value ?? []"
+                    [selectable]="selectable"
+                    [removable]="removable"
+                    (removed)="removeTag(tag)"
+                    class="category-chip"
+                  >
+                    <div class="category-chip__text">
+                      {{ tag }}
+                    </div>
+                    <button
+                      matChipRemove
+                      class="d-flex justify-content-center align-items-center btn me-1"
+                      style="width: fit-content; aspect-ratio: 1/1"
+                      *ngIf="removable"
+                    >
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip>
+                  <!-- *ngIf='!allSelected()' -->
+                  <input
+                    placeholder="Add Tag..."
+                    #productInput
+                    [formControl]="tagCtrl"
+                    [matChipInputFor]="tagChipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="addTag($event)"
+                  />
+                </mat-chip-list>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col mt-0">
+            <div class="my-2">
+              <h2 class="h2 my-0">Social Meta Tags</h2>
+              <h5 class="my-0">
+                How your URL looks when shared on social media
+              </h5>
+              <mat-form-field
+                class="w-100 mt-4"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>Meta Title Tag</mat-label>
+
+                <input
+                  formControlName="metaTitle"
+                  type="text"
+                  matInput
+                  placeholder="Meta Title"
+                  class="text-dark"
+                />
+              </mat-form-field>
+              <mat-form-field
+                class="w-100 mt-0"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>Meta Description Tag</mat-label>
+
+                <textarea
+                  formControlName="metaDesc"
+                  type="text"
+                  matInput
+                  placeholder="Meta Description"
+                  class="text-dark"
+                  style="height: 100px"
+                ></textarea>
+              </mat-form-field>
+
+              <!-- <div class="w-100 p-1" style="position: relative; aspect-ratio: 1;">
+                <a
+                  *ngIf="image.isActive"
+                  role="button"
+                  (click)="fileInput.click()"
+                  ><img
+                    class="w-100 ani-style"
+                    style="object-fit: contain"
+                    src="{{ image.img }}"
+                    alt="ok"
+                /></a>
+
+                <div style="position: absolute; top: 0; right: 0">
+                  <a
+                    *ngIf="image.isActive && canCancel()"
+                    class="ani-style"
+                    (click)="removeImg(image)"
+                    role="button"
+                    ><mat-icon>cancel</mat-icon></a
+                  >
+                </div>
+
+                <div
+                  *ngIf="!image.isActive"
+                  class="cdk-drag-placeholder w-100"
+                  style="height: 100px"
+                >
+                  <a
+                    class="h-100 w-100 d-flex ani-style justify-content-center align-items-center"
+                    (click)="fileInput.click()"
+                    style="text-decoration: none"
+                    role="button"
+                  >
+                    <mat-icon>add_circle</mat-icon>
+                  </a>
+                </div>
+                <mat-form-field class="w-100 my-1">
+                  <mat-placeholder class="placeholder"
+                    >Image Click URL</mat-placeholder
+                  >
+                  <input
+                    type="text"
+                    matInput
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="image.link"
+                    style="font-size: small"
+                    class="text-dark"
+                  />
+                  <mat-icon role="button" matSuffix>link</mat-icon>
+                </mat-form-field>
+                <input
+                  #fileInput
+                  type="file"
+                  (change)="fileChangeEvent($event, image)"
+                  style="display: none"
+                />
+              </div> -->
+
+
+
+            </div>
+          </div>
+          <div class="col mt-0">
+            <div class="my-2">
+              <h2 class="h2 my-0">URL</h2>
+              <h5 class="text-secondary my-0">The URL of your page</h5>
+              <mat-form-field
+                class="w-100 mt-4"
+                style="font-size: small"
+                appearance="outline"
+              >
+                <mat-label>Page URL</mat-label>
+
+                <input
+                  formControlName="url"
+                  type="text"
+                  matInput
+                  placeholder="Page URL (ex. 'home')"
+                  class="text-dark"
+                />
+              </mat-form-field>
+            </div>
+            <h2 class="text-secondary h2 mb-0">
+              {{ urlText(false) }}
+            </h2>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="w-100 w-md-50">
+      <div class="w-100 px-5 row row-cols-1">
+        <div class="col w-100 card shadow p-3">
+          <h2 class="h1 mb-4 fw-bold">Search Engine Listing Preview</h2>
+          <p
+            class="mb-0"
+            style="color: #2417af; font-family: Arial; font-size: large"
+          >
+            {{this.layoutForm.controls.seoTitle.value ?? ""}}
+          </p>
+          <p
+            class="my-0"
+            style="color: #006521; font-family: Arial; font-size: small"
+          >
+            {{urlText(true) ?? ""}}
+          </p>
+          <p
+            class="my-0"
+            style="color: #6e6e6e; font-family: Arial; font-size: small"
+          >
+            {{this.layoutForm.controls.seoDesc.value ?? ""}}
+          </p>
+        </div>
+        <div class="col w-100 card shadow p-3 d-flex mt-3">
+          <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
+
+          <div class="w-100 my-0 d-flex align-items-center justify-content-between" style="height: 150px;">
+            <img
+            class="h-100"
+            style="object-fit: contain; aspect-ratio: 1;"
+            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
+          />
+            <p
+            class="ms-3 my-auto"
+            style="color: #6e6e6e; font-family: Arial; font-size: small; text-overflow: ellipsis; overflow-y: hidden; height: 120px;"
+          >
+          <b class="text-dark" style="font-size: medium;">
+            {{this.layoutForm.controls.metaTitle.value ?? ""}}
+          </b>
+          <br>
+
+            {{this.layoutForm.controls.metaDesc.value ?? ""}}
+          </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </mat-dialog-content>
 </div>
 <!-- <div class="w-100" mat-dialog-actions>

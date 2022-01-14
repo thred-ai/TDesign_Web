@@ -46,6 +46,7 @@ import { LayoutBuilderComponent } from '../layout-builder/layout-builder.compone
 import { NgxSummernoteModule } from 'ngx-summernote';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 import { NgApexchartsModule } from "ng-apexcharts";
+import { MatRadioModule } from '@angular/material/radio';
 
 
 const routes: Routes = [
@@ -105,7 +106,8 @@ const routes: Routes = [
     NgxSummernoteModule,
     RouterModule.forChild(routes),
     ApplicationPipesModule,
-    NgApexchartsModule
+    NgApexchartsModule,
+    MatRadioModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
