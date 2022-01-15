@@ -1833,23 +1833,18 @@ export class LoadService {
           if (taxDoc) {
             if (!this.isUndefined(taxDoc.HST)) {
               salesTax += taxDoc.HST;
-              console.log('h');
             } else {
               if (!this.isUndefined(taxDoc.GST)) {
                 salesTax += taxDoc.GST;
-                console.log('g');
               }
               if (!this.isUndefined(taxDoc.PST)) {
                 salesTax += taxDoc.PST;
-                console.log('p');
               }
               if (!this.isUndefined(taxDoc.QST)) {
                 salesTax += taxDoc.QST;
-                console.log('q');
               }
             }
           }
-          console.log(salesTax);
           Globals.shippingTax = salesTax;
           if (this.myCallback) this.myCallback();
           if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
@@ -1950,7 +1945,6 @@ export class LoadService {
   async saveUser(mappedData: Dict<any>, callback: (success: boolean) => any) {
     let uid = (await this.isLoggedIn())?.uid;
 
-    console.log(uid);
 
     if (mappedData.profile_pic) {
       let picID = await this.uploadFile(mappedData, uid);
@@ -2108,7 +2102,6 @@ export class LoadService {
         }
       );
 
-      console.log(images);
 
       await Promise.all(promises);
 
@@ -2192,7 +2185,6 @@ export class LoadService {
       let productID = this.db.collection('Users/' + uid + '/Products').doc().ref
         .id;
 
-      console.log(productID);
       let data = (await this.saveProductInfo(mappedData, productID, uid)) ?? {};
 
       if (mappedData.images?.length > 0) {
@@ -2222,7 +2214,6 @@ export class LoadService {
         );
         await Promise.all(promises);
 
-        console.log(images);
 
         await this.db
           .collection('Users/' + uid + '/Products')
@@ -2293,7 +2284,6 @@ export class LoadService {
       '.png';
     let ref = this.storage.ref(filePath);
 
-    console.log(typeof image);
     const byteArray = Buffer.from(
       image.replace(/^[\w\d;:\/]+base64\,/g, ''),
       'base64'
@@ -2333,7 +2323,6 @@ export class LoadService {
     const filePath = 'Users/' + uid + '/Layouts/' + type + '.png';
     let ref = this.storage.ref(filePath);
 
-    console.log(typeof image);
     const byteArray = Buffer.from(
       image?.replace(/^[\w\d;:\/]+base64\,/g, ''),
       'base64'
@@ -2352,7 +2341,6 @@ export class LoadService {
     const filePath = 'Users/' + uid + '/Inventory/' + inv_id + '.png';
     let ref = this.storage.ref(filePath);
 
-    console.log(typeof image);
     const byteArray = Buffer.from(
       image.replace(/^[\w\d;:\/]+base64\,/g, ''),
       'base64'
@@ -2392,7 +2380,6 @@ export class LoadService {
     if (type) {
       const filePath = 'Users/' + uid + '/Store_Images/' + type + '.png';
       let ref = this.storage.ref(filePath);
-      console.log(typeof image);
       const byteArray = Buffer.from(
         image.replace(/^[\w\d;:\/]+base64\,/g, ''),
         'base64'
@@ -2492,7 +2479,6 @@ export class LoadService {
   }
 
   async saveStoreInfo(mappedData: Dict<any>, uid?: string) {
-    console.log(mappedData);
 
     var data: Dict<any> = {};
 
@@ -2522,7 +2508,6 @@ export class LoadService {
       data['banners'] = mappedData.banners;
     }
     if (mappedData.banner_style != undefined) {
-      console.log(mappedData.banner_style);
       data['banner_style'] = mappedData.banner_style ?? 0;
     }
 
@@ -2540,7 +2525,6 @@ export class LoadService {
             return theme.name == mappedData.theme?.name;
           });
 
-        console.log(matchingTheme);
         if (matchingTheme) {
           Globals.userInfo!.colorStyle = matchingTheme;
         }
@@ -2591,7 +2575,6 @@ export class LoadService {
       100,
       Globals.storeInfo!.dpID ?? ''
     ).toString();
-    console.log(picID);
     const filePath = 'Users/' + uid + '/profile_pic-' + picID + '.jpeg';
     let ref = this.storage.ref(filePath);
     const byteArray = new Buffer(
@@ -2604,8 +2587,6 @@ export class LoadService {
     const url = new URL(await task.ref.getDownloadURL());
     Globals.userInfo!.dpID = picID;
     Globals.userInfo!.profileLink = url;
-
-    console.log(url);
 
     if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
       Globals.storeInfo!.dpID = picID;
@@ -2786,8 +2767,6 @@ export class LoadService {
       pages: JSON.parse(JSON.stringify(pages))
     };
 
-    console.log(data);
-    console.log(uid)
 
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
@@ -2914,7 +2893,6 @@ export class LoadService {
       }
       await this.db.collection('Users').doc(uid).update(data);
     } else {
-      console.log('shaymus');
     }
     callback(true);
   }
@@ -2941,7 +2919,6 @@ export class LoadService {
       }
       await this.db.collection('Users').doc(uid).update(data);
     } else {
-      console.log('shaymus');
     }
     callback(true);
   }
@@ -3053,9 +3030,6 @@ export class LoadService {
       let password = credentials?.password!;
       let email = credentials?.email!;
 
-      console.log(username);
-      console.log(email);
-      console.log(password);
 
       this.auth
         .createUserWithEmailAndPassword(email, password)
@@ -3287,14 +3261,12 @@ export class LoadService {
     callback: (err?: string) => any,
     myUID?: string
   ) {
-    console.log(username);
 
     let sub = this.db
       .collection('Users', (ref) => ref.where('Username', '==', username))
       .valueChanges({ idField: 'UID' })
       .subscribe((docs) => {
         if (docs && docs?.length != 0) {
-          console.log(docs[0]);
           if (myUID == (docs[0] as DocumentData).UID) {
             callback();
           } else {
@@ -3342,7 +3314,6 @@ export class LoadService {
     const uid = (await this.isLoggedIn())?.uid;
     const storeUID = Globals.storeInfo.uid;
 
-    console.log('moooooo');
     if (!storeUID || !uid) {
       callback([]);
       return;
@@ -3399,8 +3370,7 @@ export class LoadService {
               undefined
             );
             cart.push(productCart);
-            if (shouldGetProducts) console.log('okmo');
-
+            if (shouldGetProducts)
             await this.getPost(productID, () => {}, productCart);
           });
           await Promise.all(promises);
@@ -3534,7 +3504,6 @@ export class LoadService {
     var orders = new Array<Order>();
 
     let sub = query.valueChanges().subscribe((docDatas) => {
-      console.log(docDatas);
 
       docDatas.forEach((doc, index) => {
         const docData = doc as DocumentData;
@@ -3634,7 +3603,6 @@ export class LoadService {
       let url = `https://api.ipstack.com/${value.ip}?access_key=5b5f96aced42e6b1c95ab24d96f704c5`
       let coords = await this.http.get(url).toPromise() as Dict<any>;
 
-      console.log(coords)
       let returnCoords = {
         LATITUDE: coords.latitude,
         LONGITUDE: coords.longitude

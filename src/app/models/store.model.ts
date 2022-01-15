@@ -204,7 +204,6 @@ export class Store {
       this.popups = popups ?? []
 
 
-      console.log(colorStyle)
 
       this.pages = pages ?? [
         new Page('home', 'Home', '1', 'home', homeRows ?? [

@@ -215,7 +215,6 @@ export class ViewOrderComponent implements OnInit {
       else if (this.orders == undefined && isPlatformBrowser(this.platformID)){
         if (await this.loadService.authenticated()){
           this.loadService.getOrders(orders => {
-            console.log(orders)
             this.orders = orders ?? []
             this.callback()
           })
@@ -266,7 +265,6 @@ export class ViewOrderComponent implements OnInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host

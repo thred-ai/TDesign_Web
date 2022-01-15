@@ -24,7 +24,6 @@ export class LiveEarthPipePipe implements PipeTransform {
       
       var total = 0
       o.products.forEach(p => {
-        console.log(p.product?.price)
         total += ((p.product?.price ?? 0) / 100) + o.totalCost 
       })
       if (sameOrders.find(s => ((s.country == o.address?.country && s.city == o.address.city) || (s.coords.LONGITUDE == o.address?.coords?.LONGITUDE && s.coords.LATITUDE == o.address?.coords?.LATITUDE)))){

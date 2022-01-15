@@ -160,7 +160,6 @@ export class ShippingAddressComponent implements OnInit {
 
   save(){
 
-    console.log(this.addressForm.controls.state.value)
 
     if (this.addressForm.valid){
       let f = this.addressForm.controls
@@ -203,7 +202,6 @@ export class ShippingAddressComponent implements OnInit {
       })
     }
     else{
-      console.log('ello')
     }
   }
 
@@ -423,7 +421,6 @@ export class ShippingAddressComponent implements OnInit {
     var request = ""
     if (isPlatformServer(this.platformID)){
       request = Globals.URL
-      console.log(request)
     }
     else{
       request = globalThis.location.host

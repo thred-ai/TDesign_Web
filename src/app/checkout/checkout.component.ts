@@ -77,9 +77,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   productTaxNum(noCoupon = false){
 
-    console.log(this.d_total(noCoupon))
-    console.log(Math.round(this.shippingNum()))
-    console.log(this.tax() ?? 0)
+
 
     return (this.d_total(noCoupon) + Math.round(this.shippingNum())) * (this.tax() ?? 0)
   }

@@ -157,7 +157,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       this.prods.push(value);
     } else {
       this.prods = [value];
-      console.log('smart');
     }
     // Clear the input value
     event.chipInput!.clear();
@@ -213,7 +212,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             inline: 'start',
           });
         } else {
-          console.log('blamk');
+
         }
       }, 0);
     } else {
@@ -246,7 +245,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       this.prods.push(event.option.value);
     } else {
       this.prods = [event.option.value];
-      console.log('smart');
     }
 
     this.productInput!.nativeElement.value = '';
@@ -393,7 +391,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    console.log('a');
     this.selectedTheme = this.selectedThemeFn()
 
     this.mode = 1
@@ -495,7 +492,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         img: image.toString(),
         link: (matchingRow.imgLinks ?? [])[index]?.toString() ?? ''
       };
-      console.log(img)
       this.images.push(img);
     });
     await Promise.all(promises);
@@ -511,11 +507,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     await Promise.all(promises2);
 
     let row = matchingRow.grid_row ?? 1;
-    console.log(matchingRow)
 
     let name = String(row);
 
-    console.log(name);
     this.rowForm.controls.grid.setValue(name);
 
     this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
@@ -553,13 +547,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (matchingRow.type == 3) {
       let matchGrid = this.grid.find((g) => g.name == name);
 
-      console.log(matchGrid)
-      console.log(matchingRow.type)
 
       let diff =
         (matchGrid?.row ?? 1) - this.buttons.length;
 
-        console.log(diff)
         
       if (diff > 0) {
         // for (let i = 0; i < diff; i++) {
@@ -578,7 +569,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           inline: 'start',
         });
       } else {
-        console.log('blamk');
+
       }
     }, 100);
   }
@@ -635,9 +626,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       link: string
     }
   ): void {
-
-    console.log(event.target.value)
-    console.log(this.videos)
 
     vid.link = event.target.value;
     vid.isActive = (event.target.value && event.target.value.trim() != "");
@@ -702,14 +690,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       grid = event.value
     }
 
-    console.log(type)
 
     if (type == 1) {
       let matchGrid = this.grid.find((g) => g.name == grid);
 
       let newSize = (matchGrid?.row ?? 1);
 
-      console.log(newSize);
 
       if (newSize > this.images.length) {
         for (let i = 0; i < newSize; i++) {
@@ -730,7 +716,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
       let newSize = (matchGrid?.row ?? 1);
 
-      console.log(newSize);
 
       if (newSize > this.videos.length) {
         for (let i = 0; i < newSize; i++) {
@@ -752,21 +737,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
 
       if (newSize > this.buttons.length) {
-        console.log('bigger');
-        console.log(newSize);
-        console.log(this.buttons.length)
         for (let i = 0; i < newSize; i++) {
           if (!this.buttons[i]) {
             this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
           }
         }
       } else if (newSize < this.buttons.length) {
-        console.log('smaller');
-        console.log(newSize);
-        console.log(this.buttons.length)
         this.buttons = this.buttons.slice(0, newSize);
       }
-      console.log(this.buttons)
     }
     this.setRow()
   }
@@ -827,7 +805,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             vids
           );
 
-          console.log(products)
 
           if (
             products.find((i) => i == '0') ||
@@ -836,7 +813,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           ) {
             row.products = [];
             row.smart_products = parseInt(products[0]);
-            console.log(row.smart_products)
 
           }
 
@@ -844,7 +820,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             rows[this.editingBlock] = row;
           }
 
-          console.log(row);
 
           this.layoutForm.controls.rows.setValue(rows);
           break;
@@ -905,7 +880,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     let matchGrid = this.grid.find((g) => g.name == grid)?.row;
 
-    console.log(type)
     let row = new Row(
       name,
       Object.assign([], products),
@@ -923,7 +897,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (products.find((i) => i == '0') || products.find((i) => i == '1') || products.find((i) => i == '2')) {
       row.products = [];
       row.smart_products = parseInt(products[0]);
-      console.log('smart2');
     }
 
     this.aRow.row = row;
@@ -985,7 +958,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   
       let page = new Page(name.toLowerCase(), name, this.data.page?.id ?? undefined, url, rowInfo, fullscreen, seo)
   
-      console.log(page)
   
       this.dialogRef.close({
         page: page

@@ -276,7 +276,6 @@ export class DesignComponent implements OnInit {
             images: images
           }
 
-          console.log(inv)
 
       
           let product = await this.loadService.createProduct(mappedData)

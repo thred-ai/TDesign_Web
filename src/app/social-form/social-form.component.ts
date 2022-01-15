@@ -26,7 +26,6 @@ export class SocialFormComponent implements OnInit {
 
 
   ngOnInit(): void {
-    console.log(this.linkImg)
   }
 
   copyDNS(){
@@ -51,11 +50,9 @@ export class SocialFormComponent implements OnInit {
   finish(){
     var returnItem = this.socialForm.controls.link.value ?? undefined
 
-    console.log(returnItem)
 
     let link = returnItem as string
 
-    console.log(link.length)
     var tester = /((ftp|http|https):\/\/)([a-z0-9][a-z0-9-]*)?((\.[a-z]{2,6})|(\.[a-z]{2,6})(\.[a-z]{2,6}))$/i
     if (
       this.isDomain

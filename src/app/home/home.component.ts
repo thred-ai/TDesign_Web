@@ -487,7 +487,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     let metaTitle = (seo?.meta?.title ?? "").trim() != "" ? (seo?.meta?.title ?? "") : title
 
-    console.log(metaTitle)
 
 
     let description = (seo?.description ?? "").trim() != "" ? (seo?.description ?? "") : Globals.storeInfo.bio ?? "Check out my Thred Store!"
@@ -506,7 +505,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.metaService.updateTag({property: 'og:image:height', content: '200'});
     this.metaService.updateTag({property: 'og:image', content: imgUrl});
 
-    console.log(url)
     this.metaService.updateTag({property: 'og:url', content: url})
 
     if (seo?.keywords && seo.keywords.length > 0){

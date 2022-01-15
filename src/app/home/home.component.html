@@ -226,7 +226,7 @@
         *ngIf="row.type == 3"
       >
         <div
-          class="col text-center mt-3 px-3"
+          class="col text-center px-3"
           *ngFor="let button of row.buttons ?? []; index as i"
         >
           <a
@@ -268,7 +268,7 @@
 
       <div class="w-100 mx-0" *ngIf="row.type == 2">
         <div
-          class="p-3"
+          class="px-3 my-0"
           [style.font-family]="storeInfo().fontName!"
           style.color="{{ selectedTheme()!.color }}"
           [innerHTML]="row.html ?? '' | safeTextRows"
