@@ -1043,9 +1043,9 @@
             class="col w-100 w-md-50 my-2"
             *ngFor="let page of storeInfo().pages ?? []"
           >
-            <div id="back" style="aspect-ratio: 2/1" class="px-3 w-100">
+            <div id="back" style="aspect-ratio: 2/1" class="p-3 pb-1 w-100 rounded shadow">
               <div
-                class="border w-100 h-100 rounded shadow"
+                class="w-100 h-100 rounded shadow card"
                 style="position: relative"
                 style.background-color="{{ selectedTheme()!.bg_color }}"
               >
@@ -1213,7 +1213,7 @@
                           }} w-100 my-auto"
                           style="text-decoration: none"
                           style.background-color="{{ button.bg_color }}"
-                          [style.font-size.px]='(button.fontsize ?? 15) / 2'
+                          [style.font-size.px]='(button.fontsize ?? 15) / 2.5'
                           style.color="{{ button.text_color }}"
                         >
                           {{ button.text }}
@@ -1242,7 +1242,7 @@
               </div>
 
               <div
-                class="mb-4 mt-2 d-block d-md-flex align-items-center justify-content-between"
+                class="mb-4 mt-2 d-block d-lg-flex align-items-center justify-content-between"
               >
                 <p
                   class="text-start fw-bolder my-auto"
@@ -1252,31 +1252,21 @@
                   {{ page.title }}
                 </p>
                 <p
-                  class="mt-2 my-md-auto"
+                  class="mt-2 my-md-auto d-none d-lg-block"
                   style="opacity: 0.5; font-size: small"
                   style.color="{{ selectedTheme()!.color }}"
                 >
                   {{ urlText() }}/{{ page.url }}
                 </p>
-                <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0">
                   <a
                     role="button"
-                    (click)="showLayoutModal(page)"
-                    class="btn btn-{{
-                      storeInfo().colorStyle!.text_code
-                    }} rounded-pill fw-bolder"
-                  >
-                    EDIT
-                  </a>
-
-
-                  <a
-                    role="button"
-                    class="ms-2 btn btn btn-{{inMenu(page.id) ? 'success' : 'secondary'}} rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    class="btn btn btn-light rounded-circle shadow p-2 d-flex align-items-center justify-content-center"
                     style="aspect-ratio: 1"
                     (click)="configureHeader(page.id)"
                   >
                     <mat-icon
+                    class="text-{{inFooter(page.id) ? 'success' : 'secondary'}}"
                       style.color="{{ selectedTheme()!.color }}"
                       >border_top</mat-icon
                     >
@@ -1285,25 +1275,40 @@
 
                   <a
                     role="button"
-                    class="ms-2 btn btn btn-{{inFooter(page.id) ? 'success' : 'secondary'}} rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    class="ms-2 btn btn btn-light rounded-circle shadow p-2 d-flex align-items-center justify-content-center"
                     style="aspect-ratio: 1"
                     (click)="configureFooter(page.id)"
                   >
                   <mat-icon
+                  class="text-{{inFooter(page.id) ? 'success' : 'secondary'}}"
                   style.color="{{ selectedTheme()!.color }}"
                   >border_bottom</mat-icon
                 >
 
                   </a>
+                  <a
+                    role="button"
+                    (click)="showLayoutModal(page)"
+                    class="btn btn-{{
+                      storeInfo().colorStyle!.text_code
+                    }} rounded-pill fw-bolder ms-2"
+                  >
+                    EDIT
+                  </a>
+
+
+                  
 
 
                   <a
                     role="button"
                     (click)="deletePage(page)"
-                    class="ms-2 btn btn btn-danger rounded-circle p-2 d-flex align-items-center justify-content-center"
-                    style="aspect-ratio: 1"
+                    class="ms-2 btn btn btn-{{
+                      storeInfo().colorStyle!.text_code
+                    }} rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    style="aspect-ratio: 1;"
                   >
-                    <mat-icon style.color="{{ selectedTheme()!.color }}"
+                    <mat-icon
                       >delete</mat-icon
                     >
                   </a>
@@ -1326,7 +1331,7 @@
           <nav
             class="navbar navbar-expand-lg navbar-{{
               storeInfo().colorStyle!.nav_code
-            }} bg-{{ storeInfo().colorStyle!.back_code }} mx-3 mb-5"
+            }} bg-{{ storeInfo().colorStyle!.back_code }} mx-3 mb-5 rounded shadow"
           >
             <div
               class="container-fluid d-flex justify-content-between px-2 w-100 text-start px-md-5"
@@ -1450,7 +1455,7 @@
           <i>Footer Preview</i>
         </h2>
 
-          <footer class="py-5 mx-3 bg-{{ storeInfo().colorStyle!.back_code }}">
+          <footer class="py-5 mx-3 bg-{{ storeInfo().colorStyle!.back_code }} rounded shadow">
             <div
               class="container-fluid px-3 w-100 d-block justify-content-center"
             >
@@ -3577,49 +3582,105 @@
           "
         >
         </iframe>
-        <div style="top: 10px; left: 10px; position: absolute">
-          <h1 style="color: white">
-            <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
-          </h1>
-
-          <a
-            role="button"
-            class="side d-flex m-0 align-items-center justify-content-start"
-            style="font-size: large"
-          >
-            <mat-icon
-              [inline]="true"
-              class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-              style="background-color: rgb(48, 184, 48); aspect-ratio: 1"
+        <div class="d-flex align-items-top justify-content-between mx-0" style="top: 10px; left: 10px; right: 10px; position: absolute">
+          <div class="h-100">
+            <h1 style="color: white">
+              <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
+            </h1>
+  
+            <a
+              role="button"
+              class="side d-flex m-0 align-items-center justify-content-start"
+              style="font-size: large"
             >
-              <span class="material-icons-outlined m-0 text-white">
-                attach_money
-              </span>
-            </mat-icon>
-            <p class="my-0" style="color: white">
-              Total Sales • <b>{{ totalSales() }}</b>
-            </p>
-          </a>
-
-          <a
-            role="button"
-            class="side d-flex mt-2 align-items-center justify-content-start"
-            style="font-size: large"
-          >
-            <mat-icon
-              [inline]="true"
-              class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-              style="background-color: rgb(201, 33, 27); aspect-ratio: 1"
+              <mat-icon
+                [inline]="true"
+                class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                style="background-color: rgb(48, 184, 48); aspect-ratio: 1"
+              >
+                <span class="material-icons-outlined m-0 text-white">
+                  attach_money
+                </span>
+              </mat-icon>
+              <p class="my-0" style="color: white">
+                Total Sales • <b>{{ totalSales() }}</b>
+              </p>
+            </a>
+  
+            <a
+              role="button"
+              class="side d-flex mt-2 align-items-center justify-content-start"
+              style="font-size: large"
             >
-              <span class="material-icons-outlined m-0 text-white">
-                person_outline
-              </span>
-            </mat-icon>
-            <p class="my-0" style="color: white">
-              Total Views • <b>{{ totalViews() }}</b>
-            </p>
-          </a>
+              <mat-icon
+                [inline]="true"
+                class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                style="background-color: rgb(201, 33, 27); aspect-ratio: 1"
+              >
+                <span class="material-icons-outlined m-0 text-white">
+                  person_outline
+                </span>
+              </mat-icon>
+              <p class="my-0" style="color: white">
+                Total Views • <b>{{ totalViews() }}</b>
+              </p>
+            </a>
+          </div>
+          <div class="h-100">
+<!-- 
+            <div class="card mt-0 bg-dark" style="color: white; opacity: 0.6;">
+              <h1>
+                <b>LOCATION</b>
+              </h1>
+              <h2>
+                0 Sales
+              </h2>
+              <h2>
+                Los Angeles
+              </h2>
+            </div> -->
+            <!--  -->
+  
+            <!-- <a
+              role="button"
+              class="side d-flex m-0 align-items-center justify-content-start"
+              style="font-size: large"
+            >
+              <mat-icon
+                [inline]="true"
+                class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                style="background-color: rgb(48, 184, 48); aspect-ratio: 1"
+              >
+                <span class="material-icons-outlined m-0 text-white">
+                  attach_money
+                </span>
+              </mat-icon>
+              <p class="my-0" style="color: white">
+                Total Sales • <b>{{ totalSales() }}</b>
+              </p>
+            </a> -->
+<!--   
+            <a
+              role="button"
+              class="side d-flex mt-2 align-items-center justify-content-start"
+              style="font-size: large"
+            >
+              <mat-icon
+                [inline]="true"
+                class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                style="background-color: rgb(201, 33, 27); aspect-ratio: 1"
+              >
+                <span class="material-icons-outlined m-0 text-white">
+                  person_outline
+                </span>
+              </mat-icon>
+              <p class="my-0" style="color: white">
+                Total Views • <b>{{ totalViews() }}</b>
+              </p>
+            </a> -->
+          </div>
         </div>
+        
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW'" class="h-100">

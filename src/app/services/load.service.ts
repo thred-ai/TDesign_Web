@@ -2747,9 +2747,9 @@ export class LoadService {
 
     if (i > -1){
       pages[i].rows = page.rows ?? []
-      pages[i].title = page.name
+      pages[i].title = page.title
       pages[i].url = page.url
-      pages[i].name = page.name?.toLowerCase()
+      pages[i].name = page.name
       pages[i].fullscreen = page.fullscreen
       pages[i].seo = page.seo
 

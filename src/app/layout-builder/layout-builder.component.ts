@@ -113,6 +113,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   rowForm = this.fb.group({
     title: [null],
     htmlText: [null],
+    html: [null],
     imgs: [[]],
     type: [null],
     grid: [null],
@@ -130,7 +131,18 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
         ['fontsize', ['fontname', 'fontsize', 'color']],
         ['para', ['style', 'ul', 'ol', 'paragraph', 'height']],
-        ['insert', ['table', 'hr']]
+        ['insert', ['table', 'hr']],
+        ['misc', ['codeview']]
+    ],
+    fontNames: this.storeFonts()
+  }
+
+  config2: SummernoteOptions = {
+    placeholder: '',
+    tabsize: 2,
+    height: 200,
+    toolbar: [
+        ['misc', ['undo', 'redo', 'codeview']],
     ],
     fontNames: this.storeFonts()
   }
@@ -312,6 +324,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       name: 'Text Block',
       code: 2,
     },
+    // {
+    //   name: 'HTML Block',
+    //   code: 7,
+    // },
     {
       name: 'Image Block',
       code: 1,
@@ -765,6 +781,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           /style="/g,
           'style="overflow-wrap: break-word;'
         );
+        let htmlTemplate = (this.rowForm.controls.html.value ?? '')
 
         let imgs = (this.images ?? [])
           .filter((i) => i.img != undefined && i.img.trim() != '')
@@ -802,7 +819,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             '',
             imgLinks,
             btns,
-            vids
+            vids,
+            htmlTemplate
           );
 
 
@@ -868,6 +886,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let imgLinks = (this.images ?? [])
       .filter((i) => i.link != undefined && i.link.trim() != '')
       .map((i) => i.link);
+      let htmlTemplate = (this.rowForm.controls.html.value ?? '')
+
 
     let btns = this.buttons ?? []
 
@@ -891,7 +911,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       '',
       imgLinks,
       btns,
-      vids
+      vids,
+      htmlTemplate
     );
 
     if (products.find((i) => i == '0') || products.find((i) => i == '1') || products.find((i) => i == '2')) {
@@ -905,7 +926,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   addBlock() {
     let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    rows.push(new Row('', [], undefined, 0, [], 1, "", "", [], [], []));
+    rows.push(new Row('', [], undefined, 0, [], 1, "", "", [], [], [], ""));
     this.layoutForm.controls.rows.setValue(rows);
 
     this.edit(rows.length - 1);

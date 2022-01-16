@@ -51,6 +51,7 @@ import {
   ApexLegend,
   ApexFill
 } from "ng-apexcharts";
+import { MapPopupComponent } from '../map-popup/map-popup.component';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -644,6 +645,9 @@ showSocialModal(logo: {
     private routingService: RoutingService,
     private dialog: MatDialog,
   ) {
+
+    (<any>window).openCard= this.openCard.bind(this);
+
       Globals.userInfo = undefined
       Globals.selectedCurrency = undefined
       Globals.themes = undefined
@@ -652,8 +656,20 @@ showSocialModal(logo: {
       Globals.dropCarts = undefined
       Globals.billingInfo = undefined
 
+
+
       // this.billingInfo().
   }
+
+  openCard(coords: Dict<any>){
+
+    console.log(coords.type)
+    console.log(coords)
+
+
+  }
+
+
   ngOnDestroy(): void {
     this.loadService.adminComponent = undefined
   }
@@ -1450,6 +1466,7 @@ showSocialModal(logo: {
 
       if (isAdding){
         this.footerCols[0].link.push(h)
+        this.toast("Added to footer!")
       }
       else{
         let i = this.footerCols.findIndex((l: Dict<any>) => l.link.find((k: string) => k == h))
@@ -1458,25 +1475,29 @@ showSocialModal(logo: {
 
         if (i >= 0 && j >= 0){
           this.footerCols[i].link.splice(j, 1)
+          this.toast("Removed from footer!")
         }
       }
     }
   }
+
+  
 
   configureHeader(h?: string){
     let headers = this.headerForm.controls.links.value
 
     if (h != undefined){
       let isAdding = headers.find((l: string) => l == h) == undefined
-
       if (isAdding){
         headers.push(h)
+        this.toast("Added to header!")
       }
       else{
         let i = headers.findIndex((l: string) => l == h)
 
         if (i >= 0){
           headers.splice(i, 1)
+          this.toast("Removed from header!")
         }
       }
     }
@@ -2413,32 +2434,15 @@ isSpinning = false
 
     if (this.getSelectedPanel().Title == 'STORE'){
       this.saveProfile()
+      return
     }
-    if (this.getSelectedPanel().Title == 'PAGES'){
+    else if (this.getSelectedPanel().Title == 'PAGES'){
       this.saveHeader()
+      return
     }
     else{
-      if (this.getSelectedPanel().Title == 'HOME'){
-        // data = {
-        //   slogan: this.homeForm.controls.slogan.value,
-        // }
-        // var images = new Array<Dict<string>>()
-        // if (this.homeForm.controls.themeImg.value && this.isBase64(this.homeForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-        //     images.push({
-        //       "type" : "home_top",
-        //       "img" : this.homeForm.controls.themeImg.value
-        //     })
-        // }
-        // if (this.homeForm.controls.homeImg.value && this.isBase64(this.homeForm.controls.homeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
-        //   images.push({
-        //     "type" : "home",
-        //     "img" : this.homeForm.controls.homeImg.value
-        //   })
-        // }
-        // data.images = images
-      }
-  
-      else if (this.getSelectedPanel().Title == 'SHOP'){
+
+      if (this.getSelectedPanel().Title == 'SHOP'){
         data = {}
         var images = new Array<Dict<string>>()
         if (this.shopForm.controls.themeImg.value && this.isBase64(this.shopForm.controls.themeImg.value.replace(/^[\w\d;:\/]+base64\,/g, ''))){
@@ -2497,9 +2501,6 @@ isSpinning = false
         data.images = images
       }
   
-      else if (this.getSelectedPanel().Title == 'STORE'){
-        this.saveProfile()
-      }
   
       else if (this.getSelectedPanel().Title == 'BANNERS'){
   

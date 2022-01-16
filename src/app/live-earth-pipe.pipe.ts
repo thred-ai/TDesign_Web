@@ -39,7 +39,9 @@ export class LiveEarthPipePipe implements PipeTransform {
     })
 
     sameOrders.forEach(i => {
-      mystr += "this.addOverlay( {content: '" + i.sales + " Sales • " + this.formatPrice(i.value) + "',location : {lat: " + (i.coords.LATITUDE ?? '34.052235') + ", lng: " + (i.coords.LONGITUDE ?? '-118.243683') + "},depthScale: 0.25,className : 'arrow-tip'});"
+      mystr += "var mymarker = this.addMarker( {location: { lat :" + i.coords.LATITUDE + ", lng : " + i.coords.LONGITUDE + " },mesh: ['Pin3'],color: 'rgb(48, 184, 48)',hotspot: true,transparent:true,opacity:0.85,scale:0.3} );mymarker.animate( 'scale', 0.5, { loop: true, oscillate: true, duration: 2000, easing: 'in-out-quad' } );mymarker.addEventListener( 'click', function() { this.earth.goTo( { lat :" + i.coords.LATITUDE + ", lng : " + i.coords.LONGITUDE + "}, { duration: 300 } );parent.openCard({long: " + i.coords.LONGITUDE +", lat: " + i.coords.LATITUDE + ", type: 'sale'}) });"
+
+      // mystr += "this.addOverlay( {content: '" + i.sales + " Sales • " + this.formatPrice(i.value) + "',location : {lat: " + (i.coords.LATITUDE ?? '34.052235') + ", lng: " + (i.coords.LONGITUDE ?? '-118.243683') + "},depthScale: 0.25,className : 'arrow-tip'});"
     })
 
 

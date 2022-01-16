@@ -1,7 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Row } from './models/row.model';
-import { Order } from './models/order.model';
 
 @Pipe({name: 'safeHtml'})
 export class safeHtmlPipe implements PipeTransform {
@@ -10,6 +8,7 @@ export class safeHtmlPipe implements PipeTransform {
 
   transform(value: string) {
       
+    console.log(value)
     return this.sanitizer.bypassSecurityTrustHtml(value);
   }
 }

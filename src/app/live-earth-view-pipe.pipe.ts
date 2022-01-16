@@ -39,7 +39,7 @@ export class LiveEarthViewPipePipe implements PipeTransform {
     
 
     views.forEach(i => {
-      mystr += "var mymarker = this.addMarker( {location: { lat :" + i.views.coords.LATITUDE + ", lng : " + i.views.coords.LONGITUDE + " },mesh: ['Pin3'],color: c,hotspot: true,transparent:true,opacity:0.5,} );mymarker.animate( 'scale', 1.25, { loop: true, oscillate: true, duration: 2000, easing: 'in-out-quad' } );mymarker.addEventListener( 'click', function() { this.earth.goTo( { lat :" + i.views.coords.LATITUDE + ", lng : " + i.views.coords.LONGITUDE + "}, { duration: 300 } ); });"
+      mystr += "var mymarker = this.addMarker( {location: { lat :" + i.views.coords.LATITUDE + ", lng : " + i.views.coords.LONGITUDE + " },mesh: ['Pin3'],color: c,hotspot: true,transparent:true,opacity:0.85,scale: 0.15} );mymarker.animate( 'scale', 0.2, { loop: true, oscillate: true, duration: 2000, easing: 'in-out-quad' } );mymarker.animate( 'opacity', 0.25, { loop: true, oscillate: true, duration: 2000, easing: 'in-out-quad' } );mymarker.addEventListener( 'click', function() { this.earth.goTo( { lat :" + i.views.coords.LATITUDE + ", lng : " + i.views.coords.LONGITUDE + "}, { duration: 300 } ); parent.openCard({long: " + i.views.coords.LONGITUDE +", lat: " + i.views.coords.LATITUDE + ", type: 'view'}); });"
     })
 
     

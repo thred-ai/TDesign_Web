@@ -48,6 +48,7 @@ import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { MatRadioModule } from '@angular/material/radio';
 import { PhoneMaskDirective } from '../phone-mask.directive';
+import { MapPopupComponent } from '../map-popup/map-popup.component';
 
 
 const routes: Routes = [
@@ -76,6 +77,7 @@ const routes: Routes = [
     ViewOrderAdminComponent,
     ViewAllOrderAdminComponent,
     LayoutBuilderComponent,
+    MapPopupComponent,
   ],
 
   imports: [

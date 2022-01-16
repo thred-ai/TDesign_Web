@@ -13,6 +13,7 @@ export class Row {
     animations?: string
     buttons?: Array<Button>
     vids?: Array<string>
+    htmlTemplate?: string
 
     constructor(
       text?: string,
@@ -25,7 +26,8 @@ export class Row {
       animations?: string,
       imgLinks?: Array<string>,
       buttons?: Array<Button>,
-      vids?: Array<string>
+      vids?: Array<string>,
+      htmlTemplate?: string
     ) {
 
       this.text = text
@@ -39,5 +41,6 @@ export class Row {
       this.imgLinks = imgLinks ?? []
       this.buttons = buttons ?? []
       this.vids = vids ?? []
+      this.htmlTemplate = htmlTemplate ?? ""
     }
 }

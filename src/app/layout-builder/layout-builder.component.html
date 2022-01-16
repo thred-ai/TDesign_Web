@@ -255,6 +255,26 @@
                         ></div>
                       </div>
 
+                      <div
+                      class="w-100 mx-0"
+                      *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 7"
+                      style="pointer-events: none"
+                    >
+                      <div
+                        class="m-1 w-100 px-0"
+                        style="
+                          text-overflow: ellipsis;
+                          line-height: 2em;
+                          font-size: 3px;
+                          word-break: break-all;
+                          padding-right: 2px;
+                        "
+                        style.color="{{ selectedTheme!.color }}"
+                        [style.font-family]="storeInfo.fontName!"
+                        [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate | safeHtml"
+                      ></div>
+                    </div>
+
 
                       <div *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 5 ||
                     ((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6"
@@ -363,10 +383,16 @@
                   formControlName="htmlText"
                 ></div>
 
+                <div
+                  *ngIf="rowForm.controls.type.value == 7"
+                  [ngxSummernote]="config2"
+                  formControlName="html"
+                ></div>
+
                 <mat-form-field
                   class="w-100"
                   appearance="outline"
-                  *ngIf="rowForm.controls.type.value != 2"
+                  *ngIf="rowForm.controls.type.value != 2 || rowForm.controls.type.value != 7 || rowForm.controls.type.value != 6"
                 >
                   <mat-label>Items Per. Row</mat-label>
                   <mat-select
@@ -1148,6 +1174,18 @@
                   </div>
 
 
+                  <div
+                    class="w-100 mx-0"
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 7"
+                    style="pointer-events: none"
+                  >
+                    <div
+                      class="p-3 h-100"
+                      [style.font-family]="storeInfo.fontName!"
+                      style.color="{{ selectedTheme!.color }}"
+                      [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate | safeHtml"
+                    ></div>
+                  </div>
 
 
 
@@ -2236,8 +2274,30 @@
       </form>
     </div>
     <div class="w-100 w-md-50">
-      <div class="w-100 px-5 row row-cols-1">
-        <div class="col w-100 card shadow p-3">
+      <div class="w-100 px-5 row row-cols-1 mt-0 justify-content-center align-items-top">
+        <div class="col w-100 card shadow p-3 d-flex mb-0">
+          <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
+  
+          <div class="w-100 my-0 d-flex align-items-center justify-content-start h-100">
+            <img
+            class="h-100"
+            style="object-fit: contain; aspect-ratio: 1;"
+            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
+          />
+            <p
+            class="ms-3 my-auto"
+            style="color: #6e6e6e; font-family: Arial; font-size: small; text-overflow: ellipsis; overflow-y: hidden;"
+          >
+          <b class="text-dark" style="font-size: medium;">
+            {{this.layoutForm.controls.metaTitle.value ?? ""}}
+          </b>
+          <br>
+  
+            {{this.layoutForm.controls.metaDesc.value ?? ""}}
+          </p>
+          </div>
+        </div>
+        <div class="col w-100 card shadow p-3 mt-3">
           <h2 class="h1 mb-4 fw-bold">Search Engine Listing Preview</h2>
           <p
             class="mb-0"
