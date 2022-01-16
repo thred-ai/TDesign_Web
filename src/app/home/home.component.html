@@ -266,6 +266,15 @@
         </div>
       </div>
 
+      <div class="w-100 mx-0" *ngIf="row.type == 7">
+        <div
+          class="px-3 my-0"
+          [style.font-family]="storeInfo().fontName!"
+          style.color="{{ selectedTheme()!.color }}"
+          [innerHTML]="row.htmlTemplate ?? '' | safeHtml"
+        ></div>
+      </div>
+
       <div class="w-100 mx-0" *ngIf="row.type == 2">
         <div
           class="px-3 my-0"

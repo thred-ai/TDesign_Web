@@ -324,10 +324,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       name: 'Text Block',
       code: 2,
     },
-    // {
-    //   name: 'HTML Block',
-    //   code: 7,
-    // },
+    {
+      name: 'HTML Block',
+      code: 7,
+    },
     {
       name: 'Image Block',
       code: 1,
@@ -530,6 +530,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
 
+    this.rowForm.controls.html.setValue(matchingRow.htmlTemplate ?? "<div></div>");
 
     if (matchingRow.type == 1) {
       let matchGrid = this.grid.find((g) => g.name == name);
@@ -765,6 +766,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.setRow()
   }
 
+  editorOptions = {theme: 'hc-black', language: 'html'};
+
   finishedEditing(isDelete: boolean = false) {
     if (this.editingBlock == undefined) {
       return;
@@ -801,7 +804,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             (type == 0 && products.length == 0) ||
             (type == 1 && imgs.length == 0) ||
             (type == 4 && vids.length == 0) ||
-            (type == 2 && html.trim() == '')
+            (type == 2 && html.trim() == '') || 
+            (type == 7 && htmlTemplate.trim() == '')
           )
         ) {
           let grid = (this.rowForm.controls.grid.value as string) ?? '1';
@@ -969,6 +973,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   
   
   
+      console.log(rowInfo)
   
       // this.spinner.show('loader');
       // this.title = 'SAVING LAYOUT';

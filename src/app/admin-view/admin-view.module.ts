@@ -47,8 +47,8 @@ import { NgxSummernoteModule } from 'ngx-summernote';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { MatRadioModule } from '@angular/material/radio';
-import { PhoneMaskDirective } from '../phone-mask.directive';
 import { MapPopupComponent } from '../map-popup/map-popup.component';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 
 const routes: Routes = [
@@ -111,7 +111,8 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ApplicationPipesModule,
     NgApexchartsModule,
-    MatRadioModule
+    MatRadioModule,
+    MonacoEditorModule.forRoot()
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

@@ -383,11 +383,8 @@
                   formControlName="htmlText"
                 ></div>
 
-                <div
-                  *ngIf="rowForm.controls.type.value == 7"
-                  [ngxSummernote]="config2"
-                  formControlName="html"
-                ></div>
+                <ngx-monaco-editor *ngIf="rowForm.controls.type.value == 7" ngDefaultControl [options]="editorOptions" formControlName='html'></ngx-monaco-editor>
+
 
                 <mat-form-field
                   class="w-100"

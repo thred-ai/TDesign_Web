@@ -29,6 +29,7 @@ import { InViewportModule } from 'ng-in-viewport';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationPipesModule } from './shared/applicationPipes.module';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 @NgModule({
   declarations: [
@@ -63,8 +64,7 @@ import { ApplicationPipesModule } from './shared/applicationPipes.module';
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
     InViewportModule,
     HttpClientModule,
-    ApplicationPipesModule
-    
+    ApplicationPipesModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
