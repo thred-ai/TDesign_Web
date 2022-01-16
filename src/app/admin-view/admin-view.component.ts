@@ -1586,12 +1586,12 @@ showSocialModal(logo: {
 
 
   shouldHideLiveBtn(){
-    return (this.storeProducts == undefined || Globals.billingInfo == undefined || this.bankInfo == undefined || this.subInfo == undefined)
+    return (Globals.billingInfo == undefined || this.bankInfo == undefined || this.subInfo == undefined)
   }
 
 
   storeLive(){
-    return (this.storeProducts?.length ?? 0) != 0 && Globals.billingInfo?.name && this.bankInfo != '' && this.subInfo != ''
+    return Globals.billingInfo?.name && this.bankInfo != '' && this.subInfo != ''
   }
 
   shouldRed(panel: any){

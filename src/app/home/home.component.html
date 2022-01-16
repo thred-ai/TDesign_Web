@@ -19,7 +19,7 @@
 
 <!-- Section-->
 <section
-  *ngIf="isBrowser() && storeInfo()?.active && storeProducts?.length != 0"
+  *ngIf="isBrowser() && storeInfo()?.active"
   class="py-5 pt-0 w-100 h-100"
   [class.fixed-top]="page?.fullscreen ?? false"
   style="overflow-y: scroll"
@@ -281,7 +281,7 @@
   *ngIf="
     isBrowser() &&
     storeInfo()?.username &&
-    (!storeInfo()?.active || storeProducts?.length == 0)
+    (!storeInfo()?.active)
   "
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
