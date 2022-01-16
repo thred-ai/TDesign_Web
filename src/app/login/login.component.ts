@@ -205,7 +205,7 @@ hideSpinner(){
 
     if (this.loginForm.valid){
 
-      const usernameOrEmail = this.loginForm.controls.username.value
+      const usernameOrEmail = this.loginForm.controls.username.value.toLowerCase()
 
       const password = this.loginForm.controls.password.value
 
@@ -344,7 +344,12 @@ hideSpinner(){
       }
     }
     else{
-      this.err = 'Password must be longer than 6 characters.'
+      if (this.authForm.controls.password.invalid){
+        this.err = 'Password must be longer than 6 characters.'
+      }
+      else if (this.authForm.controls.email.invalid){
+        this.err = 'Invalid Email'
+      }
     }
     return false
 
