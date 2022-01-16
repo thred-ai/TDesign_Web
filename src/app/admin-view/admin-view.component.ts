@@ -1614,11 +1614,6 @@ showSocialModal(logo: {
         return true
       }
     }
-    else if (panel.Title == "PRODUCTS"){
-      if (this.storeProducts && this.storeProducts?.length == 0){
-        return true
-      }
-    }
     return false
   }
 
@@ -1649,9 +1644,6 @@ showSocialModal(logo: {
     }
     if (this.bankInfo == ''){
       array.push("Set up your merchant payments account")
-    }
-    if ((this.storeProducts?.length ?? 0) == 0){
-      array.push("Upload your first product")
     }
     return array
   }
