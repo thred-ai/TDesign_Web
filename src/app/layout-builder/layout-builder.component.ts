@@ -56,6 +56,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   storeInfo = Globals.storeInfo;
 
   mode = 0
+  codeMode = false
+
 
   animations(){
     return Globals.rowAnimations
@@ -132,7 +134,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         ['fontsize', ['fontname', 'fontsize', 'color']],
         ['para', ['style', 'ul', 'ol', 'paragraph', 'height']],
         ['insert', ['table', 'hr']],
-        ['misc', ['codeview']]
     ],
     fontNames: this.storeFonts()
   }
@@ -289,6 +290,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.rootComponent = data.rootComponent;
 
     this.spinner.show('loader');
+    this.mode = 1
 
     for (let i = 1; i < 5; i++) {
       this.grid.push({
@@ -409,7 +411,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn()
 
-    this.mode = 1
 
     this.layoutForm.controls.rows.setValue(
       Object.assign([], this.data.page?.rows ?? [])
@@ -766,7 +767,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.setRow()
   }
 
-  editorOptions = {theme: 'hc-black', language: 'html'};
+  editorOptions = {theme: 'hc-black', language: 'html', automaticLayout: true, minimap: {
+		enabled: false
+	}, lineNumbers: 'off', glyphMargin: false,
+  folding: false};
 
   finishedEditing(isDelete: boolean = false) {
     if (this.editingBlock == undefined) {
@@ -926,6 +930,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.aRow.row = row;
     this.aRow.index = this.editingBlock;
+  }
+
+  resizeIframe(index: number) {
+    let obj = document.getElementById('frame' + index) as HTMLIFrameElement
+ 
+    if (obj){
+      obj.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
+    }
   }
 
   addBlock() {

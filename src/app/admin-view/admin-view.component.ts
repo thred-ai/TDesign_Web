@@ -1586,9 +1586,17 @@ showSocialModal(logo: {
 
 
   shouldHideLiveBtn(){
-    return (Globals.billingInfo == undefined || this.bankInfo == undefined || this.subInfo == undefined)
+    return this.storeProducts == undefined || (Globals.billingInfo == undefined || this.bankInfo == undefined || this.subInfo == undefined)
   }
 
+  resizeIframe(index: number) {
+    let obj = document.getElementById('frame2' + index) as HTMLIFrameElement
+ 
+    console.log(obj)
+    if (obj){
+      obj.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
+    }
+  }
 
   storeLive(){
     return Globals.billingInfo?.name && this.bankInfo != '' && this.subInfo != ''

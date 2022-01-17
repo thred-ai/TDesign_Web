@@ -10,6 +10,14 @@
     white-space: nowrap;
     animation: loop-anim 30s linear infinite;
   }
+
+  .absolute{
+    position: absolute;
+  }
+
+  .relative{
+    position: relative;
+  }
   
   @keyframes loop-anim {
     0% {

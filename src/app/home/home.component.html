@@ -26,7 +26,7 @@
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
   <div class="w-100 h-100">
-    <div class="w-100 mb-5" *ngFor="let row of homeRows ?? []">
+    <div class="w-100 mb-5" *ngFor="let row of homeRows ?? []; index as i">
       <div
         *ngIf='(row.text ?? "").trim() != ""'
         class="d-flex align-items-center justify-content-center pb-1 mb-5"
@@ -267,13 +267,14 @@
       </div>
 
       <div class="w-100 mx-0" *ngIf="row.type == 7">
-        <div
-          class="px-3 my-0"
-          [style.font-family]="storeInfo().fontName!"
-          style.color="{{ selectedTheme()!.color }}"
-          [innerHTML]="row.htmlTemplate ?? '' | safeHtml"
-        ></div>
+        <iframe
+        width="100%" 
+        id='frame{{i}}'
+        (load)='resizeIframe(i)'
+          [srcdoc]="(row.htmlTemplate ?? '') | safeHtml"
+        ></iframe>
       </div>
+        
 
       <div class="w-100 mx-0" *ngIf="row.type == 2">
         <div

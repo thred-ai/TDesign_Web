@@ -259,20 +259,11 @@
                       class="w-100 mx-0"
                       *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 7"
                       style="pointer-events: none"
+                      c
                     >
-                      <div
-                        class="m-1 w-100 px-0"
-                        style="
-                          text-overflow: ellipsis;
-                          line-height: 2em;
-                          font-size: 3px;
-                          word-break: break-all;
-                          padding-right: 2px;
-                        "
-                        style.color="{{ selectedTheme!.color }}"
-                        [style.font-family]="storeInfo.fontName!"
-                        [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate | safeHtml"
-                      ></div>
+                      <h1 class="m-2 text-center fw-bolder">
+                        CUSTOM HTML
+                      </h1>
                     </div>
 
 
@@ -383,13 +374,19 @@
                   formControlName="htmlText"
                 ></div>
 
-                <ngx-monaco-editor *ngIf="rowForm.controls.type.value == 7" ngDefaultControl [options]="editorOptions" formControlName='html'></ngx-monaco-editor>
+                <div class="w-100" *ngIf="rowForm.controls.type.value == 7" [class.relative]='codeMode == false' style="height: 450px;">
+                  <ngx-monaco-editor class="w-100 h-100" [class.absolute]='codeMode'  ngDefaultControl [options]="editorOptions" formControlName='html'>
+
+                  </ngx-monaco-editor>
+
+                  <!-- <a [hidden]='codeMode' (click)='codeMode = true' style="position: absolute; bottom: 15px; right: 5px; z-index: 100; height: 30px; width: 30px; text-decoration: none;" role="button" class="btn btn-light shadow rounded-circle d-flex justify-content-center align-items-center"><mat-icon >fullscreen</mat-icon></a> -->
+                </div>
 
 
                 <mat-form-field
                   class="w-100"
                   appearance="outline"
-                  *ngIf="rowForm.controls.type.value != 2 || rowForm.controls.type.value != 7 || rowForm.controls.type.value != 6"
+                  *ngIf="rowForm.controls.type.value != 2 && rowForm.controls.type.value != 7 && rowForm.controls.type.value != 6"
                 >
                   <mat-label>Items Per. Row</mat-label>
                   <mat-select
@@ -1171,17 +1168,14 @@
                   </div>
 
 
-                  <div
-                    class="w-100 mx-0"
-                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 7"
-                    style="pointer-events: none"
-                  >
-                    <div
-                      class="p-3 h-100"
-                      [style.font-family]="storeInfo.fontName!"
-                      style.color="{{ selectedTheme!.color }}"
-                      [innerHTML]="((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate | safeHtml"
-                    ></div>
+
+                  <div class="w-100 mx-0" *ngIf="((aRow.index == i ? aRow?.row : undefined) ?? row).type == 7" style="pointer-events: none">
+                    <iframe
+                    width="100%" 
+                    id='frame{{i}}'
+                    (load)='resizeIframe(i)'
+                      [srcdoc]="(((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate ?? '') | safeHtml"
+                    ></iframe>
                   </div>
 
 
@@ -2315,7 +2309,7 @@
             {{this.layoutForm.controls.seoDesc.value ?? ""}}
           </p>
         </div>
-        <div class="col w-100 card shadow p-3 d-flex mt-3">
+        <!-- <div class="col w-100 card shadow p-3 d-flex mt-3">
           <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
 
           <div class="w-100 my-0 d-flex align-items-center justify-content-start" style="height: 150px;">
@@ -2336,7 +2330,7 @@
             {{this.layoutForm.controls.metaDesc.value ?? ""}}
           </p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </mat-dialog-content>
