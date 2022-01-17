@@ -620,7 +620,7 @@ export class LoadService {
             Globals.storeInfo!.homeLink = new URL(this.getHomeURL(uid));
 
             if (!homeRows) {
-              Globals.storeInfo!.pages![0].rows![1].imgs?.push(this.getHomeURL(uid));
+              Globals.storeInfo!.pages![0].rows![1]?.imgs?.push(this.getHomeURL(uid));
             }
 
           } else if (type == 'action') {
@@ -918,7 +918,7 @@ export class LoadService {
               } else if (type == 'home') {
                 Globals.userInfo!.homeLink = new URL(this.getHomeURL(uid));
                 if (!homeRows) {
-                  Globals.userInfo!.pages![0].rows![1].imgs?.push(this.getHomeURL(uid));
+                  Globals.userInfo!.pages![0].rows![1]?.imgs?.push(this.getHomeURL(uid));
                 }
               } else if (type == 'action') {
                 Globals.userInfo!.actionLink = new URL(this.getActionURL(uid));
@@ -2752,7 +2752,7 @@ export class LoadService {
       pages[i].name = page.name
       pages[i].fullscreen = page.fullscreen
       pages[i].seo = page.seo
-      
+
 
     }
     else{
