@@ -2752,7 +2752,7 @@ export class LoadService {
       pages[i].name = page.name
       pages[i].fullscreen = page.fullscreen
       pages[i].seo = page.seo
-
+      pages[i].loader = page.loader
 
     }
     else{

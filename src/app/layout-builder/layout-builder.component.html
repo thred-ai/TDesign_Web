@@ -2262,6 +2262,24 @@
 
             </div>
           </div>
+          <div class="col mt-4">
+            <h2 class="h2 my-0">Loading Animation</h2>
+            <h5 class="mt-0">
+              When set to 'Hide', your store's loading animation will not display on this page.
+            </h5>
+            <mat-radio-group formControlName="isLoader">
+              <div>
+                <mat-radio-button [value]="true" (change)="radioChangeLoader($event)"
+                  >Show</mat-radio-button
+                >
+              </div>
+              <div class="mt-2">
+                <mat-radio-button [value]="false" (change)="radioChangeLoader($event)"
+                  >Hide</mat-radio-button
+                >
+              </div>
+            </mat-radio-group>
+          </div>
         </div>
       </form>
     </div>

@@ -2,7 +2,7 @@
 <router-outlet></router-outlet>
 
 <ngx-spinner
-  *ngIf="isBrowser()"
+  *ngIf="isBrowser() && page?.loader ?? true"
   bdColor="{{ selectedIndicator().bg_color }}"
   size="large"
   color="{{ selectedIndicator().color }}"
@@ -26,7 +26,7 @@
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
   <div class="w-100 h-100">
-    <div class="w-100 mb-5" *ngFor="let row of homeRows ?? []; index as i">
+    <div class="w-100" *ngFor="let row of homeRows ?? []; index as i">
       <div
         *ngIf='(row.text ?? "").trim() != ""'
         class="d-flex align-items-center justify-content-center pb-1 mb-5"
@@ -266,14 +266,15 @@
         </div>
       </div>
 
-      <div class="w-100 m-0" *ngIf="row.type == 7" id='c{{i}}'>
+      <div class="w-100 m-0" *ngIf="row.type == 7" style="height: 100vh;" id='c{{i}}'>
         <iframe
         width="100%" 
         height="100%"
         id='frame{{i}}'
         (load)='resizeIframe(i)'
           [srcdoc]="(row.htmlTemplate ?? '') | storePipe | safeHtml"
-        ></iframe>
+        >
+      </iframe>
       </div>
         
 
@@ -286,6 +287,11 @@
         ></div>
       </div>
     </div>
+    <div class="mb-0 bg-{{ storeInfo().colorStyle!.back_code }}" *ngIf='page?.fullscreen ?? false'>
+      <h3 class="h-100 w-100 text-center text-muted">
+        Powered By Thred
+      </h3>
+  </div>
   </div>
 </section>
 <section

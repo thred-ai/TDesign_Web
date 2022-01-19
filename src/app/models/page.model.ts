@@ -6,7 +6,8 @@ export class Page {
   title?: string;
   id?: string;
   url?: string;
-  fullscreen?: boolean
+  fullscreen?: boolean;
+  loader?: boolean
   rows?: Array<Row>;
   seo?: SEO
 
@@ -17,6 +18,7 @@ export class Page {
     url?: string,
     rows?: Array<Row>,
     fullscreen?: boolean,
+    loader?: boolean,
     seo?: SEO
   ) {
     this.name = name;
@@ -25,6 +27,7 @@ export class Page {
     this.url = url;
     this.rows = rows ?? [];
     this.fullscreen = fullscreen ?? false
+    this.loader = loader ?? true
     this.seo = seo
   }
 }

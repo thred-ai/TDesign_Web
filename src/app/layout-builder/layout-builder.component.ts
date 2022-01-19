@@ -85,6 +85,13 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges()
   }
 
+  radioChangeLoader(event: any) {
+    let val = event.value;
+
+    this.layoutForm.controls.isLoader.setValue(val)
+    this.cdr.detectChanges()
+  }
+
 
   radioChangeBtn(event: any, index: number) {
     let val = event.value;
@@ -100,6 +107,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     name: [null, [Validators.required]],
     url: [null, [Validators.required]],
     isFullscreen: [null, [Validators.required]],
+    isLoader: [null, [Validators.required]],
 
     seoTitle: [null, [Validators.required]],
     seoDesc: [null, [Validators.required]],
@@ -450,6 +458,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.layoutForm.controls.isFullscreen.setValue(
       this.data.page?.fullscreen ? this.data.page?.fullscreen : false
+    );
+
+    this.layoutForm.controls.isLoader.setValue(
+      this.data.page?.loader ? this.data.page?.loader : true
     );
 
     setTimeout(() => {
@@ -975,6 +987,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       let url = (this.layoutForm.controls.url.value as string) ?? 'new-page';
       
       let fullscreen = (this.layoutForm.controls.isFullscreen.value as boolean) ?? false;
+      let loader = (this.layoutForm.controls.isLoader.value as boolean) ?? true;
+
       let seoTitle = (this.layoutForm.controls.seoTitle.value as string) ?? Globals.storeInfo.fullName ?? '';
       let seoDesc = (this.layoutForm.controls.seoDesc.value as string) ?? Globals.storeInfo.bio ?? '';
       let seoTags = (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
@@ -995,7 +1009,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   
       let seo = new SEO(seoTitle, seoDesc, meta, seoTags, false)
   
-      let page = new Page(name.toLowerCase(), name, this.data.page?.id ?? undefined, url, rowInfo, fullscreen, seo)
+      let page = new Page(name.toLowerCase(), name, this.data.page?.id ?? undefined, url, rowInfo, fullscreen, loader, seo)
   
   
       this.dialogRef.close({

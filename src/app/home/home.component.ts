@@ -286,6 +286,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.homeRows = rows
         this.page = page
+        if (page.loader ?? true){
+          this.showSpinner()
+        }
       }
       else{
         this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
@@ -295,7 +298,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
       if (isPlatformBrowser(this.platformID)){
-        this.showSpinner()
         this.loadService.logView()
         this.rootComponent.setOptions()
       }
