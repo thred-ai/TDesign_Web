@@ -3042,7 +3042,6 @@ isSpinning = false
   
 
 
-      await this.loadService.getCoords()
 
       if (isPlatformBrowser(this.platformID)){
         let user = (await this.loadService.isLoggedIn())

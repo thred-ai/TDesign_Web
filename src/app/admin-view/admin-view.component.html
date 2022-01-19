@@ -1053,7 +1053,7 @@
                   class="w-100 h-100"
                   style="overflow-y: hidden; position: absolute"
                 >
-                  <div class="w-100 mb-5" *ngFor="let row of page.rows ?? []; index as i">
+                  <div class="w-100" *ngFor="let row of page.rows ?? []; index as i">
                     <div
                       *ngIf='(row.text ?? "").trim() != ""'
                       class="d-flex align-items-center justify-content-center pb-1 mb-3 mt-2"

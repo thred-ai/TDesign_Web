@@ -700,7 +700,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   routeToLink(h: string) {
+
+    console.log(h)
+
+
+
     let link = this.storeInfo()?.pages?.find((p) => p.id == h)?.url ?? 'home';
+
+
+
+    console.log(link)
+
 
     if (Globals.storeInfo.username)
       this.routingService.routeToDynamicLink(

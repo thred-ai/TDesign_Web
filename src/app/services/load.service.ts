@@ -99,7 +99,7 @@ export class LoadService {
   shouldShowCurrency = false;
 
   async logView() {
-    if (!Globals.didLog && Globals.storeInfo.uid && isPlatformBrowser(this.platformID)) {
+    if (!Globals.didLog && Globals.storeInfo.uid && isPlatformBrowser(this.platformID) && (((this.rootComponent?.getStoreName().link?.indexOf('http://') ?? -1) != -1))) {
       Globals.didLog = true;
       let coords = await this.getCoords() ?? {
         LONGITUDE: -118.243683,
