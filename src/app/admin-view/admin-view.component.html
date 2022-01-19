@@ -1171,12 +1171,13 @@
                       </div>
                     </div>
 
-                    <div class="w-100 mx-0" *ngIf="(row).type == 7" style="pointer-events: none">
+                    <div class="w-100 mx-0" id='c2{{i}}' *ngIf="(row).type == 7" style="pointer-events: none">
                       <iframe
                       width="100%" 
+                      height="100%" 
                       id='frame2{{i}}'
                       (load)='resizeIframe(i)'
-                        [srcdoc]="((row).htmlTemplate ?? '') | safeHtml"
+                        [srcdoc]="((row).htmlTemplate ?? '') | storePipe | safeHtml"
                       ></iframe>
                     </div>
 

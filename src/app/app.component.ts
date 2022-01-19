@@ -1,9 +1,26 @@
-import { ChangeDetectorRef, Component, OnInit, Inject, PLATFORM_ID, ViewChild, AfterViewInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  Inject,
+  PLATFORM_ID,
+  ViewChild,
+  AfterViewInit,
+} from '@angular/core';
 import { AngularFaviconService } from 'angular-favicon';
 import { Country } from './models/shipping-country.model';
 import { Template } from './models/template.model';
 import { Globals } from './globals';
-import { ActivatedRoute, Router, NavigationEnd, Event as NavigationEvent, RoutesRecognized, ActivationStart, NavigationStart, RouterEvent } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router,
+  NavigationEnd,
+  Event as NavigationEvent,
+  RoutesRecognized,
+  ActivationStart,
+  NavigationStart,
+  RouterEvent,
+} from '@angular/router';
 import { LoadService, Dict } from './services/load.service';
 import { HomeComponent } from './home/home.component';
 import { ProductComponent } from './product/product.component';
@@ -38,38 +55,49 @@ import * as AOS from 'aos';
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'thred-web';
 
-  mode = "All Products"
+  mode = 'All Products';
 
-  storeInfo(){return Globals.storeInfo}
+  storeInfo() {
+    return Globals.storeInfo;
+  }
 
-  userInfo(){return Globals.userInfo}
+  userInfo() {
+    return Globals.userInfo;
+  }
 
-  availableCurrencies(){return Globals.availableCurrencies}
+  availableCurrencies() {
+    return Globals.availableCurrencies;
+  }
 
-  selectedCurrency(){return Globals.selectedCurrency}
+  selectedCurrency() {
+    return Globals.selectedCurrency;
+  }
 
-  templates(){return Globals.availableTemplates}
+  templates() {
+    return Globals.availableTemplates;
+  }
 
-  availableTemplates(){return Globals.availableTemplates}
+  availableTemplates() {
+    return Globals.availableTemplates;
+  }
 
-  
-  selectedTemplate(){return Globals.selectedTemplate}
+  selectedTemplate() {
+    return Globals.selectedTemplate;
+  }
 
+  profileSettings: Array<Dict<any>> = [];
 
-  profileSettings: Array<Dict<any>> = []
-
-
-  @ViewChild('carousel', {read: DragScrollComponent}) ds?: DragScrollComponent;
+  @ViewChild('carousel', { read: DragScrollComponent })
+  ds?: DragScrollComponent;
 
   moveLeft() {
     this.ds!.moveLeft();
   }
 
   moveRight() {
-    if (this.ds?.currIndex == (this.storeInfo().banners?.length ?? 0) - 1){
+    if (this.ds?.currIndex == (this.storeInfo().banners?.length ?? 0) - 1) {
       this.ds?.moveTo(0);
-    }
-    else{
+    } else {
       this.ds?.moveRight();
     }
   }
@@ -79,402 +107,448 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   changeIcon() {
-    document.getElementById('appIcon')!.setAttribute('href', 'https://www.google.com/favicon.ico')
+    document
+      .getElementById('appIcon')!
+      .setAttribute('href', 'https://www.google.com/favicon.ico');
   }
 
-  hasPixel = false
+  hasPixel = false;
 
-  initializePixel(pixelID?: string){
-    if (this.getStoreName().isCustom){
-      if (!this.hasPixel && pixelID){
-        this.hasPixel = true
-        this.pixelService.remove()
-        this.pixelService.initialize(pixelID)
+  initializePixel(pixelID?: string) {
+    if (this.getStoreName().isCustom) {
+      if (!this.hasPixel && pixelID) {
+        this.hasPixel = true;
+        this.pixelService.remove();
+        this.pixelService.initialize(pixelID);
       }
-    }
-    else{
-      if (!this.hasPixel){
-        this.hasPixel = true
-        this.pixelService.initialize()
+    } else {
+      if (!this.hasPixel) {
+        this.hasPixel = true;
+        this.pixelService.initialize();
       }
     }
   }
 
-  async setOptions(){
+  async setOptions() {
+    let user = await this.loadService.isLoggedIn();
+    let uid = user?.uid;
+    let isAnon = user?.isAnonymous ?? false;
 
-    let user = (await this.loadService.isLoggedIn())
-    let uid = user?.uid
-    let isAnon = user?.isAnonymous ?? false
-  
-    this.signedIn = uid != undefined && !isAnon
-    
-    if (this.signedIn){
-      this.signedInUid = uid
+    this.signedIn = uid != undefined && !isAnon;
+
+    if (this.signedIn) {
+      this.signedInUid = uid;
     }
 
-    this.profileSettings = []
+    this.profileSettings = [];
 
     var option = {
-      "Title": "My Store",
-      "Link" : "/" + "STORE_NAME" + "/my-store",
-      "Function": this.routeToProfile
-    }
+      Title: 'My Store',
+      Link: '/' + 'STORE_NAME' + '/my-store',
+      Function: this.routeToProfile,
+    };
     var option2 = {
-      "Title": "View Orders",
-      "Link" : "/" + "STORE_NAME" + "/orders",
-      "Function": this.routeToOrders
-    }
-    
+      Title: 'View Orders',
+      Link: '/' + 'STORE_NAME' + '/orders',
+      Function: this.routeToOrders,
+    };
+
     var option3 = {
-      "Title": "Sign Out",
-      "Link" : "/" + "null",
-      "Function": undefined
-    }
+      Title: 'Sign Out',
+      Link: '/' + 'null',
+      Function: undefined,
+    };
 
-    if (!this.signedIn){
-
+    if (!this.signedIn) {
       option3 = {
-        "Title": "Sign In",
-        "Link" : "/" + "null",
-        "Function": undefined
-      }
+        Title: 'Sign In',
+        Link: '/' + 'null',
+        Function: undefined,
+      };
     }
-    
-    this.profileSettings = [option, option2, option3]
+
+    this.profileSettings = [option, option2, option3];
   }
-  
-  async closeBtn(result: string){
+
+  async closeBtn(result: string) {
     // this.modalService.dismissAll("success")
 
-    if (await this.loadService.authenticated() && !((await this.loadService.isLoggedIn())?.isAnonymous)){
-
-      this.routeToProfile()
-    }
-    else{
-      this.routeToHome()
+    if (
+      (await this.loadService.authenticated()) &&
+      !(await this.loadService.isLoggedIn())?.isAnonymous
+    ) {
+      this.routeToProfile();
+    } else {
+      this.routeToHome();
     }
   }
 
-  
+  selectedTheme() {
+    let co = Globals.storeInfo?.colorStyle?.btn_color;
+    let bco = Globals.storeInfo?.colorStyle?.bg_color;
+    let name = Globals.storeInfo?.colorStyle?.name;
 
+    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
 
-
-  selectedTheme(){
-    
-    let co = Globals.storeInfo?.colorStyle?.btn_color
-    let bco = Globals.storeInfo?.colorStyle?.bg_color
-    let name = Globals.storeInfo?.colorStyle?.name
-
-    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
-
-    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+    let bg_color =
+      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bco[3] + ')';
 
     var theme: Dict<string> = {
-      "name": name,
-      "color": color,
-      "bg_color": bg_color
-    }
-    return theme
+      name: name,
+      color: color,
+      bg_color: bg_color,
+    };
+    return theme;
   }
-  
 
-  bannerTheme(banner?: Banner){
-    
-    if (!banner){
-      banner = this.storeInfo().banners[this.ds?.currIndex ?? 0]
+  bannerTheme(banner?: Banner) {
+    if (!banner) {
+      banner = this.storeInfo().banners[this.ds?.currIndex ?? 0];
     }
 
+    let co = banner.color;
+    let bco = banner.bg_color;
+    let text = banner.text;
 
-    let co = banner.color
-    let bco = banner.bg_color
-    let text = banner.text
+    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
 
-
-    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
-
-    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
+    let bg_color =
+      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bco[3] + ')';
 
     var theme: Dict<string> = {
-      "text": text,
-      "color": color,
-      "bg_color": bg_color
-    }
-    return theme
+      text: text,
+      color: color,
+      bg_color: bg_color,
+    };
+    return theme;
   }
 
   reloadCurrentRoute() {
     const currentUrl = this._router.url;
-    
-    this._router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
-        this._router.navigate([currentUrl]);
+
+    this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this._router.navigate([currentUrl]);
     });
   }
 
-  isAdmin(){
-
-    return (this.router.snapshot.firstChild?.routeConfig?.path?.includes("my-store"))
+  isAdmin() {
+    return this.router.snapshot.firstChild?.routeConfig?.path?.includes(
+      'my-store'
+    );
   }
 
-  isLanding(){
-    return ((this.router.snapshot.firstChild?.routeConfig?.path?.trim() ?? '') == '')
+  isLanding() {
+    return (
+      (this.router.snapshot.firstChild?.routeConfig?.path?.trim() ?? '') == ''
+    );
   }
 
-  isOrder(){
-    return (this.router.snapshot.firstChild?.routeConfig?.path?.includes("orders"))
+  isOrder() {
+    return this.router.snapshot.firstChild?.routeConfig?.path?.includes(
+      'orders'
+    );
   }
 
-
-  routeToProfile(selected?: string){
-    if (Globals.userInfo?.username){
-      this.loadService.myCallback = undefined
-      if (Globals.storeInfo.uid != Globals.userInfo?.uid){
-        Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo))
-        this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected, "https://shopmythred.com/" + Globals.userInfo?.username)
-      }
-      else{
-        if (Globals.storeInfo?.username){
-          if (this.isAdmin()){
-            this.reloadCurrentRoute()
-          }
-          else{
-            this.routingService.routeToProfile(Globals.userInfo?.username!, this.getStoreName().isCustom, selected)
+  routeToProfile(selected?: string) {
+    if (Globals.userInfo?.username) {
+      this.loadService.myCallback = undefined;
+      if (Globals.storeInfo.uid != Globals.userInfo?.uid) {
+        Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
+        this.routingService.routeToProfile(
+          Globals.userInfo?.username!,
+          this.getStoreName().isCustom,
+          selected,
+          'https://shopmythred.com/' + Globals.userInfo?.username
+        );
+      } else {
+        if (Globals.storeInfo?.username) {
+          if (this.isAdmin()) {
+            this.reloadCurrentRoute();
+          } else {
+            this.routingService.routeToProfile(
+              Globals.userInfo?.username!,
+              this.getStoreName().isCustom,
+              selected
+            );
           }
         }
       }
-    }
-    else{
-      this.loadService.myCallback = () => this.routeToProfile()
-      this.loadService.getCustomer()
-    }
-  }
-
-  cart?: Array<ProductInCart> = undefined
-
-  getCart(){
-    if (this.cart == undefined && isPlatformBrowser(this.platformID)){
-      this.cart = []
-      this.loadService.getCart(false, cart => {
-        this.cart = cart
-      })
+    } else {
+      this.loadService.myCallback = () => this.routeToProfile();
+      this.loadService.getCustomer();
     }
   }
 
-  getStoreName(){
-    var request = ""
-    if (isPlatformServer(this.platformID)){
-      request = Globals.URL
+  cart?: Array<ProductInCart> = undefined;
+
+  getCart() {
+    if (this.cart == undefined && isPlatformBrowser(this.platformID)) {
+      this.cart = [];
+      this.loadService.getCart(false, (cart) => {
+        this.cart = cart;
+      });
     }
-    else{
-      request = globalThis.location.host
-    }  
-    if (request != 'localhost:4200' && request != 'shopmythred.com'){
+  }
+
+  getStoreName() {
+    var request = '';
+    if (isPlatformServer(this.platformID)) {
+      request = Globals.URL;
+    } else {
+      request = globalThis.location.host;
+    }
+    if (request != 'localhost:4200' && request != 'shopmythred.com') {
       return {
         isCustom: true,
-        link: request
-      }
+        link: request,
+      };
     }
     const routeParams = this.router.snapshot.paramMap;
     const storeID = routeParams.get('user') as string;
     return {
       isCustom: false,
-      link: storeID
-    }
+      link: storeID,
+    };
   }
 
-  routeToHome(){
-    this.setOptions()
+  routeToHome() {
+    this.setOptions();
     if (Globals.storeInfo.username)
-    this.routingService.routeToHome(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToHome(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToImgLink(link?: string){
-    this.setOptions()
+  routeToImgLink(link?: string) {
+    this.setOptions();
     if (Globals.storeInfo.username && link)
-    this.routingService.linkImgPressed(Globals.storeInfo.username, link, this.getStoreName().isCustom)
+      this.routingService.linkImgPressed(
+        Globals.storeInfo.username,
+        link,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToOrders(){
+  routeToOrders() {
     if (Globals.storeInfo.username)
-    this.routingService.routeToOrders(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToOrders(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToShop(){
+  routeToShop() {
     if (Globals.storeInfo.username)
-    this.routingService.routeToShop(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToShop(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToAbout(){
+  routeToAbout() {
     if (Globals.storeInfo.username)
-    this.routingService.routeToAbout(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToAbout(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToCart(){
+  routeToCart() {
     if (Globals.storeInfo.username)
-    this.routingService.routeToCart(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToCart(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToProduct(productID: string){
+  routeToProduct(productID: string) {
     if (Globals.storeInfo?.username)
-    this.routingService.routeToProduct(productID, Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToProduct(
+        productID,
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToOrder(orderID: string){
+  routeToOrder(orderID: string) {
     if (Globals.storeInfo?.username)
-    this.routingService.routeToOrder(orderID, Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToOrder(
+        orderID,
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToShipping(){
+  routeToShipping() {
     if (Globals.storeInfo?.username)
-    this.routingService.routeToShipping(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToShipping(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToBilling(){
+  routeToBilling() {
     if (Globals.storeInfo?.username)
-    this.routingService.routeToBilling(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToBilling(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToBillingAdmin(){
+  routeToBillingAdmin() {
     if (Globals.storeInfo?.username)
-    this.routingService.routeToBillingAdmin(Globals.storeInfo.username, this.getStoreName().isCustom)
+      this.routingService.routeToBillingAdmin(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  routeToReview(){
+  routeToReview() {
     if (Globals.storeInfo?.username)
-    this.routingService.routeToReview(Globals.storeInfo.username, this.getStoreName().isCustom)
-
+      this.routingService.routeToReview(
+        Globals.storeInfo.username,
+        this.getStoreName().isCustom
+      );
   }
 
-  async accountPressed(authMode = 1, prefillUser = false){
-    if (await this.loadService.authenticated() && !((await this.loadService.isLoggedIn())?.isAnonymous)){
-      this.routeToProfile()
-    }
-    else{
-
-      if (!this.modalService.hasOpenModals()){
-        const modalRef = this.modalService.open(LoginComponent, {size : "lg"});
-          let sub = modalRef.dismissed.subscribe((result: string) => {
-            this.closeBtn(result)
-            sub.unsubscribe()
-          })
-          modalRef.componentInstance.authMode = authMode
-          if (prefillUser){
-            modalRef.componentInstance.loginForm.controls.username.setValue(Globals.storeInfo.username)
-          }
-      }    
-    }
-  }
-
-  settings(popFirst: boolean){
-    if (popFirst){
-      return this.profileSettings.slice(1, -1) ?? []
-    }
-    return this.profileSettings ?? []
-  }
-
-  signInPressed(){
-    if (!this.modalService.hasOpenModals()){
-      const modalRef = this.modalService.open(LoginComponent, {size : "lg"});
+  async accountPressed(authMode = 1, prefillUser = false) {
+    if (
+      (await this.loadService.authenticated()) &&
+      !(await this.loadService.isLoggedIn())?.isAnonymous
+    ) {
+      this.routeToProfile();
+    } else {
+      if (!this.modalService.hasOpenModals()) {
+        const modalRef = this.modalService.open(LoginComponent, { size: 'lg' });
         let sub = modalRef.dismissed.subscribe((result: string) => {
-          sub.unsubscribe()
-        })
-        modalRef.componentInstance.authMode = 1
+          this.closeBtn(result);
+          sub.unsubscribe();
+        });
+        modalRef.componentInstance.authMode = authMode;
+        if (prefillUser) {
+          modalRef.componentInstance.loginForm.controls.username.setValue(
+            Globals.storeInfo.username
+          );
+        }
+      }
     }
   }
 
-  signOutPressed(){
-    this.loadService.myCallback = () => this.routeToHome()
-    this.loadService.signOut()
-  }
-
-  storeLink(link: string){
-    return link.replace("STORE_NAME", this.storeInfo().username ?? "")
-  }
-
-  cartLength(){
-    if (this.cart?.length == 0){
-      return "0"
+  settings(popFirst: boolean) {
+    if (popFirst) {
+      return this.profileSettings.slice(1, -1) ?? [];
     }
-    var totalCount = 0
-    this.cart?.forEach(product => {
-      totalCount += product.quantity ?? 0
-    })
-    return totalCount
+    return this.profileSettings ?? [];
   }
 
-  updateCurrency(currency: Country){
-    Globals.selectedCurrency = currency
-    if (isPlatformBrowser(this.platformID)){
-      localStorage.setItem("LOCAL_CURRENCY", currency.currency_name)
+  signInPressed() {
+    if (!this.modalService.hasOpenModals()) {
+      const modalRef = this.modalService.open(LoginComponent, { size: 'lg' });
+      let sub = modalRef.dismissed.subscribe((result: string) => {
+        sub.unsubscribe();
+      });
+      modalRef.componentInstance.authMode = 1;
     }
-    this.cdr.detectChanges()
+  }
+
+  signOutPressed() {
+    this.loadService.myCallback = () => this.routeToHome();
+    this.loadService.signOut();
+  }
+
+  storeLink(link: string) {
+    return link.replace('STORE_NAME', this.storeInfo().username ?? '');
+  }
+
+  cartLength() {
+    if (this.cart?.length == 0) {
+      return '0';
+    }
+    var totalCount = 0;
+    this.cart?.forEach((product) => {
+      totalCount += product.quantity ?? 0;
+    });
+    return totalCount;
+  }
+
+  updateCurrency(currency: Country) {
+    Globals.selectedCurrency = currency;
+    if (isPlatformBrowser(this.platformID)) {
+      localStorage.setItem('LOCAL_CURRENCY', currency.currency_name);
+    }
+    this.cdr.detectChanges();
   }
 
   // ?product_type=Dresses
 
-  formatPrice(price: number){
-    var priceAsString = new String((price * Globals.selectedCurrency!.rate).toFixed(2))
-    let index = priceAsString.indexOf(".")
+  formatPrice(price: number) {
+    var priceAsString = new String(
+      (price * Globals.selectedCurrency!.rate).toFixed(2)
+    );
+    let index = priceAsString.indexOf('.');
 
-    switch (index){
-    case priceAsString.length - 1:
-        priceAsString += "00"
-        break
-    case priceAsString.length - 2:
-        priceAsString += "0"
-        break
-    default:
-
-        break
+    switch (index) {
+      case priceAsString.length - 1:
+        priceAsString += '00';
+        break;
+      case priceAsString.length - 2:
+        priceAsString += '0';
+        break;
+      default:
+        break;
     }
-    return this.getCurrencyForCountry(Globals.selectedCurrency!, Globals.selectedCurrency!.name != "US") + priceAsString
+    return (
+      this.getCurrencyForCountry(
+        Globals.selectedCurrency!,
+        Globals.selectedCurrency!.name != 'US'
+      ) + priceAsString
+    );
   }
 
-  isMobile(){
-    if (isPlatformBrowser(this.platformID)){
-      let height = window.innerHeight
-      let width = window.innerWidth
-      return width < height
+  isMobile() {
+    if (isPlatformBrowser(this.platformID)) {
+      let height = window.innerHeight;
+      let width = window.innerWidth;
+      return width < height;
     }
-    return false
-  }
-  
-  getCurrencyForCountry(country: Country, shouldShowName: boolean){
-
-    var returnItem = country.currency_symbol
-    if (shouldShowName) returnItem = country.name + " " + returnItem
-  
-    return returnItem
+    return false;
   }
 
-  myInnerHeight(){
-    let height = window.innerHeight
-    let width = window.innerWidth
+  getCurrencyForCountry(country: Country, shouldShowName: boolean) {
+    var returnItem = country.currency_symbol;
+    if (shouldShowName) returnItem = country.name + ' ' + returnItem;
 
-    if (width < height){
-      return width * 0.98
-    }
-    else{
-      return height * 0.70
+    return returnItem;
+  }
+
+  myInnerHeight() {
+    let height = window.innerHeight;
+    let width = window.innerWidth;
+
+    if (width < height) {
+      return width * 0.98;
+    } else {
+      return height * 0.7;
     }
   }
 
-
-  showPopUp(homePopup: Popup, duration = 0){
-    if (this.isAdmin()){
-      return
+  showPopUp(homePopup: Popup, duration = 0) {
+    if (this.isAdmin()) {
+      return;
     }
     setTimeout(() => {
       const modalRef = this.dialog.open(PopupComponent, {
-        width: '' + this.myInnerHeight() + "px",
+        width: '' + this.myInnerHeight() + 'px',
         maxWidth: '100vw',
         maxHeight: '100vh',
         data: {
-          popup: homePopup, 
+          popup: homePopup,
         },
-        panelClass: 'app-full-bleed-dialog', 
+        panelClass: 'app-full-bleed-dialog',
       });
     }, duration);
-  
+
     // let sub = modalRef.afterClosed().subscribe(resp => {
     //   console.log('The dialog was closed');
     //   sub.unsubscribe()
@@ -485,83 +559,78 @@ export class AppComponent implements OnInit, AfterViewInit {
     //     banner.text = resp.text
     //   }
     //   else{
-        
+
     //   }
     // });
   }
 
-  
-
-  applyProductFilter(template?: Template){
-
-    let id = template?.productCode
-    this.mode = this.titleCase(template?.templateDisplayName ?? "All Products")
-    if (Globals.storeInfo.username){
-      this.loadService.myCallback = () => this.cdr.detectChanges()
+  applyProductFilter(template?: Template) {
+    let id = template?.productCode;
+    this.mode = this.titleCase(template?.templateDisplayName ?? 'All Products');
+    if (Globals.storeInfo.username) {
+      this.loadService.myCallback = () => this.cdr.detectChanges();
       // this.loadService.getPosts(id)
-      this.loadService.getPosts(products => {
-        this.loadService.setFilterProducts(products)
-      }, id)
+      this.loadService.getPosts((products) => {
+        this.loadService.setFilterProducts(products);
+      }, id);
     }
   }
-  
-  isShopComponent(){
-    let config = this.router.snapshot.firstChild?.routeConfig?.path?.split('/') ?? []
-    return config![config!.length - 1] == "products"
+
+  isShopComponent() {
+    let config =
+      this.router.snapshot.firstChild?.routeConfig?.path?.split('/') ?? [];
+    return config![config!.length - 1] == 'products';
   }
 
-  shouldShowCurrency(){
-
-
+  shouldShowCurrency() {
     // return this.loadService.shouldShowCurrency
 
-    let product = this.router.snapshot.firstChild?.paramMap.get('product') as string
-
+    let product = this.router.snapshot.firstChild?.paramMap.get(
+      'product'
+    ) as string;
 
     return (
-      product != undefined
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("products")
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("home")
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("cart")
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("shipping-address")
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("billing-info")
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("review-order")
-      ||
-      this.router.snapshot.firstChild?.routeConfig?.path?.includes("my-store")
-    )
+      product != undefined ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes(
+        'products'
+      ) ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes('home') ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes('cart') ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes(
+        'shipping-address'
+      ) ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes(
+        'billing-info'
+      ) ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes(
+        'review-order'
+      ) ||
+      this.router.snapshot.firstChild?.routeConfig?.path?.includes('my-store')
+    );
   }
 
-  hideCart(){
-    
+  hideCart() {
     return (
-      this.router.snapshot.firstChild?.component == ViewOrderComponent 
-      || 
+      this.router.snapshot.firstChild?.component == ViewOrderComponent ||
       this.router.snapshot.firstChild?.component == ViewOrderInfoComponent
-    )
+    );
   }
 
-  isBrowser(){
-    return isPlatformBrowser(this.platformID)
+  isBrowser() {
+    return isPlatformBrowser(this.platformID);
   }
 
   titleCase(str: string) {
     var splitStr = str.toLowerCase().split(' ');
     for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+      // You do not need to check if i is larger than splitStr length, as your for does that for you
+      // Assign it back to the array
+      splitStr[i] =
+        splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
     }
     // Directly return the joined string
-    return splitStr.join(' '); 
+    return splitStr.join(' ');
   }
-
-  
 
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
@@ -573,66 +642,77 @@ export class AppComponent implements OnInit, AfterViewInit {
     private pixelService: PixelService,
     private modalService: NgbModal,
     private _router: Router,
-    private dialog: MatDialog,
-    ) {
-      this.check()
+    private dialog: MatDialog
+  ) {
+    this.check();
 
-      if (isPlatformBrowser(this.platformID)){
-        AOS.init();
+
+    if (isPlatformBrowser(this.platformID)) {
+      (<any>window).routeToLink = this.routeToLink.bind(this);
+      (<any>window).globals = Globals;
+      (<any>window).hi = 'hi';
+      AOS.init();
+    }
+  }
+
+  async check() {
+    if (isPlatformBrowser(this.platformID)) {
+      import('seamless-scroll-polyfill');
+
+      let polyfill = (await import('seamless-scroll-polyfill')).polyfill;
+      polyfill();
+    }
+  }
+
+  ngAfterViewInit(): void {}
+
+  setFavIcon(link: string) {
+    if (isPlatformBrowser(this.platformID)) {
+      this.createLinkForFavURL(link);
+      this.setBodyColor();
+    }
+  }
+
+  setBodyColor(color?: string) {
+    if (isPlatformBrowser(this.platformID)) {
+      if (document.getElementById('body')) {
+        document
+          .getElementById('body')
+          ?.classList.add(
+            'bg-' + (color ?? this.storeInfo().colorStyle.back_code)
+          );
       }
     }
-
-    async check(){
-      if (isPlatformBrowser(this.platformID)){
-        import("seamless-scroll-polyfill");
-
-        let polyfill = (await import("seamless-scroll-polyfill")).polyfill;
-        polyfill()
-      }
-    }
-
-  ngAfterViewInit(): void {
   }
 
-
-
-  setFavIcon(link: string){
-    if (isPlatformBrowser(this.platformID)){
-      this.createLinkForFavURL(link)
-      this.setBodyColor()
+  addConfig() {
+    this.setBodyColor('dark');
+    this.createLinkForFavURL(
+      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media'
+    );
+    if (this.interval) {
+      clearInterval(this.interval);
     }
   }
 
-  setBodyColor(color?: string){
-    if (isPlatformBrowser(this.platformID)){
-      if (document.getElementById('body')){
-        document.getElementById('body')?.classList.add('bg-' + (color ?? this.storeInfo().colorStyle.back_code))
-      }
-    }
+  headerName(h: string) {
+    return this.storeInfo()?.pages?.find((p) => p.id == h)?.title ?? '';
   }
 
-  addConfig(){
-    this.setBodyColor('dark')
-      this.createLinkForFavURL('https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media')
-      if (this.interval){
-        clearInterval(this.interval)
-    }
-  }
-
-  headerName(h: string){
-    return this.storeInfo()?.pages?.find(p => p.id == h)?.title ?? ''
-  }
-
-  routeToLink(h: string){
-    let link = this.storeInfo()?.pages?.find(p => p.id == h)?.url ?? 'home'
+  routeToLink(h: string) {
+    let link = this.storeInfo()?.pages?.find((p) => p.id == h)?.url ?? 'home';
 
     if (Globals.storeInfo.username)
-    this.routingService.routeToDynamicLink(Globals.storeInfo.username, link, this.getStoreName().isCustom)
+      this.routingService.routeToDynamicLink(
+        Globals.storeInfo.username,
+        link,
+        this.getStoreName().isCustom
+      );
   }
 
-  activateComponent(event: any){
-    if (event.constructor.name == 'LandingComponent'){
-      this.addConfig()
+  activateComponent(event: any) {
+    if (event.constructor.name == 'LandingComponent') {
+      this.addConfig();
       // event.addTags("Thred - Get Started", "https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flanding_page.png?alt=media", "Start your store in 30 seconds, Free.", "shopmythred.com")
     }
     // else if (event.constructor.name == 'HomeComponent'){
@@ -642,42 +722,40 @@ export class AppComponent implements OnInit, AfterViewInit {
     // console.log(event)
   }
 
-  shake = false
+  shake = false;
 
   createLinkForFavURL(url: string) {
-    if (isPlatformBrowser(this.platformID)){
-      if (document.getElementById('appIcon')){
-        document.getElementById('appIcon')!.setAttribute('href', url)
-      }
-      else{
+    if (isPlatformBrowser(this.platformID)) {
+      if (document.getElementById('appIcon')) {
+        document.getElementById('appIcon')!.setAttribute('href', url);
+      } else {
         let link: HTMLLinkElement = this.doc.createElement('link');
         link.setAttribute('rel', 'icon');
         link.setAttribute('id', 'appIcon');
-        link.setAttribute("type", "image/x-icon")
+        link.setAttribute('type', 'image/x-icon');
         link.setAttribute('href', url);
         this.doc.head.appendChild(link);
       }
-      if (document.getElementById('appleIcon')){
-        document.getElementById('appleIcon')!.setAttribute('href', url)
-      }
-      else{
+      if (document.getElementById('appleIcon')) {
+        document.getElementById('appleIcon')!.setAttribute('href', url);
+      } else {
         let link2: HTMLLinkElement = this.doc.createElement('link');
         link2.setAttribute('rel', 'apple-touch-icon');
         link2.setAttribute('id', 'appleIcon');
-        link2.setAttribute("type", "image/x-icon")
+        link2.setAttribute('type', 'image/x-icon');
         link2.setAttribute('href', url);
         this.doc.head.appendChild(link2);
       }
     }
   }
 
-  getLinkImg(name: string){
-    return Globals.socials.filter(obj => { 
-      return obj.name == name
-    })[0].img
+  getLinkImg(name: string) {
+    return Globals.socials.filter((obj) => {
+      return obj.name == name;
+    })[0].img;
   }
 
-  openSocial(l: string){
+  openSocial(l: string) {
     const link = document.createElement('a');
     link.target = '_blank';
 
@@ -686,75 +764,73 @@ export class AppComponent implements OnInit, AfterViewInit {
       url += 'http://';
     }
 
-    url += l
+    url += l;
 
-    link.href = url
-    
-    link.setAttribute('visibility', 'hidden')
-    link.click()
-    link.remove()
+    link.href = url;
+
+    link.setAttribute('visibility', 'hidden');
+    link.click();
+    link.remove();
   }
-    
-  signedIn = false
-  signedInUid?: any
 
-  interval: any
+  signedIn = false;
+  signedInUid?: any;
 
-  setInterval(){
-    if (this.interval) { return }
-    if (Globals.storeInfo.bannerStyle == 0){
-      this.interval = setInterval(()=>{
-        this.moveRight()
+  interval: any;
+
+  setInterval() {
+    if (this.interval) {
+      return;
+    }
+    if (Globals.storeInfo.bannerStyle == 0) {
+      this.interval = setInterval(() => {
+        this.moveRight();
       }, 3000);
-    }
-    else{
-      this.initScroll()
+    } else {
+      this.initScroll();
     }
   }
 
-  initScroll(){
-    this.interval = 0
-    let outer = document.querySelector("#outer") as HTMLElement;
+  initScroll() {
+    this.interval = 0;
+    let outer = document.querySelector('#outer') as HTMLElement;
 
-    if (outer){
-      let content = outer.querySelector('#content') as HTMLElement
+    if (outer) {
+      let content = outer.querySelector('#content') as HTMLElement;
 
       this.repeatContent(content, outer.offsetWidth);
-  
+
       let el = outer.querySelector('#loop');
-      if (el){
+      if (el) {
         el.innerHTML = el.innerHTML + el.innerHTML;
       }
     }
   }
 
-
-repeatContent(el: HTMLElement, till: number) {
+  repeatContent(el: HTMLElement, till: number) {
     let html = el.innerHTML;
     let counter = 0; // prevents infinite loop
-    
-    while (el.offsetWidth < till && counter < 100) {
-        el.innerHTML += html;
-        counter += 1;
-    }
-}
 
-  arrLength(){
-    if (this.storeInfo().banners.length == 0){
-      return []
+    while (el.offsetWidth < till && counter < 100) {
+      el.innerHTML += html;
+      counter += 1;
     }
-  
-    return Array(12 / this.storeInfo().banners.length).fill(0)
+  }
+
+  arrLength() {
+    if (this.storeInfo().banners.length == 0) {
+      return [];
+    }
+
+    return Array(12 / this.storeInfo().banners.length).fill(0);
   }
 
   async ngOnInit() {
-    
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
-    // OR 
+    // OR
 
-
-    this.loadService.rootComponent = this
-    this.setOptions()
+    this.loadService.rootComponent = this;
+    this.setOptions();
 
     // if (isPlatformBrowser(this.platformID)){
     //   AOS.init();
@@ -768,7 +844,4 @@ repeatContent(el: HTMLElement, till: number) {
     //       }
     // });
   }
-
-
-  
 }

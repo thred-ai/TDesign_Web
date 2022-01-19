@@ -11,6 +11,7 @@ import { LiloadedAllProductsPipePipe } from '../liloaded-all-products-pipe.pipe'
 import { VideoPipePipe } from '../video-pipe.pipe';
 import { SafeUrlPipe } from '../safe-url.pipe';
 import { StoreCheckerPipe } from '../store-checker.pipe';
+import { HtmlPipe } from '../html.pipe';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { StoreCheckerPipe } from '../store-checker.pipe';
     VideoPipePipe,
     SafeUrlPipe,
     StoreCheckerPipe,
+    HtmlPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -42,7 +44,8 @@ import { StoreCheckerPipe } from '../store-checker.pipe';
     LiloadedAllProductsPipePipe,
     VideoPipePipe,
     SafeUrlPipe,
-    StoreCheckerPipe
+    StoreCheckerPipe,
+    HtmlPipe
   ]
 })
 export class ApplicationPipesModule {}

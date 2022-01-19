@@ -1591,10 +1591,11 @@ showSocialModal(logo: {
 
   resizeIframe(index: number) {
     let obj = document.getElementById('frame2' + index) as HTMLIFrameElement
- 
+    let c = document.getElementById('c2' + index) as HTMLElement
+
     console.log(obj)
     if (obj){
-      obj.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
+      c.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
     }
   }
 

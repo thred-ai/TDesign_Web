@@ -538,9 +538,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   resizeIframe(index: number) {
     let obj = document.getElementById('frame' + index) as HTMLIFrameElement
- 
+    let c = document.getElementById('c' + index) as HTMLElement
+
     if (obj){
-      obj.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
+      c.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
     }
   }
 

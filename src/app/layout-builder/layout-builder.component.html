@@ -988,7 +988,7 @@
                 (cdkDropListDropped)="drop($event)"
               >
                 <div
-                  class="pb-4 block"
+                  class="pb-0 block"
                   style.background-color="{{ selectedTheme!.bg_color }}"
                   *ngFor="let row of layoutForm.controls.rows.value ?? []; index as i"
                   id="p-{{ i }}"
@@ -1169,12 +1169,13 @@
 
 
 
-                  <div class="w-100 mx-0" *ngIf="((aRow.index == i ? aRow?.row : undefined) ?? row).type == 7" style="pointer-events: none">
+                  <div class="w-100 mx-0" id='c{{i}}' *ngIf="((aRow.index == i ? aRow?.row : undefined) ?? row).type == 7" style="pointer-events: none">
                     <iframe
                     width="100%" 
                     id='frame{{i}}'
+                    height="100%" 
                     (load)='resizeIframe(i)'
-                      [srcdoc]="(((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate ?? '') | safeHtml"
+                      [srcdoc]="(((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate ?? '') | storePipe | safeHtml"
                     ></iframe>
                   </div>
 
@@ -2266,7 +2267,7 @@
     </div>
     <div class="w-100 w-md-50">
       <div class="w-100 px-5 row row-cols-1 mt-0 justify-content-center align-items-top">
-        <div class="col w-100 card shadow p-3 d-flex mb-0">
+        <!-- <div class="col w-100 card shadow p-3 d-flex mb-0">
           <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
   
           <div class="w-100 my-0 d-flex align-items-center justify-content-start h-100">
@@ -2287,7 +2288,7 @@
             {{this.layoutForm.controls.metaDesc.value ?? ""}}
           </p>
           </div>
-        </div>
+        </div> -->
         <div class="col w-100 card shadow p-3 mt-3">
           <h2 class="h1 mb-4 fw-bold">Search Engine Listing Preview</h2>
           <p
@@ -2309,7 +2310,7 @@
             {{this.layoutForm.controls.seoDesc.value ?? ""}}
           </p>
         </div>
-        <!-- <div class="col w-100 card shadow p-3 d-flex mt-3">
+        <div class="col w-100 card shadow p-3 d-flex mt-3">
           <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
 
           <div class="w-100 my-0 d-flex align-items-center justify-content-start" style="height: 150px;">
@@ -2330,7 +2331,7 @@
             {{this.layoutForm.controls.metaDesc.value ?? ""}}
           </p>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </mat-dialog-content>
