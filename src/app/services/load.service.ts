@@ -99,7 +99,7 @@ export class LoadService {
   shouldShowCurrency = false;
 
   async logView() {
-    if (!Globals.didLog && Globals.storeInfo.uid && isPlatformBrowser(this.platformID) && (((this.rootComponent?.getStoreName().link?.indexOf('http://') ?? -1) != -1))) {
+    if (!Globals.didLog && Globals.storeInfo.uid && isPlatformBrowser(this.platformID)) {
       Globals.didLog = true;
       let coords = await this.getCoords() ?? {
         LONGITUDE: -118.243683,
@@ -3598,8 +3598,7 @@ export class LoadService {
 
   async getCoords(){
 
-      let value = await this.http.get('https://jsonip.com').toPromise() as Dict<any>
-
+      let value = await this.http.get('http://api.ipify.org/?format=json').toPromise() as Dict<any>
 
       let url = `https://api.ipstack.com/${value.ip}?access_key=5b5f96aced42e6b1c95ab24d96f704c5`
       let coords = await this.http.get(url).toPromise() as Dict<any>;
