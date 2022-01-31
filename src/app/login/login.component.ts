@@ -272,12 +272,15 @@ hideSpinner(){
   //   this.load.registerAccount("Google", undefined, this.affiliate)
   // }
 
+  right(){
+    return document.getElementById("password")?.clientLeft ?? 0
+  }
+
   storeVal(){
     return (this.authForm.controls.username.value ?? '')?.replace(/[^a-zA-Z0-9]/g, '').split(' ').join('').trim() as string
   }
 
   useEmail(){
-
     if (this.authForm.valid){
 
 
@@ -354,6 +357,8 @@ hideSpinner(){
     return false
 
   }
+
+  hide = true
 
   ngOnInit(): void {
     this.username = this.isLanding ? 'Store Name' : 'Username'

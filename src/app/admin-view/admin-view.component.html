@@ -1009,8 +1009,16 @@
           </mat-tab-group>
         </form>
       </div>
+<!-- 
+      <div *ngIf="getSelectedPanel()?.Title == 'NFT'" class="py-3 w-100" style='height: 100vh'>
+        <iframe
+          id='nftFrame'
+          [src]="'http://localhost:3000/' | safeUrl"
+          style="width: 100%; height: 100%"
+        ></iframe>
+      </div> -->
 
-      <div *ngIf="getSelectedPanel()?.Title == 'PAGES'" class="py-3 w-100">
+      <div *ngIf="getSelectedPanel()?.Title == 'PAGES'" class="py-3 w-100" [style.background-color]="{{ selectedTheme()!.bg_color }}">
         <!-- [indexChanged]="didMove()" -->
         <!-- [scrollbar-hidden]="true" -->
         <h2
@@ -1043,7 +1051,11 @@
             class="col w-100 w-md-50 my-2"
             *ngFor="let page of storeInfo().pages ?? []"
           >
-            <div id="back" style="aspect-ratio: 2/1" class="p-3 pb-1 w-100 rounded shadow">
+            <div
+              id="back"
+              style="aspect-ratio: 2/1"
+              class="p-3 pb-1 w-100 rounded shadow"
+            >
               <div
                 class="w-100 h-100 rounded shadow card"
                 style="position: relative"
@@ -1053,7 +1065,10 @@
                   class="w-100 h-100"
                   style="overflow-y: hidden; position: absolute"
                 >
-                  <div class="w-100" *ngFor="let row of page.rows ?? []; index as i">
+                  <div
+                    class="w-100"
+                    *ngFor="let row of page.rows ?? []; index as i"
+                  >
                     <div
                       *ngIf='(row.text ?? "").trim() != ""'
                       class="d-flex align-items-center justify-content-center pb-1 mb-3 mt-2"
@@ -1171,39 +1186,59 @@
                       </div>
                     </div>
 
-                    <div class="w-100 mx-0" id='c2{{i}}' *ngIf="(row).type == 7" style="pointer-events: none">
+                    <div
+                      class="w-100 mx-0"
+                      id="c2{{ i }}"
+                      *ngIf="row.type == 7"
+                      style="pointer-events: none"
+                    >
                       <iframe
-                      width="100%" 
-                      height="100%" 
-                      id='frame2{{i}}'
-                      (load)='resizeIframe(i)'
+                        width="100%"
+                        height="100%"
+                        id="frame2{{ i }}"
+                        (load)="resizeIframe(i)"
                         [srcdoc]="((row).htmlTemplate ?? '') | storePipe | safeHtml"
                       ></iframe>
                     </div>
 
-                    <div *ngIf="(row.type) == 5 ||
-                    (row.type) == 6"
-                    class="w-100 w-md-50 mt-3 card text-{{
-                      storeInfo().colorStyle!.text_code
-                    }} bg-{{ storeInfo().colorStyle!.back_code }} mx-auto">
-
-                    <mat-form-field *ngIf='(row.type) == 6' class="h-100 m-3 mb-0">
-                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Name</mat-placeholder>
-                      <input type="text"
-                             matInput
-                             class="text-{{storeInfo().colorStyle!.text_code}}"
-                             style.color="{{selectedTheme()!.color}}"
+                    <div
+                      *ngIf="row.type == 5 || row.type == 6"
+                      class="w-100 w-md-50 mt-3 card text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }} mx-auto"
+                    >
+                      <mat-form-field
+                        *ngIf="row.type == 6"
+                        class="h-100 m-3 mb-0"
                       >
-                  </mat-form-field>
-                        <mat-form-field *ngIf='(row.type) == 6' class="h-100 m-3 mt-0">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Email</mat-placeholder>
-                            <input type="email"
-                                   matInput
-                                   class="text-{{storeInfo().colorStyle!.text_code}}"
-                                   style.color="{{selectedTheme()!.color}}"
-                            >
-                        </mat-form-field>
-
+                        <mat-placeholder
+                          class="placeholder"
+                          [style.color]="selectedTheme()!.color"
+                          >Name</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          class="text-{{ storeInfo().colorStyle!.text_code }}"
+                          style.color="{{ selectedTheme()!.color }}"
+                        />
+                      </mat-form-field>
+                      <mat-form-field
+                        *ngIf="row.type == 6"
+                        class="h-100 m-3 mt-0"
+                      >
+                        <mat-placeholder
+                          class="placeholder"
+                          [style.color]="selectedTheme()!.color"
+                          >Email</mat-placeholder
+                        >
+                        <input
+                          type="email"
+                          matInput
+                          class="text-{{ storeInfo().colorStyle!.text_code }}"
+                          style.color="{{ selectedTheme()!.color }}"
+                        />
+                      </mat-form-field>
                     </div>
 
                     <div
@@ -1222,7 +1257,7 @@
                           }} w-100 my-auto"
                           style="text-decoration: none"
                           style.background-color="{{ button.bg_color }}"
-                          [style.font-size.px]='(button.fontsize ?? 15) / 2.5'
+                          [style.font-size.px]="(button.fontsize ?? 15) / 2.5"
                           style.color="{{ button.text_color }}"
                         >
                           {{ button.text }}
@@ -1244,10 +1279,12 @@
                     </div>
                   </div>
                 </div>
-                <div
+                <a
                   class="h-100 w-100"
-                  style="position: absolute; cursor: grab"
-                ></div>
+                  style="position: absolute"
+                  role="button"
+                  (click)="showLayoutModal(page)"
+                ></a>
               </div>
 
               <div
@@ -1267,7 +1304,9 @@
                 >
                   {{ urlText() }}/{{ page.url }}
                 </p>
-                <div class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0">
+                <div
+                  class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
+                >
                   <a
                     role="button"
                     class="btn btn btn-light rounded-circle shadow p-2 d-flex align-items-center justify-content-center"
@@ -1275,11 +1314,12 @@
                     (click)="configureHeader(page.id)"
                   >
                     <mat-icon
-                    class="text-{{inFooter(page.id) ? 'success' : 'secondary'}}"
+                      class="text-{{
+                        inMenu(page.id) ? 'success' : 'secondary'
+                      }} fw-bolder"
                       style.color="{{ selectedTheme()!.color }}"
                       >border_top</mat-icon
                     >
-
                   </a>
 
                   <a
@@ -1288,12 +1328,13 @@
                     style="aspect-ratio: 1"
                     (click)="configureFooter(page.id)"
                   >
-                  <mat-icon
-                  class="text-{{inFooter(page.id) ? 'success' : 'secondary'}}"
-                  style.color="{{ selectedTheme()!.color }}"
-                  >border_bottom</mat-icon
-                >
-
+                    <mat-icon
+                      class="text-{{
+                        inFooter(page.id) ? 'success' : 'secondary'
+                      }} fw-bolder"
+                      style.color="{{ selectedTheme()!.color }}"
+                      >border_bottom</mat-icon
+                    >
                   </a>
                   <a
                     role="button"
@@ -1305,21 +1346,15 @@
                     EDIT
                   </a>
 
-
-                  
-
-
                   <a
                     role="button"
                     (click)="deletePage(page)"
                     class="ms-2 btn btn btn-{{
                       storeInfo().colorStyle!.text_code
                     }} rounded-circle p-2 d-flex align-items-center justify-content-center"
-                    style="aspect-ratio: 1;"
+                    style="aspect-ratio: 1"
                   >
-                    <mat-icon
-                      >delete</mat-icon
-                    >
+                    <mat-icon>delete</mat-icon>
                   </a>
                 </div>
               </div>
@@ -1340,7 +1375,9 @@
           <nav
             class="navbar navbar-expand-lg navbar-{{
               storeInfo().colorStyle!.nav_code
-            }} bg-{{ storeInfo().colorStyle!.back_code }} mx-3 mb-5 rounded shadow"
+            }} bg-{{
+              storeInfo().colorStyle!.back_code
+            }} mx-3 mb-5 rounded shadow"
           >
             <div
               class="container-fluid d-flex justify-content-between px-2 w-100 text-start px-md-5"
@@ -1464,134 +1501,141 @@
           <i>Footer Preview</i>
         </h2>
 
-          <footer class="py-5 mx-3 bg-{{ storeInfo().colorStyle!.back_code }} rounded shadow">
-            <div
-              class="container-fluid px-3 w-100 d-block justify-content-center"
-            >
-              <div class="d-block d-md-flex justify-content-between">
-                <div
-                  class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
-                >
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/visacard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/mastercard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/amexcard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/thredcard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/applecard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/googlecard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/microsoftcard.png"
-                      />
-                    </a>
-                  </div>
+        <footer
+          class="py-5 mx-3 bg-{{
+            storeInfo().colorStyle!.back_code
+          }} rounded shadow"
+        >
+          <div
+            class="container-fluid px-3 w-100 d-block justify-content-center"
+          >
+            <div class="d-block d-md-flex justify-content-between">
+              <div
+                class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
+              >
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/visacard.png"
+                    />
+                  </a>
                 </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/mastercard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/amexcard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/thredcard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/applecard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/googlecard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/microsoftcard.png"
+                    />
+                  </a>
+                </div>
+              </div>
 
+              <div
+                class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
+              >
                 <div
-                  class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
+                  class="col mb-4 mx-3"
+                  *ngFor="let social of storeInfo().socials"
+                  [style.width.px]="45"
                 >
+                  <a role="button">
+                    <img
+                      class="rounded-circle"
+                      style="object-fit: contain"
+                      [style.width.px]="45"
+                      alt="ok"
+                      [src]="getLinkImg(social.name)"
+                    />
+                  </a>
+                </div>
+              </div>
+
+              <div class="w-100 d-none d-md-block">
+                <div>
                   <div
-                    class="col mb-4 mx-3"
-                    *ngFor="let social of storeInfo().socials"
-                    [style.width.px]="45"
-                  >
-                    <a role="button">
-                      <img
-                        class="rounded-circle"
-                        style="object-fit: contain"
-                        [style.width.px]="45"
-                        alt="ok"
-                        [src]="getLinkImg(social.name)"
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div class="w-100 d-none d-md-block">
-                  <div>
-                    <div
                     class="w-100 row row-cols-3 justify-content-end"
                     cdkDropListGroup
                   >
                     <div
                       class="col m-0 mx-2"
                       style="width: fit-content"
-                      *ngFor='let col of footerCols'
+                      *ngFor="let col of footerCols"
                       cdkDrag
                       cdkDropList
                       [cdkDropListData]="col.link"
                       (cdkDropListDropped)="dropFooterRow($event)"
                     >
-                      <a class="footer-link" role="button" *ngFor='let link of col.link; index as j' cdkDrag
-                      
+                      <a
+                        class="footer-link"
+                        role="button"
+                        *ngFor="let link of col.link; index as j"
+                        cdkDrag
                       >
                         <p [style.font-family]="storeInfo().fontName!">
-                          {{headerName(link)}}
+                          {{ headerName(link) }}
                         </p>
                       </a>
-                    </div>                
-                  </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
+            </div>
+            <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
                   <div class="col mb-4 mx-2" [style.width.px]="50">
                       
                   </div>
@@ -1608,28 +1652,28 @@
                       
                   </div>
               </div> -->
-            </div>
-            <div class="container">
-              <p
-                class="m-0 text-center text-{{
-                  storeInfo().colorStyle!.text_code
-                }}"
-                [style.font-family]="storeInfo().fontName!"
-              >
-                &copy; {{ storeInfo().fullName }} 2022
-              </p>
-            </div>
-            <div class="container">
-              <p
-                class="m-0 text-center text-{{
-                  storeInfo().colorStyle!.text_code
-                }}"
-                [style.font-family]="storeInfo().fontName!"
-              >
-                Powered by Thred
-              </p>
-            </div>
-          </footer>
+          </div>
+          <div class="container">
+            <p
+              class="m-0 text-center text-{{
+                storeInfo().colorStyle!.text_code
+              }}"
+              [style.font-family]="storeInfo().fontName!"
+            >
+              &copy; {{ storeInfo().fullName }} 2022
+            </p>
+          </div>
+          <div class="container">
+            <p
+              class="m-0 text-center text-{{
+                storeInfo().colorStyle!.text_code
+              }}"
+              [style.font-family]="storeInfo().fontName!"
+            >
+              Powered by Thred
+            </p>
+          </div>
+        </footer>
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'BANNERS'" class="py-3">
@@ -3238,6 +3282,7 @@
 
 
 
+
                         }}/{{subInfo?.plan.interval ?? 'month'}}</a
                       ></mat-hint
                     >
@@ -3250,6 +3295,7 @@
                         >FREE
                         <b style="color: #6c757d"
                           >({{formatPrice((subInfo?.plan.amount ?? 0) / 100)
+
 
 
 
@@ -3591,12 +3637,15 @@
           "
         >
         </iframe>
-        <div class="d-flex align-items-top justify-content-between mx-0" style="top: 10px; left: 10px; right: 10px; position: absolute">
+        <div
+          class="d-flex align-items-top justify-content-between mx-0"
+          style="top: 10px; left: 10px; right: 10px; position: absolute"
+        >
           <div class="h-100">
             <h1 style="color: white">
               <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
             </h1>
-  
+
             <a
               role="button"
               class="side d-flex m-0 align-items-center justify-content-start"
@@ -3615,7 +3664,7 @@
                 Total Sales • <b>{{ totalSales() }}</b>
               </p>
             </a>
-  
+
             <a
               role="button"
               class="side d-flex mt-2 align-items-center justify-content-start"
@@ -3636,7 +3685,7 @@
             </a>
           </div>
           <div class="h-100">
-<!-- 
+            <!-- 
             <div class="card mt-0 bg-dark" style="color: white; opacity: 0.6;">
               <h1>
                 <b>LOCATION</b>
@@ -3649,7 +3698,7 @@
               </h2>
             </div> -->
             <!--  -->
-  
+
             <!-- <a
               role="button"
               class="side d-flex m-0 align-items-center justify-content-start"
@@ -3668,7 +3717,7 @@
                 Total Sales • <b>{{ totalSales() }}</b>
               </p>
             </a> -->
-<!--   
+            <!--   
             <a
               role="button"
               class="side d-flex mt-2 align-items-center justify-content-start"
@@ -3689,7 +3738,6 @@
             </a> -->
           </div>
         </div>
-        
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW'" class="h-100">

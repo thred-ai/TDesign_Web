@@ -446,7 +446,11 @@ export class LoadService {
       });
   }
 
+
+
+
   getUser(username?: string, uid?: string, isCustom = false) {
+    
     var query = this.db.collection('Users', (ref) =>
       ref.where('Username', '==', username)
     );
@@ -1376,6 +1380,21 @@ export class LoadService {
     }
   }
 
+
+  testSite(){
+    // this.functions
+    //   .httpsCallable('getSiteInstance')({})
+    //   .pipe(first())
+    //   .subscribe(
+    //     async (resp) => {
+    //       console.log(resp)
+    //     },
+    //     (err) => {
+    //       console.log(err)
+    //     }
+    //   );
+  }
+
   async createPayment(
     storeID: string,
     isCard: boolean = true,
@@ -1553,6 +1572,7 @@ export class LoadService {
                         .doc('Billing_Address')
                         .set(data);
                     }
+                    console.log('ekoeo')
                     callback();
                   },
                   (err) => {

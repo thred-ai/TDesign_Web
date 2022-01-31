@@ -58,6 +58,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   cart(){
+    console.log(this.rootComponent.cart)
     return this.rootComponent.cart ?? []
   }
 

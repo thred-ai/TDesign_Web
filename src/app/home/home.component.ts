@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef, OnDestroy, Injector } from '@angular/core';
 import { Country } from '../models/shipping-country.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { Title, Meta, DomSanitizer } from '@angular/platform-browser';
 import { LoadService, Dict } from '../services/load.service';
 import { isPlatformBrowser, APP_BASE_HREF, isPlatformServer, PlatformLocation } from '@angular/common';
@@ -14,6 +14,7 @@ import { Page } from '../models/page.model';
 import { SEO } from '../models/seo.model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Button } from '../models/button.model';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -165,6 +166,24 @@ export class HomeComponent implements OnInit, OnDestroy {
   homeRows: Array<Row> = []
   page?: Page
 
+  oldUrl = ''
+
+  private sub = this._router.events
+    .pipe(
+      filter(event => event instanceof NavigationStart),
+      map(event => event as NavigationStart),  // appease typescript
+      filter(event => (event.url !== this.oldUrl) && !event.url.includes('my-store'))
+    )
+    .subscribe(
+      event => {
+        console.log(event)
+        this.oldUrl = event.url
+        this.ngOnInit()
+      } 
+  );
+
+
+
 
 
   constructor(
@@ -181,7 +200,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private routingService: RoutingService,
   private sanitizer: DomSanitizer,
   private location: PlatformLocation,
-  private fb: FormBuilder
+  private fb: FormBuilder,
 
   ) {
       // const routeParams = this.router.snapshot.paramMap;
@@ -191,6 +210,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.loadService.adminComponent = undefined
+    this.sub.unsubscribe();
   }
 
   ngOnInit(): void {

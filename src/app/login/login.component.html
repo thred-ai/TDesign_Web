@@ -49,12 +49,20 @@ style.color = "{{selectedIndicator()!.color}}"
        <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
         {{err}}
        </p>
-       <div *ngIf="isSignUp()">
-        <form class = "mt-4" [formGroup]="authForm">
+       <div class="w-100" *ngIf="isSignUp()">
+        <form class = "mt-4 w-100" [formGroup]="authForm">
             <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
             <input [style.font-family]="storeInfo().fontName!" class = "fadeIn second bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}"  placeholder="Email Address" [email]="true" type="text" name="email" formControlName="email">
 
-            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="password" placeholder="Password" formControlName="password">
+<!--        
+            <div class="w-100 bg-success position-relative">
+              <mat-icon class="position-absolute" style="z-index: 2; margin-right: 0px;">
+                hide_visibility
+              </mat-icon>
+            </div> -->
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}} h-100" name="password" placeholder="Password" formControlName="password">
+
+              
             <input [style.font-family]="storeInfo().fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword">
 
             <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="{{username}}" formControlName="username">

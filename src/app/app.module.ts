@@ -29,7 +29,10 @@ import { InViewportModule } from 'ng-in-viewport';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationPipesModule } from './shared/applicationPipes.module';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
+import { USE_EMULATOR as USE_DATABASE_EMULATOR } from '@angular/fire/compat/database';
+import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
+import { USE_EMULATOR as USE_FUNCTIONS_EMULATOR } from '@angular/fire/compat/functions';
 
 @NgModule({
   declarations: [
@@ -67,7 +70,10 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     ApplicationPipesModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  providers: [Globals],
+  providers: [
+    Globals,
+    { provide: USE_FUNCTIONS_EMULATOR, useValue: !environment.production ? ['localhost', 5001] : undefined },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -1305,12 +1305,36 @@ showSocialModal(logo: {
   fonts(){return Globals.fonts}
 
 
+  handleListener(event: MessageEvent){
+    if (event.origin !== "http://localhost:3000")
+    return;
+
+    console.log(event.data)
+    if (event.data.name == 'newNFT'){
+
+
+    }
+  }
+
+  com(){
+    window.removeEventListener('message', this.handleListener)
+    window.addEventListener("message", (event) => this.handleListener(event), false);
+
+
+  }
+
+  
 
 
   panels = [
     {
       Category: "DASHBOARD",
       Options: [
+        {
+          "Title": "NFT",
+          "Icon": "dashboard",
+          "Active": false
+        },
         {
           "Title": "OVERVIEW",
           "Icon": "dashboard",
@@ -2618,6 +2642,9 @@ isSpinning = false
       });
     });
     let user = await this.loadService.isLoggedIn()
+
+
+    
     if (this.panels[section].Options[index].Title == "OVERVIEW" && user?.uid && !user?.isAnonymous){
       this.getMiscStats()
     }
@@ -2626,6 +2653,18 @@ isSpinning = false
     }
     this.panels[section].Options[index].Active = true
     this.cdr.detectChanges()
+
+    if (this.panels[section].Options[index].Title == "NFT"){
+      let iframe = (document.getElementById('nftFrame') as HTMLIFrameElement)
+      if (iframe){
+        iframe.addEventListener('load', () => {
+          iframe.contentWindow?.postMessage({
+            themes: this.storeInfo().colorStyle,
+            colors: this.selectedTheme()
+          }, '*')
+        })
+      }
+    }
   }
 
   copyAffiliateURL(){
@@ -2749,6 +2788,7 @@ isSpinning = false
       this.loadService.adminComponent = this
       this.init()
 
+      this.com()
       
       
     }
@@ -2848,6 +2888,7 @@ isSpinning = false
     async callback(){
       if (Globals.storeInfo.username){
         this.showSpinner()
+        console.log('man')
         this.rootComponent.setOptions()
         this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
 

@@ -76,11 +76,7 @@ export class RoutingService {
   }
 
   redirectTo(uri:string, shouldRefresh = true){
-    if (shouldRefresh){
-      this._router.navigateByUrl('not-found').then(()=>
-      this._router.navigateByUrl(uri))
-      return
-    }
+
     this._router.navigateByUrl(uri)
   }
 

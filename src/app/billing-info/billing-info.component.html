@@ -120,22 +120,15 @@ style.color = "{{selectedIndicator()!.color}}"
                         </div>
                       </div>
                       <div class="row">
-                          <div class="col">
-                              <mat-form-field class="full-width text-{{storeInfo().colorStyle!.text_code}}">
-                                <mat-select formControlName="country">
-                                  <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}">
-                                    {{billingForm.controls['country'].value}}
-                                  </mat-select-trigger>
-                                  <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let country of countries()" [value]="country.name">
-                                    {{ country.name }}
-                                  </mat-option>
-                                </mat-select>
-                                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Country</mat-placeholder>
-                                <mat-error *ngIf="billingForm.controls['country'].hasError('required')">
-                                  Country is <strong>required</strong>
-                                </mat-error>
-                              </mat-form-field>
-                            </div>
+                        <div class="col">
+                          <mat-form-field class="full-width">
+                            <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="country">
+                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Country</mat-placeholder>
+                            <mat-error *ngIf="billingForm.controls['country'].hasError('required')">
+                              Country is <strong>required</strong>
+                            </mat-error>
+                          </mat-form-field>
+                        </div>
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="city">
