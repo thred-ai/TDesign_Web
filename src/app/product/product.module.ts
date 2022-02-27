@@ -13,6 +13,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DragScrollModule } from 'ngx-drag-scroll';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { ApplicationPipesModule } from '../shared/applicationPipes.module';
+import { MatTableModule } from '@angular/material/table';
+import { NftBuyComponent } from '../nft-buy/nft-buy.component';
+import { NftUpdateComponent } from '../nft-update/nft-update.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxCurrencyModule } from 'ngx-currency';
+import { MatRadioModule } from '@angular/material/radio';
 
 const routes: Routes = [
   {
@@ -25,6 +33,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ProductComponent,
+    NftBuyComponent,
+    NftUpdateComponent,
   ],
   imports: [
     CommonModule,
@@ -37,8 +47,13 @@ const routes: Routes = [
     NgxSpinnerModule,
     NgbModule,
     DragScrollModule,
+    MatExpansionModule,
+    MatTableModule,
     RouterModule.forChild(routes),
-
+    ApplicationPipesModule,
+    ReactiveFormsModule,
+    NgxCurrencyModule,
+    MatRadioModule,
 
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

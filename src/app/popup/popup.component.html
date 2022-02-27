@@ -27,7 +27,7 @@ style.color = "{{selectedIndicator()!.color}}"
         <form class="w-100" [formGroup]="popupForm" novalidate>
             <div *ngFor='let field of popup?.fields ?? []' class="w-100 mt-3">
                 <mat-form-field *ngIf='field.type == 1' class="h-100 w-100">
-                    <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Name</mat-placeholder>
+                    <mat-placeholder [style.color] = 'selectedTheme()!.color'>Name</mat-placeholder>
                     <input type="text"
                            matInput
                            formControlName="name"
@@ -36,7 +36,7 @@ style.color = "{{selectedIndicator()!.color}}"
                     >
                 </mat-form-field>
                 <mat-form-field *ngIf='field.type == 0' class="h-100 w-100">
-                    <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Email</mat-placeholder>
+                    <mat-placeholder [style.color] = 'selectedTheme()!.color'>Email</mat-placeholder>
                     <input type="email"
                            matInput
                            formControlName="email"
@@ -792,7 +792,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         storeInfo().colorStyle!.text_code
                       }} bg-{{ storeInfo().colorStyle!.back_code }}' [value]="+263">🇿🇼 +263</mat-option>
                 </mat-select>
-                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Country Code</mat-placeholder>
+                <mat-placeholder [style.color] = 'selectedTheme()!.color'>Country Code</mat-placeholder>
 
                 </mat-form-field>
 
@@ -803,7 +803,7 @@ style.color = "{{selectedIndicator()!.color}}"
 
 
                 <mat-form-field *ngIf='field.type == 2' class="h-100 w-100">
-                    <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Phone Number</mat-placeholder>
+                    <mat-placeholder [style.color] = 'selectedTheme()!.color'>Phone Number</mat-placeholder>
                     <input
                            matInput
                            phoneMask 

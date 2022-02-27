@@ -1,0 +1,84 @@
+[debug] [2022-01-20T04:29:17.138Z] ----------------------------------------------------------------------
+[debug] [2022-01-20T04:29:17.139Z] Command:       /usr/local/bin/node /usr/local/bin/firebase emulators:start
+[debug] [2022-01-20T04:29:17.140Z] CLI Version:   9.23.1
+[debug] [2022-01-20T04:29:17.140Z] Platform:      darwin
+[debug] [2022-01-20T04:29:17.140Z] Node Version:  v16.13.1
+[debug] [2022-01-20T04:29:17.140Z] Time:          Wed Jan 19 2022 23:29:17 GMT-0500 (Eastern Standard Time)
+[debug] [2022-01-20T04:29:17.140Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-01-20T04:29:17.173Z] Field ".hosting" in "firebase.json" is possibly invalid: should be object
+[debug] [2022-01-20T04:29:17.173Z] Object ".hosting[0]" in "firebase.json" is missing required property: {"missingProperty":"target"}
+[debug] [2022-01-20T04:29:17.173Z] Object ".hosting[0]" in "firebase.json" is missing required property: {"missingProperty":"site"}
+[debug] [2022-01-20T04:29:17.174Z] Field ".hosting[0]" in "firebase.json" is possibly invalid: should match some schema in anyOf
+[debug] [2022-01-20T04:29:17.174Z] Field ".hosting" in "firebase.json" is possibly invalid: should match some schema in anyOf
+[debug] [2022-01-20T04:29:17.176Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-01-20T04:29:17.176Z] > authorizing via signed-in user (artakorp@gmail.com)
+[info] i  emulators: Starting emulators: auth, functions, firestore, database, hosting, pubsub, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, database, hosting, pubsub, storage"}}
+[debug] [2022-01-20T04:29:17.195Z] [hub] writing locator at /var/folders/68/pn1r0fws2wxcf19bdsrfylg80000gn/T/hub-clothingapp-ed125.json
+[info] i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[debug] [2022-01-20T04:29:17.357Z] Error: Cannot find module '/Users/artakoroushnia/Desktop/SHOPMYTHRED/dist/thred-web/package.json'
+Require stack:
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/controller.js
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/commandUtils.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/database-get.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/bin/firebase.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at FunctionsEmulator.askInstallNodeVersion (/usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js:466:21)
+    at FunctionsEmulator.start (/usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js:178:32)
+    at Function.start (/usr/local/lib/node_modules/firebase-tools/lib/emulator/registry.js:16:24)
+    at startEmulator (/usr/local/lib/node_modules/firebase-tools/lib/emulator/controller.js:90:39)
+    at Object.startAll (/usr/local/lib/node_modules/firebase-tools/lib/emulator/controller.js:273:15)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async Command.actionFn (/usr/local/lib/node_modules/firebase-tools/lib/commands/emulators-start.js:26:9)
+[error] 
+[error] Error: An unexpected error has occurred.
+[debug] [2022-01-20T04:29:23.920Z] ----------------------------------------------------------------------
+[debug] [2022-01-20T04:29:23.921Z] Command:       /usr/local/bin/node /usr/local/bin/firebase emulators:start
+[debug] [2022-01-20T04:29:23.922Z] CLI Version:   9.23.1
+[debug] [2022-01-20T04:29:23.922Z] Platform:      darwin
+[debug] [2022-01-20T04:29:23.922Z] Node Version:  v16.13.1
+[debug] [2022-01-20T04:29:23.923Z] Time:          Wed Jan 19 2022 23:29:23 GMT-0500 (Eastern Standard Time)
+[debug] [2022-01-20T04:29:23.923Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2022-01-20T04:29:23.956Z] Field ".hosting" in "firebase.json" is possibly invalid: should be object
+[debug] [2022-01-20T04:29:23.956Z] Object ".hosting[0]" in "firebase.json" is missing required property: {"missingProperty":"target"}
+[debug] [2022-01-20T04:29:23.956Z] Object ".hosting[0]" in "firebase.json" is missing required property: {"missingProperty":"site"}
+[debug] [2022-01-20T04:29:23.957Z] Field ".hosting[0]" in "firebase.json" is possibly invalid: should match some schema in anyOf
+[debug] [2022-01-20T04:29:23.957Z] Field ".hosting" in "firebase.json" is possibly invalid: should match some schema in anyOf
+[debug] [2022-01-20T04:29:23.959Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2022-01-20T04:29:23.959Z] > authorizing via signed-in user (artakorp@gmail.com)
+[info] i  emulators: Starting emulators: auth, functions, firestore, database, hosting, pubsub, storage {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth, functions, firestore, database, hosting, pubsub, storage"}}
+[debug] [2022-01-20T04:29:23.975Z] [hub] writing locator at /var/folders/68/pn1r0fws2wxcf19bdsrfylg80000gn/T/hub-clothingapp-ed125.json
+[info] i  emulators: Shutting down emulators. {"metadata":{"emulator":{"name":"hub"},"message":"Shutting down emulators."}}
+[info] i  functions: Stopping Functions Emulator {"metadata":{"emulator":{"name":"functions"},"message":"Stopping Functions Emulator"}}
+[info] i  hub: Stopping emulator hub {"metadata":{"emulator":{"name":"hub"},"message":"Stopping emulator hub"}}
+[debug] [2022-01-20T04:29:24.138Z] Error: Cannot find module '/Users/artakoroushnia/Desktop/SHOPMYTHRED/dist/thred-web/package.json'
+Require stack:
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/controller.js
+- /usr/local/lib/node_modules/firebase-tools/lib/emulator/commandUtils.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/database-get.js
+- /usr/local/lib/node_modules/firebase-tools/lib/commands/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/index.js
+- /usr/local/lib/node_modules/firebase-tools/lib/bin/firebase.js
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+    at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+    at Module.require (node:internal/modules/cjs/loader:1005:19)
+    at require (node:internal/modules/cjs/helpers:102:18)
+    at FunctionsEmulator.askInstallNodeVersion (/usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js:466:21)
+    at FunctionsEmulator.start (/usr/local/lib/node_modules/firebase-tools/lib/emulator/functionsEmulator.js:178:32)
+    at Function.start (/usr/local/lib/node_modules/firebase-tools/lib/emulator/registry.js:16:24)
+    at startEmulator (/usr/local/lib/node_modules/firebase-tools/lib/emulator/controller.js:90:39)
+    at Object.startAll (/usr/local/lib/node_modules/firebase-tools/lib/emulator/controller.js:273:15)
+    at processTicksAndRejections (node:internal/process/task_queues:96:5)
+    at async Command.actionFn (/usr/local/lib/node_modules/firebase-tools/lib/commands/emulators-start.js:26:9)
+[error] 
+[error] Error: An unexpected error has occurred.

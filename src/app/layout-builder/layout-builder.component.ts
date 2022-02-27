@@ -39,6 +39,8 @@ import { MatRadioChange } from '@angular/material/radio';
 import { Page } from '../models/page.model';
 import { SEO } from '../models/seo.model';
 import { MetaTag } from '../models/meta-tag.model';
+import { NFT } from '../models/nft.model';
+import { Store } from '../models/store.model';
 
 @Component({
   selector: 'app-layout-builder',
@@ -53,54 +55,59 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   editingBlock?: number;
 
-  storeInfo = Globals.storeInfo;
+  storeInfo: Store;
 
-  mode = 0
-  codeMode = false
+  mode = 0;
+  codeMode = false;
 
-
-  animations(){
-    return Globals.rowAnimations
+  animations() {
+    return Globals.rowAnimations;
   }
 
-  urlText(showHttps = false){
-    var url = 'https://shopmythred.com/' + this.storeInfo.username
+  urlText(showHttps = false) {
+    var url = 'https://shopmythred.com/' + this.storeInfo.username;
 
-
-    if (this.storeInfo.customURL?.status == 2){
-      url = this.storeInfo.customURL.fullURL != undefined ? this.storeInfo.customURL.fullURL : url
+    if (this.storeInfo.customURL?.status == 2) {
+      url =
+        this.storeInfo.customURL.fullURL != undefined
+          ? this.storeInfo.customURL.fullURL
+          : url;
     }
 
-    return url + '/' + (this.layoutForm.controls.url.value ? this.layoutForm.controls.url.value : '')
+    return (
+      url +
+      '/' +
+      (this.layoutForm.controls.url.value
+        ? this.layoutForm.controls.url.value
+        : '')
+    );
   }
 
-  changeSetting(){
-    this.mode = this.mode == 0 ? 1 : 0
+  changeSetting() {
+    this.mode = this.mode == 0 ? 1 : 0;
   }
 
   radioChange(event: any) {
     let val = event.value;
 
-    this.layoutForm.controls.isFullscreen.setValue(val)
-    this.cdr.detectChanges()
+    this.layoutForm.controls.isFullscreen.setValue(val);
+    this.cdr.detectChanges();
   }
 
   radioChangeLoader(event: any) {
     let val = event.value;
 
-    this.layoutForm.controls.isLoader.setValue(val)
-    this.cdr.detectChanges()
+    this.layoutForm.controls.isLoader.setValue(val);
+    this.cdr.detectChanges();
   }
-
 
   radioChangeBtn(event: any, index: number) {
     let val = event.value;
 
-    this.buttons[index].submit = val
-    this.setRow()
-    this.cdr.detectChanges()
+    this.buttons[index].submit = val;
+    this.setRow();
+    this.cdr.detectChanges();
   }
-
 
   layoutForm = this.fb.group({
     rows: [[]],
@@ -119,7 +126,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     metaPic: [null, [Validators.required]],
   });
 
-
   rowForm = this.fb.group({
     title: [null],
     htmlText: [null],
@@ -128,7 +134,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     type: [null],
     grid: [null],
     buttons: [null],
-    animations: [null]
+    animations: [null],
   });
 
   config: SummernoteOptions = {
@@ -136,39 +142,35 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     tabsize: 2,
     height: 200,
     toolbar: [
-        ['misc', ['undo', 'redo']],
-        [['bold', 'italic', 'underline', 'clear']],
-        ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
-        ['fontsize', ['fontname', 'fontsize', 'color']],
-        ['para', ['style', 'ul', 'ol', 'paragraph', 'height']],
-        ['insert', ['table', 'hr']],
+      ['misc', ['undo', 'redo']],
+      [['bold', 'italic', 'underline', 'clear']],
+      ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+      ['fontsize', ['fontname', 'fontsize', 'color']],
+      ['para', ['style', 'ul', 'ol', 'paragraph', 'height']],
+      ['insert', ['table', 'hr']],
     ],
-    fontNames: this.storeFonts()
-  }
+    fontNames: this.storeFonts(),
+  };
 
   config2: SummernoteOptions = {
     placeholder: '',
     tabsize: 2,
     height: 200,
-    toolbar: [
-        ['misc', ['undo', 'redo', 'codeview']],
-    ],
-    fontNames: this.storeFonts()
-  }
+    toolbar: [['misc', ['undo', 'redo', 'codeview']]],
+    fontNames: this.storeFonts(),
+  };
 
   title = 'LAUNCHING LAYOUT BUILDER';
 
   prods: Array<string> = [];
 
+  storeFonts() {
+    var fonts: Array<string> = [];
 
-  storeFonts(){
-
-    var fonts: Array<string> = []
-
-    Globals.fonts.forEach(font => {
-      fonts.push(font)
-    })
-    return fonts
+    Globals.fonts.forEach((font) => {
+      fonts.push(font);
+    });
+    return fonts;
   }
 
   add(event: MatChipInputEvent): void {
@@ -188,10 +190,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   addTag(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    const tags: Array<string> = (this.layoutForm.controls.seoTags.value) ?? []
+    const tags: Array<string> = this.layoutForm.controls.seoTags.value ?? [];
 
-    tags.push(value)
-    this.layoutForm.controls.seoTags.setValue(tags)
+    tags.push(value);
+    this.layoutForm.controls.seoTags.setValue(tags);
 
     // Clear the input value
     event.chipInput!.clear();
@@ -208,13 +210,13 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   removeTag(fruit: string): void {
-    const tags = this.layoutForm.controls.seoTags.value ?? []
+    const tags = this.layoutForm.controls.seoTags.value ?? [];
     const index = tags.indexOf(fruit);
 
     if (index >= 0) {
       tags.splice(index, 1);
     }
-    this.layoutForm.controls.seoTags.setValue(tags)
+    this.layoutForm.controls.seoTags.setValue(tags);
   }
 
   hoverIndex?: number = undefined;
@@ -233,7 +235,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             inline: 'start',
           });
         } else {
-
         }
       }, 0);
     } else {
@@ -246,13 +247,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       return 'HOTTEST PRODUCTS';
     } else if (id === '0') {
       return 'NEWEST PRODUCTS';
-    }
-    else if (id === '2') {
+    } else if (id === '2') {
       return 'ALL PRODUCTS';
     }
-    return this.admin?.storeProducts?.find((product) => {
-      return product.productID == id;
-    })?.name;
+    return this.storeInfo.collections?.find(col => {
+      return col.NFTs.find((product: NFT) => product.docID == id);
+    })?.NFTs.find((product: NFT) => product.docID == id)?.name ?? 'NFT';
   }
 
   allSelected() {
@@ -262,7 +262,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    if (event.option.value != '0' && event.option.value != '1' && event.option.value != '2') {
+    if (
+      event.option.value != '0' &&
+      event.option.value != '1' &&
+      event.option.value != '2'
+    ) {
       this.prods.push(event.option.value);
     } else {
       this.prods = [event.option.value];
@@ -274,12 +278,25 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.productCtrl.setValue(null);
   }
 
-  private _filter(value: string): Product[] {
+  private _filter(value: string): NFT[] {
     const filterValue = ((value as string) ?? '').toLowerCase();
 
-    return (this.admin!.storeProducts ?? []).filter((product) =>
-      product.name?.toLowerCase().includes(filterValue)
+    console.log(filterValue)
+
+    let collections = (this.storeInfo.collections ?? []).filter((product) =>
+      product.NFTs.find((n) =>
+        (n.name ?? '').toLowerCase().includes(filterValue)
+      )
     );
+
+    console.log(collections)
+
+    var returnArr = new Array<NFT>();
+
+    collections.forEach((c) => {
+      returnArr = returnArr.concat(c.NFTs);
+    });
+    return returnArr;
   }
 
   constructor(
@@ -296,9 +313,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ) {
     this.admin = data.admin;
     this.rootComponent = data.rootComponent;
+    this.storeInfo = Globals.userInfo!
 
     this.spinner.show('loader');
-    this.mode = 1
+    this.mode = 1;
 
     for (let i = 1; i < 5; i++) {
       this.grid.push({
@@ -306,10 +324,20 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         row: i,
       });
     }
+
     this.filteredProducts = this.productCtrl.valueChanges.pipe(
       startWith(null),
       map((fruit: string | null) =>
-        fruit ? this._filter(fruit) : (this.admin?.storeProducts ?? []).slice()
+        fruit
+          ? this._filter(fruit)
+          : new Array<NFT>().concat
+              .apply(
+                [],
+                this.storeInfo.collections?.map((s) => {
+                  return s.NFTs;
+                }) ?? []
+              )
+              .slice()
       )
     );
   }
@@ -317,11 +345,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   selectable = true;
   removable = true;
   productCtrl = new FormControl();
-  filteredProducts: Observable<Product[]>;
+  filteredProducts: Observable<NFT[]>;
   tagCtrl = new FormControl();
-
-
-
 
   @ViewChild('productInput') productInput?: ElementRef<HTMLInputElement>;
 
@@ -380,14 +405,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ];
 
   images = new Array<{
-    isActive: boolean,
-    img: string,
-    link: string
+    isActive: boolean;
+    img: string;
+    link: string;
   }>();
 
   videos = new Array<{
-    isActive: boolean,
-    link: string
+    isActive: boolean;
+    link: string;
   }>();
 
   buttons = new Array<Button>();
@@ -413,20 +438,16 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.rootComponent = undefined;
   }
 
-  selectedTheme: Dict<any> = {}
-
+  selectedTheme: Dict<any> = {};
 
   ngOnInit(): void {
-    this.selectedTheme = this.selectedThemeFn()
-
+    this.selectedTheme = this.selectedThemeFn();
 
     this.layoutForm.controls.rows.setValue(
       Object.assign([], this.data.page?.rows ?? [])
     );
 
-    this.layoutForm.controls.name.setValue(
-      this.data.page?.title
-    );
+    this.layoutForm.controls.name.setValue(this.data.page?.title);
 
     this.layoutForm.controls.url.setValue(
       this.data.page?.url ? this.data.page?.url : null
@@ -437,19 +458,31 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     );
 
     this.layoutForm.controls.seoTitle.setValue(
-      this.data.page?.seo?.title ? this.data.page?.seo!.title : ((this.data.page?.title ?? "").trim() != "" ? (this.storeInfo.fullName + " - " + this.data.page?.title) : this.storeInfo.fullName)
+      this.data.page?.seo?.title
+        ? this.data.page?.seo!.title
+        : (this.data.page?.title ?? '').trim() != ''
+        ? this.storeInfo.fullName + ' - ' + this.data.page?.title
+        : this.storeInfo.fullName
     );
 
     this.layoutForm.controls.seoDesc.setValue(
-      this.data.page?.seo?.description ? this.data.page?.seo!.description : this.storeInfo.bio
+      this.data.page?.seo?.description
+        ? this.data.page?.seo!.description
+        : this.storeInfo.bio
     );
 
     this.layoutForm.controls.metaTitle.setValue(
-      this.data.page?.seo?.meta.title ? this.data.page?.seo!.meta.title : ((this.data.page?.title ?? "").trim() != "" ? (this.storeInfo.fullName + " - " + this.data.page?.title) : this.storeInfo.fullName)
+      this.data.page?.seo?.meta.title
+        ? this.data.page?.seo!.meta.title
+        : (this.data.page?.title ?? '').trim() != ''
+        ? this.storeInfo.fullName + ' - ' + this.data.page?.title
+        : this.storeInfo.fullName
     );
 
     this.layoutForm.controls.metaDesc.setValue(
-      this.data.page?.seo?.meta.description ? this.data.page?.seo!.meta.description : this.storeInfo.bio
+      this.data.page?.seo?.meta.description
+        ? this.data.page?.seo!.meta.description
+        : this.storeInfo.bio
     );
 
     this.layoutForm.controls.seoTags.setValue(
@@ -473,6 +506,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     }
     this.cdr.detectChanges();
     this.onValueChanges();
+
+    console.log(this.storeInfo)
+    console.log(Globals.userInfo)
+
   }
 
   closeDialog() {
@@ -484,8 +521,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     (this.layoutForm.controls.rows.value ?? [])?.splice(index, 1);
     this.cdr.detectChanges();
   }
-
-  
 
   async edit(index: number) {
     if (this.editingBlock == index) {
@@ -514,22 +549,22 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.rowForm.controls.htmlText.setValue(matchingRow.html ?? '');
 
-
-    const promises = (matchingRow.imgs ?? []).map(async (image: string, index: number) => {
-      let img = {
-        isActive: true,
-        img: image.toString(),
-        link: (matchingRow.imgLinks ?? [])[index]?.toString() ?? ''
-      };
-      this.images.push(img);
-    });
+    const promises = (matchingRow.imgs ?? []).map(
+      async (image: string, index: number) => {
+        let img = {
+          isActive: true,
+          img: image.toString(),
+          link: (matchingRow.imgLinks ?? [])[index]?.toString() ?? '',
+        };
+        this.images.push(img);
+      }
+    );
     await Promise.all(promises);
-
 
     const promises2 = (matchingRow.vids ?? []).map(async (link: string) => {
       let vid = {
         isActive: true,
-        link: link.toString()
+        link: link.toString(),
       };
       this.videos.push(vid);
     });
@@ -543,19 +578,20 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.rowForm.controls.type.setValue(matchingRow.type ?? 0);
 
-    this.rowForm.controls.html.setValue(matchingRow.htmlTemplate ?? "<div></div>");
+    this.rowForm.controls.html.setValue(
+      matchingRow.htmlTemplate ?? '<div></div>'
+    );
 
     if (matchingRow.type == 1) {
       let matchGrid = this.grid.find((g) => g.name == name);
 
-      let diff =
-        (matchGrid?.row ?? 1) - this.images.length;
+      let diff = (matchGrid?.row ?? 1) - this.images.length;
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
           this.images.push({
             isActive: false,
             img: '',
-            link: ''
+            link: '',
           });
         }
       }
@@ -563,13 +599,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (matchingRow.type == 4) {
       let matchGrid = this.grid.find((g) => g.name == name);
 
-      let diff =
-        (matchGrid?.row ?? 1) - this.videos.length;
+      let diff = (matchGrid?.row ?? 1) - this.videos.length;
       if (diff > 0) {
         for (let i = 0; i < diff; i++) {
           this.videos.push({
             isActive: false,
-            link: ''
+            link: '',
           });
         }
       }
@@ -577,18 +612,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (matchingRow.type == 3) {
       let matchGrid = this.grid.find((g) => g.name == name);
 
+      let diff = (matchGrid?.row ?? 1) - this.buttons.length;
 
-      let diff =
-        (matchGrid?.row ?? 1) - this.buttons.length;
-
-        
       if (diff > 0) {
         // for (let i = 0; i < diff; i++) {
         //   this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
         // }
       }
     }
-
 
     setTimeout(async () => {
       let p = document.getElementById('p-' + index);
@@ -599,7 +630,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           inline: 'start',
         });
       } else {
-
       }
     }, 100);
   }
@@ -611,18 +641,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     return (
       (document.getElementById('label')?.offsetHeight ?? 0) /
-      ((matchGrid?.row ?? 1))
+      (matchGrid?.row ?? 1)
     );
   }
 
-  removeImg(img: { isActive: boolean; img: string, link: string }) {
+  removeImg(img: { isActive: boolean; img: string; link: string }) {
     img.img = '';
     img.isActive = false;
 
     let index = this.images.indexOf(img);
     this.setRow();
     moveItemInArray(this.images, index, this.images.length - 1);
-    
   }
 
   fileChangeEvent(
@@ -630,7 +659,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     image: {
       isActive: boolean;
       img: string;
-      link: string
+      link: string;
     }
   ): void {
     const modalRef = this.modalService.open(CropperComponent, { size: 'lg' });
@@ -653,25 +682,22 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     event: any,
     vid: {
       isActive: boolean;
-      link: string
+      link: string;
     }
   ): void {
-
     vid.link = event.target.value;
-    vid.isActive = (event.target.value && event.target.value.trim() != "");
+    vid.isActive = event.target.value && event.target.value.trim() != '';
 
     this.setRow();
-
   }
 
-
   canCancel(isBtn = false) {
-    if (isBtn){
+    if (isBtn) {
       return (
         this.buttons.filter((btn) => {
-          return (btn.text ?? '').trim() != ''
+          return (btn.text ?? '').trim() != '';
         }).length > 1
-      ); 
+      );
     }
     return (
       this.images.filter((img) => {
@@ -687,45 +713,48 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     });
   }
 
-  removeBtn(btn: Button){
+  removeBtn(btn: Button) {
     let index = this.buttons.indexOf(btn);
-    this.buttons[index] = new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12)
+    this.buttons[index] = new Button(
+      this.selectedTheme.bg_color,
+      '',
+      this.selectedTheme.color,
+      0,
+      '',
+      12
+    );
     this.setRow();
     moveItemInArray(this.images, index, this.images.length - 1);
   }
 
-  matchingStyle(style: number){
-    if (style == 0){
-      return 'rounded-pill'
+  matchingStyle(style: number) {
+    if (style == 0) {
+      return 'rounded-pill';
     }
-    if (style == 1){
-      return 'rounded'
+    if (style == 1) {
+      return 'rounded';
     }
-    if (style == 2){
-      return 'rounded-0'
+    if (style == 2) {
+      return 'rounded-0';
     }
-    return 'rounded-circle'
+    return 'rounded-circle';
   }
 
   changed(event?: any, event2?: any) {
-    let type = this.rowForm.controls.type.value ?? event2;
-    let grid = this.rowForm.controls.grid.value ?? event;
+    let type = this.rowForm.controls.type.value ?? event2.value;
+    let grid = this.rowForm.controls.grid.value ?? event.value;
 
-    if (!type){
-
-      type = event2.value
+    if (type == undefined) {
+      type = event2?.value;
     }
-    if (!grid){
-
-      grid = event.value
+    if (grid == undefined) {
+      grid = event.value;
     }
-
 
     if (type == 1) {
       let matchGrid = this.grid.find((g) => g.name == grid);
 
-      let newSize = (matchGrid?.row ?? 1);
-
+      let newSize = matchGrid?.row ?? 1;
 
       if (newSize > this.images.length) {
         for (let i = 0; i < newSize; i++) {
@@ -733,56 +762,68 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             this.images.push({
               isActive: false,
               img: '',
-              link: ''
+              link: '',
             });
           }
         }
       } else if (newSize < this.images.length) {
         this.images = this.images.slice(0, newSize);
       }
-    }
-    else if (type == 4) {
+    } else if (type == 4) {
       let matchGrid = this.grid.find((g) => g.name == grid);
 
-      let newSize = (matchGrid?.row ?? 1);
-
+      let newSize = matchGrid?.row ?? 1;
 
       if (newSize > this.videos.length) {
         for (let i = 0; i < newSize; i++) {
           if (!this.videos[i]) {
             this.videos.push({
               isActive: false,
-              link: ''
+              link: '',
             });
           }
         }
       } else if (newSize < this.videos.length) {
         this.videos = this.videos.slice(0, newSize);
       }
-    }
-    else if (type == 3){
+    } else if (type == 3) {
       let matchGrid = this.grid.find((g) => g.name == grid);
 
-      let newSize = (matchGrid?.row ?? 1);
-
+      let newSize = matchGrid?.row ?? 1;
 
       if (newSize > this.buttons.length) {
         for (let i = 0; i < newSize; i++) {
           if (!this.buttons[i]) {
-            this.buttons.push(new Button(this.selectedTheme.bg_color, '', this.selectedTheme.color, 0, '', 12));
+            this.buttons.push(
+              new Button(
+                this.selectedTheme.bg_color,
+                '',
+                this.selectedTheme.color,
+                0,
+                '',
+                12
+              )
+            );
           }
         }
       } else if (newSize < this.buttons.length) {
         this.buttons = this.buttons.slice(0, newSize);
       }
     }
-    this.setRow()
+    this.setRow();
   }
 
-  editorOptions = {theme: 'hc-black', language: 'html', automaticLayout: true, minimap: {
-		enabled: false
-	}, lineNumbers: 'off', glyphMargin: false,
-  folding: false};
+  editorOptions = {
+    theme: 'hc-black',
+    language: 'html',
+    automaticLayout: true,
+    minimap: {
+      enabled: false,
+    },
+    lineNumbers: 'off',
+    glyphMargin: false,
+    folding: false,
+  };
 
   finishedEditing(isDelete: boolean = false) {
     if (this.editingBlock == undefined) {
@@ -800,7 +841,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           /style="/g,
           'style="overflow-wrap: break-word;'
         );
-        let htmlTemplate = (this.rowForm.controls.html.value ?? '')
+        let htmlTemplate = this.rowForm.controls.html.value ?? '';
 
         let imgs = (this.images ?? [])
           .filter((i) => i.img != undefined && i.img.trim() != '')
@@ -808,7 +849,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         let vids = (this.videos ?? [])
           .filter((i) => i.link != undefined && i.link.trim() != '')
           .map((i) => i.link);
-        let btns = this.buttons ?? []
+        let btns = this.buttons ?? [];
         let imgLinks = (this.images ?? [])
           .filter((i) => i.link != undefined && i.link.trim() != '')
           .map((i) => i.link);
@@ -820,7 +861,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             (type == 0 && products.length == 0) ||
             (type == 1 && imgs.length == 0) ||
             (type == 4 && vids.length == 0) ||
-            (type == 2 && html.trim() == '') || 
+            (type == 2 && html.trim() == '') ||
             (type == 7 && htmlTemplate.trim() == '')
           )
         ) {
@@ -843,21 +884,18 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             htmlTemplate
           );
 
-
           if (
             products.find((i) => i == '0') ||
-            products.find((i) => i == '1') || 
+            products.find((i) => i == '1') ||
             products.find((i) => i == '2')
           ) {
             row.products = [];
             row.smart_products = parseInt(products[0]);
-
           }
 
           if (this.editingBlock != undefined) {
             rows[this.editingBlock] = row;
           }
-
 
           this.layoutForm.controls.rows.setValue(rows);
           break;
@@ -870,8 +908,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.rowForm.reset();
     this.prods = [];
     this.images = [];
-    this.videos = []
-    this.buttons = []
+    this.videos = [];
+    this.buttons = [];
     this.editingBlock = undefined;
     this.aRow.row = undefined;
     this.aRow.index = undefined;
@@ -884,10 +922,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     row: undefined,
     index: undefined,
   };
-
-
-
-  
 
   setRow(gridVal?: string) {
     let name = (this.rowForm.controls.title.value as string) ?? '';
@@ -906,15 +940,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let imgLinks = (this.images ?? [])
       .filter((i) => i.link != undefined && i.link.trim() != '')
       .map((i) => i.link);
-      let htmlTemplate = (this.rowForm.controls.html.value ?? '')
+    let htmlTemplate = this.rowForm.controls.html.value ?? '';
 
-
-    let btns = this.buttons ?? []
-
-
+    let btns = this.buttons ?? [];
 
     let products = this.prods ?? [];
-
 
     let grid = gridVal ?? (this.rowForm.controls.grid.value as string) ?? '1';
 
@@ -935,7 +965,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       htmlTemplate
     );
 
-    if (products.find((i) => i == '0') || products.find((i) => i == '1') || products.find((i) => i == '2')) {
+    if (
+      products.find((i) => i == '0') ||
+      products.find((i) => i == '1') ||
+      products.find((i) => i == '2')
+    ) {
       row.products = [];
       row.smart_products = parseInt(products[0]);
     }
@@ -945,26 +979,27 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   resizeIframe(index: number) {
-    let obj = document.getElementById('frame' + index) as HTMLIFrameElement
-    let c = document.getElementById('c' + index) as HTMLElement
+    let obj = document.getElementById('frame' + index) as HTMLIFrameElement;
+    let c = document.getElementById('c' + index) as HTMLElement;
 
-    if (obj){
-      c.style.height = (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
+    if (obj) {
+      c.style.height =
+        (obj.contentWindow?.document.body.scrollHeight ?? 0) + 'px';
     }
   }
 
   addBlock() {
     let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    rows.push(new Row('', [], undefined, 0, [], 1, "", "", [], [], [], ""));
+    rows.push(new Row('', [], undefined, 0, [], 1, '', '', [], [], [], ''));
     this.layoutForm.controls.rows.setValue(rows);
 
     this.edit(rows.length - 1);
   }
 
   selectedIndicator() {
-    let co = Globals.storeInfo?.loading?.color;
-    let bco = Globals.storeInfo?.loading?.bg_color;
-    let name = Globals.storeInfo?.loading?.name;
+    let co = this.storeInfo?.loading?.color;
+    let bco = this.storeInfo?.loading?.bg_color;
+    let name = this.storeInfo?.loading?.name;
 
     let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
 
@@ -982,43 +1017,63 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   async close() {
     this.finishedEditing();
 
-      let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-      let name = (this.layoutForm.controls.name.value as string) ?? 'Page';
-      let url = (this.layoutForm.controls.url.value as string) ?? 'new-page';
-      
-      let fullscreen = (this.layoutForm.controls.isFullscreen.value as boolean) ?? false;
-      let loader = (this.layoutForm.controls.isLoader.value as boolean) ?? true;
+    let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
+    let name = (this.layoutForm.controls.name.value as string) ?? 'Page';
+    let url = (this.layoutForm.controls.url.value as string) ?? 'new-page';
 
-      let seoTitle = (this.layoutForm.controls.seoTitle.value as string) ?? Globals.storeInfo.fullName ?? '';
-      let seoDesc = (this.layoutForm.controls.seoDesc.value as string) ?? Globals.storeInfo.bio ?? '';
-      let seoTags = (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
-  
-      let metaTitle = (this.layoutForm.controls.metaTitle.value as string) ?? Globals.storeInfo.fullName ?? "";
-      let metaDesc = (this.layoutForm.controls.metaDesc.value as string) ?? Globals.storeInfo.bio ?? "";
-      let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
-      let metaPic = (this.layoutForm.controls.metaPic.value as string);
-  
-  
-  
-      console.log(rowInfo)
-  
-      // this.spinner.show('loader');
-      // this.title = 'SAVING LAYOUT';
-  
-      let meta = new MetaTag(metaTitle, metaDesc, metaURL, metaPic)
-  
-      let seo = new SEO(seoTitle, seoDesc, meta, seoTags, false)
-  
-      let page = new Page(name.toLowerCase(), name, this.data.page?.id ?? undefined, url, rowInfo, fullscreen, loader, seo)
-  
-  
-      this.dialogRef.close({
-        page: page
-      });
+    let fullscreen =
+      (this.layoutForm.controls.isFullscreen.value as boolean) ?? false;
+    let loader = (this.layoutForm.controls.isLoader.value as boolean) ?? true;
+
+    let seoTitle =
+      (this.layoutForm.controls.seoTitle.value as string) ??
+      this.storeInfo.fullName ??
+      '';
+    let seoDesc =
+      (this.layoutForm.controls.seoDesc.value as string) ??
+      this.storeInfo.bio ??
+      '';
+    let seoTags =
+      (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
+
+    let metaTitle =
+      (this.layoutForm.controls.metaTitle.value as string) ??
+      this.storeInfo.fullName ??
+      '';
+    let metaDesc =
+      (this.layoutForm.controls.metaDesc.value as string) ??
+      this.storeInfo.bio ??
+      '';
+    let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
+    let metaPic = this.layoutForm.controls.metaPic.value as string;
+
+    console.log(rowInfo);
+
+    // this.spinner.show('loader');
+    // this.title = 'SAVING LAYOUT';
+
+    let meta = new MetaTag(metaTitle, metaDesc, metaURL, metaPic);
+
+    let seo = new SEO(seoTitle, seoDesc, meta, seoTags, false);
+
+    let page = new Page(
+      name.toLowerCase(),
+      name,
+      this.data.page?.id ?? undefined,
+      url,
+      rowInfo,
+      fullscreen,
+      loader,
+      seo
+    );
+
+    this.dialogRef.close({
+      page: page,
+    });
   }
 
-  toast(m: string){
-    this.loadService.openSnackBar(m)
+  toast(m: string) {
+    this.loadService.openSnackBar(m);
   }
 
   drop(event: any, isImage = false, isButton = false) {
@@ -1026,10 +1081,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       moveItemInArray(this.images, event.previousIndex, event.currentIndex);
       return;
     }
-    if (isButton){
+    if (isButton) {
       moveItemInArray(this.buttons, event.previousIndex, event.currentIndex);
-      return
-
+      return;
     }
     let arr = this.layoutForm.controls.rows.value;
     moveItemInArray(arr, event.previousIndex, event.currentIndex);
@@ -1071,8 +1125,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   autoCoupon(product: Product) {
-    var autoCoupon = this.storeInfo
-      .coupons?.filter((coupon) => {
+    var autoCoupon = this.storeInfo.coupons
+      ?.filter((coupon) => {
         return coupon.products.includes(product.productID) && coupon.auto;
       })
       .sort(function (a, b) {
@@ -1115,7 +1169,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return (0.5 / (row.grid_row ?? 1)) * 100;
   }
 
-
   titleFontSize(row: Row) {
     if (this.rootComponent?.isMobile() || (row.grid_row ?? 1) >= 2) {
       return 12;
@@ -1132,7 +1185,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   //   return (939 / window.innerHeight) * window.innerHeight
   // }
 
-  products(smartProducts?: number, products?: Array<string>) {
+  products(smartProducts?: number, products?: Array<String>) {
     if (smartProducts !== undefined) {
       if (smartProducts == 0) {
         return this.newArrivalProducts();
@@ -1140,11 +1193,19 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
         return this.featuredProducts();
       }
     }
-    var prod = Array<Product>();
+    var prod = Array<NFT>();
+    console.log(products)
     products?.forEach((p) => {
-      let pro = this.admin?.storeProducts?.find((pr) => {
-        return pr.productID == p;
-      });
+      let pro = this.storeInfo.collections
+        ?.find((pr) => {
+          let k = pr.NFTs?.find((n) => {
+            return n.docID == p;
+          });
+          return k;
+        })
+        ?.NFTs?.find((n) => {
+          return n.docID == p;
+        });
       if (pro) {
         prod.push(pro);
       }
@@ -1153,9 +1214,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   selectedThemeFn() {
-    let co = Globals.storeInfo?.colorStyle?.btn_color;
-    let bco = Globals.storeInfo?.colorStyle?.bg_color;
-    let name = Globals.storeInfo?.colorStyle?.name;
+    let co = this.storeInfo?.colorStyle?.btn_color;
+    let bco = this.storeInfo?.colorStyle?.bg_color;
+    let name = this.storeInfo?.colorStyle?.name;
 
     let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
 
@@ -1195,7 +1256,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (this.interval) {
       return;
     }
-    if (Globals.storeInfo.bannerStyle == 0) {
+    if (this.storeInfo.bannerStyle == 0) {
       this.interval = setInterval(() => {
         this.moveRight();
       }, 3000);
@@ -1238,37 +1299,31 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return Array(12 / this.storeInfo.banners.length).fill(0);
   }
 
-  
-
   newArrivalProducts() {
-    return this.admin?.storeProducts
-      ?.sort(function (a, b) {
-        if (a.timestamp > b.timestamp) {
-          return -1;
-        }
-        if (a.timestamp < b.timestamp) {
-          return 1;
-        }
-        return 0;
-      })
-      .slice(0, 4);
+    return (this.storeInfo.collections ?? [])[0].NFTs?.sort(function (a, b) {
+      // if (a.timestamp > b.timestamp) {
+      //   return -1;
+      // }
+      // if (a.timestamp < b.timestamp) {
+      //   return 1;
+      // }
+      return 1;
+    }).slice(0, 4);
   }
 
   featuredProducts() {
-    return this.admin?.storeProducts
-      ?.sort(function (a, b) {
-        if (a.likes > b.likes) {
-          return -1;
-        }
-        if (a.likes < b.likes) {
-          return 1;
-        }
-        return 0;
-      })
-      .slice(0, 4);
+    return (this.storeInfo.collections ?? [])[0].NFTs?.sort(function (a, b) {
+      // if (a.likes > b.likes) {
+      //   return -1;
+      // }
+      // if (a.likes < b.likes) {
+      //   return 1;
+      // }
+      return 1;
+    }).slice(0, 4);
   }
 
   allProducts() {
-    return this.admin?.storeProducts
+    return this.storeInfo.collections;
   }
 }

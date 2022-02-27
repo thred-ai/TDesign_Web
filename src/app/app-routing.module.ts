@@ -18,7 +18,7 @@ var routes: Routes = [
 
 
   // { path: ':user/about', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule)},
-  { path: ':user/products/:product', loadChildren: () => import('./product/product.module').then((m) => m.ProductModule)},
+  { path: ':user/nft/:product', loadChildren: () => import('./product/product.module').then((m) => m.ProductModule)},
 
 
   { path: ':user/orders/:order', loadChildren: () => import('./view-order-info/view-order-info.module').then((m) => m.ViewOrderInfoModule)},

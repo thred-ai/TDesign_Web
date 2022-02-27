@@ -1,0 +1,112 @@
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <!-- <h2 class="me-2 text-center d-none d-md-block">
+    {{
+      mode == 0
+        ? editingBlock == undefined
+          ? "Drag/Drop to Rearrange"
+          : "Edit Block"
+        : "Edit Page"
+    }}
+  </h2> -->
+
+  <div class="d-flex justify-content-end align-items-center w-100">
+    <a
+      role="button"
+      (click)="closeDialog()"
+      class="btn-danger p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
+      style="font-size: x-large; text-decoration: none"
+    >
+      <mat-icon>highlight_off</mat-icon>
+    </a>
+  </div>
+</div>
+<mat-dialog-content class="h-100">
+  <div class="w-100 h-100 card shadow" style="overflow-y: scroll">
+    <ngx-spinner
+      bdColor="{{ selectedIndicator().bg_color }}"
+      size="medium"
+      color="{{ selectedIndicator().color }}"
+      type="{{ selectedIndicator().name }}"
+      [fullScreen]="false"
+      style.color="{{ selectedIndicator()!.color }}"
+      [name]="'loader'"
+    >
+      <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
+        Deploying Contract
+      </h3>
+    </ngx-spinner>
+    <form
+      class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form"
+      [formGroup]="nftForm"
+    >
+      <h2 class="h2 my-0">New Collection</h2>
+      <h5 class="mt-0">Set your Collection's Name and Symbol</h5>
+      <div class="wrap-input1 w-100">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            class="bg-transparent"
+            type="text"
+            name="name"
+            formControlName="title"
+            placeholder="Collection name"
+          />
+          <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+        </mat-form-field>
+      </div>
+
+      <div class="wrap-input1 w-100">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Symbol</mat-label>
+          <input
+            matInput
+            class="bg-transparent"
+            type="text"
+            name="name"
+            formControlName="symbol"
+            placeholder="Collection symbol"
+          />
+          <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+        </mat-form-field>
+      </div>
+      <div class="wrap-input1 w-100">
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Payment Token</mat-label>
+          <mat-select formControlName="currency">
+            <mat-select-trigger
+            class="d-flex align-items-center"
+          >
+          <mat-icon svgIcon="{{ nftForm.controls.currency.value.symbol }}" class="me-2"></mat-icon>
+            {{ nftForm.controls.currency.value.name }}
+          </mat-select-trigger>
+            <mat-optgroup
+              class="text-dark bg-light"
+              *ngFor="let c of tokens"
+              [label]="c.name"
+            >
+              <mat-option
+                *ngFor="let token of c.variations"
+                [value]="token"
+              >
+                <mat-icon svgIcon="{{ token.symbol }}"></mat-icon>
+                {{ token.name }}
+              </mat-option>
+            </mat-optgroup>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+    <div class="d-flex justify-content-center m-2 mb-3 mt-0">
+      <a
+        role="button"
+        class="btn btn-dark rounded-pill"
+        type="button"
+        (click)="save()"
+        >Deploy Collection</a
+      >
+    </div>
+  </div>
+</mat-dialog-content>
+
+<!-- (load)='passVars(iframe2)' -->

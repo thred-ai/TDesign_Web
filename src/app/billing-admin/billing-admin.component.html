@@ -45,7 +45,7 @@ style.color = "{{selectedIndicator()!.color}}"
                           <div class="col">
                             <mat-form-field class="full-width">
                               <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput style.color="{{selectedTheme()!.color}}" formControlName="cardholder">
-                              <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Cardholder Name</mat-placeholder>
+                              <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Cardholder Name</mat-placeholder>
                               <mat-error *ngIf="billingForm.controls['cardholder'].hasError('required')">
                                   Cardholder name is <strong>required</strong>
                               </mat-error>
@@ -68,7 +68,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="company" >
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Company (Optional)</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Company (Optional)</mat-placeholder>
                           </mat-form-field>
                         </div>
                       </div>
@@ -79,7 +79,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="address">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Address</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Address</mat-placeholder>
                             <mat-error *ngIf="billingForm.controls['address'].hasError('required')">
                               Address is <strong>required</strong>
                             </mat-error>
@@ -97,7 +97,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <textarea class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="address2"></textarea>
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Address 2</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Address 2</mat-placeholder>
                           </mat-form-field>
                         </div>
                       </div>
@@ -112,7 +112,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                     {{ country.name }}
                                   </mat-option>
                                 </mat-select>
-                                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Country</mat-placeholder>
+                                <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Country</mat-placeholder>
                                 <mat-error *ngIf="billingForm.controls['country'].hasError('required')">
                                   Country is <strong>required</strong>
                                 </mat-error>
@@ -121,7 +121,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="city">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>City</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>City</mat-placeholder>
                             <mat-error *ngIf="billingForm.controls['city'].hasError('required')">
                               City is <strong>required</strong>
                             </mat-error>
@@ -131,7 +131,7 @@ style.color = "{{selectedIndicator()!.color}}"
                           <mat-form-field class="full-width">
 
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="state">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Province/State</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Province/State</mat-placeholder>
                             <mat-error *ngIf="billingForm.controls['state'].hasError('required')">
                               State is <strong>required</strong>
                             </mat-error>
@@ -142,7 +142,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput #postalCode maxlength="10" formControlName="postalCode">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>{{getZipFieldName(billingForm.controls['country'].value)}}</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>{{getZipFieldName(billingForm.controls['country'].value)}}</mat-placeholder>
                             <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
                           </mat-form-field>
                         </div>

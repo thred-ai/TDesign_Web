@@ -12,6 +12,16 @@ import { VideoPipePipe } from '../video-pipe.pipe';
 import { SafeUrlPipe } from '../safe-url.pipe';
 import { StoreCheckerPipe } from '../store-checker.pipe';
 import { HtmlPipe } from '../html.pipe';
+import { MatIconPipe } from '../mat-icon.pipe';
+import { ClassCheckPipe } from '../class-check.pipe';
+import { CollectionPipePipe } from '../collection-pipe.pipe';
+import { StorePipe } from '../store.pipe';
+import { PricePipe } from '../price.pipe';
+import { ProductFilterPipe } from '../product-filter.pipe';
+import { CollectionFilterPipe } from '../collection-filter.pipe';
+import { AddressPipe } from '../address.pipe';
+import { DateAgoPipe } from '../date-ago.pipe';
+import { TypeofPipe } from '../typeof.pipe';
 
 @NgModule({
   imports: [
@@ -31,6 +41,16 @@ import { HtmlPipe } from '../html.pipe';
     SafeUrlPipe,
     StoreCheckerPipe,
     HtmlPipe,
+    MatIconPipe,
+    ClassCheckPipe,
+    CollectionPipePipe,
+    StorePipe,
+    PricePipe,
+    ProductFilterPipe,
+    CollectionFilterPipe,
+    AddressPipe,
+    DateAgoPipe,
+    TypeofPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -45,7 +65,17 @@ import { HtmlPipe } from '../html.pipe';
     VideoPipePipe,
     SafeUrlPipe,
     StoreCheckerPipe,
-    HtmlPipe
+    HtmlPipe,
+    MatIconPipe,
+    ClassCheckPipe,
+    CollectionPipePipe,
+    StorePipe,
+    PricePipe,
+    ProductFilterPipe,
+    CollectionFilterPipe,
+    AddressPipe,
+    DateAgoPipe,
+    TypeofPipe
   ]
 })
 export class ApplicationPipesModule {}

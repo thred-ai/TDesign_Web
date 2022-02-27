@@ -30,6 +30,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationPipesModule } from './shared/applicationPipes.module';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { WalletComponent } from './wallet/wallet.component';
+import { AuthService } from './services/auth.service';
+import { AngularFireFunctionsModule, AngularFireFunctions } from '@angular/fire/compat/functions';
 
 @NgModule({
   declarations: [
@@ -38,6 +41,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     ModelViewerComponent,
     PopupComponent,
     PhoneMaskDirective,
+    WalletComponent,
   ],
   imports: [
     CommonModule,
@@ -65,13 +69,21 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
     InViewportModule,
     HttpClientModule,
     ApplicationPipesModule,
+    AngularFireFunctionsModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(router: Router){
+  constructor(router: Router, functions: AngularFireFunctions){
+
+    // functions.useEmulator('localhost', 5001)
+
+
+
+
+
     var request = Globals.URL
     if (globalThis.location){
         request = globalThis.location.host

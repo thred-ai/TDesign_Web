@@ -53,8 +53,12 @@ import 'whatwg-fetch'
 import 'cross-fetch/polyfill';
 import 'intersection-observer';
 import * as buffer from 'buffer';
+import * as process from 'process'
 
 (window as any).Buffer = buffer.Buffer;
+(window as any).global = window;
+(window as any).process = process;
+
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */

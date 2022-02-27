@@ -10,6 +10,8 @@ import { BillingInfo } from './models/billing-address.model'
 import { Order } from './models/order.model'
 import { StoreTheme } from './models/theme.model'
 import { Dict } from './services/load.service'
+import { ethers } from 'ethers'
+
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +31,10 @@ export class Globals {
   public static availableTemplates: Array<Template> = []
 
   public static selectedTemplate?: Template = new Template()
+
+  public static provider?: ethers.providers.Web3Provider
+
+
 
   public static types = [
     {

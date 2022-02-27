@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef, OnDestroy, Injector } from '@angular/core';
 import { Country } from '../models/shipping-country.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { Title, Meta, DomSanitizer } from '@angular/platform-browser';
 import { LoadService, Dict } from '../services/load.service';
 import { isPlatformBrowser, APP_BASE_HREF, isPlatformServer, PlatformLocation } from '@angular/common';
@@ -14,6 +14,9 @@ import { Page } from '../models/page.model';
 import { SEO } from '../models/seo.model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Button } from '../models/button.model';
+import { NFT } from '../models/nft.model';
+import { Collection } from '../models/collection.model';
+import { Store } from '../models/store.model';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +25,7 @@ import { Button } from '../models/button.model';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  storeInfo(){return Globals.storeInfo}
+  storeInfo?: Store = undefined
 
   availableCurrencies(){return Globals.availableCurrencies}
 
@@ -54,7 +57,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   autoCoupon(product: Product){
-    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+    var autoCoupon = this.storeInfo?.coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
       if(a.amt < b.amt) { return 1; }
       if(a.amt > b.amt) { return -1; }
       return 0;
@@ -76,40 +79,48 @@ export class HomeComponent implements OnInit, OnDestroy {
     return (0.3 / (row.grid_row ?? 1)) * 100
   }
 
-  products(smartProducts?: number, products?: Array<String>){
-    if (smartProducts !== undefined){
-
-      if (smartProducts == 0){
-        return this.newArrivalProducts()
-      }
-      else if (smartProducts == 1){
-        return this.featuredProducts()
+  products(smartProducts?: number, products?: Array<String>) {
+    if (smartProducts !== undefined) {
+      if (smartProducts == 0) {
+        return this.newArrivalProducts();
+      } else if (smartProducts == 1) {
+        return this.featuredProducts();
       }
     }
-    var prod = Array<Product>()
-    products?.forEach(p => { 
-      let pro = this.storeProducts?.find(pr => { return pr.productID == p})
-      if (pro){
-        prod.push(pro)
+    var prod = Array<NFT>();
+    products?.forEach((p) => {
+      let pro = this.storeInfo?.collections?.find((pr) => {
+        let k = pr.NFTs?.find((n) => {
+          return n.docID == p;
+        });
+        return k
+      })?.NFTs?.find((n) => {
+        return n.docID == p;
+      });
+      if (pro) {
+        prod.push(pro);
       }
-    })
-    return prod
+    });
+    return prod;
   }
 
 
-  mainPrice(product: Product){
+  mainPrice(product: NFT){
     
-    let coupon = this.autoCoupon(product)
-    if (coupon){
-      if (coupon.style == 0){
-        return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
-      }
-      else if (coupon.style == 1){
-        return ((product.price ?? 0) / 100) - ((coupon.amt ?? 0) * 100)
-      }
-    }
-    return (product.price ?? 0) / 100
+    // let coupon = this.autoCoupon(product)
+    // if (coupon){
+    //   if (coupon.style == 0){
+    //     return ((product.price ?? 0) / 100) - (((product.price ?? 0) / 100) * coupon.amt)
+    //   }
+    //   else if (coupon.style == 1){
+    //     return ((product.price ?? 0) / 100) - ((coupon.amt ?? 0) * 100)
+    //   }
+    // }
+    return (product.price.toNumber() ?? 0) / 100
   }
+
+
+
 
   openSocial(l: string){
     const link = document.createElement('a');
@@ -130,21 +141,27 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
 
-  newArrivalProducts(){
-    return this.storeProducts?.sort(function(a, b){
-      if(a.timestamp > b.timestamp) { return -1; }
-      if(a.timestamp < b.timestamp) { return 1; }
-      return 0;
-    }).slice(0, 4);
+  newArrivalProducts() {
+    var prod = Array<NFT>();
+    (this.storeInfo?.collections ?? [])?.forEach((p, i) => {
+      if (i == 4){ return }
+      p.NFTs.forEach(l => {
+        prod.push(l)
+      })
+    });
+    return prod
   }
 
-  featuredProducts(){
+  featuredProducts() {
+    var prod = Array<NFT>();
+    (this.storeInfo?.collections ?? [])?.forEach((p, i) => {
+      if (i == 4){ return }
 
-    return this.storeProducts?.sort(function(a, b){
-      if(a.likes > b.likes) { return -1; }
-      if(a.likes < b.likes) { return 1; }
-      return 0;
-    }).slice(0, 4);
+      p.NFTs.forEach(l => {
+        prod.push(l)
+      })
+    });
+    return prod
   }
 
   imgLinkPressed(link?: string){
@@ -184,10 +201,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   private fb: FormBuilder
 
   ) {
-      // const routeParams = this.router.snapshot.paramMap;
-      // const storeID = routeParams.get('page') as string;
-      // let rows = Globals.storeInfo.pages?.find(p => p.url == storeID)?.rows ?? []
-      // this.homeRows = rows
+    _router.events.subscribe((event: any) => {
+      // You only receive NavigationStart events
+      if (event instanceof NavigationStart){
+        this.init()
+      }
+    });
   }
   ngOnDestroy(): void {
     this.loadService.adminComponent = undefined
@@ -198,8 +217,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.init()
   }
 
-  routeToProduct(productID: string){
-    this.rootComponent.routeToProduct(productID)
+  routeToProduct(product: NFT) {
+    console.log(product)
+    this.rootComponent.routeToProduct(product.docID ?? '');
   }
 
   routeToShop(){
@@ -269,7 +289,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-  storeProducts?: Array<Product> = undefined
+  shouldHide(){
+    return ((this.storeInfo?.collections.map(i => i?.NFTs).filter( j => j.length > 0))?.length ?? 0) == 0
+  }
+
 
   callback(){ 
     if (Globals.storeInfo.username){
@@ -286,6 +309,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.homeRows = rows
         this.page = page
+        console.log(rows)
         if (page.loader ?? true){
           this.showSpinner()
         }
@@ -301,19 +325,11 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.loadService.logView()
         this.rootComponent.setOptions()
       }
-      if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
-        this.loadService.getCustomer()
-      }
       else if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getCountries()
       }
       else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getTemplates()
-      }
-      else if (this.storeProducts == undefined){
-        this.loadService.getPosts(products => {
-          this.storeProducts = products
-        })
       }
       else{
         this.rootComponent.cdr.detectChanges()
@@ -338,13 +354,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   }
 
+  get isLoading(){
+    return this.loadService.isLoading
+  }
+
   isBrowser(){
     return isPlatformBrowser(this.platformID)
   }
 
   downloadAllStoreInfo(storeName: string, isCustom = false){
     this.loadService.myCallback = () => this.callback()
-    this.loadService.getUser(storeName, undefined, isCustom)
+    this.loadService.getUser(storeName, undefined, isCustom, store => {
+      this.storeInfo = store
+    })
   }
 
   rowText(row: Row) {
@@ -469,12 +491,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   urlText(){
-    var bURL = 'https://shopmythred.com/' + this.storeInfo().username
+    var bURL = 'https://shopmythred.com/' + this.storeInfo?.username
 // this.getStoreName().isCustom && 
     var url = bURL
 
-    if (this.storeInfo().customURL?.status == 2){
-      url = this.storeInfo().customURL?.fullURL != undefined ? this.storeInfo().customURL?.fullURL! : bURL
+    if (this.storeInfo?.customURL?.status == 2){
+      url = this.storeInfo?.customURL?.fullURL != undefined ? this.storeInfo?.customURL?.fullURL! : bURL
     }
 
     return url

@@ -4,6 +4,11 @@
 html {
     background-color: #56baed;
   }
+
+.landing{
+  background: linear-gradient(to left, rgb(117, 63, 153), rgb(57, 29, 138));
+  border-radius: 10px;
+}
   
   body {
     font-family: "Poppins", sans-serif;

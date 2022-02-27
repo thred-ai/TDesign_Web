@@ -1,98 +1,226 @@
-
 <app-landing></app-landing>
-<ngx-spinner
-bdColor = '{{selectedIndicator().bg_color}}'
-size = "medium"
-color = '{{selectedIndicator().color}}'
-type = {{selectedIndicator().name}} 
-[fullScreen] = "false"
-style.color = "{{selectedIndicator()!.color}}"
-[disableAnimation] = "true"
-[name]="'loginSpinner'"
->
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">{{loadingAction}}
-</h3>
-</ngx-spinner>
 
-<div class="wrapper w-100" style.background-color="{{selectedTheme()!.bg_color}}" >
-    <div class="w-100" id="formContent" style.background-color="{{selectedTheme()!.bg_color}}">
-      <!-- Tabs Titles -->
-      <!-- Login Form -->
-      <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{storeInfo().colorStyle!.text_code}} mt-5" style = "line-height:1.0em; font-size: 25px;font-weight: bold;">
-        {{title()}}
-       </p>
-       <p *ngIf='isSignUp() || isSignIn()' [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style.color="{{selectedTheme()!.color}}" style = "line-height:1.0em; font-size: 15px;font-weight: normal;">
+<div
+  class="wrapper w-100"
+  [class.landing]="isLanding"
+  [class.bg-light]="!isLanding"
+>
+  <div class="w-100 bg-transparent" id="formContent">
+    <!-- Tabs Titles -->
+    <!-- Login Form -->
+    <!-- <p [style.font-family]="storeInfo().fontName!" class = "text-center text-{{textCode()}} mt-5" style = "line-height:1.0em; font-size: 25px;font-weight: bold;">
+        Launch your store
+       </p> -->
+    <!-- <p *ngIf='isSignUp() || isSignIn()' [style.font-family]="storeInfo().fontName!" class = "text-center mt-1" style.color="{{textColor()}}" style = "line-height:1.0em; font-size: 15px;font-weight: normal;">
         Or
        </p>
        <div class="container  mt-3">
         <div class="row row-cols-1 justify-content-center">
             <div *ngIf="isSignUp()" class="col">
-              <a *ngIf='isLanding' style="white-space:nowrap" [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">SIGN IN<img class="ms-1" src='assets/thred_basic_2.png' height="30" alt="none"></a>
-              <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(2)" role="button">SIGN IN<img class="ms-1" src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
+              <a *ngIf='isLanding' style="white-space:nowrap" [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{textColor()}}" style.color="{{backColor()}}" (click)="changeAuth(2)" role="button">SIGN IN<img class="ms-1" src='assets/thred_basic_2.png' height="30" alt="none"></a>
+              <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{textColor()}}" style.color="{{backColor()}}" (click)="changeAuth(2)" role="button">SIGN IN<img class="ms-1" src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
             </div>
             <div *ngIf="isSignIn()" class="col">
-              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='assets/thred_basic_2.png' height="30" alt="none"></a>
-              <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
+              <a *ngIf='isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{textColor()}}" style.color="{{backColor()}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='assets/thred_basic_2.png' height="30" alt="none"></a>
+              <a *ngIf='!isLanding' [style.font-family]="storeInfo().fontName!" class="btn btn-lg px-3 d-inline-flex align-items-center" style.background-color="{{textColor()}}" style.color="{{backColor()}}" (click)="changeAuth(1)" role="button">REGISTER <img class="ms-1" src='{{storeInfo().profileLink}}' height="30" alt="none"></a>
             </div>
-            <!-- <div class="col">
-                <a class="brand-logo" role=button (click)="useApple()">
-                    <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/apple_{{storeInfo().colorStyle!.back_code}}.png'/>
-                </a>
-            </div> -->
-            <!-- <div class="col">
-                <a class="brand-logo" role=button (click)="useGoogle()">
-                    <img style = "width: 50px;height:auto;" class="rounded-circle mx-auto d-block mb-5" src='/assets/google.png'/>
-                </a>
-            </div> -->
         </div>
-       </div>
-       <p [style.font-family]="storeInfo().fontName!" class = "text-center mt-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
-        {{err}}
-       </p>
-       <div *ngIf="isSignUp()">
-        <form class = "mt-4" [formGroup]="authForm">
-            <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
-            <input [style.font-family]="storeInfo().fontName!" class = "fadeIn second bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}"  placeholder="Email Address" [email]="true" type="text" name="email" formControlName="email">
+       </div> -->
+    <p
+      [style.font-family]="storeInfo().fontName!"
+      class="text-center mt-3"
+      style="
+        line-height: 1em;
+        font-size: 12px;
+        height: 15px;
+        font-weight: normal;
+        color: red;
+      "
+    >
+      {{ err }}
+    </p>
 
-            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="password" placeholder="Password" formControlName="password">
-            <input [style.font-family]="storeInfo().fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword">
+    <div
+      *ngIf="authMode == 1"
+      class="d-flex justify-content-center align-items-center"
+      style="height: 100%"
+    >
+      <div class="w-100 text-center">
+        <ngx-spinner
+          bdColor="{{ selectedIndicator().bg_color }}"
+          size="medium"
+          color="{{ selectedIndicator().color }}"
+          type="{{ selectedIndicator().name }}"
+          [fullScreen]="false"
+          style.color="{{ selectedIndicator()!.color }}"
+          [disableAnimation]="true"
+          [name]="'loginSpinner'"
+        >
+          <h3
+            class="text-center mt-5"
+            [style.font-family]="storeInfo().fontName!"
+          >
+            {{ loadingAction }}
+          </h3>
+        </ngx-spinner>
+        <div
+          class="d-flex justify-content-center align-items-center mb-3"
+          style="height: 100px"
+        >
+          <img
+            src="assets/metamask.png"
+            class="h-100 mx-3"
+            style="object-fit: contain; aspect-ratio: 1"
+          />
+          <img
+            src="assets/walletconnect.png"
+            class="h-100 mx-3"
+            style="object-fit: contain; aspect-ratio: 1"
+          />
+        </div>
+        <h2
+          class="fw-bolder w-100 text-center"
+          style="font-size: 35px; line-height: 1.2em"
+        >
+          LAUNCH YOUR STORE
+        </h2>
+        <p
+          class="w-100 text-center text-light"
+          style="font-size: 17.5px; line-height: 1.2em"
+        >
+          Compatible with MetaMask & WalletConnect wallets.
+          <!-- Please make sure a Metamask/WalletConnect compatible wallet is available and try again -->
+        </p>
+        <a
+          class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2 mb-4"
+          (click)="connect()"
+          style="font-size: 25px"
+        >
+          CONNECT
+        </a>
+      </div>
+    </div>
+    <div
+      *ngIf="authMode == 2"
+      class="d-flex justify-content-center align-items-center"
+      style="height: 100%"
+    >
+      <div class="w-100 text-center">
+        <ngx-spinner
+          bdColor="{{ selectedIndicator().bg_color }}"
+          size="medium"
+          color="{{ selectedIndicator().color }}"
+          type="{{ selectedIndicator().name }}"
+          [fullScreen]="false"
+          style.color="{{ selectedIndicator()!.color }}"
+          [disableAnimation]="true"
+          [name]="'logSpinner'"
+        >
+          <h3
+            class="text-center mt-5"
+            [style.font-family]="storeInfo().fontName!"
+          >
+            {{ loadingAction }}
+          </h3>
+        </ngx-spinner>
+        <p
+          class="w-100 text-center text-light"
+          style="font-size: 17.5px; line-height: 1.2em"
+        >
+          Enter your email address and store name.
+          <!-- Please make sure a Metamask/WalletConnect compatible wallet is available and try again -->
+        </p>
+        <form class="mt-4" [formGroup]="authForm">
+          <input
+            [style.font-family]="storeInfo().fontName!"
+            class="fadeIn second bg-{{ backCode() }} text-{{ textCode() }}"
+            placeholder="Email Address"
+            [email]="true"
+            type="text"
+            name="email"
+            formControlName="email"
+          />
 
-            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="{{username}}" formControlName="username">
+          <!-- <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="password" placeholder="Password" formControlName="password">
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword"> -->
 
-            <!-- <input type="submit" class="fadeIn fourth mt-5" value="Create Account"> -->
-            <!-- <a type="submit" href="#" class="btn btn-primary mt-5 mb-5">Create Account</a>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button> -->
+          <input
+            [style.font-family]="storeInfo().fontName!"
+            type="text"
+            id="username"
+            class="fadeIn second mt-2 bg-{{ backCode() }} text-{{ textCode() }}"
+            name="username"
+            placeholder="{{ username }}"
+            formControlName="username"
+          />
+          <!-- 
             <div class="w-100">
               <h2 *ngIf='isLanding && storeVal() != ""' class="w-100 m-0 p-0 text-center text-secondary">shopmythred.com/{{storeVal()}}</h2>
               <h2 *ngIf='isLanding && storeVal() == ""' class="w-100 p-0 m-0 text-center">14 day free trial included</h2>
                 <div class="col">
-                  <button  [style.font-family]="storeInfo().fontName!" type="submit" role='button' (click)="useEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
+                  <button  [style.font-family]="storeInfo().fontName!" type="submit" role='button' (click)="useEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{textColor()}}" style.color="{{backColor()}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
+                </div>
+            </div> -->
+        </form>
+        <!-- <h2 class="fw-bolder w-100 text-center" style="font-size: 35px; line-height: 1.2em;">
+          SETUP YOUR STORE
+          </h2> -->
+
+        <h2
+          *ngIf="isLanding && storeVal() != ''"
+          class="w-100 m-0 p-0 text-center"
+        >
+          shopmythred.com/{{ storeVal() }}
+        </h2>
+        <h2
+          *ngIf="isLanding && storeVal() == ''"
+          class="w-100 p-0 m-0 text-center"
+        >
+          14 day free trial included
+        </h2>
+        <a
+          class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-4 mb-4"
+          (click)="connect()"
+          style="font-size: 25px"
+        >
+          FINISH
+        </a>
+      </div>
+    </div>
+
+    <!-- <div *ngIf="isSignUp()">
+        <form class = "mt-4" [formGroup]="authForm">
+            <input [style.font-family]="storeInfo().fontName!" class = "fadeIn second bg-{{backCode()}} text-{{textCode()}}"  placeholder="Email Address" [email]="true" type="text" name="email" formControlName="email">
+
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="password" placeholder="Password" formControlName="password">
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword">
+
+            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{backCode()}} text-{{textCode()}}" name="username" placeholder="{{username}}" formControlName="username">
+
+            <div class="w-100">
+              <h2 *ngIf='isLanding && storeVal() != ""' class="w-100 m-0 p-0 text-center text-secondary">shopmythred.com/{{storeVal()}}</h2>
+              <h2 *ngIf='isLanding && storeVal() == ""' class="w-100 p-0 m-0 text-center">14 day free trial included</h2>
+                <div class="col">
+                  <button  [style.font-family]="storeInfo().fontName!" type="submit" role='button' (click)="useEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{textColor()}}" style.color="{{backColor()}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
                 </div>
             </div>
           </form>
-          <div *ngIf='!isLanding' id="formFooter" class="bg-{{storeInfo().colorStyle!.back_code}}">
-            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{storeInfo().colorStyle!.text_code}}" role=button (click)="useGuest()" >No thanks, continue as Guest</a>
+          <div *ngIf='!isLanding' id="formFooter" class="bg-{{backCode()}}">
+            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{textCode()}}" role=button (click)="useGuest()" >No thanks, continue as Guest</a>
           </div>
        </div>
        <div *ngIf="isSignIn()">
           <form  class = "mt-4" [formGroup]="loginForm">
-            <!-- <img class="img mt-5" src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/> -->
-            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="username" placeholder="{{username}}/Email" formControlName="username">
-            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{storeInfo().colorStyle!.back_code}} text-{{storeInfo().colorStyle!.text_code}}" name="password" placeholder="Password" formControlName="password">
-            <!-- <button class="btn forgot underlineHover">Forgot Password</button> -->
+            <input [style.font-family]="storeInfo().fontName!" type="text" id="username" class="fadeIn second mt-2 bg-{{backCode()}} text-{{textCode()}}" name="username" placeholder="{{username}}/Email" formControlName="username">
+            <input [style.font-family]="storeInfo().fontName!" type="password" id="password" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="password" placeholder="Password" formControlName="password">
             <div>
                 <div class="col">
-                  <button [style.font-family]="storeInfo().fontName!" type="submit" role='button' (click)="signInEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
+                  <button [style.font-family]="storeInfo().fontName!" type="submit" role='button' (click)="signInEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{textColor()}}" style.color="{{backColor()}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
                 </div>
             </div>
           </form>
-          <div id="formFooter"  class="bg-{{storeInfo().colorStyle!.back_code}}">
-            <a [style.font-family]="storeInfo().fontName!" class="underlineHover text-{{storeInfo().colorStyle!.text_code}}" role='button' (click)="changeAuth(5)">I can't access my account</a>
-          </div>
         </div>
         <div *ngIf="isRecover()">
-          
-        </div>
-      <!-- Remind Passowrd -->
-    </div>
+        </div> -->
   </div>
+</div>

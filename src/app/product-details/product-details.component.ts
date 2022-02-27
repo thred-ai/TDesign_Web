@@ -16,6 +16,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
 import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
+import { NFT } from '../models/nft.model';
 
 @Component({
   selector: 'app-product-details',
@@ -42,7 +43,7 @@ export class ProductDetailsComponent implements OnInit {
 
   selectedTemplate?: Template
   selectedColor?: Color
-  product?: Product
+  product?: NFT
   inventory: Array<Inventory> = []
   frontImg?: string
   backImg?: string
@@ -102,119 +103,120 @@ export class ProductDetailsComponent implements OnInit {
 
   matchingInv(popFirst: boolean){
 
-    if (popFirst){
-      return this.inventory.find(inv => { return inv.code == this.product?.productType})?.variations?.slice(1) ?? []
-    }
-    return this.inventory.find(inv => { return inv.code == this.product?.productType})?.variations ?? []
+    // if (popFirst){
+    //   return this.inventory.find(inv => { return inv.code == this.product?.productType})?.variations?.slice(1) ?? []
+    // }
+    // return this.inventory.find(inv => { return inv.code == this.product?.productType})?.variations ?? []
+    return []
   }
 
   async ngOnInit() {
-    this.selectedColor = this.data.selectedColor
-    this.selectedTemplate = this.data.selectedTemplate
-    this.frontImg = this.data.frontImg
-    this.backImg = this.data.backImg
-    this.mode = this.data.mode
-    this.inventory = this.data.inventory
+    // this.selectedColor = this.data.selectedColor
+    // this.selectedTemplate = this.data.selectedTemplate
+    // this.frontImg = this.data.frontImg
+    // this.backImg = this.data.backImg
+    // this.mode = this.data.mode
+    // this.inventory = this.data.inventory
 
 
-    this.designForm.controls.price.setValue(this.data.suggested_price)
-    this.product = this.data.product
+    // this.designForm.controls.price.setValue(this.data.suggested_price)
+    // this.product = this.data.product
 
-    if (this.mode == 'create'){
-      if (this.product?.custom){
-        this.images = [
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          }
-        ]
-        let inv = this.matchingInv(false)
+    // if (this.mode == 'create'){
+    //   if (this.product?.custom){
+    //     this.images = [
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       }
+    //     ]
+    //     let inv = this.matchingInv(false)
         
-        let variations = inv[0]
-        if (variations){
-          this.designForm.controls.type.setValue(variations)
-        }
-        this.designForm.controls.description.setValue(this.inventory.find(inv => { return inv.code == this.product?.productType})?.desc ?? '')
-      }
-      else{
-        this.images = [
-          {
-            isActive: true,
-            img: this.data.linkImg
-          },
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          },
-          {
-            isActive: false,
-            img: ''
-          }
-        ]
-        if (this.data.back_linkImg){
-          this.images[1] = {
-            isActive: true,
-            img: this.data.back_linkImg
-          }
-        }
-        this.designForm.controls.description.setValue((this.selectedTemplate?.moreInfo ?? '')?.replace(/\\n/g, ' '))
-      }
-    }
-    else{
+    //     let variations = inv[0]
+    //     if (variations){
+    //       this.designForm.controls.type.setValue(variations)
+    //     }
+    //     this.designForm.controls.description.setValue(this.inventory.find(inv => { return inv.code == this.product?.productType})?.desc ?? '')
+    //   }
+    //   else{
+    //     this.images = [
+    //       {
+    //         isActive: true,
+    //         img: this.data.linkImg
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       },
+    //       {
+    //         isActive: false,
+    //         img: ''
+    //       }
+    //     ]
+    //     if (this.data.back_linkImg){
+    //       this.images[1] = {
+    //         isActive: true,
+    //         img: this.data.back_linkImg
+    //       }
+    //     }
+    //     this.designForm.controls.description.setValue((this.selectedTemplate?.moreInfo ?? '')?.replace(/\\n/g, ' '))
+    //   }
+    // }
+    // else{
 
-      if (this.product){
-        this.designForm.controls.name.setValue(this.product.name ?? '')
-        this.designForm.controls.description.setValue(this.product.description ?? '')
-        const promises = this.product.images.map(async image => {
-          let img = {
-            isActive: true,
-            img: image.img.toString()
-          }
-          this.images.push(
-            img
-          )
-          var i = await this.getBase64ImageFromUrl(image.img.toString()) as any
-          img.img = i
-        })
-        await Promise.all(promises)
+    //   if (this.product){
+    //     this.designForm.controls.name.setValue(this.product.name ?? '')
+    //     this.designForm.controls.description.setValue(this.product.description ?? '')
+    //     const promises = this.product.images.map(async image => {
+    //       let img = {
+    //         isActive: true,
+    //         img: image.img.toString()
+    //       }
+    //       this.images.push(
+    //         img
+    //       )
+    //       var i = await this.getBase64ImageFromUrl(image.img.toString()) as any
+    //       img.img = i
+    //     })
+    //     await Promise.all(promises)
 
-        let diff = 5-this.images.length
-        if (diff>0){
-          for (let i = 0; i < diff; i++) {
-            this.images.push(
-              {
-                isActive: false,
-                img: ''
-              }
-            )
-          }
-        }
-      }
-    }
+    //     let diff = 5-this.images.length
+    //     if (diff>0){
+    //       for (let i = 0; i < diff; i++) {
+    //         this.images.push(
+    //           {
+    //             isActive: false,
+    //             img: ''
+    //           }
+    //         )
+    //       }
+    //     }
+    //   }
+    // }
 
   }
 
@@ -257,85 +259,85 @@ export class ProductDetailsComponent implements OnInit {
 
   async createDesign(){
 
-    let nameField = this.designForm.controls.name
-    let priceField = this.designForm.controls.price
-    let descField = this.designForm.controls.description
+  //   let nameField = this.designForm.controls.name
+  //   let priceField = this.designForm.controls.price
+  //   let descField = this.designForm.controls.description
 
-    let color = this.designForm.controls.type ?? null
+  //   let color = this.designForm.controls.type ?? null
 
-    var amt = this.selectedTemplate?.minPrice ?? 0
+  //   var amt = this.selectedTemplate?.minPrice ?? 0
 
-    if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
-      amt = 0
-    }
+  //   if (this.inventory.find(inv => { return inv.code == this.selectedTemplate?.productCode && inv.amount > 0})){
+  //     amt = 0
+  //   }
 
-    if (this.frontImg && this.backImg){
-      amt += this.selectedTemplate!.extraCost
-    }
+  //   if (this.frontImg && this.backImg){
+  //     amt += this.selectedTemplate!.extraCost
+  //   }
 
-    if (nameField.invalid){
+  //   if (nameField.invalid){
 
-      return
-    }
-    else if (priceField.invalid || (priceField.value * 100) < amt){
-      return
-    }
-    else if (descField.invalid){
+  //     return
+  //   }
+  //   else if (priceField.invalid || (priceField.value * 100) < amt){
+  //     return
+  //   }
+  //   else if (descField.invalid){
 
-      return
-    }
-    else if (this.images.filter(img => { return img.isActive}).length == 0){
-      return
-    }
+  //     return
+  //   }
+  //   else if (this.images.filter(img => { return img.isActive}).length == 0){
+  //     return
+  //   }
 
-    this.spinner.show('productSpinner')
+  //   this.spinner.show('productSpinner')
 
-    let imgs = this.images.filter(img => {
-      return img.isActive
-    })
+  //   let imgs = this.images.filter(img => {
+  //     return img.isActive
+  //   })
 
     
 
-    let name = nameField.value as string
-    let price = (priceField.value as number) * 100
-    let desc = descField.value as string ?? ""
-    let type = color.value as string ?? ''
+  //   let name = nameField.value as string
+  //   let price = (priceField.value as number) * 100
+  //   let desc = descField.value as string ?? ""
+  //   let type = color.value as string ?? ''
 
 
 
-    var images: Array<Dict<any>> = [
-      {
-        img: imgs[0].img,
-        type: "link_"
-      }
-    ]
+  //   var images: Array<Dict<any>> = [
+  //     {
+  //       img: imgs[0].img,
+  //       type: "link_"
+  //     }
+  //   ]
 
-    imgs.forEach((image, index) => {
-      if (index == 0)return
-      images.push({
-        img: image.img,
-        type: "link" + (index+1) + "_"
-      })
-    })
+  //   imgs.forEach((image, index) => {
+  //     if (index == 0)return
+  //     images.push({
+  //       img: image.img,
+  //       type: "link" + (index+1) + "_"
+  //     })
+  //   })
 
-    let mappedData = {
-      name: name ?? "Post",
-      price: price ?? 2000,
-      description: desc ?? "",
-      available: true,
-      productID: this.product?.productID ?? "",
-      images: images,
-      color: type
-    }
+  //   let mappedData = {
+  //     name: name ?? "Post",
+  //     price: price ?? 2000,
+  //     description: desc ?? "",
+  //     available: true,
+  //     productID: this.product?.productID ?? "",
+  //     images: images,
+  //     color: type
+  //   }
 
-    await this.loadService.updateProduct(mappedData, this.product)
+  //   await this.loadService.updateProduct(mappedData, this.product)
 
 
-  // this.modalService.dismissAll()
+  // // this.modalService.dismissAll()
 
   
-    this.spinner.hide("productSpinner")
-    this.finished.emit(true)
+  //   this.spinner.hide("productSpinner")
+  //   this.finished.emit(true)
 
 
 

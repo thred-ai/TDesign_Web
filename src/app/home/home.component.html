@@ -10,8 +10,8 @@
   [fullScreen]="true"
   style.color="{{ selectedIndicator()!.color }}"
 >
-  <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">
-    {{ storeInfo()?.fullName }}
+  <h3 class="text-center mt-5" [style.font-family]="storeInfo?.fontName!">
+    {{ storeInfo?.fullName }}
   </h3>
 </ngx-spinner>
 
@@ -19,7 +19,7 @@
 
 <!-- Section-->
 <section
-  *ngIf="isBrowser() && storeInfo()?.active"
+  *ngIf="isBrowser() && storeInfo && storeInfo?.active && !isLoading"
   class="py-5 pt-0 w-100 h-100"
   [class.fixed-top]="page?.fullscreen ?? false"
   style="overflow-y: scroll"
@@ -34,95 +34,125 @@
         style.color="{{ selectedTheme()!.color }}"
       >
         <p
-          class="text-center text-{{ storeInfo().colorStyle!.text_code }}"
+          class="text-center text-{{ storeInfo?.colorStyle!.text_code }}"
           style="line-height: 1.2em"
-          [style.font-family]="storeInfo().fontName!"
+          [style.font-family]="storeInfo?.fontName!"
         >
           {{ row.text }}
         </p>
       </div>
       <!-- data-aos="fade-right" data-aos-duration="200" -->
-      <div class="w-100" *ngIf="row.type == 0">
+      
+
+                          <!-- href="{{ '/products/' + product.tokenID | storeChecker }}" -->
+      <div class="w-100" *ngIf="row.type == 0 && !shouldHide()">
         <div
           class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center"
         >
           <div
             class="col mb-3"
-            *ngFor="let product of (([] | productsPipe: {products: (storeProducts) ?? [], row: row}) ?? [])"
+            *ngFor="let product of products(row.smart_products, row.products) ?? []"
           >
-            <div
-              class="card h-100 bg-{{ storeInfo().colorStyle!.back_code }}"
-              [class.border-secondary]="
-                storeInfo()!.colorStyle!.text_code == 'light'
-              "
+          <div
+          class="bg-{{
+            storeInfo?.colorStyle!.back_code
+          }} shadow rounded border border-secondary"
+          [class.border-secondary]="
+            storeInfo?.colorStyle!.text_code == 'light'
+          "
+        >
+          <div class="pb-0 w-100">
+            <a
+            role="button"
+            class="w-100"
+            (click)='routeToProduct(product)'
+          >
+          <video
+              style="object-fit: cover; aspect-ratio: 1; top: 0; margin-top: 0;"
+              
+              class="h-100 w-100"
+              autoplay="true"
+              loop="true"
+              muted="true"
+              *ngIf="product.format == 'video'"
             >
-              <!-- Product image-->
-              <a
+              <source
+                [src]="product.url! | safeUrl"
+                type="video/mp4"
+              />
+            </video>
+
+            <img
+              class="h-100 w-100"
+              src="{{ product.url }}"
+              alt="ok"
+              style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em;"
+              onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
+              *ngIf="product.format == 'image'"
+            />
+          </a>
+            <div class="card-body text-center w-100">
+              <p
+                class="fw-bolder w-100"
+                style="
+                  text-decoration: none;
+                  text-overflow: ellipsis;
+                  word-wrap: break-word;
+                  word-break: break-all;
+                  overflow-x: hidden;
+                "
+                style.color="{{ selectedTheme()!.color }}"
                 role="button"
-                href="{{ '/products/' + product.productID | storeChecker }}"
-                (click)="routeToProduct(product.productID); (false)"
-                ><img
-                  class="card-img-top"
-                  src="{{(product.url?.toString() ?? &quot;&quot;)}}"
-                  alt="ok"
-              /></a>
-              <!-- Product details-->
-              <div class="card-body p-2 pb-0">
-                <div class="text-center">
-                  <!-- Product name-->
-                  <h4
-                    class="fw-bolder"
-                    [style.font-family]="storeInfo().fontName!"
-                    [style.font-size.px]="titleFontSize(row)"
-                    [class.my-5]='titleFontSize(row) != "inherit" && (row.grid_row ?? 1) <= 2'
-                  >
-                    <a
-                      style="text-decoration: none"
-                      style.color="{{ selectedTheme()!.color }}"
-                      role="button"
-                      href="{{
-                        '/products/' + product.productID | storeChecker
-                      }}"
-                      (click)="routeToProduct(product.productID); (false)"
-                      >{{ product.name }}</a
-                    >
-                  </h4>
-                  <!-- Product price-->
-                </div>
-              </div>
-              <!-- Product actions-->
-              <div
-                class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
               >
-                <p
-                  *ngIf="autoCoupon(product)"
-                  class="text-center fw-bolder d-flex justify-content-center align-items-center"
-                  style="font-size: 15px"
-                  [style.font-family]="storeInfo().fontName!"
+                {{ product.name }}
+              </p>
+              <div
+                class="d-flex align-items-center justify-content-center w-100"
+              >
+                <!-- <a
+                  role="button"
+                  class="btn"
+                  (click)="editProduct(product)"
                 >
-                  <b class="old-price">
-                    {{formatPrice((product.price ?? 0) / 100)}}
-                  </b>
-                </p>
-                <div
-                  class="text-center d-flex justify-content-center align-items-center w-100"
-                >
-                  <a
-                    [style.font-family]="storeInfo().fontName!"
-                    [style.font-size.px]="fontSize(row)"
-                    class="btn btn-outline-{{
-                      storeInfo().colorStyle!.text_code
-                    }} bad w-100 mt-auto text-center"
-                    style="font-weight: bold; max-width: 50vh"
-                    role="button"
-                    href="{{ '/products/' + product.productID | storeChecker }}"
-                    (click)="routeToProduct(product.productID); (false)"
+                  <mat-icon
+                    style.color="{{ selectedTheme()!.color }}"
+                    >edit</mat-icon
                   >
-                    {{ formatPrice(mainPrice(product)) }}
-                  </a>
-                </div>
+                </a> -->
+                <!-- <a
+                role="button"
+                class="btn"
+                (click)="deleteProduct(product)"
+              >
+                <mat-icon
+                  style.color="{{ selectedTheme()!.color }}"
+                  >delete</mat-icon
+                >
+              </a> -->
               </div>
             </div>
+          </div>
+          <div
+            class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+          >
+            <div class="text-center">
+              <a
+                class="btn btn-outline-{{
+                  storeInfo?.colorStyle!.text_code
+                }} mt-auto d-flex justify-content-center text-center"
+                style="font-weight: bold"
+                role="button"
+                (click)='routeToProduct(product)'
+              >
+                {{
+                  (product?.price | price) +
+                    " " +
+                   (storeInfo | collectionPipe: product.contractID)?.currency
+                }}
+              </a>
+            </div>
+          </div>
+        </div>
           </div>
         </div>
       </div>
@@ -153,8 +183,8 @@
         *ngIf="row.type == 5 ||
                     (row.type) == 6"
         class="w-100 w-md-50 mt-3 card text-{{
-          storeInfo().colorStyle!.text_code
-        }} bg-{{ storeInfo().colorStyle!.back_code }} mx-auto"
+          storeInfo?.colorStyle!.text_code
+        }} bg-{{ storeInfo?.colorStyle!.back_code }} mx-auto"
       >
       <form class="m-3" [formGroup]="popupForm" novalidate>
 
@@ -163,7 +193,7 @@
         class="w-100 h-100 mb-0"
       >
         <mat-placeholder
-          class="placeholder w-100"
+          class="w-100"
           [style.color]="selectedTheme()!.color"
           >Name</mat-placeholder
         >
@@ -171,7 +201,7 @@
           type="text"
           matInput
           formControlName="name"
-          class="text-{{ storeInfo().colorStyle!.text_code }}"
+          class="text-{{ storeInfo?.colorStyle!.text_code }}"
           style.color="{{ selectedTheme().color }}"
         />
       </mat-form-field>
@@ -183,7 +213,7 @@
         class="w-100 h-100"
       >
         <mat-placeholder
-          class="placeholder w-100"
+          class="w-100"
           [style.color]="selectedTheme()!.color"
           >Email</mat-placeholder
         >
@@ -191,14 +221,14 @@
           type="email"
           matInput
           formControlName="email"
-          class="text-{{ storeInfo().colorStyle!.text_code }}"
+          class="text-{{ storeInfo?.colorStyle!.text_code }}"
           style.color="{{ selectedTheme().color }}"
         />
       </mat-form-field>
       
       
       </form>
-      <p *ngIf='err' class="w-100 text-danger text-center fw-bold" [style.font-family]="storeInfo().fontName!">
+      <p *ngIf='err' class="w-100 text-danger text-center fw-bold" [style.font-family]="storeInfo?.fontName!">
         {{err}}
       </p>
       <!-- <a
@@ -217,7 +247,7 @@
             {{ button.text }}
           </a> -->
           
-      <!-- <button  class="btn m-2 btn-dark d-flex mx-auto" style="width: fit-content;" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">SUBMIT</button> -->
+      <!-- <button  class="btn m-2 btn-dark d-flex mx-auto" style="width: fit-content;" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo?.fontName!">SUBMIT</button> -->
 
       </div>
 
@@ -281,13 +311,13 @@
       <div class="w-100 mx-0" *ngIf="row.type == 2">
         <div
           class="px-3 my-0"
-          [style.font-family]="storeInfo().fontName!"
+          [style.font-family]="storeInfo?.fontName!"
           style.color="{{ selectedTheme()!.color }}"
           [innerHTML]="row.html ?? '' | safeTextRows"
         ></div>
       </div>
     </div>
-    <div class="mb-0 bg-{{ storeInfo().colorStyle!.back_code }}" *ngIf='page?.fullscreen ?? false'>
+    <div class="mb-0 bg-{{ storeInfo?.colorStyle!.back_code }}" *ngIf='page?.fullscreen ?? false'>
       <h3 class="h-100 w-100 text-center text-muted">
         Powered By Thred
       </h3>
@@ -297,8 +327,9 @@
 <section
   *ngIf="
     isBrowser() &&
-    storeInfo()?.username &&
-    (!storeInfo()?.active)
+    storeInfo &&
+    storeInfo?.username &&
+    (!storeInfo?.active)
   "
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -310,9 +341,9 @@
       style.color="{{ selectedTheme()!.color }}"
     >
       <p
-        class="text-center text-{{ storeInfo().colorStyle!.text_code }}"
+        class="text-center text-{{ storeInfo?.colorStyle!.text_code }}"
         style="line-height: 1.2em"
-        [style.font-family]="storeInfo().fontName!"
+        [style.font-family]="storeInfo?.fontName!"
       >
         COMING SOON
       </p>
@@ -323,7 +354,7 @@
           <a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"
             ><img
               style="border-radius: 2.5%"
-              src="{{(storeInfo()!.homeLink?.toString() ?? '')}}"
+              src="{{(storeInfo!.homeLink?.toString() ?? '')}}"
               style="max-width: 100%; height: auto"
               alt="Product"
           /></a>

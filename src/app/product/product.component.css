@@ -60,6 +60,20 @@ apple-pay-button {
   100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
+.example-headers-align .mat-expansion-panel-header-title,
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
 .anim{
   position: relative;
   display: inline-block;
@@ -151,12 +165,80 @@ apple-pay-button {
   }
 }
 
+.rounded-panel{
+  border-radius: 20px; 
+  object-fit: contain; 
+  overflow: hidden
+}
+
+.demo-table {
+  width: 100%;
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+  border-color: currentColor;
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+}
+
+.rounded-panel-2{
+  border-radius: 10px; 
+  object-fit: contain; 
+  overflow: hidden
+}
+
+.rounded-10{
+  border-radius: 20px !important;
+}
+
+tr td {
+  white-space: nowrap;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+
+table{
+  display: inline;
+}
+
+.padding{
+  padding-left: 20px; 
+  padding-right: 20px;
+}
+
+.rounded-10-bottom{
+  border-bottom-left-radius: 20px !important;
+  border-bottom-right-radius: 20px !important;
+}
+
+.rounded-10-top{
+  border-top-left-radius: 20px !important;
+  border-top-right-radius: 20px !important;
+}
+
+.single-line{
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inherit;
+  }
+
 .stayFixed{
   position: fixed; 
   left: 0; 
   right: 0; 
   bottom: 0px; 
   width: 100%;
+  z-index: 1000;
 }
 
 .bottom{

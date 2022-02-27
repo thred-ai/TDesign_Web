@@ -45,7 +45,13 @@ import { Banner } from './models/banner.model';
 import { Popup } from './models/popup.model';
 import { MatDialog } from '@angular/material/dialog';
 import { PopupComponent } from './popup/popup.component';
+import { WalletComponent } from './wallet/wallet.component';
+import { AuthService } from './services/auth.service';
+
 import * as AOS from 'aos';
+import { MatIconRegistry } from "@angular/material/icon";
+import { DomSanitizer } from '@angular/platform-browser';
+import { ethers } from 'ethers';
 
 @Component({
   selector: 'app-root',
@@ -250,10 +256,13 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   routeToProfile(selected?: string) {
+    console.log('routing here')
     if (Globals.userInfo?.username) {
+      console.log('has user')
       this.loadService.myCallback = undefined;
       if (Globals.storeInfo.uid != Globals.userInfo?.uid) {
-        Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
+        console.log('not store')
+        // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
         this.routingService.routeToProfile(
           Globals.userInfo?.username!,
           this.getStoreName().isCustom,
@@ -261,16 +270,25 @@ export class AppComponent implements OnInit, AfterViewInit {
           'https://shopmythred.com/' + Globals.userInfo?.username
         );
       } else {
+        console.log('has store')
+        console.log(Globals.storeInfo)
+        console.log(Globals.userInfo)
         if (Globals.storeInfo?.username) {
-          if (this.isAdmin()) {
-            this.reloadCurrentRoute();
-          } else {
-            this.routingService.routeToProfile(
-              Globals.userInfo?.username!,
-              this.getStoreName().isCustom,
-              selected
-            );
-          }
+          // if (this.isAdmin()) {
+          //   this.reloadCurrentRoute();
+          // } else {
+          //   this.routingService.routeToProfile(
+          //     Globals.userInfo?.username!,
+          //     this.getStoreName().isCustom,
+          //     selected
+          //   );
+          // }
+          console.log('routing')
+          this.routingService.routeToProfile(
+            Globals.userInfo?.username!,
+            this.getStoreName().isCustom,
+            selected
+          );
         }
       }
     } else {
@@ -435,6 +453,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  signInWithWallet(){
+    
+  }
+
   settings(popFirst: boolean) {
     if (popFirst) {
       return this.profileSettings.slice(1, -1) ?? [];
@@ -565,15 +587,15 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   applyProductFilter(template?: Template) {
-    let id = template?.productCode;
-    this.mode = this.titleCase(template?.templateDisplayName ?? 'All Products');
-    if (Globals.storeInfo.username) {
-      this.loadService.myCallback = () => this.cdr.detectChanges();
-      // this.loadService.getPosts(id)
-      this.loadService.getPosts((products) => {
-        this.loadService.setFilterProducts(products);
-      }, id);
-    }
+    // let id = template?.productCode;
+    // this.mode = this.titleCase(template?.templateDisplayName ?? 'All Products');
+    // if (Globals.storeInfo.username) {
+    //   this.loadService.myCallback = () => this.cdr.detectChanges();
+    //   // this.loadService.getPosts(id)
+    //   this.loadService.getPosts((products) => {
+    //     this.loadService.setFilterProducts(products);
+    //   }, id);
+    // }
   }
 
   isShopComponent() {
@@ -640,9 +662,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     private loadService: LoadService,
     private routingService: RoutingService,
     private pixelService: PixelService,
+    private authService: AuthService,
+    
     private modalService: NgbModal,
     private _router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
   ) {
     this.check();
 
@@ -652,8 +678,41 @@ export class AppComponent implements OnInit, AfterViewInit {
       (<any>window).globals = Globals;
       (<any>window).hi = 'hi';
       AOS.init();
+
+      this.matIconRegistry.addSvgIcon(
+        `polygon_icon`,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/polygon_logo.svg`)
+      );
     }
   }
+
+  async openWallet(){
+
+    if (Globals.provider){
+      Globals.provider = undefined
+    }
+    else{
+      try {
+        let provider = await this.loadService.initializeProvider()
+        Globals.provider = provider
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    // if (await this.loadService.isUnlocked()){
+    //   console.log('wallet unlocked')
+    // }
+    // else{
+    //   const provider = await this.loadService.initializeProvider()
+
+    //   Globals.provider = provider
+
+    //   console.log('wallet linked')
+    // }
+  }
+
+  
 
   async check() {
     if (isPlatformBrowser(this.platformID)) {
@@ -835,12 +894,24 @@ export class AppComponent implements OnInit, AfterViewInit {
     return Array(12 / this.storeInfo().banners.length).fill(0);
   }
 
+  providerName(){
+    if (Globals.provider){
+      return 'CONNECTED'
+    }
+    return 'CONNECT WALLET'
+  }
+
   async ngOnInit() {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR
 
     this.loadService.rootComponent = this;
+    this.authService.app = this;
+
     this.setOptions();
+
+        
+
 
     // if (isPlatformBrowser(this.platformID)){
     //   AOS.init();

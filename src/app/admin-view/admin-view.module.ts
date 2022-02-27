@@ -1,9 +1,9 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from "@angular/common";
+import { CommonModule } from '@angular/common';
 import { AdminViewComponent } from './admin-view.component';
 import { Globals } from '../globals';
 import { MatCardModule } from '@angular/material/card';
-import { NgxSpinnerModule } from "ngx-spinner";
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DesignComponent } from '../design/design.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
@@ -16,40 +16,43 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NgxCurrencyModule } from "ngx-currency";
+import { NgxCurrencyModule } from 'ngx-currency';
 import { SocialFormComponent } from '../social-form/social-form.component';
 import { InventoryBuyComponent } from '../inventory-buy/inventory-buy.component';
 import { InventoryListComponent } from '../inventory-list/inventory-list.component';
 import { EditPlanComponent } from '../edit-plan/edit-plan.component';
-import {ClipboardModule} from '@angular/cdk/clipboard';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { StoreSetupComponent } from '../store-setup/store-setup.component';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {MatDialogModule} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { DragScrollModule } from 'ngx-drag-scroll';
-import {MatTabsModule} from '@angular/material/tabs';
+import { MatTabsModule } from '@angular/material/tabs';
 import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
 import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 import { NgxSummernoteModule } from 'ngx-summernote';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
-import { NgApexchartsModule } from "ng-apexcharts";
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { MatRadioModule } from '@angular/material/radio';
 import { MapPopupComponent } from '../map-popup/map-popup.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
-
+import { CreateCryptoComponent } from '../create-crypto/create-crypto.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
+import { CreateCollectionComponent } from '../create-collection/create-collection.component';
+import { SatPopoverModule } from '@ncstate/sat-popover';
 
 const routes: Routes = [
   {
@@ -57,7 +60,6 @@ const routes: Routes = [
     component: AdminViewComponent,
   },
 ];
-
 
 @NgModule({
   declarations: [
@@ -78,6 +80,8 @@ const routes: Routes = [
     ViewAllOrderAdminComponent,
     LayoutBuilderComponent,
     MapPopupComponent,
+    CreateCryptoComponent,
+    CreateCollectionComponent,
   ],
 
   imports: [
@@ -88,7 +92,6 @@ const routes: Routes = [
     MatButtonModule,
     MatSelectModule,
     NgxSpinnerModule,
-    ReactiveFormsModule,
     ImageCropperModule,
     ColorPickerModule,
     NgbModule,
@@ -99,6 +102,7 @@ const routes: Routes = [
     DragScrollModule,
     NgxChartsModule,
     ClipboardModule,
+    ReactiveFormsModule,
     NgxCurrencyModule,
     DragDropModule,
     MatChipsModule,
@@ -112,14 +116,14 @@ const routes: Routes = [
     ApplicationPipesModule,
     NgApexchartsModule,
     MatRadioModule,
-    MonacoEditorModule.forRoot()
+    NgxFileDropModule,
+    SatPopoverModule,
+    MonacoEditorModule.forRoot(),
   ],
-  schemas:[CUSTOM_ELEMENTS_SCHEMA],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
-  bootstrap: [AdminViewComponent]
+  bootstrap: [AdminViewComponent],
 })
 export class AdminViewModule {
-  constructor(){
-
-  }
- }
+  constructor() {}
+}

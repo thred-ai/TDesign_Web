@@ -36,7 +36,7 @@
 </ngx-spinner>
 
 <div
-  *ngIf="isBrowser()"
+  *ngIf="isBrowser() && provider && isSignedIn()"
   [hidden]="storeInfo().username == undefined"
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -550,7 +550,7 @@
                     {{ i + selectedEmailPageIndex * 10 + 1 }}
                   </td>
                   <td *ngIf="!isMobile()">
-                    {{ contact.name ?? 'Not Provided' }}
+                    {{ contact.name ?? "Not Provided" }}
                   </td>
                   <td>{{ contact.email }}</td>
                   <td>{{ contact.timestamp }}</td>
@@ -609,7 +609,7 @@
               <tbody *ngIf="(numbers()?.length ?? 0) > 0">
                 <tr *ngFor="let contact of numbers(); index as i">
                   <td>{{ i + selectedPhonePageIndex * 10 + 1 }}</td>
-                  <td>{{ contact.name ?? 'Not Provided' }}</td>
+                  <td>{{ contact.name ?? "Not Provided" }}</td>
                   <td>{{ contact.phone }}</td>
                   <td>{{ contact.timestamp }}</td>
                   <!-- <td>
@@ -771,7 +771,7 @@
                                               </mat-option>
                                           </mat-optgroup>
                                         </mat-select>
-                                        <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
+                                        <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
                                         <mat-error *ngIf="themeForm.controls['storeTheme'].hasError('required')">
                                           Theme is <strong>required</strong>
                                       </mat-error>
@@ -799,9 +799,7 @@
                           {{ font }}
                         </mat-option>
                       </mat-select>
-                      <mat-placeholder
-                        class="placeholder"
-                        [style.color]="selectedTheme()!.color"
+                      <mat-placeholder [style.color]="selectedTheme()!.color"
                         >Store Font</mat-placeholder
                       >
                       <mat-error
@@ -1010,6 +1008,74 @@
         </form>
       </div>
 
+      <div
+        *ngIf="getSelectedPanel()?.Title == 'NFT'"
+        class="py-3 w-100"
+        style="height: 100vh"
+      >
+        <div class="d-flex justify-content-center align-items-center w-100">
+          <a
+            role="button"
+            (click)="createNewProduct()"
+            class="btn rounded-pill bg-{{
+              storeInfo().colorStyle!.text_code
+            }} d-inline-flex px-3 my-4 text-{{
+              storeInfo().colorStyle!.back_code
+            }}"
+          >
+            <mat-icon class="me-2"
+              ><span style="font-size: 25px"> storefront </span></mat-icon
+            >
+            NEW PRODUCT
+          </a>
+        </div>
+
+        <mat-tab-group mat-stretch-tabs>
+          <mat-tab>
+            <!-- #docregion label-directive -->
+            <ng-template mat-tab-label>
+              <mat-icon
+                class="example-tab-icon text-{{
+                  storeInfo().colorStyle!.text_code
+                }}"
+                >window</mat-icon
+              >
+              <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
+                CREATOR DASHBOARD
+              </span>
+            </ng-template>
+            <!-- <iframe
+            #iframe
+            (load)='passVars(iframe)'
+            scrolling="no"
+            [src]="'http://localhost:3000/creator-dashboard' | safeUrl"
+            style="width: 100%; height: 100vh"
+          ></iframe> -->
+          </mat-tab>
+          <mat-tab>
+            <!-- #docregion label-directive -->
+            <ng-template mat-tab-label>
+              <mat-icon
+                class="example-tab-icon text-{{
+                  storeInfo().colorStyle!.text_code
+                }}"
+                >window</mat-icon
+              >
+              <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
+                SOLD ASSETS
+              </span>
+            </ng-template>
+            <!-- <iframe
+            #iframe2
+            (load)='passVars(iframe2)'
+            scrolling="no"
+            [src]="'http://localhost:3000/sold-assets' | safeUrl"
+            style="width: 100%; height: 100vh"
+          ></iframe> -->
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+
       <div *ngIf="getSelectedPanel()?.Title == 'PAGES'" class="py-3 w-100">
         <!-- [indexChanged]="didMove()" -->
         <!-- [scrollbar-hidden]="true" -->
@@ -1043,7 +1109,11 @@
             class="col w-100 w-md-50 my-2"
             *ngFor="let page of storeInfo().pages ?? []"
           >
-            <div id="back" style="aspect-ratio: 2/1" class="p-3 pb-1 w-100 rounded shadow">
+            <div
+              id="back"
+              style="aspect-ratio: 2/1"
+              class="p-3 pb-1 w-100 rounded shadow"
+            >
               <div
                 class="w-100 h-100 rounded shadow card"
                 style="position: relative"
@@ -1053,9 +1123,12 @@
                   class="w-100 h-100"
                   style="overflow-y: hidden; position: absolute"
                 >
-                  <div class="w-100" *ngFor="let row of page.rows ?? []; index as i">
+                  <div
+                    class="w-100"
+                    *ngFor="let row of page.rows ?? []; index as i"
+                  >
                     <div
-                      *ngIf='(row.text ?? "").trim() != ""'
+                      *ngIf="(row.text ?? '').trim() != ''"
                       class="d-flex align-items-center justify-content-center pb-1 mb-3 mt-2"
                       style="height: 50px; font-weight: bold; font-size: 30px"
                       style.color="{{ selectedTheme()!.color }}"
@@ -1077,11 +1150,20 @@
                       data-aos-duration="200"
                     >
                       <div
-                        class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center"
+                        class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{
+                          row.grid_row ?? 1
+                        }} justify-content-center"
                       >
                         <div
                           class="col mb-3"
-                          *ngFor="let product of (([] | productsPipe: {products: (storeProducts) ?? [], row: row}) ?? [])"
+                          *ngFor="
+                            let product of ([]
+                              | productsPipe
+                                : {
+                                    products: storeInfo().collections ?? [],
+                                    row: row
+                                  }) ?? []
+                          "
                         >
                           <div
                             class="card h-100 bg-{{
@@ -1095,7 +1177,7 @@
                             <a role="button"
                               ><img
                                 class="card-img-top"
-                                src="{{(product.url?.toString() ?? &quot;&quot;)}}"
+                                src="{{ product.url?.toString() ?? '' }}"
                                 alt="ok"
                             /></a>
                             <!-- Product details-->
@@ -1118,7 +1200,7 @@
                                   "
                                   role="button"
                                 >
-                                  {{ formatPrice(mainPrice(product)) }}
+                                  {{ product?.price | price }}
                                 </a>
                               </div>
                             </div>
@@ -1128,7 +1210,9 @@
                     </div>
 
                     <div
-                      class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                      class="row gx-0 row-cols-1 row-cols-md-{{
+                        row.grid_row ?? 1
+                      }} justify-content-center w-100 mx-0"
                       *ngIf="row.type == 1"
                     >
                       <div
@@ -1150,7 +1234,9 @@
                     </div>
 
                     <div
-                      class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center w-100 mx-0"
+                      class="row gx-0 row-cols-1 row-cols-md-{{
+                        row.grid_row ?? 1
+                      }} justify-content-center w-100 mx-0"
                       *ngIf="row.type == 4"
                     >
                       <div
@@ -1171,43 +1257,61 @@
                       </div>
                     </div>
 
-                    <div class="w-100 mx-0" id='c2{{i}}' *ngIf="(row).type == 7" style="pointer-events: none">
+                    <div
+                      class="w-100 mx-0"
+                      id="c2{{ i }}"
+                      *ngIf="row.type == 7"
+                      style="pointer-events: none"
+                    >
                       <iframe
-                      width="100%" 
-                      height="100%" 
-                      id='frame2{{i}}'
-                      (load)='resizeIframe(i)'
-                        [srcdoc]="((row).htmlTemplate ?? '') | storePipe | safeHtml"
+                        width="100%"
+                        height="100%"
+                        id="frame2{{ i }}"
+                        (load)="resizeIframe(i)"
+                        [srcdoc]="row.htmlTemplate ?? '' | storePipe | safeHtml"
                       ></iframe>
                     </div>
 
-                    <div *ngIf="(row.type) == 5 ||
-                    (row.type) == 6"
-                    class="w-100 w-md-50 mt-3 card text-{{
-                      storeInfo().colorStyle!.text_code
-                    }} bg-{{ storeInfo().colorStyle!.back_code }} mx-auto">
-
-                    <mat-form-field *ngIf='(row.type) == 6' class="h-100 m-3 mb-0">
-                      <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Name</mat-placeholder>
-                      <input type="text"
-                             matInput
-                             class="text-{{storeInfo().colorStyle!.text_code}}"
-                             style.color="{{selectedTheme()!.color}}"
+                    <div
+                      *ngIf="row.type == 5 || row.type == 6"
+                      class="w-100 w-md-50 mt-3 card text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} bg-{{ storeInfo().colorStyle!.back_code }} mx-auto"
+                    >
+                      <mat-form-field
+                        *ngIf="row.type == 6"
+                        class="h-100 m-3 mb-0"
                       >
-                  </mat-form-field>
-                        <mat-form-field *ngIf='(row.type) == 6' class="h-100 m-3 mt-0">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Email</mat-placeholder>
-                            <input type="email"
-                                   matInput
-                                   class="text-{{storeInfo().colorStyle!.text_code}}"
-                                   style.color="{{selectedTheme()!.color}}"
-                            >
-                        </mat-form-field>
-
+                        <mat-placeholder [style.color]="selectedTheme()!.color"
+                          >Name</mat-placeholder
+                        >
+                        <input
+                          type="text"
+                          matInput
+                          class="text-{{ storeInfo().colorStyle!.text_code }}"
+                          style.color="{{ selectedTheme()!.color }}"
+                        />
+                      </mat-form-field>
+                      <mat-form-field
+                        *ngIf="row.type == 6"
+                        class="h-100 m-3 mt-0"
+                      >
+                        <mat-placeholder [style.color]="selectedTheme()!.color"
+                          >Email</mat-placeholder
+                        >
+                        <input
+                          type="email"
+                          matInput
+                          class="text-{{ storeInfo().colorStyle!.text_code }}"
+                          style.color="{{ selectedTheme()!.color }}"
+                        />
+                      </mat-form-field>
                     </div>
 
                     <div
-                      class="row gx-0 row-cols-1 row-cols-md-{{row.grid_row ?? 1}} justify-content-center mw-100 px-3 mb-1"
+                      class="row gx-0 row-cols-1 row-cols-md-{{
+                        row.grid_row ?? 1
+                      }} justify-content-center mw-100 px-3 mb-1"
                       *ngIf="row.type == 3"
                     >
                       <div
@@ -1222,7 +1326,7 @@
                           }} w-100 my-auto"
                           style="text-decoration: none"
                           style.background-color="{{ button.bg_color }}"
-                          [style.font-size.px]='(button.fontsize ?? 15) / 2.5'
+                          [style.font-size.px]="(button.fontsize ?? 15) / 2.5"
                           style.color="{{ button.text_color }}"
                         >
                           {{ button.text }}
@@ -1267,7 +1371,9 @@
                 >
                   {{ urlText() }}/{{ page.url }}
                 </p>
-                <div class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0">
+                <div
+                  class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
+                >
                   <a
                     role="button"
                     class="btn btn btn-light rounded-circle shadow p-2 d-flex align-items-center justify-content-center"
@@ -1275,11 +1381,12 @@
                     (click)="configureHeader(page.id)"
                   >
                     <mat-icon
-                    class="text-{{inFooter(page.id) ? 'success' : 'secondary'}}"
+                      class="text-{{
+                        inFooter(page.id) ? 'success' : 'secondary'
+                      }}"
                       style.color="{{ selectedTheme()!.color }}"
                       >border_top</mat-icon
                     >
-
                   </a>
 
                   <a
@@ -1288,12 +1395,13 @@
                     style="aspect-ratio: 1"
                     (click)="configureFooter(page.id)"
                   >
-                  <mat-icon
-                  class="text-{{inFooter(page.id) ? 'success' : 'secondary'}}"
-                  style.color="{{ selectedTheme()!.color }}"
-                  >border_bottom</mat-icon
-                >
-
+                    <mat-icon
+                      class="text-{{
+                        inFooter(page.id) ? 'success' : 'secondary'
+                      }}"
+                      style.color="{{ selectedTheme()!.color }}"
+                      >border_bottom</mat-icon
+                    >
                   </a>
                   <a
                     role="button"
@@ -1305,21 +1413,15 @@
                     EDIT
                   </a>
 
-
-                  
-
-
                   <a
                     role="button"
                     (click)="deletePage(page)"
                     class="ms-2 btn btn btn-{{
                       storeInfo().colorStyle!.text_code
                     }} rounded-circle p-2 d-flex align-items-center justify-content-center"
-                    style="aspect-ratio: 1;"
+                    style="aspect-ratio: 1"
                   >
-                    <mat-icon
-                      >delete</mat-icon
-                    >
+                    <mat-icon>delete</mat-icon>
                   </a>
                 </div>
               </div>
@@ -1340,7 +1442,9 @@
           <nav
             class="navbar navbar-expand-lg navbar-{{
               storeInfo().colorStyle!.nav_code
-            }} bg-{{ storeInfo().colorStyle!.back_code }} mx-3 mb-5 rounded shadow"
+            }} bg-{{
+              storeInfo().colorStyle!.back_code
+            }} mx-3 mb-5 rounded shadow"
           >
             <div
               class="container-fluid d-flex justify-content-between px-2 w-100 text-start px-md-5"
@@ -1464,134 +1568,141 @@
           <i>Footer Preview</i>
         </h2>
 
-          <footer class="py-5 mx-3 bg-{{ storeInfo().colorStyle!.back_code }} rounded shadow">
-            <div
-              class="container-fluid px-3 w-100 d-block justify-content-center"
-            >
-              <div class="d-block d-md-flex justify-content-between">
-                <div
-                  class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
-                >
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/visacard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/mastercard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/amexcard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/thredcard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/applecard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/googlecard.png"
-                      />
-                    </a>
-                  </div>
-                  <div class="col mb-2 mx-2" [style.width.px]="50">
-                    <a role="button">
-                      <img
-                        style="object-fit: contain; height: 25px"
-                        [style.width.px]="50"
-                        alt="ok"
-                        src="assets/microsoftcard.png"
-                      />
-                    </a>
-                  </div>
+        <footer
+          class="py-5 mx-3 bg-{{
+            storeInfo().colorStyle!.back_code
+          }} rounded shadow"
+        >
+          <div
+            class="container-fluid px-3 w-100 d-block justify-content-center"
+          >
+            <div class="d-block d-md-flex justify-content-between">
+              <div
+                class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
+              >
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/visacard.png"
+                    />
+                  </a>
                 </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/mastercard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/amexcard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/thredcard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/applecard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/googlecard.png"
+                    />
+                  </a>
+                </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      style="object-fit: contain; height: 25px"
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/microsoftcard.png"
+                    />
+                  </a>
+                </div>
+              </div>
 
+              <div
+                class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
+              >
                 <div
-                  class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
+                  class="col mb-4 mx-3"
+                  *ngFor="let social of storeInfo().socials"
+                  [style.width.px]="45"
                 >
+                  <a role="button">
+                    <img
+                      class="rounded-circle"
+                      style="object-fit: contain"
+                      [style.width.px]="45"
+                      alt="ok"
+                      [src]="getLinkImg(social.name)"
+                    />
+                  </a>
+                </div>
+              </div>
+
+              <div class="w-100 d-none d-md-block">
+                <div>
                   <div
-                    class="col mb-4 mx-3"
-                    *ngFor="let social of storeInfo().socials"
-                    [style.width.px]="45"
-                  >
-                    <a role="button">
-                      <img
-                        class="rounded-circle"
-                        style="object-fit: contain"
-                        [style.width.px]="45"
-                        alt="ok"
-                        [src]="getLinkImg(social.name)"
-                      />
-                    </a>
-                  </div>
-                </div>
-
-                <div class="w-100 d-none d-md-block">
-                  <div>
-                    <div
                     class="w-100 row row-cols-3 justify-content-end"
                     cdkDropListGroup
                   >
                     <div
                       class="col m-0 mx-2"
                       style="width: fit-content"
-                      *ngFor='let col of footerCols'
+                      *ngFor="let col of footerCols"
                       cdkDrag
                       cdkDropList
                       [cdkDropListData]="col.link"
                       (cdkDropListDropped)="dropFooterRow($event)"
                     >
-                      <a class="footer-link" role="button" *ngFor='let link of col.link; index as j' cdkDrag
-                      
+                      <a
+                        class="footer-link"
+                        role="button"
+                        *ngFor="let link of col.link; index as j"
+                        cdkDrag
                       >
                         <p [style.font-family]="storeInfo().fontName!">
-                          {{headerName(link)}}
+                          {{ headerName(link) }}
                         </p>
                       </a>
-                    </div>                
-                  </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
+            </div>
+            <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
                   <div class="col mb-4 mx-2" [style.width.px]="50">
                       
                   </div>
@@ -1608,28 +1719,28 @@
                       
                   </div>
               </div> -->
-            </div>
-            <div class="container">
-              <p
-                class="m-0 text-center text-{{
-                  storeInfo().colorStyle!.text_code
-                }}"
-                [style.font-family]="storeInfo().fontName!"
-              >
-                &copy; {{ storeInfo().fullName }} 2022
-              </p>
-            </div>
-            <div class="container">
-              <p
-                class="m-0 text-center text-{{
-                  storeInfo().colorStyle!.text_code
-                }}"
-                [style.font-family]="storeInfo().fontName!"
-              >
-                Powered by Thred
-              </p>
-            </div>
-          </footer>
+          </div>
+          <div class="container">
+            <p
+              class="m-0 text-center text-{{
+                storeInfo().colorStyle!.text_code
+              }}"
+              [style.font-family]="storeInfo().fontName!"
+            >
+              &copy; {{ storeInfo().fullName }} 2022
+            </p>
+          </div>
+          <div class="container">
+            <p
+              class="m-0 text-center text-{{
+                storeInfo().colorStyle!.text_code
+              }}"
+              [style.font-family]="storeInfo().fontName!"
+            >
+              Powered by Thred
+            </p>
+          </div>
+        </footer>
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'BANNERS'" class="py-3">
@@ -1656,7 +1767,9 @@
                 >
                   <div
                     class="example-box"
-                    *ngFor="let banner of bannerForm.controls.banners.value ?? []"
+                    *ngFor="
+                      let banner of bannerForm.controls.banners.value ?? []
+                    "
                     style.color="{{ bannerTheme(banner)!.color }}"
                     style.background-color="{{ bannerTheme(banner)!.bg_color }}"
                     cdkDrag
@@ -1739,9 +1852,7 @@
                       {{ style.name }}
                     </mat-option>
                   </mat-select>
-                  <mat-placeholder
-                    class="placeholder"
-                    [style.color]="selectedTheme()!.color"
+                  <mat-placeholder [style.color]="selectedTheme()!.color"
                     >Banner Style</mat-placeholder
                   >
                 </mat-form-field>
@@ -1872,7 +1983,7 @@
                                 </mat-option>
                             </mat-optgroup>
                           </mat-select>
-                          <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
+                          <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Store Theme</mat-placeholder>
                           <mat-error *ngIf="storeForm.controls['storeTheme'].hasError('required')">
                             Theme is <strong>required</strong>
                         </mat-error>
@@ -1910,7 +2021,7 @@
             >
               <div
                 class="col mb-5"
-                *ngFor="let popup of storeInfo()?.popups ?? [], index as i"
+                *ngFor="let popup of storeInfo()?.popups ?? []; index as i"
               >
                 <div
                   class="card h-100 bg-{{ storeInfo().colorStyle!.back_code }}"
@@ -1954,7 +2065,7 @@
                             role="button"
                             style="text-decoration: none"
                             style.color="{{ selectedTheme()!.color }}"
-                            >{{popup.description ?? ''}}</a
+                            >{{ popup.description ?? "" }}</a
                           ></mat-hint
                         >
                       </div>
@@ -1998,7 +2109,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="getSelectedPanel()?.Title == 'DISCOUNTS'">
+      <!-- <div *ngIf="getSelectedPanel()?.Title == 'DISCOUNTS'">
         <div
           *ngIf="storeProducts?.length != 0"
           class="container px-4 px-lg-5 mt-0 pt-0"
@@ -2040,11 +2151,8 @@
                     storeInfo()!.colorStyle!.text_code == 'light'
                   "
                 >
-                  <!-- Product image-->
-                  <!-- Product details-->
                   <div class="card-body pb-0">
                     <div class="text-center">
-                      <!-- Product name-->
                       <mat-icon
                         id="ICON{{ i }}"
                         class="mx-auto p-4 d-flex justify-content-center align-items-center rounded-circle border shadow mt-3 mb-4"
@@ -2112,7 +2220,6 @@
                           >
                         </a>
                       </div>
-                      <!-- Product price-->
                     </div>
                   </div>
                 </div>
@@ -2199,9 +2306,9 @@
             </a>
           </div>
         </div>
-      </div>
-      <div *ngIf="getSelectedPanel()?.Title == 'PRODUCTS'">
-        <div *ngIf="!productDetailsMode">
+      </div> -->
+      <div *ngIf="getSelectedPanel()?.Title == 'COLLECTIONS'" class="w-100">
+        <div *ngIf="!productDetailsMode" class="w-100">
           <div class="d-flex justify-content-center align-items-center w-100">
             <a
               role="button"
@@ -2215,111 +2322,298 @@
               <mat-icon class="me-2"
                 ><span style="font-size: 25px"> storefront </span></mat-icon
               >
-              NEW PRODUCT
+              NEW COLLECTION
             </a>
           </div>
           <div
-            *ngIf="storeProducts?.length != 0"
-            class="container px-4 px-lg-5 mt-0 pt-0"
+            *ngIf="
+              userInfo()!.collections && userInfo()!.collections?.length != 0
+            "
+            class="container px-2 px-md-4 px-lg-5 mt-0 pt-0 w-100"
           >
-            <div
-              class="row gx-4 gx-lg-5 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-center"
-            >
-              <div class="col mb-5" *ngFor="let product of storeProducts">
+            <div class="w-100 h-100 justify-content-center">
+              <!-- [indexChanged]="didMove()" -->
+              <div
+                class="mb-5 w-100"
+                *ngFor="
+                  let collection of userInfo()!.collections ?? []
+                    | collectionFilter: 'timestamp-asc'
+                "
+              >
                 <div
-                  class="card h-100 bg-{{ storeInfo().colorStyle!.back_code }}"
-                  [class.border-secondary]="
-                    storeInfo()!.colorStyle!.text_code == 'light'
-                  "
+                  class="w-100 h-100 d-flex justify-content-between align-items-center"
                 >
-                  <!-- Product image-->
-                  <a role="button" (click)="routeToProduct(product.productID)"
-                    ><img
-                      class="card-img-top"
-                      src="{{ product.url }}"
-                      alt="ok"
-                      onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
-                  /></a>
-                  <!-- Product details-->
-                  <div class="card-body pb-0">
-                    <div class="text-center">
-                      <!-- Product name-->
-                      <h4 class="fw-bolder">
-                        <a
-                          style="text-decoration: none"
-                          style.color="{{ selectedTheme()!.color }}"
-                          role="button"
-                          (click)="routeToProduct(product.productID)"
-                          >{{ product.name }}</a
-                        >
-                      </h4>
-                      <div
-                        class="d-flex align-items-center justify-content-center w-100"
-                      >
-                        <a
-                          role="button"
-                          class="btn"
-                          (click)="editProduct(product)"
-                        >
-                          <mat-icon style.color="{{ selectedTheme()!.color }}"
-                            >edit</mat-icon
-                          >
-                        </a>
-                        <a
-                          role="button"
-                          class="btn"
-                          (click)="deleteProduct(product)"
-                        >
-                          <mat-icon style.color="{{ selectedTheme()!.color }}"
-                            >delete</mat-icon
-                          >
-                        </a>
-                      </div>
-                      <!-- Product price-->
-                    </div>
-                  </div>
-                  <!-- Product actions-->
-                  <div
-                    class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+                  <!-- <mat-icon
+                    role="button"
+                    (click)="move(carousel, 0)"
+                    class="d-none d-md-block bg-{{
+                      storeInfo().colorStyle!.back_code
+                    }} text-{{
+                      storeInfo().colorStyle!.text_code
+                    }} fw-bolder rounded-circle ms-0"
+                    [class.opacity-0]="collection.NFTs.length == 0"
                   >
-                    <p
-                      *ngIf="autoCoupon(product)"
-                      class="text-center fw-bolder d-flex justify-content-center align-items-center"
-                      style="font-size: 15px"
+                    chevron_left
+                  </mat-icon> -->
+                  <div class="w-100 h-100">
+                    <div
+                      class="d-block d-md-flex align-items-center justify-content-center justify-content-md-start w-100"
                     >
-                      <!-- <mat-icon
-                                             class="mt-2" 
-                                             style="font-size:15px" 
-                                             [class.low]='(autoCoupon(product)?.amt ?? 0) <= 0.2'
-                                             [class.mid]='(autoCoupon(product)?.amt ?? 0) > 0.2 && (autoCoupon(product)?.amt ?? 0) <= 0.5'
-                                             [class.high]='(autoCoupon(product)?.amt ?? 0) > 0.5'
-                                            >
-                                                loyalty
-                                            </mat-icon> -->
-                      <b class="old-price">
-                        {{formatPrice((product.price ?? 0) / 100)}}
-                      </b>
-                    </p>
-                    <div class="text-center">
                       <a
-                        class="btn btn-outline-{{
-                          storeInfo().colorStyle!.text_code
-                        }} mt-auto d-flex justify-content-center text-center"
-                        [class.new-price]="autoCoupon(product)"
-                        style="font-weight: bold"
                         role="button"
-                        (click)="routeToProduct(product.productID)"
+                        class="bg-{{
+                          storeInfo().colorStyle!.back_code
+                        }} side text-secondary d-inline-flex mx-3 me-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        [class.border-{{storeInfo().colorStyle!.text_code}}]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        [class.border]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        style="font-size: 18px"
                       >
-                        {{ formatPrice(mainPrice(product)) }}
+                        <!-- {{ collection.symbol }} -->
+                        <b
+                          class="text-{{ storeInfo().colorStyle!.text_code }}"
+                          style="font-size: 18px"
+                        >
+                          {{ collection.name }}
+                        </b>
+                      </a>
+
+                      <a
+                        role="button"
+                        class="bg-{{
+                          storeInfo().colorStyle!.back_code
+                        }} side text-secondary d-inline-flex mx-3 mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        [class.border-{{storeInfo().colorStyle!.text_code}}]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        [class.border]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        style="font-size: 18px"
+                      >
+                        {{ "Floor Price:" }}
+                        <b
+                          class="ms-1 text-{{
+                            storeInfo().colorStyle!.text_code
+                          }}"
+                          style="font-size: 22px"
+                        >
+                          {{ collection.getFloor() | price }}
+                        </b>
+                        <mat-icon
+                          class="ms-2"
+                          svgIcon="{{ collection.getCurrencyIcon() }}"
+                        >
+                        </mat-icon>
+                      </a>
+                      <a
+                        class="bg-{{
+                          storeInfo().colorStyle!.back_code
+                        }} side text-secondary d-inline-flex mx-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        [class.border-{{storeInfo().colorStyle!.text_code}}]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        [class.border]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        style="font-size: 18px"
+                      >
+                        {{ "Items: " }}
+                        <b
+                          class="ms-1 text-{{
+                            storeInfo().colorStyle!.text_code
+                          }}"
+                          style="font-size: 22px"
+                        >
+                          {{ collection.collectionCount ?? 0 }}
+                        </b>
+                        <mat-icon
+                          role="button"
+                          (click)="createNewNFT(collection)"
+                          class="ms-2 fw-bolder link-primary"
+                        >
+                          add
+                        </mat-icon>
+                      </a>
+                      <!-- <a
+                      role="button"
+                      class="side fw-bold text-{{
+                        storeInfo().colorStyle!.text_code
+                      }} d-inline-flex mx-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                      style="font-size: 18px"
+                    >
+                    ADD NFT
+                      <mat-icon class="ms-2 text-danger" svgIcon='{{ collection.getCurrencyIcon() }}'>
+                      </mat-icon>
+                    </a> -->
+                    </div>
+
+                    <!-- collection.getCurrencyIcon() -->
+
+                    <drag-scroll
+                      #carousel
+                      class="mb-2 w-100 h-100"
+                      [scrollbar-hidden]="true"
+                      [scroll-x-wheel-enabled]="false"
+                      *ngIf="collection.NFTs.length > 0"
+                    >
+                      <div
+                        drag-scroll-item
+                        class="h-100 px-3 w-100 h-100 w-md-25"
+                        *ngFor="
+                          let product of collection.NFTs ?? []
+                            | sortCol: 'tokenId-asc'
+                        "
+                      >
+                        <div class="col h-100">
+                          <div
+                            class="bg-{{
+                              storeInfo().colorStyle!.back_code
+                            }} shadow rounded border border-secondary"
+                            [class.border-secondary]="
+                              storeInfo()!.colorStyle!.text_code == 'light'
+                            "
+                          >
+                            <div class="pb-0 w-100">
+                              <a
+                              role="button"
+                              class="w-100"
+                              (click)="routeToProduct(product)"
+                            >
+                            <video
+                                style="object-fit: cover; aspect-ratio: 1; top: 0; margin-top: 0;"
+                                
+                                class="h-100 w-100"
+                                autoplay="true"
+                                loop="true"
+                                muted="true"
+                                *ngIf="product.format == 'video'"
+                              >
+                                <source
+                                  [src]="product.url! | safeUrl"
+                                  type="video/mp4"
+                                />
+                              </video>
+
+                              <img
+                                class="h-100 w-100"
+                                src="{{ product.url }}"
+                                alt="ok"
+                                style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em;"
+                                onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
+                                *ngIf="product.format == 'image'"
+                              />
+                            </a>
+                              <div class="card-body text-center w-100">
+                                <p
+                                  class="fw-bolder w-100"
+                                  style="
+                                    text-decoration: none;
+                                    text-overflow: ellipsis;
+                                    word-wrap: break-word;
+                                    word-break: break-all;
+                                    overflow-x: hidden;
+                                  "
+                                  style.color="{{ selectedTheme()!.color }}"
+                                  role="button"
+                                  (click)="routeToProduct(product)"
+                                >
+                                  {{ product.name }}
+                                </p>
+                                <div
+                                  class="d-flex align-items-center justify-content-center w-100"
+                                >
+                                  <!-- <a
+                                    role="button"
+                                    class="btn"
+                                    (click)="editProduct(product)"
+                                  >
+                                    <mat-icon
+                                      style.color="{{ selectedTheme()!.color }}"
+                                      >edit</mat-icon
+                                    >
+                                  </a> -->
+                                  <!-- <a
+                                  role="button"
+                                  class="btn"
+                                  (click)="deleteProduct(product)"
+                                >
+                                  <mat-icon
+                                    style.color="{{ selectedTheme()!.color }}"
+                                    >delete</mat-icon
+                                  >
+                                </a> -->
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+                            >
+                              <div class="text-center">
+                                <a
+                                  class="btn btn-outline-{{
+                                    storeInfo().colorStyle!.text_code
+                                  }} mt-auto d-flex justify-content-center text-center"
+                                  style="font-weight: bold"
+                                  role="button"
+                                  (click)="routeToProduct(product)"
+                                >
+                                  {{
+                                    (product?.price | price) +
+                                      " " +
+                                      collection.currency
+                                  }}
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </drag-scroll>
+                    <div
+                      *ngIf="collection.NFTs.length == 0"
+                      class="mb-2 mx-3 card bg-{{
+                        storeInfo().colorStyle!.back_code
+                      }} shadow rounded d-flex justify-content-center align-items-center"
+                      [class.border-secondary]="
+                        storeInfo()!.colorStyle!.text_code == 'light'
+                      "
+                      style="height: 325px"
+                    >
+                      <h2>No items in this collection</h2>
+                      <a
+                        class="btn btn-{{
+                          storeInfo().colorStyle!.text_code
+                        }} px-3 rounded-pill"
+                        role="button"
+                        style="font-size: medium"
+                        (click)="createNewNFT(collection)"
+                      >
+                        Create NFT
                       </a>
                     </div>
                   </div>
+                  <!-- <mat-icon
+                    role="button"
+                    (click)="move(carousel, 1)"
+                    [class.opacity-0]="collection.NFTs.length == 0"
+                    class="d-none d-md-block bg-{{
+                      storeInfo().colorStyle!.back_code
+                    }} text-{{
+                      storeInfo().colorStyle!.text_code
+                    }} fw-bolder rounded-circle me-0"
+                  >
+                    chevron_right
+                  </mat-icon> -->
                 </div>
               </div>
             </div>
           </div>
           <div
-            *ngIf="storeProducts?.length == 0"
+            *ngIf="storeInfo().collections?.length == 0"
             class="container px-4 px-lg-5 mt-0 pt-0"
           >
             <div
@@ -2567,7 +2861,7 @@
                               style="text-decoration: none"
                               style.color="{{ selectedTheme()!.color }}"
                             >
-                              {{inv.amount ?? 0}}</a
+                              {{ inv.amount ?? 0 }}</a
                             ></mat-hint
                           >
                         </div>
@@ -2660,7 +2954,7 @@
                               style="text-decoration: none"
                               style.color="{{ selectedTheme()!.color }}"
                             >
-                              {{inv.amount ?? 0}}</a
+                              {{ inv.amount ?? 0 }}</a
                             ></mat-hint
                           >
                         </div>
@@ -3160,7 +3454,7 @@
           </div>
         </div>
         <div
-          *ngIf="subInfo != '' && subInfo?.plan.active ?? false"
+          *ngIf="subInfo != '' && (subInfo?.plan.active ?? false)"
           class="w-100 h-100"
         >
           <div
@@ -3233,12 +3527,9 @@
                         role="button"
                         style="text-decoration: none"
                         style.color="{{ selectedTheme()!.color }}"
-                        >{{formatPrice((subInfo?.plan.amount ?? 0) / 100)
-
-
-
-
-                        }}/{{subInfo?.plan.interval ?? 'month'}}</a
+                        >{{ formatPrice((subInfo?.plan.amount ?? 0) / 100) }}/{{
+                          subInfo?.plan.interval ?? "month"
+                        }}</a
                       ></mat-hint
                     >
                     <mat-hint *ngIf="subInfo.status == 'trialing'" align="start"
@@ -3249,12 +3540,9 @@
                         style.color="{{ selectedTheme()!.color }}"
                         >FREE
                         <b style="color: #6c757d"
-                          >({{formatPrice((subInfo?.plan.amount ?? 0) / 100)
-
-
-
-
-                          }}/{{subInfo?.plan.interval ?? 'month'}} after
+                          >({{
+                            formatPrice((subInfo?.plan.amount ?? 0) / 100)
+                          }}/{{ subInfo?.plan.interval ?? "month" }} after
                           trial)</b
                         ></a
                       ></mat-hint
@@ -3584,19 +3872,22 @@
         style="height: 100vh; overflow: hidden; position: relative"
       >
         <iframe
-          *ngIf="orders && (true | liloadedAllProductsPipe : orders ?? [])"
+          *ngIf="orders && (true | liloadedAllProductsPipe: orders ?? [])"
           style="width: 100%; height: 100%; position: absolute"
           [srcdoc]="
             str | liveEarthPipe: orders | liveEarthViewPipe: views() | safeHtml
           "
         >
         </iframe>
-        <div class="d-flex align-items-top justify-content-between mx-0" style="top: 10px; left: 10px; right: 10px; position: absolute">
+        <div
+          class="d-flex align-items-top justify-content-between mx-0"
+          style="top: 10px; left: 10px; right: 10px; position: absolute"
+        >
           <div class="h-100">
             <h1 style="color: white">
               <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
             </h1>
-  
+
             <a
               role="button"
               class="side d-flex m-0 align-items-center justify-content-start"
@@ -3615,7 +3906,7 @@
                 Total Sales • <b>{{ totalSales() }}</b>
               </p>
             </a>
-  
+
             <a
               role="button"
               class="side d-flex mt-2 align-items-center justify-content-start"
@@ -3636,7 +3927,7 @@
             </a>
           </div>
           <div class="h-100">
-<!-- 
+            <!-- 
             <div class="card mt-0 bg-dark" style="color: white; opacity: 0.6;">
               <h1>
                 <b>LOCATION</b>
@@ -3649,7 +3940,7 @@
               </h2>
             </div> -->
             <!--  -->
-  
+
             <!-- <a
               role="button"
               class="side d-flex m-0 align-items-center justify-content-start"
@@ -3668,7 +3959,7 @@
                 Total Sales • <b>{{ totalSales() }}</b>
               </p>
             </a> -->
-<!--   
+            <!--   
             <a
               role="button"
               class="side d-flex mt-2 align-items-center justify-content-start"
@@ -3689,7 +3980,6 @@
             </a> -->
           </div>
         </div>
-        
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW'" class="h-100">
@@ -3738,7 +4028,9 @@
                       style="height: 300px; overflow-y: scroll"
                     >
                       <table
-                        *ngIf="orderLoaded() && orders && (orders?.length ?? 0) > 0"
+                        *ngIf="
+                          orderLoaded() && orders && (orders?.length ?? 0) > 0
+                        "
                         #orderTable
                         mat-table
                         [dataSource]="orderSlice()"
@@ -3763,7 +4055,11 @@
                             style.color="{{ selectedTheme()!.color }}"
                             class="px-1"
                           >
-                            {{(element.address?.name ?? '')?.trim() == '' ? 'Not Provided' : element.address?.name}}
+                            {{
+                              (element.address?.name ?? "")?.trim() == ""
+                                ? "Not Provided"
+                                : element.address?.name
+                            }}
                           </td>
                           <td
                             mat-footer-cell
@@ -3896,7 +4192,9 @@
                         ></tr>
                       </table>
                       <div
-                        *ngIf="orderLoaded() && orders && (orders?.length ?? 0) == 0"
+                        *ngIf="
+                          orderLoaded() && orders && (orders?.length ?? 0) == 0
+                        "
                         class="text-center"
                       >
                         <h4
@@ -3939,7 +4237,7 @@
                       style="font-size: x-large"
                       style.color="{{ selectedTheme()!.color }}"
                     >
-                      {{(emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)}}
+                      {{ (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) }}
                     </h2>
 
                     <div
@@ -3947,11 +4245,21 @@
                       style="height: 300px; position: relative"
                     >
                       <ngx-charts-pie-chart
-                        *ngIf="pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0"
+                        *ngIf="
+                          pieInfo &&
+                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
+                            0
+                        "
                         [results]="pieInfo"
                         [explodeSlices]="explodeSlices"
                         [doughnut]="true"
-                        [customColors]="[{name: 'Email Subscribers',value: '#1ac6ff'},{name: 'SMS Subscribers',value: selectedTheme()!.color ?? ''}]"
+                        [customColors]="[
+                          { name: 'Email Subscribers', value: '#1ac6ff' },
+                          {
+                            name: 'SMS Subscribers',
+                            value: selectedTheme()!.color ?? ''
+                          }
+                        ]"
                         [gradient]="true"
                       >
                       </ngx-charts-pie-chart>
@@ -3961,7 +4269,11 @@
                         class="w-100 h-auto text-center h1 text-{{
                           storeInfo().colorStyle!.text_code
                         }}"
-                        *ngIf="pieInfo && ((emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0)) > 0"
+                        *ngIf="
+                          pieInfo &&
+                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
+                            0
+                        "
                         style="position: absolute"
                         >groups</mat-icon
                       >
@@ -4197,5 +4509,48 @@
         </mat-tab-group>
       </div>
     </section>
+  </div>
+</div>
+<div
+  *ngIf="needsLogin && !provider"
+  class="d-flex justify-content-center align-items-center"
+  style="height: 100vh"
+>
+  <div class="w-100 text-center">
+    <div
+      class="d-flex justify-content-center align-items-center mb-4"
+      style="height: 100px"
+    >
+      <img
+        src="assets/metamask.png"
+        class="h-100 mx-3"
+        style="object-fit: contain; aspect-ratio: 1"
+      />
+      <img
+        src="assets/walletconnect.png"
+        class="h-100 mx-3"
+        style="object-fit: contain; aspect-ratio: 1"
+      />
+    </div>
+    <h2
+      class="fw-bolder w-100 text-center"
+      style="font-size: 35px; line-height: 1.2em"
+    >
+      Cannot Connect to Wallet
+    </h2>
+    <p
+      class="w-100 text-center text-secondary"
+      style="font-size: 17.5px; line-height: 1.2em"
+    >
+      Please make sure a Metamask/WalletConnect compatible wallet is available
+      and try again
+    </p>
+    <a
+      class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2"
+      (click)="setProvider()"
+      style="font-size: 25px"
+    >
+      REFRESH
+    </a>
   </div>
 </div>

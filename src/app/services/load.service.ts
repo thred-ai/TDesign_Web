@@ -3,6 +3,8 @@ import { AngularFirestore, DocumentData } from '@angular/fire/compat/firestore';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
 import { Product } from '../models/product.model';
+import { NFT } from '../models/nft.model';
+
 import { Template } from '../models/template.model';
 import { TemplateSide } from '../models/template-side.model';
 import { Color } from '../models/color.model';
@@ -41,6 +43,16 @@ import { Popup } from '../models/popup.model';
 import { Row } from '../models/row.model';
 import { Page } from '../models/page.model';
 import { HttpClient } from '@angular/common/http';
+import { nftaddress } from 'config';
+import axios from 'axios';
+import { ethers } from 'ethers';
+import { environment } from 'src/environments/environment';
+import { Collection } from '../models/collection.model';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import Web3Modal from 'web3modal';
+import { NftLog } from '../models/nft-log.model';
+
+const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
 
 export interface Dict<T> {
   [key: string]: T;
@@ -59,8 +71,16 @@ export class LoadService {
     private storage: AngularFireStorage,
     private stripeService: StripeService,
     private snackBar: MatSnackBar,
-    private http: HttpClient,
-  ) {}
+    private http: HttpClient
+  ) {
+    if (environment.rpc) {
+      this.rpcEndpoint = environment.rpc;
+    } else {
+      console.log(process.env);
+    }
+  }
+
+  rpcEndpoint?: string = undefined;
 
   rootComponent?: AppComponent;
 
@@ -99,14 +119,21 @@ export class LoadService {
   shouldShowCurrency = false;
 
   async logView() {
-    if (!Globals.didLog && Globals.storeInfo.uid && isPlatformBrowser(this.platformID)) {
+    if (
+      !Globals.didLog &&
+      Globals.storeInfo.uid &&
+      isPlatformBrowser(this.platformID)
+    ) {
       Globals.didLog = true;
-      let coords = await this.getCoords() ?? {
+      let coords = (await this.getCoords()) ?? {
         LONGITUDE: -118.243683,
-        LATITUDE: 34.052235
-      }
+        LATITUDE: 34.052235,
+      };
       this.functions
-        .httpsCallable('updateView')({ storeUID: Globals.storeInfo.uid!, coords: coords })
+        .httpsCallable('updateView')({
+          storeUID: Globals.storeInfo.uid!,
+          coords: coords,
+        })
         .pipe(first())
         .subscribe(
           async (resp) => {
@@ -261,7 +288,9 @@ export class LoadService {
           let variations = (docData.variations as Array<any>) ?? [];
           let isCustom = (docData.is_custom as boolean) ?? false;
 
-          let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+          let timestamp = (
+            docData.timestamp as firebase.firestore.Timestamp
+          ).toDate();
 
           if (name.trim() == '') {
             name = Globals.templates.filter((obj) => {
@@ -313,7 +342,9 @@ export class LoadService {
             let variations = (docData.variations as Array<any>) ?? [];
             let isCustom = (docData.is_custom as boolean) ?? false;
 
-            let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              docData.timestamp as firebase.firestore.Timestamp
+            ).toDate();
 
             if (name.trim() == '') {
               name = Globals.templates.filter((obj) => {
@@ -446,7 +477,11 @@ export class LoadService {
       });
   }
 
-  getUser(username?: string, uid?: string, isCustom = false) {
+  isLoading = true
+
+  async getUser(username?: string, uid?: string, isCustom = false, callback?: (storeInfo: Store) => any) {
+    this.isLoading = true
+    await this.checkNetwork(true);
     var query = this.db.collection('Users', (ref) =>
       ref.where('Username', '==', username)
     );
@@ -500,15 +535,13 @@ export class LoadService {
         let popups = (docData['Popups'] as Array<Popup>) ?? [];
         let homeRows = docData['rows'] as Array<Row>;
 
-        var pages = docData['pages'] as Array<Page>
-  
+        var pages = docData['pages'] as Array<Page>;
 
-
-        var header = docData['header_links'] as Array<string>
-        var footer = docData['footer_links'] as Array<Dict<string>>
-
+        var header = docData['header_links'] as Array<string>;
+        var footer = docData['footer_links'] as Array<Dict<string>>;
 
         let orders = (docData['Orders'] as number) ?? 0;
+        let wallet = (docData['Address'] as string) ?? '';
 
         var coupons = new Array<Coupon>();
         discounts.forEach((discount) => {
@@ -590,7 +623,8 @@ export class LoadService {
           pages,
           orders,
           header,
-          footer
+          footer,
+          wallet
         );
 
         if (banners.length > 0) {
@@ -620,9 +654,10 @@ export class LoadService {
             Globals.storeInfo!.homeLink = new URL(this.getHomeURL(uid));
 
             if (!homeRows) {
-              Globals.storeInfo!.pages![0].rows![1]?.imgs?.push(this.getHomeURL(uid));
+              Globals.storeInfo!.pages![0].rows![1]?.imgs?.push(
+                this.getHomeURL(uid)
+              );
             }
-
           } else if (type == 'action') {
             Globals.storeInfo!.actionLink = new URL(this.getActionURL(uid));
           } else if (type == 'home_top') {
@@ -648,7 +683,17 @@ export class LoadService {
       }
 
       if (this.myCallback) this.myCallback();
+      
       if (isPlatformBrowser(this.platformID)) {
+        this.getPosts((products) => {
+          console.log(products)
+          Globals.storeInfo!.collections = products;
+          this.isLoading = false
+          if (callback){
+            callback(Globals.storeInfo)
+          }
+          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+        });
         this.rootComponent?.getCart();
         sub.unsubscribe();
       }
@@ -691,6 +736,149 @@ export class LoadService {
         });
       }
     }
+  }
+
+  getEvents(
+    contract: string,
+    tokenId: string,
+    callback: (transactions: Array<NftLog>) => any
+  ) {
+    console.log(tokenId);
+    const data = {
+      contract: contract,
+      tokenId: tokenId,
+      test: true,
+    };
+    this.functions
+      .httpsCallable('getTransactionHistory')(data)
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          let hashes = resp.result as any[];
+          if (hashes) {
+            var logs = new Array<NftLog>();
+            await Promise.all(
+              hashes.map(async (t) => {
+                let block = await Globals.provider?.getBlock(t.blockNumber);
+                var type = '';
+
+                if (
+                  t.topics[0] ==
+                  '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+                ) {
+                  if (
+                    t.topics[1] ==
+                    '0x0000000000000000000000000000000000000000000000000000000000000000'
+                  ) {
+                    type = 'mint';
+                  } else {
+                    type = 'transfer';
+                  }
+                } else if (
+                  t.topics[0] ==
+                  '0x0000000000000000000000000000000000000000000000000000000000000001'
+                ) {
+                  type = 'list';
+                } else if (
+                  t.topics[0] !=
+                  '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925'
+                ) {
+                  type = 'sale';
+                } else {
+                  return;
+                }
+
+                let log = new NftLog(
+                  type,
+                  new Date((block?.timestamp ?? 0) * 1000),
+                  type == 'list' ? t.topics[2] : t.topics[1],
+                  type == 'list' ? '' : t.topics[2],
+                  type == 'list'
+                    ? t.topics[1]
+                    : type == 'sale'
+                    ? t.topics[0]
+                    : undefined
+                );
+                logs.push(log);
+              })
+            );
+            callback(logs);
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+  async isUnlocked() {
+    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+
+    let unlocked;
+
+    try {
+      const accounts = await provider.listAccounts();
+
+      unlocked = accounts.length > 0;
+    } catch (e) {
+      unlocked = false;
+    }
+
+    return unlocked;
+  }
+
+  async checkProvider() {
+    if (await this.isUnlocked()) {
+      const provider = await this.initializeProvider();
+      Globals.provider = provider;
+    }
+  }
+
+  async initializeProvider() {
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          infuraId: '90806fec200c42fdbf783260b38f0a73',
+          rpc: {
+            1:
+              'https://mainnet.infura.io/v3/' +
+              '90806fec200c42fdbf783260b38f0a73',
+            42:
+              'https://kovan.infura.io/v3/' +
+              '90806fec200c42fdbf783260b38f0a73',
+            137:
+              'https://polygon-mainnet.infura.io/v3/' +
+              '90806fec200c42fdbf783260b38f0a73',
+            80001: 'https://rpc-mumbai.matic.today',
+          },
+          qrcodeModalOptions: {
+            mobileLinks: [
+              'rainbow',
+              'metamask',
+              'argent',
+              'trust',
+              'imtoken',
+              'pillar',
+            ],
+          },
+        },
+        display: {
+          description: 'Scan with a wallet to connect',
+        },
+      },
+    };
+
+    const web3Modal = new Web3Modal({
+      network: 'mainnet', // optional
+      cacheProvider: true, // optional
+      providerOptions, // required
+    });
+
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    return provider;
   }
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
@@ -737,7 +925,9 @@ export class LoadService {
         if (data) {
           let email = data.email ?? 'N/A';
           let name = data.name;
-          let timestamp = (data.timestamp as firebase.firestore.Timestamp).toDate();
+          let timestamp = (
+            data.timestamp as firebase.firestore.Timestamp
+          ).toDate();
 
           arr.push({
             email: email,
@@ -810,11 +1000,12 @@ export class LoadService {
             let popups = (docData['Popups'] as Array<Popup>) ?? [];
             let homeRows = docData['rows'] as Array<Row>;
 
-            var pages = docData['pages'] as Array<Page>
-            var header = docData['header_links'] as Array<string>
-            var footer = docData['footer_links'] as Array<Dict<string>>
+            var pages = docData['pages'] as Array<Page>;
+            var header = docData['header_links'] as Array<string>;
+            var footer = docData['footer_links'] as Array<Dict<string>>;
 
             let orders = (docData['Orders'] as number) ?? 0;
+            let wallet = (docData['Address'] as string) ?? '';
 
             var coupons = new Array<Coupon>();
             discounts.forEach((discount) => {
@@ -904,12 +1095,10 @@ export class LoadService {
               pages,
               orders,
               header,
-              footer
+              footer,
+              wallet
             );
 
-
-
-            
             let list = (docData['image_list'] as Array<string>) ?? [];
 
             list.forEach((type) => {
@@ -918,7 +1107,9 @@ export class LoadService {
               } else if (type == 'home') {
                 Globals.userInfo!.homeLink = new URL(this.getHomeURL(uid));
                 if (!homeRows) {
-                  Globals.userInfo!.pages![0].rows![1]?.imgs?.push(this.getHomeURL(uid));
+                  Globals.userInfo!.pages![0].rows![1]?.imgs?.push(
+                    this.getHomeURL(uid)
+                  );
                 }
               } else if (type == 'action') {
                 Globals.userInfo!.actionLink = new URL(this.getActionURL(uid));
@@ -957,8 +1148,19 @@ export class LoadService {
               );
             }
 
-            if (this.myCallback) this.myCallback();
-            if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+            Globals.storeInfo = Globals.userInfo
+            if (isPlatformBrowser(this.platformID) && uid) {
+              this.getPosts((products) => {
+                console.log(products);
+                Globals.userInfo!.collections = products;
+                Globals.storeInfo!.collections = products;
+                if (this.myCallback) this.myCallback();
+                if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+              }, undefined, undefined, uid);
+            } else {
+              console.log('here')
+              if (this.myCallback) this.myCallback();
+            }
           }
         });
     } else {
@@ -1013,107 +1215,376 @@ export class LoadService {
     });
   }
 
-  getPosts(
-    callback: (products: Array<Product>) => any,
+  async getPosts(
+    callback: (products: Array<Collection>) => any,
     filterID?: string,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    ),
     uid = Globals.storeInfo.uid
   ) {
+    await this.checkNetwork(true);
     const time = firebase.firestore.Timestamp.now();
 
     var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-      ref
-        .where('Timestamp', '<=', time)
-        .where('Has_Picture', '==', true)
-        .where('Available', '==', true)
-        .where('Public', '==', true)
-        .orderBy('Timestamp', 'desc')
+      ref.where('Available', '==', true).where('Public', '==', true)
     );
 
     if (filterID) {
       query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-        ref
-          .where('Timestamp', '<=', time)
-          .where('Type', '==', filterID)
-          .where('Available', '==', true)
-          .where('Public', '==', true)
-          .orderBy('Timestamp', 'desc')
+        ref.where('Available', '==', true).where('Public', '==', true)
       );
     }
 
-    let sub = query.get().subscribe((docDatas) => {
-      var products = new Array<Product>();
+    // if (this.provider){
+    var products = new Array<NFT>();
+    var collections = new Array<Collection>();
 
-      docDatas.docs.forEach((doc) => {
-        let docData = doc.data() as DocumentData;
+    // this.soldNFTs = this.storeProducts?.filter((i: any) => i.sold) ?? []
+    // }
 
-        if (docData) {
-          let uid = docData.UID as string;
-          let productID = docData.Product_ID as string;
-          let timestamp = (docData.Timestamp as firebase.firestore.Timestamp).toDate();
-          let description = docData.Description as string;
-          let name = docData.Name as string;
+    let sub = query.get().subscribe(async (docDatas) => {
+      await Promise.all(
+        docDatas.docs.map(async (doc, index) => {
+          let docData = doc.data() as DocumentData;
 
-          let blurred = docData.Blurred as boolean;
-          let templateColor = docData.Template_Color as string;
+          if (docData) {
+            let tokenID = docData['Token_ID'] as number;
+            let contractID = docData['Contract_Address'] as string;
+            let ownerAddress =
+              (docData['Owner_Address'] as string) ??
+              Globals.storeInfo.walletAddress ??
+              '';
+            let sold = (docData['Sold'] as boolean) ?? false;
+            let lazyMint = (docData['Lazy'] as boolean) ?? true;
+            let format = docData['Format'] as string;
+            let royalty = (docData['Royalty'] as number) ?? 0;
+            let lazyHash = docData['Lazy_Hash'] as Dict<any>;
+            let metadata = docData['Metadata'] as string;
+            let forSale = docData['forSale'] as boolean
 
-          let likes = docData.Likes as number;
+            var cost = ethers.utils.parseUnits('0.02', 'ether');
+            if (lazyHash) {
+              cost = lazyHash['minPrice'] as ethers.BigNumber;
+            }
 
-          let priceCents = docData.Price_Cents as number;
-          let comments = docData.Comments as number;
-          let isPublic = (docData.Public as boolean) ?? true;
-          let productType = (docData.Type as string) ?? 'ATC1000';
-          let displaySide = (docData.Side as string) ?? 'front';
-          let sides = (docData['Sides'] as Array<string>) ?? ['Front'];
-          let images = (docData['Images'] as Array<any>) ?? [
-            { index: 0, img: this.getURL(uid, productID) },
-          ];
-          let isAvailable = (docData.Available as boolean) ?? false;
-          let custom = (docData.Custom as boolean) ?? false;
+            let token = docData['Token'] as string;
 
-          let product = new Product(
-            uid,
-            productID,
-            description,
-            productID,
-            timestamp,
-            '',
-            blurred,
-            priceCents,
-            name,
-            templateColor,
-            likes,
-            false,
-            comments,
-            isAvailable,
-            isPublic,
-            productType,
-            displaySide,
-            sides,
-            this.getURL(uid, productID),
-            images,
-            custom
-          );
+            let product = new NFT(
+              tokenID,
+              contractID,
+              ownerAddress,
+              sold,
+              lazyMint,
+              undefined,
+              royalty,
+              lazyHash,
+              metadata
+            );
 
-          products.push(product);
+            product.price = cost ?? 0.02;
+            product.seller = ownerAddress
+            product.token = token;
+            product.docID = doc.id;
+            product.isAvailable = true;
+            product.forSale = forSale
+
+            if (metadata) {
+              const meta = await axios.get(metadata);
+              product.name = meta.data.name;
+              product.url = meta.data.image;
+              product.traits = meta.data.traits
+              product.description = meta.data.description;
+              product.format = await this.getFormat(meta.data.image)
+
+            } else {
+              product.name = docData['Name'] as string;
+              product.description = docData['Description'] as string;
+              let uid = docData['UID'] as string;
+              let productID = docData['Product_ID'];
+              product.url = this.getURL(uid, productID);
+            }
+            products.push(product);
+          }
+        })
+      );
+
+      var col = new Array<string>();
+
+      products = products.filter((p) => p.contractID != nftaddress);
+
+      // products.forEach(p => {
+      //   console.log(p.contractID)
+      //   if (!(col.find(x => x == p.contractID))){
+      //     col.push(p.contractID)
+      //   }
+      // })
+
+      console.log(col);
+
+      this.getCollections(uid, async (c) => {
+        console.log(c);
+        if (c) {
+          col = col?.concat(c.map((v) => v.contract));
+          // col = col.filter((v) => c.find((g) => g.contract == v) == undefined);
+        }
+        await Promise.all(
+          col.map(async (contractID: string) => {
+            let created = await this.getCreated(contractID, provider);
+
+            this.getCollection(contractID, (collection) => {
+              if (!collection) {
+                return;
+              }
+              products
+                .filter((x) => x.contractID == contractID)
+                .forEach(async (same: NFT, index: number) => {
+                  let c = created.tokens.find(
+                    (i: any) => i.tokenId == same.tokenID
+                  ) as any;
+
+                  if (c) {
+                    same.tokenID = c.tokenId;
+                    same.contractID = c.contract;
+                    same.owner = c.owner;
+                    same.name = c.name;
+                    same.format = c.content;
+                    same.royalty = c.royalty;
+                    same.metadata = c.uri;
+                    same.seller = c.seller;
+                    same.token = c.isNative ? undefined : c.token;
+                    same.description = c.description;
+                    same.price = c.price;
+                    same.url = c.image;
+                    same.itemId = c.itemId;
+                    same.forSale = c.forSale
+                    same.lazyMint = c.minted == false
+                    same.lazyHash = same.lazyMint ? same.lazyHash : undefined
+                    if (same.tokenID && provider) {
+                      same.seller = await collection.ownerOf(
+                        same.tokenID,
+                        provider
+                      );
+                    }
+                  }
+
+                  // if (index == 0){
+                  //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
+                  // }
+
+                  if (same.token && provider) {
+                    await collection
+                      .loadCurrency(same.token, provider)
+                      .then((i) => {
+                        collection.currency = i;
+                      });
+                  } else {
+                    collection.currency = 'MATIC';
+                  }
+                  collection.NFTs.push(same);
+                });
+
+              let sameIndex = collections.findIndex(
+                (d) => d.contract == contractID
+              );
+
+              if (sameIndex != -1) {
+                collections[sameIndex] = collection;
+              } else {
+                collections.push(collection);
+              }
+
+              console.log(collections.length);
+              console.log(col.length);
+              console.log(col);
+
+              if (collections.length == col.length) {
+                console.log(collections);
+                callback(collections);
+                return;
+              }
+            });
+          })
+        );
+
+        if (col.length == 0) {
+          callback(collections);
+          return;
+        }
+
+        if (isPlatformBrowser(this.platformID)) {
+          sub.unsubscribe();
         }
       });
-      if (!filterID) {
-        Globals.availableTemplates = this.getTemplatesFiltered(products);
-      }
-      products.sort(function (a, b) {
-        if (a.timestamp > b.timestamp) {
-          return -1;
-        }
-        if (a.timestamp < b.timestamp) {
-          return 1;
-        }
-        return 0;
-      });
-      if (isPlatformBrowser(this.platformID)) {
-        sub.unsubscribe();
-      }
-      callback(products);
     });
+  }
+
+  rand(length: number, current?: number | string): string | number {
+    current = current ? current : '';
+    return length ? this.rand(--length, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz".charAt(Math.floor(Math.random() * 60)) + current) : current;
+  }
+
+  async getCollections(
+    uid = Globals.storeInfo.uid,
+    callback: (data?: Array<Collection>) => any
+  ) {
+    let query = this.db.collection('Collections', (ref) =>
+      ref
+        .where('available', '==', true)
+        .where('uid', '==', uid)
+        .orderBy('timestamp', 'desc')
+    );
+    let sub = query.get().subscribe(async (docDatas) => {
+      sub.unsubscribe();
+
+      let data = docDatas.docs;
+      if (data) {
+        var collections = new Array<Collection>();
+
+        data.forEach((c) => {
+          let d = c.data() as Collection;
+          collections.push(
+            new Collection(
+              d.name,
+              d.symbol,
+              d.NFTs,
+              d.contract,
+              d.currency ?? 'MATIC',
+              d.collectionCount ?? 0,
+              d.owner ?? '',
+              d.isPublic ?? true,
+              d.uid ?? '',
+              d.timestamp ?? new Date(),
+              d.domain,
+              d.customToken,
+              d.available,
+              d.ABI
+            )
+          );
+        });
+        callback(collections);
+      } else {
+        callback(undefined);
+      }
+    });
+  }
+
+  async getCollection(contract: string, callback: (data?: Collection) => any) {
+    let query = this.db.collection('Collections', (ref) =>
+      ref
+        .where('contract', '==', contract)
+        .where('available', '==', true)
+        .orderBy('timestamp', 'desc')
+    );
+    let sub = query.get().subscribe(async (docDatas) => {
+      sub.unsubscribe();
+
+      let data = docDatas.docs[0];
+      if (data) {
+        let d = <Collection>data.data();
+        let c = new Collection(
+          d.name,
+          d.symbol,
+          d.NFTs,
+          d.contract,
+          d.currency ?? 'MATIC',
+          d.collectionCount ?? 0,
+          d.owner ?? '',
+          d.isPublic ?? true,
+          d.uid ?? '',
+          d.timestamp ?? new Date(),
+          d.domain,
+          d.customToken,
+          d.available,
+          d.ABI
+        );
+        console.log(c);
+        callback(c);
+      } else {
+        callback(undefined);
+      }
+    });
+  }
+
+  async getCreated(
+    contract: string,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+  ) {
+    const nftContract = new ethers.Contract(contract, NFTS.abi, provider);
+    // const data = await marketContract.fetchItemsCreated();
+    const data1 = await nftContract.name();
+    const data2 = await nftContract.symbol();
+    const data3 = await nftContract.fetchMarketItems();
+    const items = await Promise.all(
+      data3.map(async (i: any, index: number) => {
+        const tokenUri = await nftContract.tokenURI(
+          Number(i.tokenId.toString())
+        );
+        const meta = await axios.get(tokenUri);
+        let item = {
+          price: i.price,
+          tokenId: i.tokenId.toNumber(),
+          seller: i.seller,
+          owner: i.owner,
+          forSale: i.forSale,
+          royalty: i.royalty,
+          image: meta.data.image,
+          content: await this.getFormat(meta.data.image),
+          name: meta.data.name,
+          description: meta.data.description,
+          contract: i.nftContract,
+          token: i.token,
+          isNative: i.isNative,
+          uri: tokenUri,
+          itemId: i.itemId,
+          minted: i.minted
+        };
+
+
+        
+        return item;
+      })
+    );
+    return {
+      name: data1,
+      symbol: data2,
+      tokens: items,
+    };
+  }
+
+  async getFormat(image: string, noLoad = false): Promise<string>{
+    return new Promise(function (resolve, reject) {
+      if (noLoad){
+        var format = 'none';
+
+        if (image.indexOf('image') > -1) {
+          format = 'image';
+        } else if (image.indexOf('video') > -1) {
+          format = 'video';
+        }
+        resolve(format)
+      }
+      else{
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('HEAD', image);
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == this.DONE) {
+            let type = this.getResponseHeader('Content-Type');
+            var format = 'none';
+            if (!type){ reject('No content found!'); return}
+            if (type.indexOf('image') > -1) {
+              format = 'image';
+            } else if (type.indexOf('video') > -1) {
+              format = 'video';
+            }
+            resolve(format)
+          }
+        };
+        xhttp.send();
+      }
+    })
   }
 
   adminComponent?: AdminViewComponent;
@@ -1123,67 +1594,69 @@ export class LoadService {
     // if (this.shopComponent) this.shopComponent.storeProducts = products;
   }
 
-  addProduct(product: Product) {
+  addProduct(product: NFT, contract: string) {
     // if (this.shopComponent) this.shopComponent.storeProducts?.unshift(product);
 
     if (this.adminComponent)
-      this.adminComponent.storeProducts?.unshift(product);
+      Globals.storeInfo.collections
+        ?.find((c) => c.contract == contract)
+        ?.NFTs.unshift(product);
 
-    if (this.homeComponent) this.homeComponent.storeProducts?.unshift(product);
+    // if (this.homeComponent) this.homeComponent.storeProducts?.unshift(product);
   }
 
-  editProduct(product: Product) {
-    // if (this.shopComponent) {
-    //   let p = this.shopComponent.storeProducts?.find((obj) => {
-    //     return obj.productID == product.productID;
-    //   }) as Product;
+  // editProduct(product: NFT) {
+  //   // if (this.shopComponent) {
+  //   //   let p = this.shopComponent.storeProducts?.find((obj) => {
+  //   //     return obj.productID == product.productID;
+  //   //   }) as Product;
 
-    //   if (!p) {
-    //     this.addProduct(product);
-    //     return;
-    //   }
+  //   //   if (!p) {
+  //   //     this.addProduct(product);
+  //   //     return;
+  //   //   }
 
-    //   p.name = product.name;
-    //   p.description = product.description;
-    //   p.price = product.price;
-    //   p.url = product.url;
-    //   p.images = product.images;
-    // }
+  //   //   p.name = product.name;
+  //   //   p.description = product.description;
+  //   //   p.price = product.price;
+  //   //   p.url = product.url;
+  //   //   p.images = product.images;
+  //   // }
 
-    if (this.adminComponent) {
-      let p = this.adminComponent.storeProducts?.find((obj) => {
-        return obj.productID == product.productID;
-      }) as Product;
+  //   if (this.adminComponent) {
+  //     let p = this.adminComponent.storeProducts?.find((obj) => {
+  //       return obj.productID == product.productID;
+  //     }) as Product;
 
-      if (!p) {
-        this.addProduct(product);
-        return;
-      }
+  //     if (!p) {
+  //       this.addProduct(product);
+  //       return;
+  //     }
 
-      p.name = product.name;
-      p.description = product.description;
-      p.price = product.price;
-      p.url = product.url;
-      p.images = product.images;
-    }
+  //     p.name = product.name;
+  //     p.description = product.description;
+  //     p.price = product.price;
+  //     p.url = product.url;
+  //     p.images = product.images;
+  //   }
 
-    if (this.homeComponent) {
-      let p = this.homeComponent.storeProducts?.find((obj) => {
-        return obj.productID == product.productID;
-      }) as Product;
+  //   if (this.homeComponent) {
+  //     let p = this.homeComponent.storeProducts?.find((obj) => {
+  //       return obj.productID == product.productID;
+  //     }) as Product;
 
-      if (!p) {
-        this.addProduct(product);
-        return;
-      }
+  //     if (!p) {
+  //       this.addProduct(product);
+  //       return;
+  //     }
 
-      p.name = product.name;
-      p.description = product.description;
-      p.price = product.price;
-      p.url = product.url;
-      p.images = product.images;
-    }
-  }
+  //     p.name = product.name;
+  //     p.description = product.description;
+  //     p.price = product.price;
+  //     p.url = product.url;
+  //     p.images = product.images;
+  //   }
+  // }
 
   async removeInv(inv: Inventory) {
     let uid = (await this.isLoggedIn())?.uid ?? '';
@@ -1194,7 +1667,7 @@ export class LoadService {
       .delete();
   }
 
-  removeProduct(product: Product) {
+  removeProduct(product: NFT, contract: string) {
     // if (this.shopComponent) {
     //   let p = this.shopComponent.storeProducts?.filter((obj) => {
     //     return obj.productID == product.productID;
@@ -1207,27 +1680,33 @@ export class LoadService {
     // }
 
     if (this.adminComponent) {
-      let p = this.adminComponent.storeProducts?.filter((obj) => {
-        return obj.productID == product.productID;
-      })[0] as Product;
+      let p = Globals.storeInfo.collections
+        ?.find((c) => c.contract == contract)
+        ?.NFTs.filter((obj) => {
+          return obj.docID == product.docID;
+        })[0] as NFT;
 
-      let index = this.adminComponent.storeProducts?.indexOf(p);
+      let index = Globals.storeInfo.collections
+        ?.find((c) => c.contract == contract)
+        ?.NFTs.indexOf(p);
 
       if (index != undefined) {
-        this.adminComponent.storeProducts?.splice(index, 1);
+        Globals.storeInfo.collections
+          ?.find((c) => c.contract == contract)
+          ?.NFTs.splice(index, 1);
       }
     }
 
-    if (this.homeComponent) {
-      let p = this.homeComponent.storeProducts?.filter((obj) => {
-        return obj.productID == product.productID;
-      })[0] as Product;
+    // if (this.homeComponent) {
+    //   let p = this.homeComponent.storeProducts?.filter((obj) => {
+    //     return obj. == product.tokenID;
+    //   })[0] as Product;
 
-      let index = this.homeComponent.storeProducts?.indexOf(p);
-      if (index != undefined) {
-        this.homeComponent.storeProducts?.splice(index, 1);
-      }
-    }
+    //   let index = this.homeComponent.storeProducts?.indexOf(p);
+    //   if (index != undefined) {
+    //     this.homeComponent.storeProducts?.splice(index, 1);
+    //   }
+    // }
   }
 
   getBlogs(filterID?: string) {
@@ -1253,7 +1732,9 @@ export class LoadService {
           if (docData) {
             let uid = docData.UID as string;
             let title = docData.Title as string;
-            let timestamp = (docData.Timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              docData.Timestamp as firebase.firestore.Timestamp
+            ).toDate();
             let isAvailable = docData.isAvailable as boolean;
             let blogID = docData.Blog_ID as string;
             let blogItems = docData.Blog_Items as Array<Dict<any>>;
@@ -1382,7 +1863,6 @@ export class LoadService {
     callback: (order_id: string, client_secret: string, err?: any) => any,
     coupon?: Coupon
   ) {
-
     var data = {
       merchant_uid: storeID,
       isCard: isCard,
@@ -1401,7 +1881,7 @@ export class LoadService {
           callback(resp.order_id, resp.client_secret);
         },
         (err) => {
-          console.log(err)
+          console.log(err);
           callback('', '', err);
         }
       );
@@ -1602,7 +2082,9 @@ export class LoadService {
           if (docData) {
             let uid = docData.UID as string;
             let title = docData.Title as string;
-            let timestamp = (docData.Timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              docData.Timestamp as firebase.firestore.Timestamp
+            ).toDate();
             let isAvailable = docData.isAvailable as boolean;
             let blogID = docData.Blog_ID as string;
             let blogItems = docData.Blog_Items as Array<Dict<any>>;
@@ -1945,7 +2427,6 @@ export class LoadService {
   async saveUser(mappedData: Dict<any>, callback: (success: boolean) => any) {
     let uid = (await this.isLoggedIn())?.uid;
 
-
     if (mappedData.profile_pic) {
       let picID = await this.uploadFile(mappedData, uid);
       mappedData.picID = picID;
@@ -1989,7 +2470,7 @@ export class LoadService {
 
     if ((inv.code ?? '').trim() == '') {
       data['id'] = uuid().replace('-', '');
-      inv.code = data.id
+      inv.code = data.id;
     }
 
     if ((inv.id ?? '').trim() == '') {
@@ -2071,119 +2552,147 @@ export class LoadService {
     });
   }
 
-  async updateProduct(mappedData: Dict<any>, product?: Product) {
-    let uid = (await this.isLoggedIn())?.uid ?? '';
-    let productID = mappedData.productID;
+  // async updateProduct(mappedData: Dict<any>, product?: NFT) {
+  //   let uid = (await this.isLoggedIn())?.uid ?? '';
+  //   let productID = mappedData.productID;
 
-    if (mappedData.images?.length > 0) {
-      var images = new Array<{
-        index: number;
-        img: string;
-      }>();
+  //   if (mappedData.images?.length > 0) {
+  //     var images = new Array<{
+  //       index: number;
+  //       img: string;
+  //     }>();
 
-      const promises = await mappedData.images.map(
-        async (image: Dict<string>, index: number) => {
-          var url = image.img;
-          url = (await this.uploadProductImages(
-            image.img,
-            image.type,
-            productID,
-            uid
-          )) as string;
-          var split = url.split('&token=');
-          url = split[0];
+  //     const promises = await mappedData.images.map(
+  //       async (image: Dict<string>, index: number) => {
+  //         var url = image.img;
+  //         url = (await this.uploadProductImages(
+  //           image.img,
+  //           image.type,
+  //           productID,
+  //           uid
+  //         )) as string;
+  //         var split = url.split('&token=');
+  //         url = split[0];
 
-          if (image.type.includes('link')) {
-            images.push({
-              img: url,
-              index: index,
-            });
-          }
-        }
-      );
+  //         if (image.type.includes('link')) {
+  //           images.push({
+  //             img: url,
+  //             index: index,
+  //           });
+  //         }
+  //       }
+  //     );
 
+  //     await Promise.all(promises);
 
-      await Promise.all(promises);
+  //     images.sort(function (a, b) {
+  //       if (a.index < b.index) {
+  //         return -1;
+  //       }
+  //       if (a.index > b.index) {
+  //         return 1;
+  //       }
+  //       return 0;
+  //     });
 
-      images.sort(function (a, b) {
-        if (a.index < b.index) {
-          return -1;
-        }
-        if (a.index > b.index) {
-          return 1;
-        }
-        return 0;
-      });
+  //     let data: Dict<any> = {
+  //       Name: mappedData.name ?? 'Post',
+  //       Search_Name: mappedData.name.toLowerCase() ?? 'post',
+  //       Description: mappedData.description ?? '',
+  //       Price_Cents: mappedData.price ?? 2000,
+  //       Available: mappedData.available ?? true,
+  //       Public: true,
+  //       SKU: mappedData.sku ?? null,
+  //       Images: images,
+  //     };
+  //     if (mappedData.color && mappedData.color?.trim() != '') {
+  //       data.Template_Color = mappedData.color;
+  //     }
+  //     await this.db
+  //       .collection('Users/' + uid + '/Products')
+  //       .doc(productID)
+  //       .update(data);
 
-      let data: Dict<any> = {
-        Name: mappedData.name ?? 'Post',
-        Search_Name: mappedData.name.toLowerCase() ?? 'post',
-        Description: mappedData.description ?? '',
-        Price_Cents: mappedData.price ?? 2000,
-        Available: mappedData.available ?? true,
-        Public: true,
-        SKU: mappedData.sku ?? null,
-        Images: images,
-      };
-      if (mappedData.color && mappedData.color?.trim() != '') {
-        data.Template_Color = mappedData.color;
-      }
-      await this.db
-        .collection('Users/' + uid + '/Products')
-        .doc(productID)
-        .update(data);
+  //     // this.addProduct(product)
 
-      // this.addProduct(product)
+  //     let k = new NFT(
+  //       uid,
+  //       productID,
+  //       data.Description,
+  //       productID,
+  //       product?.timestamp,
+  //       undefined,
+  //       product?.blurred,
+  //       data.Price_Cents,
+  //       data.Name,
+  //       product?.templateColor,
+  //       product?.likes,
+  //       product?.liked,
+  //       product?.comments,
+  //       data.Available,
+  //       true,
+  //       product?.productType,
+  //       product?.displaySide,
+  //       product?.supportedSides,
+  //       images[0].img,
+  //       images
+  //     );
 
-      let k = new Product(
-        uid,
-        productID,
-        data.Description,
-        productID,
-        product?.timestamp,
-        undefined,
-        product?.blurred,
-        data.Price_Cents,
-        data.Name,
-        product?.templateColor,
-        product?.likes,
-        product?.liked,
-        product?.comments,
-        data.Available,
-        true,
-        product?.productType,
-        product?.displaySide,
-        product?.supportedSides,
-        images[0].img,
-        images
-      );
-
-      this.editProduct(k);
-    }
-    return console.log('Updated Product');
-  }
+  //     this.editProduct(k);
+  //   }
+  //   return console.log('Updated Product');
+  // }
 
   async deleteProduct(mappedData: Dict<any>) {
-    let uid = (await this.isLoggedIn())?.uid ?? '';
-    let productID = mappedData.productID;
-    let data = {
-      Available: false,
-    };
-    await this.db
-      .collection('Users/' + uid + '/Products')
-      .doc(productID)
-      .update(data);
+    // let uid = (await this.isLoggedIn())?.uid ?? '';
+    // let productID = mappedData.productID;
+    // let data = {
+    //   Available: false,
+    // };
+    // await this.db
+    //   .collection('Users/' + uid + '/Products')
+    //   .doc(productID)
+    //   .update(data);
+    // let product = new NFT(undefined, undefined, undefined, productID);
+    // this.removeProduct(product);
+  }
 
-    let product = new Product(undefined, undefined, undefined, productID);
-    this.removeProduct(product);
+  async saveCollectionInfo(collection: Collection, uid?: string) {
+    let data = JSON.parse(JSON.stringify(collection));
+
+    if (uid && collection.contract) {
+      await this.db
+        .collection('Collections')
+        .doc(collection.contract)
+        .set(data, { merge: true });
+
+      return data;
+
+      // Globals.userInfo!.slogan = mappedData.slogan
+      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
+
+      // if (matchingTheme){
+      //   Globals.userInfo!.colorStyle = matchingTheme
+      // }
+      // Globals.userInfo!.slogan = mappedData.slogan
+      // Globals.userInfo!.fontName = mappedData.font
+
+      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      //   if (matchingTheme){
+      //     Globals.storeInfo!.colorStyle = matchingTheme
+      //     Globals.storeInfo!.fontName = mappedData.font
+      //   }
+      // }
+    }
+    return undefined;
   }
 
   async createProduct(mappedData: Dict<any>) {
     return new Promise(async (resolve, reject) => {
       let uid = (await this.isLoggedIn())?.uid ?? '';
 
-      let productID = this.db.collection('Users/' + uid + '/Products').doc().ref
-        .id;
+      let productID = this.db.collection('Users/' + uid + '/Products').doc()
+        .ref.id;
 
       let data = (await this.saveProductInfo(mappedData, productID, uid)) ?? {};
 
@@ -2213,7 +2722,6 @@ export class LoadService {
           }
         );
         await Promise.all(promises);
-
 
         await this.db
           .collection('Users/' + uid + '/Products')
@@ -2387,7 +2895,7 @@ export class LoadService {
 
       // const task = await this.storage.upload(filePath, byteArray);
       const task = await ref.put(byteArray);
-      const url = new URL(await task.ref.getDownloadURL())
+      const url = new URL(await task.ref.getDownloadURL());
 
       if (type == 'theme') {
         Globals.userInfo!.themeLink = url;
@@ -2421,6 +2929,164 @@ export class LoadService {
         }
       }
       return url;
+    }
+    return undefined;
+  }
+
+  requested = false;
+  async checkNetwork(test: boolean) {
+    if (this.requested) {
+      return;
+    }
+    this.requested = true;
+    if (test) {
+      try {
+        await (window as any).ethereum.request({
+          method: 'wallet_switchEthereumChain',
+
+          params: [{ chainId: `0x${Number(80001).toString(16)}` }],
+        });
+      } catch (error) {
+        const polygon = {
+          chainId: `0x${Number(80001).toString(16)}`,
+          chainName: 'Mumbai',
+          nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18,
+          },
+          rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+          blockExplorerUrls: ['https://polygonscan.com'],
+        };
+        await (window as any).ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [polygon],
+        });
+      }
+    } else {
+      try {
+        await (window as any).ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: `0x${Number(137).toString(16)}` }],
+        });
+      } catch (error) {
+        const polygon = {
+          chainId: `0x${Number(137).toString(16)}`,
+          chainName: 'Polygon Mainnet',
+          nativeCurrency: {
+            name: 'MATIC',
+            symbol: 'MATIC',
+            decimals: 18,
+          },
+          rpcUrls: ['https://polygon-rpc.com'],
+          blockExplorerUrls: ['https://polygonscan.com'],
+        };
+        await (window as any).ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [polygon],
+        });
+      }
+    }
+    this.requested = false;
+    this.checkProvider();
+  }
+
+  async updateNFT(mappedData: NFT, uid?: string, productID?: string) {
+    //add token later
+
+    var id = productID;
+
+    if (!id) {
+      id = mappedData.contractID + mappedData.tokenID
+    }
+
+    let data = JSON.parse(
+      JSON.stringify({
+        forSale: mappedData.forSale,
+        Lazy_Hash: mappedData.lazyHash,
+      } as Dict<any>)
+    );
+
+    data.Product_ID = id;
+
+    if (uid) {
+      await this.db
+        .collection('Users/' + uid + '/Products')
+        .doc(id)
+        .update(data);
+
+      return id;
+
+      // Globals.userInfo!.slogan = mappedData.slogan
+      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
+
+      // if (matchingTheme){
+      //   Globals.userInfo!.colorStyle = matchingTheme
+      // }
+      // Globals.userInfo!.slogan = mappedData.slogan
+      // Globals.userInfo!.fontName = mappedData.font
+
+      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      //   if (matchingTheme){
+      //     Globals.storeInfo!.colorStyle = matchingTheme
+      //     Globals.storeInfo!.fontName = mappedData.font
+      //   }
+      // }
+    }
+    return undefined;
+  }
+
+  async saveNFT(mappedData: NFT, uid?: string, productID?: string) {
+    //add token later
+
+    var id = productID;
+
+    if (!id) {
+      id = mappedData.contractID + mappedData.tokenID
+    }
+
+    let data = JSON.parse(
+      JSON.stringify({
+        Metadata: mappedData.metadata,
+        Token_ID: mappedData.tokenID,
+        Contract_Address: mappedData.contractID,
+        Owner_Address: mappedData.owner,
+        Sold: false,
+        Lazy: true,
+        Format: mappedData.format,
+        Royalty: mappedData.royalty,
+        forSale: true,
+        Lazy_Hash: mappedData.lazyHash,
+        Content: mappedData.format,
+        Timestamp: new Date(),
+      } as Dict<any>)
+    );
+
+    data.Product_ID = id;
+
+    if (uid) {
+      await this.db
+        .collection('Users/' + uid + '/Products')
+        .doc(id)
+        .set(data, { merge: true });
+
+      return id;
+
+      // Globals.userInfo!.slogan = mappedData.slogan
+      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
+
+      // if (matchingTheme){
+      //   Globals.userInfo!.colorStyle = matchingTheme
+      // }
+      // Globals.userInfo!.slogan = mappedData.slogan
+      // Globals.userInfo!.fontName = mappedData.font
+
+      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      //   if (matchingTheme){
+      //     Globals.storeInfo!.colorStyle = matchingTheme
+      //     Globals.storeInfo!.fontName = mappedData.font
+      //   }
+      // }
     }
     return undefined;
   }
@@ -2479,7 +3145,6 @@ export class LoadService {
   }
 
   async saveStoreInfo(mappedData: Dict<any>, uid?: string) {
-
     var data: Dict<any> = {};
 
     if (mappedData.slogan) {
@@ -2685,11 +3350,14 @@ export class LoadService {
     callback(true);
   }
 
+  async deletePage(
+    page: Page,
+    callback: (success: boolean) => any,
+    uid?: string
+  ) {
+    var pages = JSON.parse(JSON.stringify(Globals.userInfo?.pages ?? []));
 
-  async deletePage(page: Page, callback: (success: boolean) => any, uid?: string){
-    var pages = JSON.parse(JSON.stringify((Globals.userInfo?.pages ?? [])))
-
-    let i = pages.findIndex((p: any) => p.id == page.id)
+    let i = pages.findIndex((p: any) => p.id == page.id);
 
     pages.splice(i, 1);
 
@@ -2700,79 +3368,67 @@ export class LoadService {
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.pages) {
-        Globals.userInfo!.pages = data.pages ?? []
+        Globals.userInfo!.pages = data.pages ?? [];
         Globals.storeInfo = Globals.userInfo!;
       }
     }
-    callback(true)
+    callback(true);
   }
-
 
   async addLayout(
     page: Page,
     callback: (success: boolean) => any,
-    uid?: string,
+    uid?: string
   ) {
+    const promises1 = (page.rows ?? []).map(
+      async (row: Row, mainIndex: number) => {
+        const promises2 = (row.imgs ?? []).map(
+          async (image: string, index: number) => {
+            if (this.isBase64(image?.replace(/^[\w\d;:\/]+base64\,/g, ''))) {
+              var url = image;
+              url = (await this.uploadLayoutImages(
+                image,
+                page.id + '_' + mainIndex.toString() + '_' + index.toString(),
+                uid
+              )) as string;
+              var split = url.split('&token=');
+              url = split[0];
 
-
-
-
-
-    const promises1 = (page.rows ?? []).map(async (row: Row, mainIndex: number) => {
-      const promises2 = (row.imgs ?? []).map(
-        async (image: string, index: number) => {
-          if (this.isBase64(image?.replace(/^[\w\d;:\/]+base64\,/g, ''))) {
-            var url = image;
-            url = (await this.uploadLayoutImages(
-              image,
-              page.id + '_' + mainIndex.toString() + '_' + index.toString(),
-              uid
-            )) as string;
-            var split = url.split('&token=');
-            url = split[0];
-
-            ((page.rows ?? [])[mainIndex].imgs ?? [])[index] = url;
+              ((page.rows ?? [])[mainIndex].imgs ?? [])[index] = url;
+            }
           }
-        }
-      );
-      await Promise.all(promises2);
-    });
+        );
+        await Promise.all(promises2);
+      }
+    );
 
     await Promise.all(promises1);
 
+    var pages = JSON.parse(JSON.stringify(Globals.userInfo?.pages ?? []));
 
-    var pages = JSON.parse(JSON.stringify((Globals.userInfo?.pages ?? [])))
+    let i = pages.findIndex((p: any) => p.id == page.id);
 
-    let i = pages.findIndex((p: any) => p.id == page.id)
-
-    if (i > -1){
-      pages[i].rows = page.rows ?? []
-      pages[i].title = page.title
-      pages[i].url = page.url
-      pages[i].name = page.name
-      pages[i].fullscreen = page.fullscreen
-      pages[i].seo = page.seo
-      pages[i].loader = page.loader
-
+    if (i > -1) {
+      pages[i].rows = page.rows ?? [];
+      pages[i].title = page.title;
+      pages[i].url = page.url;
+      pages[i].name = page.name;
+      pages[i].fullscreen = page.fullscreen;
+      pages[i].seo = page.seo;
+      pages[i].loader = page.loader;
+    } else {
+      page.id = uuid().replace('-', '');
+      pages.push(JSON.parse(JSON.stringify(page)));
     }
-    else{
-      page.id = uuid().replace('-', '')
-      pages.push(
-        JSON.parse(JSON.stringify(page))
-      )
-    }
-
-
 
     var data = {
-      pages: JSON.parse(JSON.stringify(pages))
+      pages: JSON.parse(JSON.stringify(pages)),
     };
-
 
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.pages) {
-        Globals.userInfo!.pages = data.pages ?? []
+        Globals.userInfo!.pages = data.pages ?? [];
         Globals.storeInfo = Globals.userInfo!;
       }
     }
@@ -2854,8 +3510,6 @@ export class LoadService {
     callback: (success: boolean) => any,
     uid?: string
   ) {
-
-
     var data = {
       header_links: header,
       footer_links: footer,
@@ -3031,7 +3685,6 @@ export class LoadService {
       let password = credentials?.password!;
       let email = credentials?.email!;
 
-
       this.auth
         .createUserWithEmailAndPassword(email, password)
         .then(async (result) => {
@@ -3203,7 +3856,9 @@ export class LoadService {
     username: string,
     hasUsername?: boolean,
     affiliate?: string,
-    store?: string
+    store?: string,
+    nonce?: string,
+    address?: string
   ) {
     var data = {
       Full_Name: 'GUEST',
@@ -3218,6 +3873,8 @@ export class LoadService {
       Platform: 'WEB',
       Associated_Store: store ?? null,
       Timestamp: new Date(),
+      nonce: nonce ?? null,
+      Address: address
     };
 
     if (hasUsername ?? false) {
@@ -3262,7 +3919,6 @@ export class LoadService {
     callback: (err?: string) => any,
     myUID?: string
   ) {
-
     let sub = this.db
       .collection('Users', (ref) => ref.where('Username', '==', username))
       .valueChanges({ idField: 'UID' })
@@ -3336,7 +3992,9 @@ export class LoadService {
             let uid = productInCart.UID as string;
             let size = productInCart.Size as string;
             let qty = productInCart.Qty as number;
-            let timestamp = (productInCart.Timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              productInCart.Timestamp as firebase.firestore.Timestamp
+            ).toDate();
             let productID = productInCart.Post_ID as string;
 
             let product = new Product(
@@ -3372,7 +4030,7 @@ export class LoadService {
             );
             cart.push(productCart);
             if (shouldGetProducts)
-            await this.getPost(productID, () => {}, productCart);
+              await this.getPost(productID, () => {}, productCart);
           });
           await Promise.all(promises);
         }
@@ -3394,7 +4052,9 @@ export class LoadService {
             let status = (docData.status as string) ?? 'cancelled';
             let intents = docData.order_intents as Array<Dict<string>>;
 
-            let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              docData.timestamp as firebase.firestore.Timestamp
+            ).toDate();
             let shippingIntent = docData.shipping_intent as string;
             let trackingNumber = docData.tracking_id as string;
             let shippingCost = ((docData.shipping_cost as number) ?? 0) / 100;
@@ -3505,14 +4165,15 @@ export class LoadService {
     var orders = new Array<Order>();
 
     let sub = query.valueChanges().subscribe((docDatas) => {
-
       docDatas.forEach((doc, index) => {
         const docData = doc as DocumentData;
         if (docData) {
           let status = (docData.status as string) ?? 'cancelled';
           let intents = docData.order_intents as Array<Dict<string>>;
 
-          let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+          let timestamp = (
+            docData.timestamp as firebase.firestore.Timestamp
+          ).toDate();
           let shippingIntent = docData.shipping_intent as string;
           let trackingNumber = docData.tracking_id as string;
           let shippingCost = ((docData.shipping_cost as number) ?? 0) / 100;
@@ -3595,20 +4256,19 @@ export class LoadService {
     });
   }
 
+  async getCoords() {
+    let value = (await this.http
+      .get('https://api.ipify.org/?format=json')
+      .toPromise()) as Dict<any>;
 
-  async getCoords(){
+    let url = `https://api.ipstack.com/${value.ip}?access_key=5b5f96aced42e6b1c95ab24d96f704c5`;
+    let coords = (await this.http.get(url).toPromise()) as Dict<any>;
 
-      let value = await this.http.get('https://api.ipify.org/?format=json').toPromise() as Dict<any>
-
-      let url = `https://api.ipstack.com/${value.ip}?access_key=5b5f96aced42e6b1c95ab24d96f704c5`
-      let coords = await this.http.get(url).toPromise() as Dict<any>;
-
-      let returnCoords = {
-        LATITUDE: coords.latitude,
-        LONGITUDE: coords.longitude
-      }
-      return returnCoords
-
+    let returnCoords = {
+      LATITUDE: coords.latitude,
+      LONGITUDE: coords.longitude,
+    };
+    return returnCoords;
   }
 
   async getOrders(callback: (orders: Array<Order>) => any) {
@@ -3633,7 +4293,9 @@ export class LoadService {
           let status = (docData.status as string) ?? 'cancelled';
           let intents = docData.order_intents as Array<Dict<string>>;
 
-          let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+          let timestamp = (
+            docData.timestamp as firebase.firestore.Timestamp
+          ).toDate();
           let shippingIntent = docData.shipping_intent as string;
           let trackingNumber = docData.tracking_id as string;
           let trackingUrl = docData.tracking_url as string;
@@ -3724,7 +4386,6 @@ export class LoadService {
       .collection('Users/' + uid + '/Orders/' + order.orderID + '/Purchases')
       .valueChanges()
       .subscribe((docDatas) => {
-      
         docDatas.forEach((doc, index) => {
           const docData = doc as DocumentData;
           if (docData) {
@@ -3733,7 +4394,9 @@ export class LoadService {
             let size = docData.size as string;
             let status = docData.status as string;
             let price = (docData.amount as number) / quantity;
-            let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              docData.timestamp as firebase.firestore.Timestamp
+            ).toDate();
 
             let product = new Product(
               uid,
@@ -3787,19 +4450,29 @@ export class LoadService {
           const docData = doc as DocumentData;
           if (docData) {
             let time = docData.time as Array<any>;
-            let timestamp = (docData.timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              docData.timestamp as firebase.firestore.Timestamp
+            ).toDate();
             let length = time.length;
 
-            time.forEach(t => {
-              let p = (t instanceof firebase.firestore.Timestamp) ? (t as firebase.firestore.Timestamp).toDate() : (t.time as firebase.firestore.Timestamp).toDate()
-              let v = (t instanceof firebase.firestore.Timestamp) ? {
-                LONGITUDE: -118.243683,
-                LATITUDE: 34.052235
-              } : t.coords
+            time.forEach((t) => {
+              let p =
+                t instanceof firebase.firestore.Timestamp
+                  ? (t as firebase.firestore.Timestamp).toDate()
+                  : (t.time as firebase.firestore.Timestamp).toDate();
+              let v =
+                t instanceof firebase.firestore.Timestamp
+                  ? {
+                      LONGITUDE: -118.243683,
+                      LATITUDE: 34.052235,
+                    }
+                  : t.coords;
 
-              Globals.views?.push({ views: [{ view: 1, coords: v}], timestamp: p });
-
-            })
+              Globals.views?.push({
+                views: [{ view: 1, coords: v }],
+                timestamp: p,
+              });
+            });
           }
         });
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
@@ -3811,7 +4484,9 @@ export class LoadService {
             docDatas.forEach((doc, index) => {
               const docData = doc as DocumentData;
               if (docData) {
-                let timestamp = (docData.Timestamp as firebase.firestore.Timestamp)?.toDate();
+                let timestamp = (
+                  docData.Timestamp as firebase.firestore.Timestamp
+                )?.toDate();
                 Globals.dropCarts?.push({ dropCarts: 1, timestamp: timestamp });
               }
             });
@@ -3834,7 +4509,9 @@ export class LoadService {
           const docData = doc as DocumentData;
           if (docData) {
             let affiliate = docData.affiliate as Dict<any>;
-            let timestamp = (affiliate.timestamp as firebase.firestore.Timestamp).toDate();
+            let timestamp = (
+              affiliate.timestamp as firebase.firestore.Timestamp
+            ).toDate();
             let id = affiliate.id as string;
             stats.push({ affiliate: id, timestamp: timestamp });
           }
@@ -3861,8 +4538,10 @@ export class LoadService {
             let size = docData.size as string;
             let price = (docData.amount as number) / quantity;
             let profit = (docData.moneyToMerchant as number) / 100;
-            let timestamp = (docData.timestamp as firebase.firestore.Timestamp)?.toDate();
-            let currency = (docData.currency) as string
+            let timestamp = (
+              docData.timestamp as firebase.firestore.Timestamp
+            )?.toDate();
+            let currency = docData.currency as string;
             let product = new Product(
               uid,
               productID,
@@ -3913,12 +4592,16 @@ export class LoadService {
 
   async getPost(
     productID: string,
-    callback: () => any,
+    callback: (product?: NFT, collection?: Collection) => any,
     cartProduct?: ProductInCart,
     orderProduct?: ProductInCart,
     saleProduct?: ProductInCart,
-    selectedProduct?: ProductInCart
+    selectedProduct?: NFT,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
   ) {
+    await this.checkNetwork(true);
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID)
     );
@@ -3927,114 +4610,138 @@ export class LoadService {
         ref.where('Product_ID', '==', productID).where('Public', '==', true)
       );
     }
-    let sub = query.valueChanges().subscribe((docDatas) => {
-      if (docDatas.length == 0) {
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      }
 
-      var product: Product = new Product()
+    let sub = query.get().subscribe(async (docDatas) => {
+      docDatas.docs.forEach(async (doc, index) => {
+        let docData = doc.data() as DocumentData;
 
+        if (docData) {
+          let tokenID = docData['Token_ID'] as number;
+          let contractID = docData['Contract_Address'] as string;
+          let ownerAddress =
+            (docData['Owner_Address'] as string) ??
+            Globals.storeInfo.walletAddress ??
+            '';
+          let sold = (docData['Sold'] as boolean) ?? false;
+          let lazyMint = (docData['Lazy'] as boolean) ?? true;
+          let format = docData['Format'] as string;
+          let royalty = (docData['Royalty'] as number) ?? 0;
+          let lazyHash = docData['Lazy_Hash'] as Dict<any>;
+          let metadata = docData['Metadata'] as string;
+          let token = docData['Token'] as string;
+          let forSale = docData['forSale'] as boolean
+          var cost = ethers.utils.parseUnits('0.02', 'ether');
+          if (lazyHash) {
+            cost = lazyHash['minPrice'] as ethers.BigNumber;
+          }
 
-      if (docDatas.length > 0){
-        docDatas.forEach((doc) => {
-          const docData = doc as DocumentData;
-          if (docData) {
-            let uid = docData.UID as string;
-            let productID = docData.Product_ID as string;
-            let timestamp = (docData.Timestamp as firebase.firestore.Timestamp).toDate();
-            let description = docData.Description as string;
-            let name = docData.Name as string;
-  
-            let blurred = docData.Blurred as boolean;
-            let templateColor = docData.Template_Color as string;
-  
-            let likes = docData.Likes as number;
-  
-            let comments = docData.Comments as number;
-            let isPublic = (docData.Public as boolean) ?? true;
-            let productType = (docData.Type as string) ?? 'ATC1000';
-            let displaySide = (docData.Side as string) ?? 'front';
-            let sides = (docData['Sides'] as Array<string>) ?? ['Front'];
-            let priceCents = docData.Price_Cents as number;
-            let isAvailable = (docData.Available as boolean) ?? false;
-  
-            let images = (docData['Images'] as Array<any>) ?? [
-              { index: 0, img: this.getURL(uid, productID) },
-            ];
-            let custom = (docData.Custom as boolean) ?? false;
-  
-            product = new Product(
-              uid,
-              productID,
-              description,
-              productID,
-              timestamp,
-              '',
-              blurred,
-              priceCents,
-              name,
-              templateColor,
-              likes,
-              false,
-              comments,
-              isAvailable,
-              isPublic,
-              productType,
-              displaySide,
-              sides,
-              this.getURL(uid, productID),
-              images,
-              custom
+          let product = new NFT(
+            tokenID,
+            contractID,
+            ownerAddress,
+            sold,
+            lazyMint,
+            undefined,
+            royalty,
+            lazyHash,
+            metadata
+          );
+
+          product.price = cost;
+          product.token = token;
+          product.docID = doc.id;
+          product.seller = ownerAddress
+
+          product.isAvailable = true;
+          product.forSale = forSale
+
+          if (metadata) {
+            const meta = await axios.get(metadata);
+            product.name = meta.data.name;
+            product.url = meta.data.image;
+            product.description = meta.data.description;
+            product.traits = meta.data.traits
+            product.format = await this.getFormat(meta.data.image)
+          } else {
+            product.name = docData['Name'] as string;
+            product.description = docData['Description'] as string;
+            let uid = docData['UID'] as string;
+            let productID = docData['Product_ID'];
+            product.url = this.getURL(uid, productID);
+          }
+          if (product.contractID) {
+            let created = await this.getCreated(product.contractID, provider);
+            let co = new Collection(
+              created.name,
+              created.symbol,
+              [],
+              product.contractID,
+              'MATIC',
+              0,
+              Globals.storeInfo.walletAddress ?? '',
+              true,
+              Globals.storeInfo.uid ?? '',
+              new Date()
             );
+
+            let c = created.tokens.find(
+              (i: any) => i.tokenId == product.tokenID
+            ) as any;
+            if (c) {
+              product.tokenID = c.tokenId;
+              product.contractID = c.contract;
+              product.owner = c.owner;
+              product.name = c.name;
+              product.format = c.content;
+              product.royalty = c.royalty;
+              product.metadata = c.uri;
+              product.seller = c.seller;
+              product.token = c.isNative ? undefined : c.token;
+              product.description = c.description;
+              product.price = c.price;
+              product.url = c.image;
+              product.itemId = c.itemId;
+              product.forSale = c.forSale
+              product.lazyMint = c.minted == false
+              product.lazyHash = product.lazyMint ? product.lazyHash : undefined
+              if (product.tokenID && provider) {
+                product.seller = await co.ownerOf(product.tokenID, provider);
+              }
+            }
+            co.currency = 'MATIC';
+            if (product.token && provider) {
+              await co.loadCurrency(product.token, provider).then((i) => {
+                co.currency = i;
+              });
+            }
+            callback(product, co);
+            return;
           }
-        });
-      }
-      else{
-        product = new Product(
-          '',
-          productID,
-          '',
-          productID,
-          undefined,
-          '',
-          false,
-          0,
-          'Cannot Load',
-          undefined,
-          0,
-          false,
-          0,
-          false,
-          false,
-          '',
-          '',
-          [],
-          this.getURL(productID, productID),
-          [],
-          false
-        );
-      }
 
-
-
-      if (saleProduct && Globals.productsSold != undefined) {
-        saleProduct.product = product;
-      } else {
-        if (cartProduct) {
-          cartProduct.product = product;
-        } else {
-          if (orderProduct) {
-            product.price = orderProduct.product?.price ?? 0;
-            orderProduct.product = product;
-          } else if (selectedProduct) {
-            selectedProduct.product = product;
-          }
-          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+          callback(product);
+          return;
         }
+        callback();
+      });
+      if (isPlatformBrowser(this.platformID)) {
+        sub.unsubscribe();
       }
-      callback();
     });
+    // if (saleProduct && Globals.productsSold != undefined) {
+    //   saleProduct.product = product;
+    // } else {
+    //   if (cartProduct) {
+    //     cartProduct.product = product;
+    //   } else {
+    //     if (orderProduct) {
+    //       product.price = orderProduct.product?.price ?? 0;
+    //       orderProduct.product = product;
+    //     } else if (selectedProduct) {
+    //       selectedProduct.product = product;
+    //     }
+    //     if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+    //   }
+    // }
   }
 
   getTemplatesFiltered(products: Array<Product>) {
@@ -4227,9 +4934,9 @@ export class LoadService {
               let code = v['Code'] as string;
               let display = v['Display'] as string;
               let img = (v['IMG'] as firebase.firestore.Blob)?.toBase64();
-              let backImg = (v[
-                'IMG_BACK'
-              ] as firebase.firestore.Blob)?.toBase64();
+              let backImg = (
+                v['IMG_BACK'] as firebase.firestore.Blob
+              )?.toBase64();
               let rgb = v['RGB'] as Array<number>;
               let color = new Color(code, display, rgb, img, backImg);
               template.colors.push(color);
@@ -4336,9 +5043,9 @@ export class LoadService {
               let code = v['Code'] as string;
               let display = v['Display'] as string;
               let img = (v['IMG'] as firebase.firestore.Blob)?.toBase64();
-              let backImg = (v[
-                'IMG_BACK'
-              ] as firebase.firestore.Blob)?.toBase64();
+              let backImg = (
+                v['IMG_BACK'] as firebase.firestore.Blob
+              )?.toBase64();
 
               let rgb = v['RGB'] as Array<number>;
               let color = new Color(code, display, rgb, img, backImg);

@@ -1,5 +1,4 @@
-<div style="height: 100vh; position: relative; top: -30px;">
-    <div *ngIf="isBrowser()" class="animation-area" style="pointer-events: none;" >
+    <div *ngIf="isBrowser()" class="animation-area m-0" style="pointer-events: none; height: 100vh" >
 
         <ul class="box-area">
             <li style="pointer-events: auto">
@@ -8,12 +7,12 @@
                         <p class="fw-bolder">
                             We're the go-to!
                         </p>
-                        Did you know Thred has a growing community of over 30,000 brands?
+                        Did you know Thred has a growing community of over 30,000 NFT stores?
                     </ng-template>
-                    <img class="bubble1 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain; opacity: 0.5; background-color: rgb(5, 224, 97)">
+                    <img class="bubble1 rounded-circle" [src]="'assets/bubble.png'" style="object-fit: contain; background-color: rgba(5, 162, 224, 0.5)">
                 </a>
             </li>
-            <li style="pointer-events: auto">
+            <!-- <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent2">
                     <ng-template #tipContent2>
                         <p class="fw-bolder">
@@ -24,8 +23,8 @@
                     <img class="bubble2 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.7; background-color: rgb(255, 83, 83);">
 
                 </a>
-            </li>
-            <li style="pointer-events: auto">
+            </li> -->
+            <!-- <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent3">
                     <ng-template #tipContent3>
                         
@@ -36,19 +35,19 @@
                     </ng-template>
                     <img class="bubble3 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.8; background-color: rgb(231, 213, 44);">
                 </a>
-            </li>
+            </li> -->
             <li style="pointer-events: auto">
                 <a class="w-100 h-100"role="button" [ngbTooltip]="tipContent4">
                     <ng-template #tipContent4>
                         <p class="fw-bolder">
                             Be an early bird!
                         </p>
-                        Take advantage of Fast Fashion trends by launching lines 34.7x faster 
+                        Take advantage of NFT trends by launching collections 34.7x faster 
                     </ng-template>
-                    <img class="bubble4 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.5; background-color: rgb(130, 93, 204);">
+                    <img class="bubble4 rounded-circle" [src]="'assets/bubble.png'" style="object-fit: contain; background-color: rgba(130, 93, 204, 0.5);">
                 </a>
             </li>
-            <li style="pointer-events: auto">
+            <!-- <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent5">
                     <ng-template #tipContent5>
                         <p class="fw-bolder">
@@ -58,33 +57,33 @@
                     </ng-template>
                     <img class="bubble5 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.7; background-color: white;">
                 </a>
-            </li>
+            </li> -->
             <li style="pointer-events: auto">
                 <a class="w-100 h-100" role="button" [ngbTooltip]="tipContent6">
                     <ng-template #tipContent6>
                         <p class="fw-bolder">
-                            E-commerce has never been easier.
+                            Creating NFT's has never been easier.
                         </p>
-                        An all in one store builder + inventory and customer fulfillment centre. That’s Thred!
+                        An all in one store builder + NFT minting and creation platform. That’s Thred!
                     </ng-template>
-                    <img class="bubble6 rounded-circle" [src]="'assets/logo_transparent.png'" style="object-fit: contain;opacity: 0.45; background-color:rgb(60, 195, 219);">
+                    <img class="bubble6 rounded-circle" [src]="'assets/bubble.png'" style="object-fit: contain; background-color:rgba(255, 255, 255, 0.5);">
                 </a>
             </li>
         </ul>
         
         <div *ngIf="signedIn != undefined && affiliate != undefined" class="mx-0 row h-100">
-            <div class="row row-cols-1 justify-content-center pb-2 h-100 w-100 mx-0" style="pointer-events: auto">
-                <h1 *ngIf="signedIn == false" class="text-center text-light fw-bolder col mt-5 mx-0 w-100" style="font-size: xx-large; line-height: 1.2em; text-shadow: 2px 2px 4px #42424281;">Join Thred,
-                    The ultimate online store builder
-                </h1>
-                <div *ngIf="signedIn == false" class="col mb-5 mt-2 mx-0 h-100 w-100" >
+
+            <div class="row row-cols-1 justify-content-center pb-2 w-100 mx-0" style="pointer-events: auto">
+                <div *ngIf="signedIn == false" class="col mb-5 mt-2 mx-0 w-100" style="overflow: hidden;" >
+                    <h1 *ngIf="signedIn == false" class="text-center text-light fw-bolder col mt-5 mx-0 w-100" style="font-size: xx-large; line-height: 1.2em; text-shadow: 2px 2px 4px #42424281;">Join Thred <br>
+                        The Metaverse Store Builder
+                    </h1>
                     <div class="h-100 mx-auto" style="width: fit-content;" data-aos="flip-up" data-aos-duration="1500">
-                        <!-- Product image-->
-                        <!-- Product details-->
+                    
                         <div class="card-body p-2 pb-0">
                             <div class="text-center">
                                 
-                                <div class="rounded shadow-lg" style="overflow: hidden;" [style.width.px]="myInnerHeight()">
+                                <div class="shadow-lg glow-border mb-4" style="overflow: hidden; border-radius: 10px;" [style.width.px]="myInnerHeight()">
                                     <app-login
                                      [isLanding]="true" 
                                      [affiliate]="affiliate" 
@@ -95,29 +94,29 @@
                         </div>
                     </div>
                 </div>
-                <h1 *ngIf="signedIn == true" data-aos="fade-down" data-aos-duration="1500" class="text-center text-light fw-bolder col mt-5 mx-0 w-100" style="font-size: xx-large; line-height: 1.2em; text-shadow: 2px 2px 4px #42424281;">
-                    Welcome Back!
-                </h1>
-                <div *ngIf="signedIn == true" class="col mb-5 mt-2 mx-0 h-100 w-100" >
-                    <div class="h-100 mx-auto" style="width: fit-content;" data-aos="fade-down" data-aos-duration="1500">
-                        <!-- Product image--> 
-                        <!-- Product details-->
-                        <div class="card-body p-2 pb-0">
-                            <div class="text-center text-light">
-                                <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
-                                    <h2 class="px-5 py-3 d-flex align-items-center justify-content-center rounded w-100" style="background-color: rgb(224, 30, 30); font-size: 25px;">VIEW MY STORE</h2> 
-                                </a>
+                <div *ngIf="signedIn == true" class="col mb-5 mt-2 mx-0 w-100 d-flex justify-content-center align-items-center" >
+                    <div>
+                        <h1 *ngIf="signedIn == true" data-aos="fade-down" data-aos-duration="1500" class="text-center text-light fw-bolder col mt-5 mx-0 w-100" style="font-size: xx-large; line-height: 1.2em; text-shadow: 2px 2px 4px #42424281;">
+                            Welcome Back!
+                        </h1>
+                        <div class="h-100 mx-auto" style="width: fit-content;" data-aos="fade-down" data-aos-duration="1500">
+                      
+                            <div class="card-body p-2 pb-0">
+                                <div class="text-center text-light p-1 glow" style="border-radius: 10px;">
+                                    <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100 h-100" style="text-decoration: none; color: white;"> 
+                                        <h2 class="px-5 my-3 d-flex align-items-center justify-content-center rounded w-100">VIEW MY STORE</h2> 
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="row row-cols-1 justify-content-start pb-2 mx-auto mt-2 px-0 px-sm-5 h-100">
+            <!-- <div class="row row-cols-1 justify-content-start pb-2 mx-auto mt-2 px-0 px-sm-5 h-100">
                 <div class="col mb-5" style="width: fit-content; max-width: 100%">
                     <div class="h-100 mx-auto w-100 bg-transparent"  data-aos="fade-up-right" data-aos-duration="1500">
-                        <!-- Product image-->
-                        <!-- Product details-->
+             
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center" >Sell online in 30 seconds</h1>
@@ -141,11 +140,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- <div class="text-start text-light px-2">
-                                <h2 class="text-start">Fast and simple</h2>
-                            </div> -->
+                          
                         </div>
-                        <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 pb-4 border-top-0 bg-transparent">
                         </div>
                     </div>
@@ -154,8 +150,7 @@
             <div class="row row-cols-1 justify-content-end pb-2 mx-auto px-0 px-sm-5 h-100">
                 <div class="col mb-5" style="width: fit-content; max-width: 100%;">
                     <div class="h-100 mx-auto w-100 bg-transparent"  data-aos="fade-up" data-aos-duration="1500">
-                        <!-- Product image-->
-                        <!-- Product details-->
+          
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">Direct traffic to your store</h1>
@@ -181,11 +176,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="text-end text-light px-2">
-                                <h2 class="text-end">Convert</h2>
-                            </div> -->
+                      
                         </div>
-                        <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 pb-4 border-top-0 bg-transparent">
                         </div>
                     </div>
@@ -194,8 +186,7 @@
             <div class="row row-cols-1 justify-content-start pb-2 mx-auto px-0 px-sm-5 h-100">
                 <div class="col mb-5" style="width: fit-content; max-width: 100%;">
                     <div class="h-100 mx-auto w-100 bg-transparent"  data-aos="fade-up-right" data-aos-duration="1500">
-                        <!-- Product image-->
-                        <!-- Product details-->
+             
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">Built in Design Tools</h1>
@@ -216,11 +207,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- <div class="text-end text-light px-2">
-                                <h2 class="text-end">Convert</h2>
-                            </div> -->
+              
                         </div>
-                        <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 pb-4 border-top-0 bg-transparent">
                         </div>
                     </div>
@@ -229,8 +217,7 @@
             <div class="row row-cols-1 justify-content-end pb-2 mx-auto px-0 px-sm-5 h-100">
                 <div class="col mb-5" style="width: fit-content;max-width: 100%;">
                     <div class="h-100 mx-auto w-100" data-aos="fade-up" data-aos-duration="1500">
-                        <!-- Product image-->
-                        <!-- Product details-->
+            
                         <div class="card-body p-2 pb-0 bg-transparent">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">A range of converting templates to choose from</h1>
@@ -257,11 +244,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="text-start text-light px-2">
-                                <h2 class="text-start">We make it fast and simple</h2>
-                            </div> -->
+                     
                         </div>
-                        <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 pb-4 border-top-0 bg-transparent">
                         </div>
                     </div>
@@ -270,8 +254,7 @@
             <div class="row row-cols-1 justify-content-start pb-2 px-0 px-sm-5 mx-auto h-100">
                 <div class="col mb-5" style="width: fit-content;max-width: 100%">
                     <div class="h-100 mx-auto w-100 bg-transparent" data-aos="fade-up-right" data-aos-duration="1500">
-                        <!-- Product image-->
-                        <!-- Product details-->
+       
                         <div class="card-body p-2 pb-0">
                             <div class="text-center text-light px-2">
                                 <h1 class="text-center">Full control over margins without storage costs.</h1>
@@ -292,11 +275,8 @@
                                     </p>
                                 </div>
                             </div>
-                            <!-- <div class="text-end text-light px-2">
-                                <h2 class="text-end">We make it fast and simple</h2>
-                            </div> -->
+                   
                         </div>
-                        <!-- Product actions-->
                         <div class="card-footer p-4 pt-0 pb-4 border-top-0 bg-transparent">
                         </div>
                     </div>
@@ -305,8 +285,7 @@
             <div class="row row-cols-1 justify-content-center pb-2 px-0 px-sm-5 mx-auto h-100">
                 <div class="col mb-5" style="width: fit-content;max-width: 100%">
                     <div class="h-100 mx-auto w-100 bg-transparent" data-aos="fade-up" data-aos-duration="1500" style="pointer-events: auto">
-                        <!-- Product image-->
-                        <!-- Product details-->
+               
                             <div *ngIf="signedIn == false" class="text-center text-light">
                                 <a role="button" (click)="getStarted()" class="d-flex align-items-center justify-content-center w-100" style="text-decoration: none; color: white;"> 
                                     <h2 class="px-5 py-3 d-flex align-items-center justify-content-center rounded w-100" style="background-color: rgb(224, 30, 30); font-size: 25px;">LAUNCH STORE</h2> 
@@ -317,15 +296,12 @@
                                     <h2 class="px-5 py-3 d-flex align-items-center justify-content-center rounded w-100" style="background-color: rgb(224, 30, 30); font-size: 25px;">VIEW MY STORE</h2> 
                                 </a>
                             </div>
-                            <!-- <div class="text-end text-light px-2">
-                                <h2 class="text-end">We make it fast and simple</h2>
-                            </div> -->
+              
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
-</div>
 
 
 <script *ngIf="isBrowser()" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

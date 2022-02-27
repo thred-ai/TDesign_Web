@@ -1,9 +1,10 @@
 
 .animation-area {
-	background: linear-gradient(to left, #131313, #000000);
-    height: fit-content;
+	background: linear-gradient(to left, rgb(26, 20, 82), #0F0824);
 
 }
+
+
 
 h1{
     font-family: montserrat;
@@ -28,11 +29,20 @@ h1{
     
 }
 
+.glow{
+	background: linear-gradient(to left, rgb(193, 101, 255), rgb(103, 53, 252));
+}
+
+.glow-border{
+	background: linear-gradient(to left, rgb(193, 101, 255), rgb(103, 53, 252));
+	padding: 10px;
+}
+
 .bubble1{
     animation: rAnimate 20s linear infinite;
     animation-delay: 0s;
-    width: 80px;
-	height: 80px;
+    width: 200px;
+	height: 200px;
 }
 
 .bubble2{
@@ -68,8 +78,8 @@ h1{
 .bubble6{
     animation: rAnimate 20s linear infinite;
     animation-delay: 7s;
-    width: 110px;
-	height: 110px;
+    width: 120px;
+	height: 120px;
 }
 
 .box-area li:nth-child(1) {

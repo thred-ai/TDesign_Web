@@ -40,7 +40,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="firstName">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>First name</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>First name</mat-placeholder>
                             <mat-error *ngIf="addressForm.controls['firstName'].hasError('required')">
                               First name is <strong>required</strong>
                             </mat-error>
@@ -49,7 +49,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="lastName">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Last name</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Last name</mat-placeholder>
                             <mat-error *ngIf="addressForm.controls['lastName'].hasError('required')">
                               First name is <strong>required</strong>
                             </mat-error>
@@ -60,7 +60,7 @@ style.color = "{{selectedIndicator()!.color}}"
                           <div class="col">
                               <mat-form-field class="full-width">
                                 <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput [email]="true" type="email" name="email" formControlName="email">
-                                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Email Address</mat-placeholder>
+                                <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Email Address</mat-placeholder>
                                 <mat-hint [style.color] = 'selectedTheme()!.color' align="end">Required for Shipment Tracking</mat-hint>
                                 <mat-error *ngIf="addressForm.controls['email'].hasError('required')">
                                   Email address is <strong>required</strong>
@@ -73,7 +73,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput  formControlName="company">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Company (Optional)</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Company (Optional)</mat-placeholder>
                           </mat-form-field>
                         </div>
                       </div>
@@ -81,7 +81,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                               <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="address">
-                              <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Address</mat-placeholder>
+                              <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Address</mat-placeholder>
                               <mat-error *ngIf="addressForm.controls['address'].hasError('required')">
                               Address is <strong>required</strong>
                             </mat-error>
@@ -99,7 +99,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <textarea class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="address2"></textarea>
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Address 2</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Address 2</mat-placeholder>
                           </mat-form-field>
                         </div>
                       </div>
@@ -114,7 +114,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                     {{ country.name }}
                                   </mat-option>
                                 </mat-select>
-                                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Country</mat-placeholder>
+                                <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Country</mat-placeholder>
                                 <mat-error *ngIf="addressForm.controls['country'].hasError('required')">
                                   Country is <strong>required</strong>
                                 </mat-error>
@@ -123,7 +123,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="city">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>City</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>City</mat-placeholder>
                             <mat-error *ngIf="addressForm.controls['city'].hasError('required')">
                               City is <strong>required</strong>
                             </mat-error>
@@ -133,7 +133,7 @@ style.color = "{{selectedIndicator()!.color}}"
                           <mat-form-field class="full-width">
 
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="state">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Province/State</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Province/State</mat-placeholder>
                             <mat-error *ngIf="addressForm.controls['state'].hasError('required')">
                               State is <strong>required</strong>
                             </mat-error>
@@ -144,7 +144,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
                             <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput #postalCode maxlength="10" formControlName="postalCode">
-                            <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>{{getZipFieldName(addressForm.controls['country'].value)}}</mat-placeholder>
+                            <mat-placeholder  [style.color] = 'selectedTheme()!.color'>{{getZipFieldName(addressForm.controls['country'].value)}}</mat-placeholder>
                             <!-- <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint> -->
                           </mat-form-field>
                         </div>
@@ -153,7 +153,7 @@ style.color = "{{selectedIndicator()!.color}}"
                           <div class="col">
                               <mat-form-field class="full-width">
                                 <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput  name="phone" formControlName="phone">
-                                <mat-placeholder class="placeholder" [style.color] = 'selectedTheme()!.color'>Phone Number</mat-placeholder>
+                                <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Phone Number</mat-placeholder>
                                 <mat-hint [style.color] = 'selectedTheme()!.color' align="end">Required for Shipment Tracking</mat-hint>
                                 <mat-error *ngIf="addressForm.controls['phone'].hasError('required')">
                                   Phone Number is <strong>required</strong>

@@ -1,0 +1,315 @@
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <!-- <h2 class="me-2 text-center d-none d-md-block">
+  {{
+    mode == 0
+      ? editingBlock == undefined
+        ? "Drag/Drop to Rearrange"
+        : "Edit Block"
+      : "Edit Page"
+  }}
+</h2> -->
+
+  <div class="d-flex justify-content-end align-items-center w-100">
+    <!-- <a
+    role="button"
+    (click)="close()"
+    class="fw-bolder btn btn-dark rounded-pill px-3 ms-2"
+  >
+    SAVE LAYOUT
+  </a> -->
+    <a
+      role="button"
+      (click)="closeDialog()"
+      class="btn-danger p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
+      style="font-size: x-large; text-decoration: none"
+    >
+      <mat-icon>highlight_off</mat-icon>
+    </a>
+  </div>
+</div>
+<mat-dialog-content class="w-100 h-100 d-block d-md-flex pb-4">
+  <div class="w-100 h-100 w-md-50 card shadow position-relative">
+    <ngx-spinner
+      bdColor="{{ selectedIndicator().bg_color }}"
+      size="medium"
+      color="{{ selectedIndicator().color }}"
+      type="{{ selectedIndicator().name }}"
+      [fullScreen]="false"
+      style.color="{{ selectedIndicator()!.color }}"
+      [name]="'loader'"
+    >
+      <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
+        Generating Signature
+      </h3>
+    </ngx-spinner>
+    <div class="h-100 w-100 position-absolute" style="overflow-y: scroll">
+      <form
+        class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form"
+        [formGroup]="nftForm"
+      >
+        <h2 class="h2 my-0">NFT Metadata</h2>
+        <h5 class="mt-0">Set your NFT's Metadata</h5>
+        <div class="wrap-input1 w-100">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Name</mat-label>
+            <input
+              matInput
+              class="bg-transparent"
+              type="text"
+              name="name"
+              formControlName="title"
+              placeholder="NFT name"
+            />
+            <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+          </mat-form-field>
+        </div>
+        <div class="wrap-input1 w-100">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea
+              matInput
+              class="bg-transparent"
+              formControlName="description"
+              placeholder="NFT description"
+              style="min-height: 60px"
+            ></textarea>
+          </mat-form-field>
+        </div>
+        <div class="wrap-input1 w-100">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Price</mat-label>
+            <input
+              matInput
+              currencyMask
+              [options]="customCurrencyMaskConfig"
+              class="bg-transparent"
+              type="text"
+              formControlName="price"
+              placeholder="Price"
+            />
+          </mat-form-field>
+        </div>
+        <div class="wrap-input1 w-100">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Royalties</mat-label>
+            <input
+              matInput
+              currencyMask
+              [options]="customCurrencyMaskConfig2"
+              class="bg-transparent"
+              type="text"
+              formControlName="royalty"
+              placeholder="Royalties %"
+            />
+          </mat-form-field>
+        </div>
+
+        <h2 class="h2 my-0">NFT Traits</h2>
+        <h5 class="mt-0">Add Traits to your NFT</h5>
+        <a role="button" class="btn btn-dark rounded mb-2" (click)="addTrait()">
+          Add Trait
+        </a>
+        <div
+          class="wrap-input1 w-100 rounded"
+          style="overflow-y: scroll; max-height: 250px;"
+        >
+          <div
+            *ngFor="let trait of traits ?? []; index as i"
+            class="shadow my-3 bg-white mx-3 my-3 px-4 rounded-pill"
+          >
+            <div
+              class="d-flex align-items-center justify-content-between h-100"
+            >
+              <mat-form-field
+                class="w-100 my-0 h-100 p-0 mt-3"
+                appearance="outline"
+              >
+                <input
+                  matInput
+                  class="bg-transparent text-center fw-bolder"
+                  type="text"
+                  [(ngModel)]="trait.trait_type"
+                  [ngModelOptions]="{ standalone: true }"
+                  placeholder="Trait Name"
+                />
+              </mat-form-field>
+              <mat-form-field
+                class="w-100 ms-1 my-0 h-100 p-0 mt-3"
+                appearance="outline"
+              >
+                <input
+                  matInput
+                  class="bg-transparent text-center text-secondary"
+                  type="text"
+                  [(ngModel)]="trait.value"
+                  [ngModelOptions]="{ standalone: true }"
+                  placeholder="Trait Value"
+                />
+              </mat-form-field>
+              <a
+                class="bg-danger rounded-circle p-1 text-light ms-2 d-inline-flex justify-content-center align-items-center"
+                style="aspect-ratio: 1; height: 40px; text-decoration: none"
+                role="button"
+                (click)='removeTrait(i)'
+              >
+                <mat-icon class="m-0">highlight_off</mat-icon>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col mt-4">
+          <h2 class="h2 my-0">Lazy Minting</h2>
+          <h5 class="mt-0">
+            Lazy minting means your NFT gets minted at time of purchase,
+            allowing you to avoid upfront Gas Fees.
+          </h5>
+          <mat-radio-group [disabled]="true" formControlName="lazyMint">
+            <div>
+              <mat-radio-button [value]="true" (change)="radioChange($event)"
+                >Lazy Mint</mat-radio-button
+              >
+            </div>
+            <div class="mt-2">
+              <mat-radio-button [value]="false" (change)="radioChange($event)"
+                >Don't Lazy Mint</mat-radio-button
+              >
+            </div>
+          </mat-radio-group>
+        </div>
+      </form>
+    </div>
+    <div
+      class="position-absolute d-flex justify-content-center justify-content-md-end"
+      style="z-index: 5; bottom: 10px; left: 10px; right: 10px"
+    >
+      <a
+        role="button"
+        class="btn mt-2 btn-dark rounded"
+        type="button"
+        (click)="save()"
+        >Publish NFT</a
+      >
+    </div>
+  </div>
+  <div class="w-100 h-100 w-md-50">
+    <div class="w-100 h-100 px-5 mt-0 justify-content-center align-items-top">
+      <ngx-file-drop
+        dropZoneLabel="Drop files here"
+        (onFileDrop)="dropped($event)"
+        (onFileOver)="fileOver($event)"
+        (onFileLeave)="fileLeave($event)"
+        accept="{{ acceptedFiles }}"
+      >
+        <ng-template
+          ngx-file-drop-content-tmp
+          let-openFileSelector="openFileSelector"
+        >
+          <div
+            class="w-100 h-100 d-flex justify-content-center align-items-center"
+          >
+            <div class="text-center">
+              <div
+                class="d-flex justify-content-center align-items-center fw-bolder"
+                style="font-size: medium"
+              >
+                Drop Content Files Here
+              </div>
+              <a
+                role="button"
+                class="btn mt-2 btn-dark rounded-pill"
+                type="button"
+                (click)="openFileSelector()"
+                >Browse Files</a
+              >
+            </div>
+          </div>
+        </ng-template>
+      </ngx-file-drop>
+      <!-- <a
+        role="button"
+        class="btn mt-2 btn-dark rounded-pill"
+        type="button"
+        (click)="openFileSelector()"
+        >Browse Files</a
+      > -->
+      <div class="w-100 mt-3 text-center">
+        <span class="w-100 text-center fw-bolder" style="font-size: 15px">
+          {{ fileName }}
+        </span>
+        <div
+          class="mt-3 mx-auto"
+          style="height: fit-content; width: fit-content; max-width: 100%"
+          *ngIf="nftForm.controls.file.value"
+        >
+          <img
+            [src]="nftForm.controls.file.value | safeUrl"
+            class="p-0 border rounded"
+            style="object-fit: contain; height: 500px; max-width: 100%"
+            *ngIf="nftForm.controls.format.value == 'image'"
+          />
+          <br />
+          <video
+            style="object-fit: contain; height: 500px; max-width: 100%"
+            *ngIf="nftForm.controls.format.value == 'video'"
+            class="p-0 border rounded"
+            autoplay="true"
+            loop="true"
+            muted="true"
+          >
+            <source
+              *ngIf="nftForm.controls.format.value == 'video'"
+              [src]="nftForm.controls.file.value | safeUrl"
+              type="video/mp4"
+            />
+          </video>
+        </div>
+      </div>
+
+      <!-- <div class="col w-100 card shadow p-3 mt-3">
+          <h2 class="h1 mb-4 fw-bold">Search Engine Listing Preview</h2>
+          <p
+            class="mb-0"
+            style="color: #2417af; font-family: Arial; font-size: large"
+          >
+            {{this.layoutForm.controls.seoTitle.value ?? ""}}
+          </p>
+          <p
+            class="my-0"
+            style="color: #006521; font-family: Arial; font-size: small"
+          >
+            {{urlText(true) ?? ""}}
+          </p>
+          <p
+            class="my-0"
+            style="color: #6e6e6e; font-family: Arial; font-size: small"
+          >
+            {{this.layoutForm.controls.seoDesc.value ?? ""}}
+          </p>
+        </div>
+        <div class="col w-100 card shadow p-3 d-flex mt-3">
+          <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
+
+          <div class="w-100 my-0 d-flex align-items-center justify-content-start" style="height: 150px;">
+            <img
+            class="h-100"
+            style="object-fit: contain; aspect-ratio: 1;"
+            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
+          />
+            <p
+            class="ms-3 my-auto"
+            style="color: #6e6e6e; font-family: Arial; font-size: small; text-overflow: ellipsis; overflow-y: hidden; height: 120px;"
+          >
+          <b class="text-dark" style="font-size: medium;">
+            {{this.layoutForm.controls.metaTitle.value ?? ""}}
+          </b>
+          <br>
+
+            {{this.layoutForm.controls.metaDesc.value ?? ""}}
+          </p>
+          </div>
+        </div> -->
+    </div>
+  </div>
+</mat-dialog-content>
+
+<!-- (load)='passVars(iframe2)' -->

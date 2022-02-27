@@ -1,46 +1,95 @@
 <!-- Navigation-->
 <router-outlet></router-outlet>
 
-
 <ngx-spinner
-*ngIf="isBrowser()" 
-bdColor = '{{selectedIndicator().bg_color}}'
-size = "large"
-color = '{{selectedIndicator().color}}'
-type = {{selectedIndicator().name}} 
-[fullScreen] = "true"
-style.color = "{{selectedIndicator()!.color}}"
+  *ngIf="isBrowser()"
+  bdColor="{{ selectedIndicator().bg_color }}"
+  size="large"
+  color="{{ selectedIndicator().color }}"
+  type="{{ selectedIndicator().name }}"
+  [fullScreen]="true"
+  style.color="{{ selectedIndicator()!.color }}"
 >
-<h3 [style.font-family]="storeInfo().fontName!" class="text-center mt-5">{{storeInfo()?.fullName}}
-</h3>
+  <h3 [style.font-family]="info.fontName!" class="text-center mt-5">
+    {{ info?.fullName }}
+  </h3>
 </ngx-spinner>
-  <!-- Section -->
-  <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
-    <section *ngIf="isBrowser() && storeInfo()?.active" class="py-3"  style.background-color="{{selectedTheme()!.bg_color}}">
+<!-- Section -->
+<!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
+<section
+  *ngIf="isBrowser() && info?.active"
+  class="py-3"
+  style="min-height: 100vh"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
+>
+  <div
+    class="container px-4 px-lg-5 mt-0"
+    *ngIf="collections && collection && productToBuy"
+  >
+    <div
+      class="row gx-4 gx-lg-1 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center h-100"
+    >
+      <div class="col mb-1">
+        <div
+          class="card bg-{{ info.colorStyle!.back_code }} mt-0"
+          [class.border-secondary]="info!.colorStyle!.text_code == 'light'"
+          style="border-radius: 20px; object-fit: contain; overflow: hidden"
+        >
+          <a role="button"
+          class="card-img-top w-100"
+          style="cursor: zoom-in; object-fit: cover; aspect-ratio: 1"
+          (mousemove)="zoomIn($event)"
+            (mouseleave)="zoomOut()" (click)="open()">
+            
+          <video
+              style="object-fit: cover; aspect-ratio: 1; top: 0; margin-top: 0;"
+              [hidden]="isZoom"
+              class="h-100 w-100"
+              autoplay="true"
+              loop="true"
+              muted="true"
+              *ngIf="productToBuy?.format == 'video'"
+            >
+              <source
+                [src]="productToBuy.url! | safeUrl"
+                type="video/mp4"
+              />
+            </video>
 
-        <div class="container px-4 px-lg-5 mt-0">
-            <div [hidden]="selectedProduct() == undefined || selectedTemplate() == undefined" class="row gx-4 gx-lg-1 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center h-100">
-                <div class="col mb-1">
-    
-                    
-                    <div class="card bg-{{storeInfo().colorStyle!.back_code}} mt-0" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <a role="button" (click)="open()">
-                            <img [hidden]='isZoom' class="card-img-top w-100" (mousemove)="zoomIn($event)" (mouseleave)="zoomOut()" style="cursor: zoom-in;" src='{{selectedProduct()!.images[selectedIndex].img ?? ""}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/>
-                            <div [hidden]='!isZoom' class="card-img-top w-100" (mousemove)="zoomIn($event)" (mouseleave)="zoomOut()" style="cursor: zoom-in; aspect-ratio: 1/1; background-repeat: no-repeat;" [style.background-image]='url()'  id="preview" (mouseover)="zoomIn($event)">
-                                
-                            </div>
-                        </a>
-                        <drag-scroll #carousel class="w-100 h-100 mt-1 px-1" style="height: 60px;" [scrollbar-hidden]="true">
-                            <div drag-scroll-item class="p-1" style="height: 60px; width: 60px;" *ngFor="let img of selectedProduct()?.images; index as i" >
-                                <div id="back" class="h-100 w-100 rounded bg-{{storeInfo().colorStyle!.text_code}}" style="aspect-ratio: 1/1; ">
+            <img
+              class="h-100 w-100"
+              src="{{ productToBuy?.url }}"
+              alt="ok"
+              [hidden]="isZoom"
+              style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em;"
+              onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
+              *ngIf="productToBuy?.format == 'image'"
+            />
+            <div
+              [hidden]="!isZoom"
+              (mousemove)="zoomIn($event)"
+              (mouseleave)="zoomOut()"
+              class="card-img-top w-100"
+              style="
+                cursor: zoom-in;
+                aspect-ratio: 1;
+                background-repeat: no-repeat;
+                object-fit: cover;
+              "
+              [style.background-image]="url()"
+              id="preview"
+            ></div>
+          </a>
+          <!-- <drag-scroll #carousel class="w-100 h-100 mt-1 px-1" style="height: 60px;" [scrollbar-hidden]="true">
+                            <div drag-scroll-item class="p-1" style="height: 60px; width: 60px;" *ngFor="let img of productToBuy?.images; index as i" >
+                                <div id="back" class="h-100 w-100 rounded bg-{{info.colorStyle!.text_code}}" style="aspect-ratio: 1/1; ">
                                     <a (click)='scrollTo(i)' style="pointer-events: auto;" role="button" ><img class="img-responsive h-100 w-100 rounded" [class.selected]='selectedIndex == i' style="object-fit:contain; aspect-ratio: 1/1; " [src]='img.img' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/></a>
                                 </div>
                             </div>
-                        </drag-scroll>
-                        <div class="p-4 py-2 border-top-0">
-                            <!-- <div *ngIf="has3D(); else elseBlock" [hidden]="selectedTemplate() == undefined" class="text-center"><a class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} mt-auto" style="font-weight:bold; font-size:15px" [style.font-family]="storeInfo().fontName!" (click)="open()">VIEW IN 3D</a></div> -->
+                        </drag-scroll> -->
+          <!-- <div class="p-4 py-2 border-top-0">
                             <div class="mx-auto d-flex justify-content-center align-items-center">
-                                <a *ngIf="has3D();" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-outline-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                                <a *ngIf="has3D();" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="info.fontName!" class="d-inline-flex btn btn-outline-{{info.colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
                                     <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
                                             view_in_ar
@@ -49,120 +98,738 @@ style.color = "{{selectedIndicator()!.color}}"
                                     VIEW IN 3D
                                 </a>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col mb-1 h-100">
-                    <div [hidden]="selectedTemplate() == undefined" class="card h-100 bg-{{storeInfo().colorStyle!.back_code}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <div>
-                            <div class="card-body p-4 pb-0 order-3 order-sm-1">
-                                <div class="text-center">
-                                    <h5 [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:34px; line-height:1.4em;">{{selectedProduct()?.name ?? ""}}</h5>
-                                </div>
-                            </div>
-                            <div class="card-body p-4 pb-0 mt-0 order-4 order-sm-2" [class.bottom]='isMobile()'>
-                                <div class="text-left">
-                                    <div class="card-body p-0 pb-0">
-                                        <div class="text-center" style.color="{{selectedTheme()!.color}}">
-                                            <h5 class="fw-bolder" style="font-size:17px" [innerHTML]="'Details'" [style.font-family]="storeInfo().fontName!"></h5>
-                                        </div>
-                                    </div>
-                                    <div class="text-left mt-5 mb-0" style="color: rgb(190, 6, 6)" >
-                                        <h5 class="fw-bolder" style="font-size:35px" [class.new-price]='autoCoupon(selectedProduct()!)' [style.font-family]="storeInfo().fontName!">{{formatPrice(mainPrice(selectedProduct()!))}}</h5>
-                                        <h5 *ngIf='autoCoupon(selectedProduct()!)' class="mt-2 fw-bolder d-flex justify-content-start align-items-center" style="font-size:18px" [style.font-family]="storeInfo().fontName!">
-                                            <b class="old-price">
-                                                {{formatPrice((selectedProduct()?.price ?? 0) / 100)}}
-                                            </b>
-                                            <!-- <mat-icon
-                                            class="ms-1" 
-                                            style="font-size:18px; width: fit-content; height: fit-content;" 
-                                            [class.low]='(autoCoupon(selectedProduct()!)?.amt ?? 0) <= 0.2'
-                                            [class.mid]='(autoCoupon(selectedProduct()!)?.amt ?? 0) > 0.2 && (autoCoupon(selectedProduct()!)?.amt ?? 0) <= 0.5'
-                                            [class.high]='(autoCoupon(selectedProduct()!)?.amt ?? 0) > 0.5'
-                                        >
-                                        loyalty
-                                        </mat-icon> -->
-                                        </h5>
-                                    </div>
-                                    <div class="card-body p-0 pb-0 ">
-                                        <div class="text-left">
-                                            <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:14px; max-height: 145px; overflow-y: scroll; font-style: italic" [innerHTML]="selectedProduct()?.description ?? ''"></p>
-                                            <!-- <p [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:11px" [innerHTML]="formattedInfo()"></p> -->
-                                        </div>
-                                        <div ngbDropdown class ="d-inline" container="body">
-                                            <button [style.font-family]="storeInfo().fontName!" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} btn-sm mb-5" ngbDropdownToggle>Qty: {{quantity()}}</button>
-                                            <div ngbDropdownMenu style.background-color="{{selectedTheme()!.bg_color}}" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                                              <button [style.font-family]="storeInfo().fontName!" *ngFor="let num of quantityNumbers" style.color="{{selectedTheme()!.color}}" (click)="selectQuantity(num)" ngbDropdownItem>{{num}}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-{{storeInfo().colorStyle!.back_code}}" [class.stayFixed]='isMobile()'>
-                                <div class="container px-4 mt-3 order-1 order-sm-3" >
-                                    <div class="text-center">
-                                        <div class="card-body p-0 pb-0">
-                                            <div class="text-left">
-                                                <h5 style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Your Size'" [style.font-family]="storeInfo().fontName!"></h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row gx-4 gx-lg-1 row-cols-4 row-cols-md-5 row-cols-xl-5 justify-content-center" >
-                                        <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
-                                        <button [style.font-family]="storeInfo().fontName!" type="button" class="btn btn-outline-{{storeInfo().colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
-                                    </div>
-                                </div>
-                                <div class="card-footer p-4 pt-sm-5 pb-3 border-top-0 bg-transparent order-2 order-sm-4">
-                                   
-                                    <a (click)="addToCart()"  role="button" [style.font-family]="storeInfo().fontName!" class="d-flex btn mb-2 align-items-center justify-content-center fw-bold" [class.anim]='adding' [class.shake]='shake' style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" style="font-size: 25px;">
-                                        <span class="anim-border"></span>
-                                        <span class="anim-border"></span>
-                                        <span class="anim-border"></span>
-                                        <span class="anim-border"></span>
-                                        ADD TO BAG
-                                        <mat-icon class="ms-2 mb-2" style.color="{{selectedTheme()!.bg_color}}">
-                                            <span class="material-icons-outlined" style="font-size: 30px;">
-                                                local_mall
-                                            </span>
-                                        </mat-icon>
-                                    </a>
-                                    <!-- <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div> -->
-                                    <div class="text-center"><a [style.font-family]="storeInfo().fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </div> -->
         </div>
-      </section>
-      <section *ngIf="isBrowser() && storeInfo()?.username && (!storeInfo()?.active) && selectedProduct() != undefined && selectedTemplate() != undefined" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
-     
-    
-        <div class="container mt-5">
-    
-            <div class="d-flex align-items-center justify-content-center pb-1 mb-5" style="height: 50px; font-weight: bold;font-size:30px;" style.color="{{selectedTheme()!.color}}">
-                <p class = "text-center text-{{storeInfo().colorStyle!.text_code}}" style = "line-height:1.2em;" [style.font-family]="storeInfo().fontName!">
-                  COMING SOON
-                </p>
-            </div>
-            <div>
-                <div class="d-block align-items-center pt-0">
-                    <div class="d-block align-items-center text-center text-sm-start"><a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"><img style="border-radius: 2.5%;" src="{{(storeInfo()!.homeLink?.toString() ?? '')}}" style="max-width: 100%; height: auto;" alt="Product"/></a>
-                    </div>
-                </div>
-            </div>
-    
-             
-        </div>
-      </section>
-  <!-- </div> -->
-  <!-- Footer-->
-  
-  <!-- Bootstrap core JS-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+        <div class="col mt-3">
+          <mat-accordion
+            class="example-headers-align rounded-panel"
+            #accordion="matAccordion"
+          >
+            <mat-expansion-panel
+              [disabled]="panel.isDisabled"
+              [expanded]="panel.isExpanded"
+              [hideToggle]="true"
+              #el
+              id="el-{{ i }}"
+              style="object-fit: contain; overflow: hidden"
+              style.color="{{ selectedTheme()!.color }}"
+              class="bg-{{ info.colorStyle!.back_code }} border border-{{
+                info.colorStyle!.text_code
+              }}"
+              [class.rounded-10]="panel.isExpanded"
+              [class.rounded-10-top]="
+                (accordionList[0].isExpanded && i == 1) ||
+                (accordionList[1].isExpanded && i == 2) ||
+                (!panel.isExpanded && i == 0)
+              "
+              [class.rounded-10-bottom]="
+                (accordionList[2].isExpanded && i == 1) ||
+                (accordionList[1].isExpanded && i == 0) ||
+                (!panel.isExpanded && i == 2)
+              "
+              [class.border-bottom-0]="
+                !(
+                  (accordionList[2].isExpanded && i == 1) ||
+                  (accordionList[1].isExpanded && i == 0) ||
+                  (!panel.isExpanded && i == 2)
+                ) && !panel.isExpanded
+              "
+              [class.border-top-0]="
+                !(
+                  (accordionList[0].isExpanded && i == 1) ||
+                  (accordionList[1].isExpanded && i == 2) ||
+                  (!panel.isExpanded && i == 0)
+                ) && !panel.isExpanded
+              "
+              (opened)="beforePanelOpened(panel)"
+              (closed)="beforePanelClosed(panel)"
+              (afterCollapse)="afterPanelClosed()"
+              (afterExpand)="afterPanelOpened()"
+              *ngFor="let panel of accordionList; index as i"
+              #mapanel="matExpansionPanel"
+            >
+              <mat-expansion-panel-header>
+                <mat-panel-title class="text-{{ info.colorStyle!.text_code }}">
+                  <b>{{ panel.title }}</b>
+                </mat-panel-title>
+                <mat-panel-description>
+                  {{ panel.subtitle }}
+                </mat-panel-description>
+                <mat-icon>
+                  {{ panel.isExpanded ? "expand_less" : "expand_more" }}
+                </mat-icon>
+              </mat-expansion-panel-header>
 
-  <!-- Core theme JS-->
-  <script *ngIf="isBrowser();" src="js/scripts.js"></script>
+              <p *ngIf="panel.type == 1">{{ panel.description }}</p>
+              <div
+                *ngIf="panel.type == 0"
+                class="row gx-4 row-cols-1 row-cols-md-3 align-items-center justify-content-start"
+              >
+                <div
+                  class="col p-2"
+                  *ngFor="let p of productToBuy?.traits ?? []"
+                >
+                  <div
+                    class="card border border-{{
+                      info.colorStyle!.text_code
+                    }} text-center rounded-panel-2 p-1"
+                    style.background-color="{{ selectedTheme()!.bg_color }}"
+                    style.color="{{ selectedTheme()!.color }}"
+                  >
+                    <p class="text-{{ info.colorStyle!.text_code }} fw-bolder">
+                      {{ p.trait_type.toUpperCase() }}
+                    </p>
+                    <p style="font-size: medium">
+                      {{ p.value }}
+                    </p>
+                    <p class="text-secondary">
+                      {{ (collections.getTraitRarity(p) ?? 0) * 100 }}% have
+                      this trait
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="w-100"
+                  *ngIf="(productToBuy?.traits ?? []).length == 0"
+                >
+                  <p
+                    class="text-center"
+                    style.color="{{ selectedTheme()!.color }}"
+                  >
+                    NO TRAITS
+                  </p>
+                </div>
+              </div>
+              <div *ngIf="panel.type == 2">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3>Contract Address</h3>
+                  <h3>{{ collections?.contract ?? "" | address }}</h3>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3>Token ID</h3>
+                  <h3>{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3>Token Standard</h3>
+                  <h3>ERC-721</h3>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <h3>Blockchain</h3>
+                  <h3>Polygon</h3>
+                </div>
+              </div>
+              <!-- <mat-action-row>
+              <button mat-flat-button (click)="mapanel.close()">
+                Click to close
+              </button>
+            </mat-action-row> -->
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+      </div>
+      <div class="col mb-1 h-100">
+        <div class="card h-100 bg-transparent border-0">
+          <div>
+            <div class="card-body p-md-4 pb-0 order-3 order-sm-1 w-100">
+              <div class="text-start w-100">
+                <h5
+                  [style.font-family]="info.fontName!"
+                  style.color="{{ selectedTheme()!.color }}"
+                  class="fw-bolder w-100 single-line text-center text-md-start"
+                  style="
+                    font-size: 40px;
+                    line-height: 1.4em;
+                    height: 50px;
+                    width: 100%;
+                  "
+                >
+                  {{ productToBuy?.name ?? "" }}
+                </h5>
+              </div>
+            </div>
+            <div
+              class="card-body p-0 p-md-4 pb-0 pt-0 mt-0 order-4 order-sm-2"
+              [class.bottom]="isMobile()"
+            >
+              <div class="text-start">
+                <div class="text-start mt-1 mb-0" style="color: rgb(190, 6, 6)">
+                  <div class="text-left">
+                    <h5
+                      [style.font-family]="info.fontName!"
+                      style.color="{{ selectedTheme()!.color }}"
+                      class="fw-bolder text-center text-md-start"
+                      style="font-size: 14px; line-height: 1.4em"
+                      *ngIf="(productToBuy?.owner ?? '') != ''"
+                    >
+                      {{ "Owner: " + (productToBuy?.seller | address:false) }}
+                    </h5>
+                    <h5
+                      [style.font-family]="info.fontName!"
+                      style.color="{{ selectedTheme()!.color }}"
+                      class="fw-bolder mt-0"
+                      style="font-size: 12px; line-height: 1.4em"
+                      *ngIf="(productToBuy?.owner ?? '') == ''"
+                    >
+                      {{ "Not Available" }}
+                    </h5>
+                    <!-- <p
+                      [style.font-family]="info.fontName!"
+                      style.color="{{ selectedTheme()!.color }}"
+                      class="fw-normal"
+                      style="
+                        font-size: 16px;
+                        max-height: 145px;
+                        overflow-y: scroll;
+                        font-style: italic;
+                      "
+                    >
+                    Sale ends January 4, 2023
+                  </p> -->
+
+                    <!-- <p [style.font-family]="info.fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:11px" [innerHTML]="formattedInfo()"></p> -->
+                  </div>
+
+                  <div
+                    class="bg-{{ info.colorStyle!.back_code }} border border-{{
+                      info.colorStyle!.text_code
+                    }} rounded-10 p-4"
+                  >
+                    <p
+                      class="mt-2 ms-0 d-flex text-secondary justify-content-start align-items-center"
+                      style="font-size: 16px"
+                      [style.font-family]="info.fontName!"
+                    >
+                      Current Price
+                    </p>
+                    <div>
+                      <a
+                        role="button"
+                        class=" side ms-0 text-secondary text-{{
+                          info.colorStyle!.text_code
+                        }} d-inline-flex mx-0 mt-0 mb-3 align-items-center justify-content-start"
+                        style="font-size: 18px; text-decoration: none"
+                      >
+                        <!-- {{ "Price" }} -->
+                        <mat-icon
+                          class="m-0 p-0 me-2"
+                          style="overflow: hidden"
+                          svgIcon="{{ collections | matIcon }}"
+                        >
+                        </mat-icon>
+                        <b style="font-size: 34px">
+                          {{ productToBuy?.price | price }}
+                        </b>
+                      </a>
+                    </div>
+                    <div [class.stayFixed]="isMobile()">
+                      <!-- <div class="container px-4 mt-3 order-1 order-sm-3" >
+                                            <div class="text-center">
+                                                <div class="card-body p-0 pb-0">
+                                                    <div class="text-left">
+                                                        <h5 style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Your Size'" [style.font-family]="info.fontName!"></h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row gx-4 gx-lg-1 row-cols-4 row-cols-md-5 row-cols-xl-5 justify-content-center" >
+                                                <button [style.font-family]="info.fontName!" type="button" class="btn btn-outline-{{info.colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
+                                                <button [style.font-family]="info.fontName!" type="button" class="btn btn-outline-{{info.colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                                            </div>
+                                        </div> -->
+                      <div
+                        class="card-footer p-4 px-md-0 pt-sm-5 pb-3 border-top-0 order-2 order-sm-4 d-block d-md-inline-flex align-items-center justify-content-start bg-{{
+                          info.colorStyle!.back_code
+                        }} "
+                        [class.bg-transparent]="!isMobile()"
+                      >
+                        <a
+                        *ngIf='(productToBuy.seller | lowercase) != ethereum.selectedAddress && productToBuy.forSale'
+                        (click)="addToCart()"
+                          role="button"
+                          [style.font-family]="info.fontName!"
+                          class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
+                            info.colorStyle!.text_code
+                          }} mx-auto"
+                          [class.anim]="adding"
+                          [class.shake]="shake"
+                          style="font-size: 15px"
+                        >
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          BUY NOW
+                          <mat-icon [inline]="true" class="ms-2">
+                            <span
+                              class="material-icons-outlined"
+                              style="font-size: 20px"
+                            >
+                              local_mall
+                            </span>
+                          </mat-icon>
+                        </a>
+                        <a
+                        *ngIf='(productToBuy.seller | lowercase) != ethereum.selectedAddress && !productToBuy.forSale'
+                          role="button"
+                          [style.font-family]="info.fontName!"
+                          class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
+                            info.colorStyle!.text_code
+                          }} mx-auto"
+                          [class.anim]="adding"
+                          [class.shake]="shake"
+                          style="font-size: 15px"
+                        >
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          NOT FOR SALE
+                          <mat-icon [inline]="true" class="ms-2">
+                            <span
+                              class="material-icons-outlined"
+                              style="font-size: 20px"
+                            >
+                              local_mall
+                            </span>
+                          </mat-icon>
+                        </a>
+                        <a
+                          *ngIf='(productToBuy.seller | lowercase) == ethereum.selectedAddress'
+                          (click)="updateNFT()"
+                          role="button"
+                          [style.font-family]="info.fontName!"
+                          class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
+                            info.colorStyle!.text_code
+                          }} mx-auto"
+                          [class.anim]="adding"
+                          [class.shake]="shake"
+                          style="font-size: 15px"
+                        >
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          UPDATE NFT
+                          <mat-icon [inline]="true" class="ms-2">
+                            <span
+                              class="material-icons-outlined"
+                              style="font-size: 20px"
+                            >
+                            collections
+                            </span>
+                          </mat-icon>
+                        </a>
+
+                        <!-- <a
+                          (click)="addToCart()"
+                          role="button"
+                          [style.font-family]="info.fontName!"
+                          class="d-flex d-md-inline-flex btn mb-2 mx-2 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-outline-{{
+                            info.colorStyle!.text_code
+                          }} mx-auto"
+                          [class.anim]="adding"
+                          [class.shake]="shake"
+                          style="font-size: 15px"
+                        >
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          PLACE OFFER
+                          <mat-icon [inline]="true" class="ms-2">
+                            <span
+                              class="material-icons-outlined"
+                              style="font-size: 20px"
+                            >
+                              local_offer
+                            </span>
+                          </mat-icon>
+                        </a> -->
+                        <!-- <div class="text-center"><a [style.font-family]="info.fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div> -->
+                        <!-- <div class="text-center"><a [style.font-family]="info.fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div> -->
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <div class="mt-3">
+                    <mat-accordion
+                      class="example-headers-align rounded-panel"
+                      #accordion="matAccordion"
+                    >
+                      <mat-expansion-panel
+                        [disabled]="panel.isDisabled"
+                        [expanded]="panel.isExpanded"
+                        [hideToggle]="true"
+                        id="el2-{{ i }}"
+                        style="object-fit: contain; overflow: hidden"
+                        style.color="{{ selectedTheme()!.color }}"
+                        class="bg-{{
+                          info.colorStyle!.back_code
+                        }} border border-{{
+                          info.colorStyle!.text_code
+                        }} rounded-10"
+                        (opened)="beforePanelOpened(panel)"
+                        (closed)="beforePanelClosed(panel)"
+                        (afterCollapse)="afterPanelClosed()"
+                        (afterExpand)="afterPanelOpened()"
+                        *ngFor="let panel of accordionList2; index as i"
+                        #mapanel="matExpansionPanel"
+                      >
+                        <mat-expansion-panel-header>
+                          <mat-panel-title
+                            class="text-{{ info.colorStyle!.text_code }}"
+                          >
+                            <b>{{ panel.title }}</b>
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            {{ panel.subtitle }}
+                          </mat-panel-description>
+                          <mat-icon>
+                            {{
+                              panel.isExpanded ? "expand_less" : "expand_more"
+                            }}
+                          </mat-icon>
+                        </mat-expansion-panel-header>
+
+                        <div *ngIf="panel.type == 1">
+                          <table
+                            *ngIf="(dataSource.length ?? 0) > 0"
+                            mat-table
+                            [dataSource]="dataSource"
+                            class="w-100 text-{{
+                              info.colorStyle!.text_code
+                            }} bg-{{ info.colorStyle!.back_code }}"
+                          >
+                            <ng-container matColumnDef="symbol">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }}"
+                              ></th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                                <mat-icon
+                                  class="m-0 p-0"
+                                  style="overflow: hidden"
+                                  svgIcon="{{
+                                    info
+                                      | collectionPipe: collection?.contract
+                                      | matIcon
+                                  }}"
+                                >
+                                </mat-icon>
+                              </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="price">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }}"
+                              >
+                                Price
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                                {{ element.price }}
+                              </td>
+                            </ng-container>
+                            <ng-container matColumnDef="from">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }}"
+                              >
+                                From
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                                {{ element.from }}
+                              </td>
+                            </ng-container>
+
+                            <tr
+                              mat-header-row
+                              *matHeaderRowDef="displayedColumns"
+                            ></tr>
+                            <tr
+                              mat-row
+                              *matRowDef="let row; columns: displayedColumns"
+                            ></tr>
+                          </table>
+                          <div *ngIf="(dataSource.length ?? 0) == 0">
+                            <p
+                              class="text-center"
+                              style.color="{{ selectedTheme()!.color }}"
+                            >
+                              NO OFFERS
+                            </p>
+                          </div>
+                        </div>
+                        <div *ngIf="panel.type == 0"></div>
+
+                        <div *ngIf="panel.type == 2"></div>
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div> -->
+                  <div class="mt-3">
+                    <mat-accordion
+                      class="example-headers-align rounded-panel"
+                      #accordion="matAccordion"
+                    >
+                      <mat-expansion-panel
+                        [disabled]="panel.isDisabled"
+                        [expanded]="panel.isExpanded"
+                        [hideToggle]="true"
+                        id="el3-{{ i }}"
+                        style="object-fit: contain; overflow: hidden"
+                        style.color="{{ selectedTheme()!.color }}"
+                        class="bg-{{
+                          info.colorStyle!.back_code
+                        }} border border-{{
+                          info.colorStyle!.text_code
+                        }} rounded-10"
+                        (opened)="beforePanelOpened(panel)"
+                        (closed)="beforePanelClosed(panel)"
+                        (afterCollapse)="afterPanelClosed()"
+                        (afterExpand)="afterPanelOpened()"
+                        *ngFor="let panel of accordionList3; index as i"
+                        #mapanel="matExpansionPanel"
+                      >
+                        <mat-expansion-panel-header>
+                          <mat-panel-title
+                            class="text-{{ info.colorStyle!.text_code }}"
+                          >
+                            <b>{{ panel.title }}</b>
+                          </mat-panel-title>
+                          <mat-panel-description>
+                            {{ panel.subtitle }}
+                          </mat-panel-description>
+                          <mat-icon>
+                            {{
+                              panel.isExpanded ? "expand_less" : "expand_more"
+                            }}
+                          </mat-icon>
+                        </mat-expansion-panel-header>
+
+                        <div *ngIf="panel.type == 1" style="overflow-x: scroll;">
+                          <table
+                            *ngIf="(nftLogs.length ?? 0) > 0"
+                            mat-table
+                            [dataSource]="nftLogs"
+                            class="w-md-100 text-{{
+                              info.colorStyle!.text_code
+                            }} bg-{{ info.colorStyle!.back_code }}"
+                          >
+                            <!--- Note that these columns can be defined in any order.
+                                  The actual rendered columns are set as a property on the row definition" -->
+
+                            <!-- Position Column -->
+                            <ng-container matColumnDef="symbol">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }}"
+                              >
+                              Event
+                            </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                              <mat-icon
+                              class="m-0 p-0"
+                              style="overflow: hidden"
+                            >
+                            {{ element.icon }}
+                            </mat-icon>
+                                <!-- <mat-icon
+                                  class="m-0 p-0"
+                                  style="overflow: hidden"
+                                  svgIcon="{{
+                                    info
+                                      | collectionPipe: collection?.contract
+                                      | matIcon
+                                  }}"
+                                >
+                                </mat-icon> -->
+                              </td>
+                            </ng-container>
+
+                            <!-- Name Column -->
+                            <ng-container matColumnDef="from">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }} padding"
+                              >
+                                From
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                                {{ element.from | address }}
+                              </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="to">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }} padding"
+                              >
+                                To
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                                {{ element.to | address }}
+                              </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="date">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }} padding"
+                              >
+                                Date
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                class="text-secondary"
+                              >
+                                {{ element.timestamp | dateAgo }}
+                              </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="price">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{ info.colorStyle!.text_code }} padding"
+                              >
+                                Price
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                style.color="{{ selectedTheme()!.color }}"
+                              >
+                              <div class="d-flex justify-content-start align-items-center w-100">
+                                <mat-icon
+                                style="overflow: hidden;"
+                                *ngIf='element.price != ""'
+                                class="p-0 m-0"
+                                svgIcon="{{
+                                  info
+                                    | collectionPipe: collection?.contract
+                                    | matIcon
+                                }}"
+                              >
+                              </mat-icon>
+                              <p class="m-0 ms-1 h-100 fw-bolder" style="font-size: large;">
+                                {{ element.price | price }}
+                              </p>
+                              </div>
+                              </td>
+                            </ng-container>
+                            <tr
+                              mat-header-row
+                              *matHeaderRowDef="displayedColumns"
+                            ></tr>
+                            <tr
+                              mat-row
+                              *matRowDef="let row; columns: displayedColumns"
+                            ></tr>
+                          </table>
+                          <div *ngIf="(nftLogs.length ?? 0) == 0">
+                            <p
+                              class="text-center"
+                              style.color="{{ selectedTheme()!.color }}"
+                            >
+                              NO HISTORY
+                            </p>
+                          </div>
+                        </div>
+                        <div *ngIf="panel.type == 0"></div>
+
+                        <div *ngIf="panel.type == 2"></div>
+                        <!-- <mat-action-row>
+                        <button mat-flat-button (click)="mapanel.close()">
+                          Click to close
+                        </button>
+                      </mat-action-row> -->
+                      </mat-expansion-panel>
+                    </mat-accordion>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section
+  *ngIf="
+    isBrowser() &&
+    info?.username &&
+    !info?.active &&
+    productToBuy?.tokenID != undefined
+  "
+  class="py-5"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
+>
+  <div class="container mt-5">
+    <div
+      class="d-flex align-items-center justify-content-center pb-1 mb-5"
+      style="height: 50px; font-weight: bold; font-size: 30px"
+      style.color="{{ selectedTheme()!.color }}"
+    >
+      <p
+        class="text-center text-{{ info.colorStyle!.text_code }}"
+        style="line-height: 1.2em"
+        [style.font-family]="info.fontName!"
+      >
+        COMING SOON
+      </p>
+    </div>
+    <div>
+      <div class="d-block align-items-center pt-0">
+        <div class="d-block align-items-center text-center text-sm-start">
+          <a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"
+            ><img
+              style="border-radius: 2.5%"
+              src="{{ info!.homeLink?.toString() ?? '' }}"
+              style="max-width: 100%; height: auto"
+              alt="Product"
+          /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- </div> -->
+<!-- Footer-->
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://applepay.cdn-apple.com/jsapi/v1/apple-pay-sdk.js"></script>
+
+<!-- Core theme JS-->
+<script *ngIf="isBrowser()" src="js/scripts.js"></script>

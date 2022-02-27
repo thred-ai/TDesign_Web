@@ -124,7 +124,7 @@
         *ngIf="!isAdmin()"
         class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 p-0"
       >
-        <li *ngIf="!hideCart()" class="d-flex">
+        <!-- <li *ngIf="!hideCart()" class="d-flex">
           <div class="nav-item dropdown">
             <button
               id="navbarDropdown"
@@ -198,29 +198,23 @@
               </li>
             </ul>
           </div>
-        </li>
+        </li> -->
         <li
-          *ngIf="!hideCart()"
-          [hidden]="selectedCurrency() == undefined"
           class="d-flex mt-1 mb-1"
           style="flex-shrink: 0"
         >
           <a
             data-bs-toggle="collapse"
             data-bs-target=".navbar-collapse.show"
-            class="btn btn-outline-{{ storeInfo().colorStyle!.text_code }}"
+            class="btn btn-outline-{{ storeInfo().colorStyle!.text_code }} d-flex align-items-center justify-content-center"
             role="button"
-            (click)="routeToCart()"
+            (click)="openWallet()"
             [style.font-family]="storeInfo().fontName!"
           >
-            MY BAG
-            <span
-              class="badge bg-{{ storeInfo().colorStyle!.text_code }} text-{{
-                storeInfo().colorStyle!.back_code
-              }} ms-1 rounded-pill"
-              [style.font-family]="storeInfo().fontName!"
-              >{{ cartLength() }}</span
-            >
+            {{providerName()}}
+            <mat-icon class="ms-2">
+              account_balance_wallet
+            </mat-icon>
           </a>
         </li>
       </ul>
@@ -358,7 +352,7 @@
 <footer
   *ngIf="
     isBrowser() &&
-    storeInfo()?.username != undefined &&
+    (storeInfo()?.username ?? '') != '' &&
     !isAdmin() &&
     !isLanding()
   "
@@ -372,14 +366,13 @@
         <div class="col mb-2 mx-2" [style.width.px]="50">
           <a role="button">
             <img
-              style="object-fit: contain; height: 25px"
               [style.width.px]="50"
               alt="ok"
-              src="assets/visacard.png"
+              src="assets/polygon_logo.svg"
             />
           </a>
         </div>
-        <div class="col mb-2 mx-2" [style.width.px]="50">
+        <!-- <div class="col mb-2 mx-2" [style.width.px]="50">
           <a role="button">
             <img
               style="object-fit: contain; height: 25px"
@@ -438,7 +431,7 @@
               src="assets/microsoftcard.png"
             />
           </a>
-        </div>
+        </div> -->
       </div>
 
       <div

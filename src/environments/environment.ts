@@ -17,7 +17,7 @@ export const environment = {
     measurementId: "G-YVHCR44N65"
   },
 
-  pxx: ""
+  rpc: 'https://polygon-mumbai.infura.io/v3/90806fec200c42fdbf783260b38f0a73'
 
 };
 

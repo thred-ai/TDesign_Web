@@ -22,7 +22,7 @@ export class RoutingService {
       'billing-info',
       'shipping-address',
       'review-order',
-      'products',
+      'nft',
       'blogs',
       'cart',
       'orders',
@@ -76,11 +76,11 @@ export class RoutingService {
   }
 
   redirectTo(uri:string, shouldRefresh = true){
-    if (shouldRefresh){
-      this._router.navigateByUrl('not-found').then(()=>
-      this._router.navigateByUrl(uri))
-      return
-    }
+    // if (shouldRefresh){
+    //   this._router.navigateByUrl('not-found').then(()=>
+    //   this._router.navigateByUrl(uri))
+    //   return
+    // }
     this._router.navigateByUrl(uri)
   }
 
@@ -155,10 +155,10 @@ export class RoutingService {
     isCustom: boolean = false
   ) {
     if (isCustom) {
-      this.redirectTo('products/' + productID);
+      this.redirectTo('nft/' + productID);
       return;
     }
-    this.redirectTo(storeName + '/' + 'products/' + productID);
+    this.redirectTo(storeName + '/' + 'nft/' + productID);
   }
 
   routeToOrder(orderID: string, storeName: string, isCustom: boolean = false) {
