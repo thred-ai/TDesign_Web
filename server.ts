@@ -10,7 +10,7 @@ import 'cross-fetch/polyfill';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 
 
-import * as express from 'express';
+import express from 'express';
 import { join } from 'path';
 
 import { AppServerModule } from './src/main.server';
@@ -42,9 +42,9 @@ export function app(): express.Express {
   }));
 
   // All regular routes use the Universal engine
-  server.get('*', (req, res) => {
+  server.get('*', (req: any, res: any) => {
     Globals.URL = (req.get('x-forwarded-host') ?? "")
-    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] }, (error, html) => {
+    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] }, (error: any, html: any) => {
       if (error) {
         console.log(`Error generating html for req ${req.url}`, error);
         return (req as any).next(error);
