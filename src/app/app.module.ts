@@ -105,7 +105,7 @@ export class AppModule {
 
         // { path: 'about', loadChildren: () => import('./about/about.module').then((m) => m.AboutModule)},
         // { path: ':user/blogs', module:  BlogsModule},
-        { path: 'products/:product', loadChildren: () => import('./product/product.module').then((m) => m.ProductModule)},
+        { path: 'nft/:product', loadChildren: () => import('./product/product.module').then((m) => m.ProductModule)},
         { path: 'orders/:order', loadChildren: () => import('./view-order-info/view-order-info.module').then((m) => m.ViewOrderInfoModule)},
         { path: 'orders', loadChildren: () => import('./view-order/view-order.module').then((m) => m.ViewOrderModule)},
       
