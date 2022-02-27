@@ -490,11 +490,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     );
 
     this.layoutForm.controls.isFullscreen.setValue(
-      this.data.page?.fullscreen ? this.data.page?.fullscreen : false
+      this.data.page?.fullscreen ?? false
     );
 
+    console.log(this.data.page)
     this.layoutForm.controls.isLoader.setValue(
-      this.data.page?.loader ? this.data.page?.loader : true
+      this.data.page?.loader ?? true
     );
 
     setTimeout(() => {

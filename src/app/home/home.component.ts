@@ -17,6 +17,7 @@ import { Button } from '../models/button.model';
 import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -182,6 +183,24 @@ export class HomeComponent implements OnInit, OnDestroy {
   homeRows: Array<Row> = []
   page?: Page
 
+  oldUrl = ''
+
+  private sub = this._router.events
+    .pipe(
+      filter(event => event instanceof NavigationStart),
+      map(event => event as NavigationStart),  // appease typescript
+      filter(event => (event.url !== this.oldUrl) && !event.url.includes('my-store'))
+    )
+    .subscribe(
+      event => {
+        console.log(event)
+        this.oldUrl = event.url
+        this.ngOnInit()
+      } 
+  );
+
+
+
 
 
   constructor(
@@ -198,7 +217,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   private routingService: RoutingService,
   private sanitizer: DomSanitizer,
   private location: PlatformLocation,
-  private fb: FormBuilder
+  private fb: FormBuilder,
 
   ) {
     _router.events.subscribe((event: any) => {
@@ -210,6 +229,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.loadService.adminComponent = undefined
+    this.sub.unsubscribe();
   }
 
   ngOnInit(): void {

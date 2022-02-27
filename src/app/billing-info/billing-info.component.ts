@@ -339,7 +339,7 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
     this.billingForm.controls.cardholder.setValue(Globals.billingInfo?.name ?? "")
     this.billingForm.controls.address.setValue(Globals.billingInfo?.street ?? "")
     this.billingForm.controls.address2.setValue(Globals.billingInfo?.unit ?? "")
-    this.billingForm.controls.country.setValue(Globals.billingInfo?.country ?? "")
+    this.billingForm.controls.country.setValue((Globals.billingInfo?.country ?? "").trim() != "" ? Globals.billingInfo?.country : "United States")
     this.billingForm.controls.city.setValue(Globals.billingInfo?.city ?? "")
     this.billingForm.controls.state.setValue(Globals.billingInfo?.admin_area ?? "")
     this.billingForm.controls.postalCode.setValue(Globals.billingInfo?.postal ?? "")

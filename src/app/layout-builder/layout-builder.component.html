@@ -297,18 +297,16 @@
                       </div>
 
                       <div
-                      class="w-100 mx-0"
-                      *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 7"
-                      style="pointer-events: none"
-                      c
-                    >
-                      <h1 class="m-2 text-center fw-bolder">
-                        CUSTOM HTML
-                      </h1>
-                    </div>
+                        class="w-100 mx-0"
+                        *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 7"
+                        style="pointer-events: none"
+                        c
+                      >
+                        <h1 class="m-2 text-center fw-bolder">CUSTOM HTML</h1>
+                      </div>
 
-
-                      <div *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 5 ||
+                      <div
+                        *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 5 ||
                     ((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6"
                     class="w-100 w-md-75 mt-3 card text-{{
                       storeInfo.colorStyle!.text_code
@@ -330,7 +328,6 @@
                                    style.color="{{selectedTheme!.color}}"
                             >
                         </mat-form-field>
-
                       </div>
 
                       <div
@@ -415,19 +412,32 @@
                   formControlName="htmlText"
                 ></div>
 
-                <div class="w-100" *ngIf="rowForm.controls.type.value == 7" [class.relative]='codeMode == false' style="height: 450px;">
-                  <ngx-monaco-editor class="w-100 h-100" [class.absolute]='codeMode'  ngDefaultControl [options]="editorOptions" formControlName='html'>
-
+                <div
+                  class="w-100"
+                  *ngIf="rowForm.controls.type.value == 7"
+                  [class.relative]="codeMode == false"
+                  style="height: 450px"
+                >
+                  <ngx-monaco-editor
+                    class="w-100 h-100"
+                    [class.absolute]="codeMode"
+                    ngDefaultControl
+                    [options]="editorOptions"
+                    formControlName="html"
+                  >
                   </ngx-monaco-editor>
 
                   <!-- <a [hidden]='codeMode' (click)='codeMode = true' style="position: absolute; bottom: 15px; right: 5px; z-index: 100; height: 30px; width: 30px; text-decoration: none;" role="button" class="btn btn-light shadow rounded-circle d-flex justify-content-center align-items-center"><mat-icon >fullscreen</mat-icon></a> -->
                 </div>
 
-
                 <mat-form-field
                   class="w-100"
                   appearance="outline"
-                  *ngIf="rowForm.controls.type.value != 2 && rowForm.controls.type.value != 7 && rowForm.controls.type.value != 6"
+                  *ngIf="
+                    rowForm.controls.type.value != 2 &&
+                    rowForm.controls.type.value != 7 &&
+                    rowForm.controls.type.value != 6
+                  "
                 >
                   <mat-label>Items Per. Row</mat-label>
                   <mat-select
@@ -511,25 +521,37 @@
                         </mat-select>
                       </mat-form-field>
 
-                      <mat-radio-group class="w-100 my-4" [ngModelOptions]="{ standalone: true }"
-                      [(ngModel)]="button.submit">
+                      <mat-radio-group
+                        class="w-100 my-4"
+                        [ngModelOptions]="{ standalone: true }"
+                        [(ngModel)]="button.submit"
+                      >
                         <div class="w-100">
-                          <mat-radio-button [value]="true" (change)="radioChangeBtn($event, i)"
+                          <mat-radio-button
+                            [value]="true"
+                            (change)="radioChangeBtn($event, i)"
                             >Submit Button</mat-radio-button
                           >
                         </div>
                         <div class="mt-2">
-                          <mat-radio-button [value]="false" (change)="radioChangeBtn($event, i)"
+                          <mat-radio-button
+                            [value]="false"
+                            (change)="radioChangeBtn($event, i)"
                             >Standalone Button</mat-radio-button
                           >
                         </div>
                       </mat-radio-group>
 
-
-
                       <mat-form-field class="my-4 w-100" appearance="fill">
                         <mat-label>Font Size</mat-label>
-                        <input matInput type="number" placeholder="Ex. 12" [ngModelOptions]="{ standalone: true }" [(ngModel)]="button.fontsize" min="5">
+                        <input
+                          matInput
+                          type="number"
+                          placeholder="Ex. 12"
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="button.fontsize"
+                          min="5"
+                        />
                         <span matSuffix>px</span>
                       </mat-form-field>
                       <mat-label class="mt-2 text-secondary"
@@ -537,49 +559,50 @@
                       >Button Text Color</mat-label
                       >
                       <div class="card w-100 mb-2">
-                        <a role="button"
-                        role="button" 
-                        class="btn w-100"
-                        [cpPosition]="'top'"
-                        [cpPositionRelativeToArrow]="true"
-                        [style.background]="button.text_color"
-                        (colorPickerSelect)="button.text_color = $event"
-                        [cpOutputFormat]="'rgba'"
-                        [cpOKButton]="true"
-                        [cpOKButtonText]="'SET COLOR'"
-                        [cpOKButtonClass]= "'btn btn-dark'"
-                        [cpSaveClickOutside]="false"
-                        [(colorPicker)]="button.text_color!"
+                        <a
+                          role="button"
+                          role="button"
+                          class="btn w-100"
+                          [cpPosition]="'top'"
+                          [cpPositionRelativeToArrow]="true"
+                          [style.background]="button.text_color"
+                          (colorPickerSelect)="button.text_color = $event"
+                          [cpOutputFormat]="'rgba'"
+                          [cpOKButton]="true"
+                          [cpOKButtonText]="'SET COLOR'"
+                          [cpOKButtonClass]="'btn btn-dark'"
+                          [cpSaveClickOutside]="false"
+                          [(colorPicker)]="button.text_color!"
                         >
-                            <mat-icon class="mt-1">colorize</mat-icon>
+                          <mat-icon class="mt-1">colorize</mat-icon>
                         </a>
                     </div>
 
 
-                      <mat-label class="mt-2 text-secondary"                       style="font-size: small;"
-
-                          >Button Fill Color</mat-label
+                      <mat-label
+                        class="placeholder mt-2 text-secondary"
+                        style="font-size: small"
+                        >Button Fill Color</mat-label
                       >
                       <div class="card w-100 mb-2">
-                        <a role="button"
-                        role="button" 
-                        class="btn w-100"
-                        [cpPosition]="'top'"
-                        [cpPositionRelativeToArrow]="true"
-                        [style.background]="button.bg_color"
-                        (colorPickerSelect)="button.bg_color = $event"
-                        [cpOutputFormat]="'rgba'"
-                        [cpOKButton]="true"
-                        [cpOKButtonText]="'SET COLOR'"
-                        [cpOKButtonClass]= "'btn btn-dark'"
-                        [cpSaveClickOutside]="false"
-                        [(colorPicker)]="button.bg_color!"
+                        <a
+                          role="button"
+                          role="button"
+                          class="btn w-100"
+                          [cpPosition]="'top'"
+                          [cpPositionRelativeToArrow]="true"
+                          [style.background]="button.bg_color"
+                          (colorPickerSelect)="button.bg_color = $event"
+                          [cpOutputFormat]="'rgba'"
+                          [cpOKButton]="true"
+                          [cpOKButtonText]="'SET COLOR'"
+                          [cpOKButtonClass]="'btn btn-dark'"
+                          [cpSaveClickOutside]="false"
+                          [(colorPicker)]="button.bg_color!"
                         >
-                            <mat-icon class="mt-1">colorize</mat-icon>
+                          <mat-icon class="mt-1">colorize</mat-icon>
                         </a>
-                    </div>
-                    
-
+                      </div>
 
                       <mat-form-field class="w-100 my-2" appearance="outline"
                       >
@@ -1200,8 +1223,8 @@
                         class="text-center fw-bolder px-4 btn {{
                           matchingStyle(button.style)
                         }} my-auto"
-                        style="text-decoration: none;"
-                        [style.font-size.px]='button.fontsize'
+                        style="text-decoration: none"
+                        [style.font-size.px]="button.fontsize"
                         style.background-color="{{ button.bg_color }}"
                         style.color="{{ button.text_color }}"
                       >
@@ -1243,21 +1266,23 @@
                     ></div>
                   </div>
 
-
-
-                  <div class="w-100 mx-0" id='c{{i}}' *ngIf="((aRow.index == i ? aRow?.row : undefined) ?? row).type == 7" style="pointer-events: none">
+                  <div
+                    class="w-100 mx-0"
+                    id="c{{ i }}"
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined) ?? row).type == 7"
+                    style="pointer-events: none"
+                  >
                     <iframe
-                    width="100%" 
-                    id='frame{{i}}'
-                    height="100%" 
-                    (load)='resizeIframe(i)'
+                      width="100%"
+                      id="frame{{ i }}"
+                      height="100%"
+                      (load)="resizeIframe(i)"
                       [srcdoc]="(((aRow.index == i ? aRow?.row : undefined) ?? row).htmlTemplate ?? '') | storePipe | safeHtml"
                     ></iframe>
                   </div>
 
-
-
-                    <div *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 5 ||
+                  <div
+                    *ngIf="((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 5 ||
                     ((aRow.index == i ? aRow?.row : undefined)?.type ?? row.type) == 6"
                     class="w-100 w-md-50 mt-3 card text-{{
                       storeInfo.colorStyle!.text_code
@@ -2049,33 +2074,7 @@
                             phoneMask 
                             [preValue]="popupForm.controls.sms.value" 
                         </mat-form-field> -->
-                    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                  </div>
                 </div>
               </div>
             </section>
@@ -2125,7 +2124,6 @@
                 </h3>
               </mat-form-field>
             </div>
-            
           </div>
           <div class="col mt-0">
             <div class="mt-2">
@@ -2151,8 +2149,8 @@
           <div class="col mt-4">
             <h2 class="h2 my-0">Navigation</h2>
             <h5 class="mt-0">
-              When set to 'No Navigation', the headers & footers of your store are hidden on this
-              page
+              When set to 'No Navigation', the headers & footers of your store
+              are hidden on this page
             </h5>
             <mat-radio-group formControlName="isFullscreen">
               <div>
@@ -2333,26 +2331,30 @@
                   style="display: none"
                 />
               </div> -->
-
-
-
             </div>
           </div>
           <div class="col mt-4">
             <h2 class="h2 my-0">Loading Animation</h2>
             <h5 class="mt-0">
-              When set to 'Hide', your store's loading animation will not display on this page.
+              When set to 'Hide', your store's loading animation will not
+              display on this page.
             </h5>
             <mat-radio-group formControlName="isLoader">
               <div>
-                <mat-radio-button [value]="true" (change)="radioChangeLoader($event)"
-                  >Show</mat-radio-button
-                >
+                <mat-radio-button
+                  [value]="true"
+                  (change)="radioChangeLoader($event)"
+                  >
+                  Show
+                  </mat-radio-button>
               </div>
               <div class="mt-2">
-                <mat-radio-button [value]="false" (change)="radioChangeLoader($event)"
-                  >Hide</mat-radio-button
-                >
+                <mat-radio-button
+                  [value]="false"
+                  (change)="radioChangeLoader($event)"
+                  >
+                  Hide
+                </mat-radio-button>
               </div>
             </mat-radio-group>
           </div>
@@ -2360,7 +2362,9 @@
       </form>
     </div>
     <div class="w-100 w-md-50">
-      <div class="w-100 px-5 row row-cols-1 mt-0 justify-content-center align-items-top">
+      <div
+        class="w-100 px-5 row row-cols-1 mt-0 justify-content-center align-items-top"
+      >
         <!-- <div class="col w-100 card shadow p-3 d-flex mb-0">
           <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
   
@@ -2407,23 +2411,33 @@
         <div class="col w-100 card shadow p-3 d-flex mt-3">
           <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
 
-          <div class="w-100 my-0 d-flex align-items-center justify-content-start" style="height: 150px;">
-            <img
-            class="h-100"
-            style="object-fit: contain; aspect-ratio: 1;"
-            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
-          />
-            <p
-            class="ms-3 my-auto"
-            style="color: #6e6e6e; font-family: Arial; font-size: small; text-overflow: ellipsis; overflow-y: hidden; height: 120px;"
+          <div
+            class="w-100 my-0 d-flex align-items-center justify-content-start"
+            style="height: 150px"
           >
-          <b class="text-dark" style="font-size: medium;">
-            {{this.layoutForm.controls.metaTitle.value ?? ""}}
-          </b>
-          <br>
+            <img
+              class="h-100"
+              style="object-fit: contain; aspect-ratio: 1"
+              src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
+            />
+            <p
+              class="ms-3 my-auto"
+              style="
+                color: #6e6e6e;
+                font-family: Arial;
+                font-size: small;
+                text-overflow: ellipsis;
+                overflow-y: hidden;
+                height: 120px;
+              "
+            >
+              <b class="text-dark" style="font-size: medium">
+                {{this.layoutForm.controls.metaTitle.value ?? ""}}
+              </b>
+              <br />
 
-            {{this.layoutForm.controls.metaDesc.value ?? ""}}
-          </p>
+              {{this.layoutForm.controls.metaDesc.value ?? ""}}
+            </p>
           </div>
         </div>
       </div>

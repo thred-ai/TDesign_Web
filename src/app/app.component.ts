@@ -302,7 +302,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   getCart() {
     if (this.cart == undefined && isPlatformBrowser(this.platformID)) {
       this.cart = [];
-      this.loadService.getCart(false, (cart) => {
+      this.loadService.getCart(true, (cart) => {
         this.cart = cart;
       });
     }
@@ -789,6 +789,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     //   event.ngOnInit()
     // }
     // console.log(event)
+
   }
 
   shake = false;
@@ -924,5 +925,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     //             console.log(event.url)
     //       }
     // });
+    this.loadService.testSite()
   }
 }

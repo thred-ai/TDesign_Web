@@ -72,7 +72,10 @@ import { AngularFireFunctionsModule, AngularFireFunctions } from '@angular/fire/
     AngularFireFunctionsModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  providers: [Globals],
+  providers: [
+    Globals,
+    // { provide: USE_FUNCTIONS_EMULATOR, useValue: !environment.production ? ['localhost', 5001] : undefined },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

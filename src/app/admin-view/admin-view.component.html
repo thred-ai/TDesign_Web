@@ -1007,6 +1007,14 @@
           </mat-tab-group>
         </form>
       </div>
+<!-- 
+      <div *ngIf="getSelectedPanel()?.Title == 'NFT'" class="py-3 w-100" style='height: 100vh'>
+        <iframe
+          id='nftFrame'
+          [src]="'http://localhost:3000/' | safeUrl"
+          style="width: 100%; height: 100%"
+        ></iframe>
+      </div> -->
 
       <div
         *ngIf="getSelectedPanel()?.Title == 'NFT'"
@@ -1348,10 +1356,12 @@
                     </div>
                   </div>
                 </div>
-                <div
+                <a
                   class="h-100 w-100"
-                  style="position: absolute; cursor: grab"
-                ></div>
+                  style="position: absolute"
+                  role="button"
+                  (click)="showLayoutModal(page)"
+                ></a>
               </div>
 
               <div

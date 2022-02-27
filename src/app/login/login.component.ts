@@ -480,6 +480,8 @@ export class LoginComponent implements OnInit {
     return false;
   }
 
+  hide = true
+
   ngOnInit(): void {
     this.username = this.isLanding ? 'Store Name' : 'Username';
   }
