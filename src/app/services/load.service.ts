@@ -747,7 +747,7 @@ export class LoadService {
     const data = {
       contract: contract,
       tokenId: tokenId,
-      test: true,
+      test: false,
     };
     this.functions
       .httpsCallable('getTransactionHistory')(data)
@@ -1330,9 +1330,11 @@ export class LoadService {
         }
         await Promise.all(
           col.map(async (contractID: string) => {
-            let created = await this.getCreated(contractID, provider);
 
-            this.getCollection(contractID, (collection) => {
+            this.getCollection(contractID, async (collection) => {
+
+              let created = await this.getCreated(collection!, provider);
+
               if (!collection) {
                 return;
               }
@@ -1507,12 +1509,13 @@ export class LoadService {
   }
 
   async getCreated(
-    contract: string,
+    contract: Collection,
     provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
       this.rpcEndpoint
     )
   ) {
-    const nftContract = new ethers.Contract(contract, NFTS.abi, provider);
+    console.log(this.rpcEndpoint)
+    const nftContract = new ethers.Contract(contract.contract, contract.ABI ?? NFTS.abi, provider);
     // const data = await marketContract.fetchItemsCreated();
     const data1 = await nftContract.name();
     const data2 = await nftContract.symbol();
@@ -2959,19 +2962,29 @@ export class LoadService {
       try {
         await (window as any).ethereum.request({
           method: 'wallet_switchEthereumChain',
-
-          params: [{ chainId: `0x${Number(80001).toString(16)}` }],
+          params: [{ chainId: `0x${Number(137).toString(16)}` }],
         });
       } catch (error) {
+        // const mumbai = {
+        //   chainId: `0x${Number(80001).toString(16)}`,
+        //   chainName: 'Mumbai',
+        //   nativeCurrency: {
+        //     name: 'MATIC',
+        //     symbol: 'MATIC',
+        //     decimals: 18,
+        //   },
+        //   rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+        //   blockExplorerUrls: ['https://polygonscan.com'],
+        // };
         const polygon = {
-          chainId: `0x${Number(80001).toString(16)}`,
-          chainName: 'Mumbai',
+          chainId: `0x${Number(137).toString(16)}`,
+          chainName: 'Polygon Mainnet',
           nativeCurrency: {
             name: 'MATIC',
             symbol: 'MATIC',
             decimals: 18,
           },
-          rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+          rpcUrls: ['https://polygon-rpc.com'],
           blockExplorerUrls: ['https://polygonscan.com'],
         };
         await (window as any).ethereum.request({
@@ -4686,10 +4699,9 @@ export class LoadService {
             product.url = this.getURL(uid, productID);
           }
           if (product.contractID) {
-            let created = await this.getCreated(product.contractID, provider);
             let co = new Collection(
-              created.name,
-              created.symbol,
+              '',
+              '',
               [],
               product.contractID,
               'MATIC',
@@ -4699,6 +4711,11 @@ export class LoadService {
               Globals.storeInfo.uid ?? '',
               new Date()
             );
+
+            let created = await this.getCreated(co, provider);
+
+            co.name = created.name
+            co.symbol = created.symbol
 
             let c = created.tokens.find(
               (i: any) => i.tokenId == product.tokenID

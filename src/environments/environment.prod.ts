@@ -10,6 +10,6 @@ export const environment = {
     appId: "1:628658827719:web:66671544aeb6d2a78029e2",
     measurementId: "G-YVHCR44N65"
   },
-  rpc: 'https://polygon-mumbai.infura.io/v3/90806fec200c42fdbf783260b38f0a73'
+  rpc: 'https://polygon-mainnet.infura.io/v3/90806fec200c42fdbf783260b38f0a73'
 };
 
