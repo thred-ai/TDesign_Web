@@ -1831,7 +1831,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   storeLive() {
     return (
-      Globals.billingInfo?.name && this.bankInfo != '' && this.subInfo != ''
+      this.subInfo != ''
     );
   }
 
@@ -1843,11 +1843,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       if (Globals.billingInfo?.name?.replace(' ', '') == '') {
         return true;
       }
-    } else if (panel.Title == 'PAYMENTS') {
-      if (this.bankInfo == '') {
-        return true;
-      }
-    } else if (panel.Title == 'PLAN') {
+    } 
+    // else if (panel.Title == 'PAYMENTS') {
+    //   if (this.bankInfo == '') {
+    //     return true;
+    //   }
+    // } 
+    else if (panel.Title == 'PLAN') {
       if (this.subInfo == '') {
         return true;
       }
@@ -1874,15 +1876,15 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   missingInfo() {
     var array = Array<string>();
 
-    if (Globals.billingInfo?.name == '') {
-      array.push('Add your billing method');
-    }
+    // if (Globals.billingInfo?.name == '') {
+    //   array.push('Add your billing method');
+    // }
     if (this.subInfo == '') {
       array.push('Start your Thred Merchant plan');
     }
-    if (this.bankInfo == '') {
-      array.push('Set up your merchant payments account');
-    }
+    // if (this.bankInfo == '') {
+    //   array.push('Set up your merchant payments account');
+    // }
     return array;
   }
 
