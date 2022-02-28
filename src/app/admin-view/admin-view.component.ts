@@ -3117,23 +3117,24 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   showWelcomeModal() {
-    if (Globals.isNewUser && !this.modalService.hasOpenModals()) {
-      Globals.isNewUser = false;
-      const modalRef = this.modalService.open(StoreSetupComponent, {
-        size: 'lg',
+    if (Globals.isNewUser) {
+      this.loadService.startSubscription((id: any, err?: string) => {
+        if (err && err != '') {
+          return;
+        } else {
+          this.subInfo = id;
+        }
       });
-      // modalRef.componentInstance.canTrial = this.canTrial
-      let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
-        sub.unsubscribe();
-        this.showSpinner();
-        this.loadService.startSubscription((id: any, err?: string) => {
-          if (err && err != '') {
-            return;
-          } else {
-            this.subInfo = id;
-          }
-        });
-      });
+      // Globals.isNewUser = false;
+      // const modalRef = this.modalService.open(StoreSetupComponent, {
+      //   size: 'lg',
+      // });
+      // // modalRef.componentInstance.canTrial = this.canTrial
+      // let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
+      //   sub.unsubscribe();
+      //   this.showSpinner();
+        
+      // });
     }
   }
 

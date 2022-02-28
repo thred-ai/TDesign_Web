@@ -64,9 +64,11 @@ export class LoginComponent implements OnInit {
             this.close();
             return;
           } else if (error) {
-            this.err = error;
-            if (error == 'signin') {
+            if (error == 'login') {
               this.authMode = 2;
+            }
+            else{
+              this.err = error;
             }
           }
         }

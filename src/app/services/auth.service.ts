@@ -55,15 +55,13 @@ export class AuthService {
         .pipe(first())
         .subscribe(async (response) => {
           if (!response || !response.nonce) {
-            callback(undefined, this.app, undefined);
+            callback(undefined, this.app, 'login');
             return;
           }
-          console.log(response)
           try {
 
             let s = await provider.getSigner().signMessage(`0x${this.toHex(response.nonce)}`)
-            let n = await ethers.utils.verifyMessage(`0x${this.toHex(response.nonce)}`, s)
-            console.log(n)
+            // let n = ethers.utils.verifyMessage(`0x${this.toHex(response.nonce)}`, s)
             // let sig = await ethereum.request({
             //   method: 'personal_sign',
             //   params: [
@@ -71,7 +69,6 @@ export class AuthService {
             //     ethereum.selectedAddress,
             //   ],
             // });
-            console.log(response)
 
             this.functions
               .httpsCallable('verifySignedMessage')({
