@@ -1658,6 +1658,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //   return Globals.userInfo?.walletAddress && Globals.userInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
   // }
 
+
   inMenu(h?: string) {
     let headers = this.headerForm.controls.links.value;
 
@@ -3200,7 +3201,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async callback() {
-    if (Globals.storeInfo.username) {
+    if (Globals.storeInfo?.username) {
+      console.log('here3')
+
       this.showSpinner();
       this.rootComponent.setOptions();
       this.rootComponent.setFavIcon(
@@ -3245,11 +3248,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
                 inv.name = name;
               }
             });
+            console.log('here')
             if (!this.provider && !this.needsLogin){
               this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
               this.setProvider()
               
-              
+              console.log('here2')
+
               // let signer = await this.provider?.getSigner()
               // let balance = await signer?.getBalance()
             }
@@ -3269,10 +3274,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async setProvider(){
-    this.provider = await this.initializeProvider()
+    await Globals.checkProvider()
   }
 
-  provider?: ethers.providers.Web3Provider
+  get provider(){
+    return Globals.provider
+  }
+
 
   planStatus() {
     if (this.subInfo?.plan.id == 'price_1JmgQyIdY1nzc70NXgzC1vCN') {

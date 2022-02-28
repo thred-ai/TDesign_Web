@@ -531,17 +531,17 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   async checkLoad() {
     if (this.productToBuy?.contractID) {
-      if (!this.productToBuy.isAvailable) {
-        console.log(this.productToBuy);
+      // if (!this.productToBuy.isAvailable) {
+      //   console.log(this.productToBuy);
 
-        if (isPlatformBrowser(this.platformID)) {
-          this.routingService.routeToStore404(
-            this.getStoreName().link,
-            this.getStoreName().isCustom
-          );
-        }
-        return;
-      }
+      //   if (isPlatformBrowser(this.platformID)) {
+      //     this.routingService.routeToStore404(
+      //       this.getStoreName().link,
+      //       this.getStoreName().isCustom
+      //     );
+      //   }
+      //   return;
+      // }
       this.addTags(
         this.productToBuy.name ?? '',
         this.productToBuy.url!.toString(),

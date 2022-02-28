@@ -78,7 +78,7 @@ export class Globals {
   }
 
   public static async checkProvider() {
-    if (await this.isUnlocked()) {
+    if (true) {
       const provider = await this.initializeProvider();
       this.provider = provider;
     }

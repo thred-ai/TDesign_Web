@@ -37,10 +37,10 @@
 
 <div
   *ngIf="
-    isBrowser() &&
-    (provider | providerCheck | async) == storeInfo().walletAddress
+    isBrowser() && userInfo() &&
+    (provider | providerCheck | async | lowercase) == (userInfo()?.walletAddress | lowercase)
   "
-  [hidden]="storeInfo().username == undefined"
+  [hidden]="userInfo()?.username == undefined"
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >

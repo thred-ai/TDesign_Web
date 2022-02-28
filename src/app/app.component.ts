@@ -277,21 +277,19 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log(Globals.storeInfo)
         console.log(Globals.userInfo)
         if (Globals.storeInfo?.username) {
-          // if (this.isAdmin()) {
-          //   this.reloadCurrentRoute();
-          // } else {
-          //   this.routingService.routeToProfile(
-          //     Globals.userInfo?.username!,
-          //     this.getStoreName().isCustom,
-          //     selected
-          //   );
-          // }
-          console.log('routing')
-          this.routingService.routeToProfile(
-            Globals.userInfo?.username!,
-            this.getStoreName().isCustom,
-            selected
-          );
+          if (this.isAdmin()) {
+            this.reloadCurrentRoute();
+            console.log('admin')
+            return
+          } else {
+            this.routingService.routeToProfile(
+              Globals.userInfo?.username!,
+              this.getStoreName().isCustom,
+              selected
+            );
+            console.log('no admin')
+            return
+          }
         }
       }
     } else {

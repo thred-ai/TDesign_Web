@@ -4574,6 +4574,11 @@ export class LoadService {
             let productID = docData['Product_ID'];
             product.url = this.getURL(uid, productID);
           }
+
+
+          
+
+
           if (product.contractID) {
             let co = new Collection(
               '',
@@ -4587,6 +4592,11 @@ export class LoadService {
               Globals.storeInfo.uid ?? '',
               new Date()
             );
+
+            if (!isPlatformBrowser(this.platformID)){
+              callback(product, co)
+              return
+            }
 
             let created = await this.getCreated(co, provider);
 
