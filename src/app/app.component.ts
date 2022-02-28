@@ -915,7 +915,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.setOptions();
 
-    this.openWallet()
+    if (await this.loadService.authenticated()){
+      this.openWallet()
+    }
 
 
     // if (isPlatformBrowser(this.platformID)){

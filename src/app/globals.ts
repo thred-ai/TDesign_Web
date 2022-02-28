@@ -139,7 +139,7 @@ export class Globals {
     let unlocked;
 
     try {
-      const accounts = await Globals.provider?.listAccounts() ?? [];
+      const accounts = await this.provider?.listAccounts() ?? [];
 
       unlocked = accounts.length > 0;
     } catch (e) {
