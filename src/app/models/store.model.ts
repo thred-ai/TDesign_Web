@@ -208,7 +208,7 @@ export class Store {
     }
     this.customURL = customURL;
     this.fb_pixel = fb_pixel;
-    this.active = (active ?? false) && (postCount ?? 0) > 0;
+    this.active = (active ?? false)
 
     this.coupons = coupons ?? [];
     this.banners = banners ?? [];
