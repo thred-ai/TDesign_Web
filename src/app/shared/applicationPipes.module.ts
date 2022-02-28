@@ -22,6 +22,10 @@ import { CollectionFilterPipe } from '../collection-filter.pipe';
 import { AddressPipe } from '../address.pipe';
 import { DateAgoPipe } from '../date-ago.pipe';
 import { TypeofPipe } from '../typeof.pipe';
+import { ProviderCheckPipe } from '../provider-check.pipe';
+import { NetworkCheckPipe } from '../network-check.pipe';
+import { FileDownloaderPipe } from '../file-downloader.pipe';
+import { BufferToBase64Pipe } from '../buffer-to-base64.pipe';
 
 @NgModule({
   imports: [
@@ -51,6 +55,10 @@ import { TypeofPipe } from '../typeof.pipe';
     AddressPipe,
     DateAgoPipe,
     TypeofPipe,
+    ProviderCheckPipe,
+    NetworkCheckPipe,
+    FileDownloaderPipe,
+    BufferToBase64Pipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -75,7 +83,11 @@ import { TypeofPipe } from '../typeof.pipe';
     CollectionFilterPipe,
     AddressPipe,
     DateAgoPipe,
-    TypeofPipe
+    TypeofPipe,
+    ProviderCheckPipe,
+    NetworkCheckPipe,
+    FileDownloaderPipe,
+    BufferToBase64Pipe
   ]
 })
 export class ApplicationPipesModule {}

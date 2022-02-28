@@ -90,7 +90,7 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                       <div class="row" *ngIf="!hasUnitNumber">
                         <div class="col">
-                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button type="button" (click)="hasUnitNumber = !hasUnitNumber">
+                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button  (click)="hasUnitNumber = !hasUnitNumber">
                             + Add C/O, Apt, Suite, Unit
                           </button>
                         </div>
@@ -203,7 +203,7 @@ style.color = "{{selectedIndicator()!.color}}"
                             <input (keyup)="onKey($event)"class="form-control" type="text" placeholder="Promo code" required="required"/>
                             <div class="invalid-feedback">Please provide promo code.</div>
                           </div>
-                          <button class="btn btn-outline-primary d-block w-100" type="button" (click) = "calculateDiscount()">Apply promo code</button>
+                          <button class="btn btn-outline-primary d-block w-100"  (click) = "calculateDiscount()">Apply promo code</button>
                         </form>
                       </div>
                     </div> -->
@@ -244,7 +244,7 @@ style.color = "{{selectedIndicator()!.color}}"
                               <div class="invalid-feedback">Please provide a valid zip!</div>
                             </div> -->
   
-                            <button [style.font-family]="storeInfo().fontName!" class="btn btn-primary d-block w-100" type="button" (click)="calculate()">Calculate shipping</button>
+                            <button [style.font-family]="storeInfo().fontName!" class="btn btn-primary d-block w-100"  (click)="calculate()">Calculate shipping</button>
                           </form>
                         </div>
                       </div>

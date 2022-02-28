@@ -6,7 +6,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { ethers, BigNumber } from 'ethers';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from } from 'rxjs';
+import detectEthereumProvider from '@metamask/detect-provider';
 var abi = require('human-standard-token-abi');
 
 @Component({
@@ -17,7 +18,6 @@ var abi = require('human-standard-token-abi');
 export class NftBuyComponent implements OnInit {
   nft: NFT;
   collection: Collection;
-  signer = new BehaviorSubject('NONE' as ethers.providers.JsonRpcSigner | string);
 
   storeInfo() {
     return Globals.storeInfo;
@@ -62,20 +62,14 @@ export class NftBuyComponent implements OnInit {
   adding = false;
   shake = false;
 
-  async setProvider(){
-    Globals.provider = await this.loadService.initializeProvider()
 
-    this.signer.next((Globals.provider).getSigner())
-
-  }
 
   async purchase() {
     this.err = ''
-    if (!this.signer){
+    if (!Globals.provider?.getSigner()){
       this.err = 'No Wallet Connected. Please try again'
       return
     }
-    console.log(this.signer)
     if (this.nft.contractID && this.collection?.ABI) {
       this.adding = true;
       this.shake = true;
@@ -89,7 +83,7 @@ export class NftBuyComponent implements OnInit {
       }, 1500);
 
       try {
-        let val = this.signer.getValue()
+        let val = Globals.provider.getSigner()
 
         if (typeof val == 'string'){ 
           this.err = 'No Wallet Connected. Please try again'
@@ -112,7 +106,7 @@ export class NftBuyComponent implements OnInit {
             let contract3 = new ethers.Contract(
               this.nft.lazyHash?.token,
               abi,
-              this.signer.getValue() as ethers.providers.JsonRpcSigner
+              val as ethers.providers.JsonRpcSigner
             );
             let transaction2 = await contract3.approve(
               this.nft.contractID,
@@ -195,22 +189,28 @@ export class NftBuyComponent implements OnInit {
   ) {
     this.nft = this.data.nft;
     this.collection = this.data.collection;
-    this.signer.next(this.data.signer ?? '');
+  }
+
+  setProvider(){
+    Globals.checkProvider()
+  }
+
+  get signer(){
+    try {
+      return Globals.provider
+    } catch (error) {
+      return false
+    }
   }
 
   async ngOnInit() {
 
-    this.signer?.subscribe(async value => {
-      if (typeof value == 'string') { return }
-      let address = (await value?.getAddress()).toLowerCase()
-      let condition = address == this.nft.seller.toLowerCase()
-      console.log(condition)
-      console.log(address)
-      console.log(this.nft.seller.toLowerCase)
+    // let address = await 
+    //   let condition = address.toLowerCase() == this.nft.seller.toLowerCase()
 
-      if (condition){
-        this.dialogRef.close()
-      }
-    })
+    //   if (condition){
+    //     this.dialogRef.close()
+    //   }
+
   }
 }

@@ -10,7 +10,6 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from '../environments/environment';
 import { Globals } from './globals';
 import { PhoneMaskDirective } from './phone-mask.directive'
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginModule } from './login/login.module';
@@ -29,10 +28,12 @@ import { InViewportModule } from 'ng-in-viewport';
 import { MatSelectModule } from '@angular/material/select';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationPipesModule } from './shared/applicationPipes.module';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { WalletComponent } from './wallet/wallet.component';
-import { AuthService } from './services/auth.service';
 import { AngularFireFunctionsModule, AngularFireFunctions } from '@angular/fire/compat/functions';
+import { VgCoreModule } from '@videogular/ngx-videogular/core';
+import { VgControlsModule } from '@videogular/ngx-videogular/controls';
+import { VgOverlayPlayModule } from '@videogular/ngx-videogular/overlay-play';
+import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,11 @@ import { AngularFireFunctionsModule, AngularFireFunctions } from '@angular/fire/
     InViewportModule,
     HttpClientModule,
     ApplicationPipesModule,
-    AngularFireFunctionsModule
+    AngularFireFunctionsModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgBufferingModule,
+    VgOverlayPlayModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [

@@ -35,33 +35,43 @@
           [class.border-secondary]="info!.colorStyle!.text_code == 'light'"
           style="border-radius: 20px; object-fit: contain; overflow: hidden"
         >
-          <a role="button"
-          class="card-img-top w-100"
-          style="cursor: zoom-in; object-fit: cover; aspect-ratio: 1"
-          (mousemove)="zoomIn($event)"
-            (mouseleave)="zoomOut()" (click)="open()">
-            
-          <video
-              style="object-fit: cover; aspect-ratio: 1; top: 0; margin-top: 0;"
-              [hidden]="isZoom"
+          <a
+            role="button"
+            class="card-img-top w-100"
+            style="cursor: zoom-in; object-fit: cover; aspect-ratio: 1"
+            (mousemove)="zoomIn($event)"
+            (mouseleave)="zoomOut()"
+            (click)="open()"
+          >
+            <video
+              style="
+                object-fit: cover;
+                aspect-ratio: 1;
+                top: 0;
+                margin-top: 0;
+                bottom: 0;
+                margin-bottom: 0;
+              "
               class="h-100 w-100"
               autoplay="true"
               loop="true"
               muted="true"
-              *ngIf="productToBuy?.format == 'video'"
-            >
-              <source
-                [src]="productToBuy.url! | safeUrl"
-                type="video/mp4"
-              />
-            </video>
+              *ngIf="
+                productToBuy?.format == 'video' && productToBuy.url != undefined
+              "
+              src="{{
+                productToBuy.url! | fileDownloader | async | bufferToBase64
+              }}"
+            ></video>
 
             <img
               class="h-100 w-100"
-              src="{{ productToBuy?.url }}"
+              src="{{
+                productToBuy.url! | fileDownloader | async | bufferToBase64
+              }}"
               alt="ok"
               [hidden]="isZoom"
-              style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em;"
+              style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
               onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
               *ngIf="productToBuy?.format == 'image'"
             />
@@ -261,7 +271,7 @@
                       style="font-size: 14px; line-height: 1.4em"
                       *ngIf="(productToBuy?.owner ?? '') != ''"
                     >
-                      {{ "Owner: " + (productToBuy?.seller | address:false) }}
+                      {{ "Owner: " + (productToBuy?.seller | address: false) }}
                     </h5>
                     <h5
                       [style.font-family]="info.fontName!"
@@ -331,8 +341,8 @@
                                                 </div>
                                             </div>
                                             <div class="row gx-4 gx-lg-1 row-cols-4 row-cols-md-5 row-cols-xl-5 justify-content-center" >
-                                                <button [style.font-family]="info.fontName!" type="button" class="btn btn-outline-{{info.colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
-                                                <button [style.font-family]="info.fontName!" type="button" class="btn btn-outline-{{info.colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                                                <button [style.font-family]="info.fontName!"  class="btn btn-outline-{{info.colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
+                                                <button [style.font-family]="info.fontName!"  class="btn btn-outline-{{info.colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
                                             </div>
                                         </div> -->
                       <div
@@ -342,8 +352,12 @@
                         [class.bg-transparent]="!isMobile()"
                       >
                         <a
-                        *ngIf='(productToBuy.seller | lowercase) != ethereum.selectedAddress && productToBuy.forSale'
-                        (click)="addToCart()"
+                          *ngIf="
+                            (provider | providerCheck | async | lowercase) !=
+                              (this.productToBuy?.seller | lowercase) &&
+                            productToBuy.forSale
+                          "
+                          (click)="addToCart()"
                           role="button"
                           [style.font-family]="info.fontName!"
                           class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
@@ -368,7 +382,7 @@
                           </mat-icon>
                         </a>
                         <a
-                        *ngIf='(productToBuy.seller | lowercase) != ethereum.selectedAddress && !productToBuy.forSale'
+                          *ngIf="!productToBuy.forSale"
                           role="button"
                           [style.font-family]="info.fontName!"
                           class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
@@ -393,7 +407,10 @@
                           </mat-icon>
                         </a>
                         <a
-                          *ngIf='(productToBuy.seller | lowercase) == ethereum.selectedAddress'
+                          *ngIf="
+                            (provider | providerCheck | async | lowercase) ==
+                            (this.productToBuy?.seller | lowercase)
+                          "
                           (click)="updateNFT()"
                           role="button"
                           [style.font-family]="info.fontName!"
@@ -414,7 +431,7 @@
                               class="material-icons-outlined"
                               style="font-size: 20px"
                             >
-                            collections
+                              collections
                             </span>
                           </mat-icon>
                         </a>
@@ -619,7 +636,7 @@
                           </mat-icon>
                         </mat-expansion-panel-header>
 
-                        <div *ngIf="panel.type == 1" style="overflow-x: scroll;">
+                        <div *ngIf="panel.type == 1" style="overflow-x: scroll">
                           <table
                             *ngIf="(nftLogs.length ?? 0) > 0"
                             mat-table
@@ -638,19 +655,19 @@
                                 *matHeaderCellDef
                                 class="text-{{ info.colorStyle!.text_code }}"
                               >
-                              Event
-                            </th>
+                                Event
+                              </th>
                               <td
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
                               >
-                              <mat-icon
-                              class="m-0 p-0"
-                              style="overflow: hidden"
-                            >
-                            {{ element.icon }}
-                            </mat-icon>
+                                <mat-icon
+                                  class="m-0 p-0"
+                                  style="overflow: hidden"
+                                >
+                                  {{ element.icon }}
+                                </mat-icon>
                                 <!-- <mat-icon
                                   class="m-0 p-0"
                                   style="overflow: hidden"
@@ -669,7 +686,9 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }} padding"
+                                class="text-{{
+                                  info.colorStyle!.text_code
+                                }} padding"
                               >
                                 From
                               </th>
@@ -686,7 +705,9 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }} padding"
+                                class="text-{{
+                                  info.colorStyle!.text_code
+                                }} padding"
                               >
                                 To
                               </th>
@@ -703,7 +724,9 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }} padding"
+                                class="text-{{
+                                  info.colorStyle!.text_code
+                                }} padding"
                               >
                                 Date
                               </th>
@@ -720,7 +743,9 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }} padding"
+                                class="text-{{
+                                  info.colorStyle!.text_code
+                                }} padding"
                               >
                                 Price
                               </th>
@@ -729,22 +754,27 @@
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
                               >
-                              <div class="d-flex justify-content-start align-items-center w-100">
-                                <mat-icon
-                                style="overflow: hidden;"
-                                *ngIf='element.price != ""'
-                                class="p-0 m-0"
-                                svgIcon="{{
-                                  info
-                                    | collectionPipe: collection?.contract
-                                    | matIcon
-                                }}"
-                              >
-                              </mat-icon>
-                              <p class="m-0 ms-1 h-100 fw-bolder" style="font-size: large;">
-                                {{ element.price | price }}
-                              </p>
-                              </div>
+                                <div
+                                  class="d-flex justify-content-start align-items-center w-100"
+                                >
+                                  <mat-icon
+                                    style="overflow: hidden"
+                                    *ngIf="element.price != ''"
+                                    class="p-0 m-0"
+                                    svgIcon="{{
+                                      info
+                                        | collectionPipe: collection?.contract
+                                        | matIcon
+                                    }}"
+                                  >
+                                  </mat-icon>
+                                  <p
+                                    class="m-0 ms-1 h-100 fw-bolder"
+                                    style="font-size: large"
+                                  >
+                                    {{ element.price | price }}
+                                  </p>
+                                </div>
                               </td>
                             </ng-container>
                             <tr

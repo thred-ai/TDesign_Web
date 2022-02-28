@@ -35,6 +35,9 @@ import { nftaddress } from 'config';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { NftBuyComponent } from '../nft-buy/nft-buy.component';
 import { NftUpdateComponent } from '../nft-update/nft-update.component';
+import { from } from 'rxjs';
+import detectEthereumProvider from '@metamask/detect-provider';
+import axios from 'axios';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -179,8 +182,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
     Globals.selectedTemplate = undefined;
     Globals.selectedCurrency = undefined;
     Globals.storeInfo.uid = undefined;
-    this.ethereum = window.ethereum;
-    console.log(this.ethereum);
   }
 
   getLinkImg(name: string) {
@@ -190,13 +191,15 @@ export class ProductComponent implements OnInit, AfterViewInit {
   }
 
 
+
+
   async updateNFT() {
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
 
     try {
-      await this.setProvider()
+      await this.setProvider();
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
 
     const modalRef = this.dialog.open(NftUpdateComponent, {
@@ -225,7 +228,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     // {price: '0.02 MATIC', from: nftaddress.slice(nftaddress.length-4)},
   ];
 
-  nftLogs: Array<NftLog> = []
+  nftLogs: Array<NftLog> = [];
 
   autoCoupon(product: Product) {
     var autoCoupon = this.storeInfo()
@@ -335,9 +338,23 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.rootComponent.routeToAbout();
   }
 
-  ngOnInit(): void {
+  get provider(){
+    return Globals.provider
+  }
+
+  u(){
+    return this.productToBuy?.url ?? undefined
+  }
+
+  async ngOnInit() {
     const data = this.getProductID();
 
+    const meta = await axios.get('https://ipfs.infura.io/ipfs/QmRr8XwU5F3hCorrvhQYKX73UpCgaXYeffNLNH56NC77bp', { responseType: 'arraybuffer' });
+
+    console.log(meta)
+
+    // https://ipfs.infura.io/ipfs/QmRr8XwU5F3hCorrvhQYKX73UpCgaXYeffNLNH56NC77bp
+    
     console.log(data);
     this.loadService.myCallback = () => this.checkLoad();
 
@@ -545,8 +562,11 @@ export class ProductComponent implements OnInit, AfterViewInit {
             Globals.storeInfo.profileLink?.toString() ?? ''
           );
 
-          console.log(Globals.storeInfo.walletAddress)
-          if (Globals.storeInfo.walletAddress?.toLowerCase() != this.productToBuy.owner.toLowerCase()) {
+          console.log(Globals.storeInfo.walletAddress);
+          if (
+            Globals.storeInfo.walletAddress?.toLowerCase() !=
+            this.productToBuy.owner.toLowerCase()
+          ) {
             console.log(this.productToBuy.owner);
             console.log(Globals.storeInfo.walletAddress);
             this.routingService.routeToStore404(
@@ -578,8 +598,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
                 this.productToBuy.contractID,
                 this.collection?.hashedTokenId(this.productToBuy.tokenID)!,
                 async (txs) => {
-                  console.log(txs);     
-                  this.nftLogs = txs             
+                  this.nftLogs = txs;
                 }
               );
             }
@@ -614,11 +633,12 @@ export class ProductComponent implements OnInit, AfterViewInit {
   }
 
   zoomIn(event: any) {
-    if (this.productToBuy?.format != 'image') { return }
+    if (this.productToBuy?.format != 'image') {
+      return;
+    }
 
     var pre = document.getElementById('preview')!;
     pre.style.visibility = 'visible';
-
 
     this.isZoom = true;
 
@@ -658,9 +678,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-
-  async setProvider(){
-    Globals.provider = await this.loadService.initializeProvider()
+  async setProvider() {
+    Globals.provider = await Globals.initializeProvider();
   }
 
   async addToCart() {
@@ -670,17 +689,18 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
 
-    let seller = `${product.seller}`
+    let seller = `${product.seller}`;
     var signer = await Globals.provider?.getSigner();
 
-    if (!signer){
+    if (!signer) {
       try {
-        await this.setProvider()
+        await this.setProvider();
         signer = await Globals.provider?.getSigner();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
+    console.log('mans')
     const modalRef = this.dialog.open(NftBuyComponent, {
       width: '750px',
       maxHeight: '100vh',
@@ -696,8 +716,12 @@ export class ProductComponent implements OnInit, AfterViewInit {
       sub.unsubscribe();
       if (resp as NFT) {
         this.productToBuy = resp as NFT;
-        this.nftLogs.push(new NftLog('sale', new Date(), product.seller, seller, product.price))
-        this.nftLogs.push(new NftLog('transfer', new Date(), seller, product.seller, ''))
+        this.nftLogs.push(
+          new NftLog('sale', new Date(), product.seller, seller, product.price)
+        );
+        this.nftLogs.push(
+          new NftLog('transfer', new Date(), seller, product.seller, '')
+        );
       } else {
       }
     });

@@ -11,6 +11,8 @@ import { Order } from './models/order.model'
 import { StoreTheme } from './models/theme.model'
 import { Dict } from './services/load.service'
 import { ethers } from 'ethers'
+import WalletConnectProvider from '@walletconnect/web3-provider'
+import Web3Modal from 'web3modal';
 
 
 @Injectable({
@@ -32,9 +34,120 @@ export class Globals {
 
   public static selectedTemplate?: Template = new Template()
 
-  public static provider?: ethers.providers.Web3Provider
+  public static prov?: ethers.providers.Web3Provider
 
 
+  public static get provider(){
+    return this.prov
+  }
+
+  public static set provider(provider: ethers.providers.Web3Provider | undefined){
+    this.prov = provider
+    console.log(this.prov)
+    console.log(window)
+
+    this.checkNetwork(true,  provider);
+  }
+
+  public static requested = false;
+  public static async checkNetwork(test: boolean, provider: ethers.providers.Web3Provider | undefined) {
+    
+    // console.log(.)
+
+    // let sent = await provider?.send('wallet_switchEthereumChain', [{ chainId: `0x${Number(137).toString(16)}` }])
+
+        // try {
+         
+        // } catch (error) {
+        //   console.log(error)
+        //   const polygon = {
+        //     chainId: `0x${Number(137).toString(16)}`,
+        //     chainName: 'Polygon Mainnet',
+        //     nativeCurrency: {
+        //       name: 'MATIC',
+        //       symbol: 'MATIC',
+        //       decimals: 18,
+        //     },
+        //     rpcUrls: ['https://polygon-rpc.com'],
+        //     blockExplorerUrls: ['https://polygonscan.com'],
+        //   };
+        //   await this.provider?.send('wallet_addEthereumChain', [polygon])
+        // }
+
+    // this.checkProvider();
+  }
+
+  public static async checkProvider() {
+    if (await this.isUnlocked()) {
+      const provider = await this.initializeProvider();
+      this.provider = provider;
+    }
+    else{
+      console.log('kiev')
+    }
+  }
+
+  public static async initializeProvider() {
+    const providerOptions = {
+      walletconnect: {
+        package: WalletConnectProvider,
+        options: {
+          infuraId: '90806fec200c42fdbf783260b38f0a73',
+          rpc: {
+            1:
+              'https://mainnet.infura.io/v3/' +
+              '90806fec200c42fdbf783260b38f0a73',
+            42:
+              'https://kovan.infura.io/v3/' +
+              '90806fec200c42fdbf783260b38f0a73',
+            137:
+              'https://polygon-mainnet.infura.io/v3/' +
+              '90806fec200c42fdbf783260b38f0a73',
+            80001: 'https://rpc-mumbai.matic.today',
+          },
+          qrcodeModalOptions: {
+            mobileLinks: [
+              'rainbow',
+              'metamask',
+              'argent',
+              'trust',
+              'imtoken',
+              'pillar',
+            ],
+          },
+        },
+        display: {
+          description: 'Scan with a wallet to connect',
+        },
+      },
+    };
+
+    const web3Modal = new Web3Modal({
+      network: 'mainnet', // optional
+      cacheProvider: true, // optional
+      providerOptions, // required
+    });
+
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+
+    return provider;
+  }
+
+  public static async isUnlocked() {
+
+    let unlocked;
+
+    try {
+      const accounts = await Globals.provider?.listAccounts() ?? [];
+
+      unlocked = accounts.length > 0;
+    } catch (e) {
+      unlocked = false;
+    }
+
+    return unlocked;
+  }
 
   public static types = [
     {

@@ -26,14 +26,14 @@ style.color = "{{selectedIndicator()!.color}}"
           <a (click)="useG()" role="button">
             <img style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/google_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
           </a>
-          <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block" type="button" (click)="calculate()">Use Google Pay</button> -->
+          <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block"  (click)="calculate()">Use Google Pay</button> -->
         </div>
 
         <div *ngIf="microsoftPay && !useMicrosoft" class="col d-flex justify-content-start">
           <a (click)="useM()" role="button">
             <img style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/microsoft_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
           </a>
-          <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block" type="button" (click)="calculate()">Use Google Pay</button> -->
+          <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block"  (click)="calculate()">Use Google Pay</button> -->
         </div>
   
         
@@ -106,7 +106,7 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                       <div class="row" *ngIf="!hasUnitNumber">
                         <div class="col">
-                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button type="button" (click)="hasUnitNumber = !hasUnitNumber">
+                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button  (click)="hasUnitNumber = !hasUnitNumber">
                             + Add C/O, Apt, Suite, Unit
                           </button>
                         </div>
@@ -201,7 +201,7 @@ style.color = "{{selectedIndicator()!.color}}"
                       <a class="w-100" (click) = "addCard()" role="button">
                         <img class="w-100" style="object-fit: contain;" [style.height.px]="45"  alt='ok' [src]="'/assets/google_pay_' + storeInfo().colorStyle!.back_code + '.png'" />
                       </a>
-                      <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block" type="button" (click)="calculate()">Use Google Pay</button> -->
+                      <!-- <button [style.font-family]="storeInfo().fontName!" (click)="useG()" class="px-5 btn btn-primary d-block"  (click)="calculate()">Use Google Pay</button> -->
                     </div>
               
                     <div *ngIf="microsoftPay && useMicrosoft" class="col my-4 d-flex justify-content-center rounded" style.background-color="{{buttonBack()}}">
@@ -226,7 +226,7 @@ style.color = "{{selectedIndicator()!.color}}"
                               <input (keyup)="onKey($event)"class="form-control" type="text" placeholder="Promo code" required="required"/>
                               <div class="invalid-feedback">Please provide promo code.</div>
                             </div>
-                            <button class="btn btn-outline-primary d-block w-100" type="button" (click) = "calculateDiscount()">Apply promo code</button>
+                            <button class="btn btn-outline-primary d-block w-100"  (click) = "calculateDiscount()">Apply promo code</button>
                           </form>
                         </div>
                       </div> -->
@@ -267,7 +267,7 @@ style.color = "{{selectedIndicator()!.color}}"
                                 <div class="invalid-feedback">Please provide a valid zip!</div>
                               </div> -->
     
-                              <button [style.font-family]="storeInfo().fontName!" class="btn btn-primary d-block w-100" type="button" (click)="calculate()">Calculate shipping</button>
+                              <button [style.font-family]="storeInfo().fontName!" class="btn btn-primary d-block w-100"  (click)="calculate()">Calculate shipping</button>
                             </form>
                           </div>
                         </div>

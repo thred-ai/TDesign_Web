@@ -214,7 +214,7 @@ export class NftUpdateComponent implements OnInit {
   }
 
   async setProvider(){
-    this.provider = await this.laodService.initializeProvider()
+    this.provider = await Globals.initializeProvider()
   }
 
   selectedIndicator() {

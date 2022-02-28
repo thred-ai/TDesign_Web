@@ -1654,9 +1654,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   ];
 
 
-  isSignedIn(){
-    return Globals.userInfo?.walletAddress && Globals.userInfo?.walletAddress?.toLowerCase() == (window as any).ethereum.selectedAddress.toLowerCase()
-  }
+  // async isSignedIn(){
+  //   return Globals.userInfo?.walletAddress && Globals.userInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
+  // }
 
   inMenu(h?: string) {
     let headers = this.headerForm.controls.links.value;
@@ -3638,7 +3638,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   productDetails: any;
 
   createNewNFT(contract: Collection) {
-    if (!this.isSignedIn()){ return }
+    // if (!this.isSignedIn()){ return }
     const modalRef = this.dialog.open(CreateCryptoComponent, {
       width: '97.5vw',
       height: '97.5vh',
@@ -3692,7 +3692,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   createNewProduct() {
-    if (!this.isSignedIn()){ return }
+    // if (!this.isSignedIn()){ return }
 
     const modalRef = this.dialog.open(CreateCollectionComponent, {
       width: '750px',

@@ -52,6 +52,8 @@ import * as AOS from 'aos';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from '@angular/platform-browser';
 import { ethers } from 'ethers';
+import { from } from 'rxjs';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 @Component({
   selector: 'app-root',
@@ -189,15 +191,16 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  selectedTheme() {
+
+  selectedTheme(alpha?: number, bg_alpha?: number) {
     let co = Globals.storeInfo?.colorStyle?.btn_color;
     let bco = Globals.storeInfo?.colorStyle?.bg_color;
     let name = Globals.storeInfo?.colorStyle?.name;
 
-    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
+    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + alpha ?? co[3] + ')';
 
     let bg_color =
-      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bco[3] + ')';
+      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bg_alpha ?? bco[3] + ')';
 
     var theme: Dict<string> = {
       name: name,
@@ -693,7 +696,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
     else{
       try {
-        let provider = await this.loadService.initializeProvider()
+        let provider = await Globals.initializeProvider()
         Globals.provider = provider
       } catch (error) {
         console.log(error)
@@ -902,6 +905,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     return 'CONNECT WALLET'
   }
 
+
   async ngOnInit() {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR
@@ -911,7 +915,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.setOptions();
 
-        
+    this.openWallet()
 
 
     // if (isPlatformBrowser(this.platformID)){
@@ -926,5 +930,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     //       }
     // });
     this.loadService.testSite()
+
   }
+
+
+
+  get provider(){
+    return Globals.provider
+  }
+  
+  ethereum(){
+    return window.ethereum
+  }
+
+  closeBanner = false
 }

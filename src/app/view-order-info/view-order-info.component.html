@@ -80,7 +80,7 @@ style.color = "{{selectedIndicator()!.color}}"
             <div [hidden]="stillLoading()" class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-4 pb-0">
               <div class="py-2 px-xl-2">
                 <!-- (click)="placeOrder()" -->
-                <a *ngIf="selectedOrder()?.trackingNumber ?? false" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" class="btn d-block w-100 mb-4" type="button" (click)="trackingLink()"><i class="ci-card fs-lg me-2"></i>Track Order</a>
+                <a *ngIf="selectedOrder()?.trackingNumber ?? false" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.bg_color}}" style.background-color="{{selectedTheme()!.color}}" class="btn d-block w-100 mb-4"  (click)="trackingLink()"><i class="ci-card fs-lg me-2"></i>Track Order</a>
 
                 <div style.color="{{selectedTheme()!.color}}" class="text-center mt-4 pt-3 border-top border-bottom">
                 <div class="d-flex justify-content-between">

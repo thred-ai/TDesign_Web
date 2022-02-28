@@ -48,8 +48,6 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { environment } from 'src/environments/environment';
 import { Collection } from '../models/collection.model';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import Web3Modal from 'web3modal';
 import { NftLog } from '../models/nft-log.model';
 
 const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
@@ -477,11 +475,15 @@ export class LoadService {
       });
   }
 
-  isLoading = true
+  isLoading = true;
 
-  async getUser(username?: string, uid?: string, isCustom = false, callback?: (storeInfo: Store) => any) {
-    this.isLoading = true
-    await this.checkNetwork(true);
+  async getUser(
+    username?: string,
+    uid?: string,
+    isCustom = false,
+    callback?: (storeInfo: Store) => any
+  ) {
+    this.isLoading = true;
     var query = this.db.collection('Users', (ref) =>
       ref.where('Username', '==', username)
     );
@@ -683,14 +685,14 @@ export class LoadService {
       }
 
       if (this.myCallback) this.myCallback();
-      
+
       if (isPlatformBrowser(this.platformID)) {
         this.getPosts((products) => {
-          console.log(products)
+          console.log(products);
           Globals.storeInfo!.collections = products;
-          this.isLoading = false
-          if (callback){
-            callback(Globals.storeInfo)
+          this.isLoading = false;
+          if (callback) {
+            callback(Globals.storeInfo);
           }
           if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
         });
@@ -809,76 +811,6 @@ export class LoadService {
           console.log(err);
         }
       );
-  }
-
-  async isUnlocked() {
-    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-
-    let unlocked;
-
-    try {
-      const accounts = await provider.listAccounts();
-
-      unlocked = accounts.length > 0;
-    } catch (e) {
-      unlocked = false;
-    }
-
-    return unlocked;
-  }
-
-  async checkProvider() {
-    if (await this.isUnlocked()) {
-      const provider = await this.initializeProvider();
-      Globals.provider = provider;
-    }
-  }
-
-  async initializeProvider() {
-    const providerOptions = {
-      walletconnect: {
-        package: WalletConnectProvider,
-        options: {
-          infuraId: '90806fec200c42fdbf783260b38f0a73',
-          rpc: {
-            1:
-              'https://mainnet.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
-            42:
-              'https://kovan.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
-            137:
-              'https://polygon-mainnet.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
-            80001: 'https://rpc-mumbai.matic.today',
-          },
-          qrcodeModalOptions: {
-            mobileLinks: [
-              'rainbow',
-              'metamask',
-              'argent',
-              'trust',
-              'imtoken',
-              'pillar',
-            ],
-          },
-        },
-        display: {
-          description: 'Scan with a wallet to connect',
-        },
-      },
-    };
-
-    const web3Modal = new Web3Modal({
-      network: 'mainnet', // optional
-      cacheProvider: true, // optional
-      providerOptions, // required
-    });
-
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-
-    return provider;
   }
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
@@ -1148,17 +1080,21 @@ export class LoadService {
               );
             }
 
-            Globals.storeInfo = Globals.userInfo
+            Globals.storeInfo = Globals.userInfo;
             if (isPlatformBrowser(this.platformID) && uid) {
-              this.getPosts((products) => {
-                console.log(products);
-                Globals.userInfo!.collections = products;
-                Globals.storeInfo!.collections = products;
-                if (this.myCallback) this.myCallback();
-                if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-              }, undefined, undefined, uid);
+              this.getPosts(
+                (products) => {
+                  Globals.userInfo!.collections = products;
+                  Globals.storeInfo!.collections = products;
+                  if (this.myCallback) this.myCallback();
+                  if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+                },
+                undefined,
+                undefined,
+                uid
+              );
             } else {
-              console.log('here')
+              console.log('here');
               if (this.myCallback) this.myCallback();
             }
           }
@@ -1223,16 +1159,15 @@ export class LoadService {
     ),
     uid = Globals.storeInfo.uid
   ) {
-    await this.checkNetwork(true);
     const time = firebase.firestore.Timestamp.now();
 
     var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-      ref.where('Available', '==', true).where('Public', '==', true)
+      ref.where('Available', '==', true).where('Public', '==', true).orderBy('Token_ID')
     );
 
     if (filterID) {
       query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-        ref.where('Available', '==', true).where('Public', '==', true)
+        ref.where('Available', '==', true).where('Public', '==', true).orderBy('Token_ID')
       );
     }
 
@@ -1257,11 +1192,10 @@ export class LoadService {
               '';
             let sold = (docData['Sold'] as boolean) ?? false;
             let lazyMint = (docData['Lazy'] as boolean) ?? true;
-            let format = docData['Format'] as string;
             let royalty = (docData['Royalty'] as number) ?? 0;
             let lazyHash = docData['Lazy_Hash'] as Dict<any>;
             let metadata = docData['Metadata'] as string;
-            let forSale = docData['forSale'] as boolean
+            let forSale = docData['forSale'] as boolean;
 
             var cost = ethers.utils.parseUnits('0.02', 'ether');
             if (lazyHash) {
@@ -1283,20 +1217,19 @@ export class LoadService {
             );
 
             product.price = cost ?? 0.02;
-            product.seller = ownerAddress
+            product.seller = ownerAddress;
             product.token = token;
             product.docID = doc.id;
             product.isAvailable = true;
-            product.forSale = forSale
+            product.forSale = forSale;
 
             if (metadata) {
               const meta = await axios.get(metadata);
               product.name = meta.data.name;
               product.url = meta.data.image;
-              product.traits = meta.data.traits
+              product.traits = meta.data.traits;
               product.description = meta.data.description;
-              product.format = await this.getFormat(meta.data.image)
-
+              product.format = await this.getFormat(meta.data.image);
             } else {
               product.name = docData['Name'] as string;
               product.description = docData['Description'] as string;
@@ -1330,9 +1263,7 @@ export class LoadService {
         }
         await Promise.all(
           col.map(async (contractID: string) => {
-
             this.getCollection(contractID, async (collection) => {
-
               let created = await this.getCreated(collection!, provider);
 
               if (!collection) {
@@ -1359,9 +1290,9 @@ export class LoadService {
                     same.price = c.price;
                     same.url = c.image;
                     same.itemId = c.itemId;
-                    same.forSale = c.forSale
-                    same.lazyMint = c.minted == false
-                    same.lazyHash = same.lazyMint ? same.lazyHash : undefined
+                    same.forSale = c.forSale;
+                    same.lazyMint = c.minted == false;
+                    same.lazyHash = same.lazyMint ? same.lazyHash : undefined;
                     if (same.tokenID && provider) {
                       same.seller = await collection.ownerOf(
                         same.tokenID,
@@ -1401,7 +1332,6 @@ export class LoadService {
               console.log(col);
 
               if (collections.length == col.length) {
-                console.log(collections);
                 callback(collections);
                 return;
               }
@@ -1410,6 +1340,7 @@ export class LoadService {
         );
 
         if (col.length == 0) {
+           
           callback(collections);
           return;
         }
@@ -1421,9 +1352,18 @@ export class LoadService {
     });
   }
 
+
+
   rand(length: number, current?: number | string): string | number {
     current = current ? current : '';
-    return length ? this.rand(--length, "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz".charAt(Math.floor(Math.random() * 60)) + current) : current;
+    return length
+      ? this.rand(
+          --length,
+          '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.charAt(
+            Math.floor(Math.random() * 60)
+          ) + current
+        )
+      : current;
   }
 
   async getCollections(
@@ -1500,7 +1440,6 @@ export class LoadService {
           d.available,
           d.ABI
         );
-        console.log(c);
         callback(c);
       } else {
         callback(undefined);
@@ -1514,8 +1453,12 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-    console.log(this.rpcEndpoint)
-    const nftContract = new ethers.Contract(contract.contract, contract.ABI ?? NFTS.abi, provider);
+    console.log(this.rpcEndpoint);
+    const nftContract = new ethers.Contract(
+      contract.contract,
+      contract.ABI ?? NFTS.abi,
+      provider
+    );
     // const data = await marketContract.fetchItemsCreated();
     const data1 = await nftContract.name();
     const data2 = await nftContract.symbol();
@@ -1542,11 +1485,9 @@ export class LoadService {
           isNative: i.isNative,
           uri: tokenUri,
           itemId: i.itemId,
-          minted: i.minted
+          minted: i.minted,
         };
 
-
-        
         return item;
       })
     );
@@ -1557,9 +1498,9 @@ export class LoadService {
     };
   }
 
-  async getFormat(image: string, noLoad = false): Promise<string>{
+  async getFormat(image: string, noLoad = false): Promise<string> {
     return new Promise(function (resolve, reject) {
-      if (noLoad){
+      if (noLoad) {
         var format = 'none';
 
         if (image.indexOf('image') > -1) {
@@ -1567,27 +1508,32 @@ export class LoadService {
         } else if (image.indexOf('video') > -1) {
           format = 'video';
         }
-        resolve(format)
-      }
-      else{
+        resolve(format);
+      } else {
         var xhttp = new XMLHttpRequest();
         xhttp.open('HEAD', image);
         xhttp.onreadystatechange = function () {
           if (this.readyState == this.DONE) {
             let type = this.getResponseHeader('Content-Type');
             var format = 'none';
-            if (!type){ reject('No content found!'); return}
+            if (!type) {
+              reject('No content found!');
+              return;
+            }
             if (type.indexOf('image') > -1) {
               format = 'image';
             } else if (type.indexOf('video') > -1) {
               format = 'video';
             }
-            resolve(format)
+            resolve(format);
           }
+        };
+        xhttp.onload = function () {
+          console.log(this);
         };
         xhttp.send();
       }
-    })
+    });
   }
 
   adminComponent?: AdminViewComponent;
@@ -1860,8 +1806,7 @@ export class LoadService {
     }
   }
 
-
-  testSite(){
+  testSite() {
     // this.functions
     //   .httpsCallable('getSiteInstance')({})
     //   .pipe(first())
@@ -2051,7 +1996,7 @@ export class LoadService {
                         .doc('Billing_Address')
                         .set(data);
                     }
-                    console.log('ekoeo')
+                    console.log('ekoeo');
                     callback();
                   },
                   (err) => {
@@ -2952,81 +2897,13 @@ export class LoadService {
     return undefined;
   }
 
-  requested = false;
-  async checkNetwork(test: boolean) {
-    if (this.requested) {
-      return;
-    }
-    this.requested = true;
-    if (test) {
-      try {
-        await (window as any).ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${Number(137).toString(16)}` }],
-        });
-      } catch (error) {
-        // const mumbai = {
-        //   chainId: `0x${Number(80001).toString(16)}`,
-        //   chainName: 'Mumbai',
-        //   nativeCurrency: {
-        //     name: 'MATIC',
-        //     symbol: 'MATIC',
-        //     decimals: 18,
-        //   },
-        //   rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
-        //   blockExplorerUrls: ['https://polygonscan.com'],
-        // };
-        const polygon = {
-          chainId: `0x${Number(137).toString(16)}`,
-          chainName: 'Polygon Mainnet',
-          nativeCurrency: {
-            name: 'MATIC',
-            symbol: 'MATIC',
-            decimals: 18,
-          },
-          rpcUrls: ['https://polygon-rpc.com'],
-          blockExplorerUrls: ['https://polygonscan.com'],
-        };
-        await (window as any).ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [polygon],
-        });
-      }
-    } else {
-      try {
-        await (window as any).ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${Number(137).toString(16)}` }],
-        });
-      } catch (error) {
-        const polygon = {
-          chainId: `0x${Number(137).toString(16)}`,
-          chainName: 'Polygon Mainnet',
-          nativeCurrency: {
-            name: 'MATIC',
-            symbol: 'MATIC',
-            decimals: 18,
-          },
-          rpcUrls: ['https://polygon-rpc.com'],
-          blockExplorerUrls: ['https://polygonscan.com'],
-        };
-        await (window as any).ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [polygon],
-        });
-      }
-    }
-    this.requested = false;
-    this.checkProvider();
-  }
-
   async updateNFT(mappedData: NFT, uid?: string, productID?: string) {
     //add token later
 
     var id = productID;
 
     if (!id) {
-      id = mappedData.contractID + mappedData.tokenID
+      id = mappedData.contractID + mappedData.tokenID;
     }
 
     let data = JSON.parse(
@@ -3071,7 +2948,7 @@ export class LoadService {
     var id = productID;
 
     if (!id) {
-      id = mappedData.contractID + mappedData.tokenID
+      id = mappedData.contractID + mappedData.tokenID;
     }
 
     let data = JSON.parse(
@@ -3903,7 +3780,7 @@ export class LoadService {
       Associated_Store: store ?? null,
       Timestamp: new Date(),
       nonce: nonce ?? null,
-      Address: address
+      Address: address,
     };
 
     if (hasUsername ?? false) {
@@ -4630,13 +4507,12 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-    await this.checkNetwork(true);
     var query = this.db.collectionGroup('Products', (ref) =>
-      ref.where('Product_ID', '==', productID)
+      ref.where('Product_ID', '==', productID).orderBy('Token_ID')
     );
     if (!(saleProduct && Globals.productsSold)) {
       query = this.db.collectionGroup('Products', (ref) =>
-        ref.where('Product_ID', '==', productID).where('Public', '==', true)
+        ref.where('Product_ID', '==', productID).where('Public', '==', true).orderBy('Token_ID')
       );
     }
 
@@ -4658,7 +4534,7 @@ export class LoadService {
           let lazyHash = docData['Lazy_Hash'] as Dict<any>;
           let metadata = docData['Metadata'] as string;
           let token = docData['Token'] as string;
-          let forSale = docData['forSale'] as boolean
+          let forSale = docData['forSale'] as boolean;
           var cost = ethers.utils.parseUnits('0.02', 'ether');
           if (lazyHash) {
             cost = lazyHash['minPrice'] as ethers.BigNumber;
@@ -4679,18 +4555,18 @@ export class LoadService {
           product.price = cost;
           product.token = token;
           product.docID = doc.id;
-          product.seller = ownerAddress
+          product.seller = ownerAddress;
 
           product.isAvailable = true;
-          product.forSale = forSale
+          product.forSale = forSale;
 
           if (metadata) {
             const meta = await axios.get(metadata);
             product.name = meta.data.name;
             product.url = meta.data.image;
             product.description = meta.data.description;
-            product.traits = meta.data.traits
-            product.format = await this.getFormat(meta.data.image)
+            product.traits = meta.data.traits;
+            product.format = await this.getFormat(meta.data.image);
           } else {
             product.name = docData['Name'] as string;
             product.description = docData['Description'] as string;
@@ -4714,8 +4590,8 @@ export class LoadService {
 
             let created = await this.getCreated(co, provider);
 
-            co.name = created.name
-            co.symbol = created.symbol
+            co.name = created.name;
+            co.symbol = created.symbol;
 
             let c = created.tokens.find(
               (i: any) => i.tokenId == product.tokenID
@@ -4734,9 +4610,11 @@ export class LoadService {
               product.price = c.price;
               product.url = c.image;
               product.itemId = c.itemId;
-              product.forSale = c.forSale
-              product.lazyMint = c.minted == false
-              product.lazyHash = product.lazyMint ? product.lazyHash : undefined
+              product.forSale = c.forSale;
+              product.lazyMint = c.minted == false;
+              product.lazyHash = product.lazyMint
+                ? product.lazyHash
+                : undefined;
               if (product.tokenID && provider) {
                 product.seller = await co.ownerOf(product.tokenID, provider);
               }

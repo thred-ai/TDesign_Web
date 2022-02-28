@@ -88,7 +88,7 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                       <div class="row" *ngIf="!hasUnitNumber">
                         <div class="col">
-                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button type="button" (click)="hasUnitNumber = !hasUnitNumber">
+                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button  (click)="hasUnitNumber = !hasUnitNumber">
                             + Add C/O, Apt, Suite, Unit
                           </button>
                         </div>

@@ -8,6 +8,7 @@ import { AngularFireFunctions } from '@angular/fire/compat/functions';
 import { Globals } from '../globals';
 import { LoadService } from './load.service';
 import { AppComponent } from '../app.component';
+import { ethers } from 'ethers';
 interface NonceResponse {
   nonce: string;
 }
@@ -35,7 +36,7 @@ export class AuthService {
       let ethereum: any;
 
       // Step 1: Request (limited) access to users ethereum account
-      let provider = await from(detectEthereumProvider()).toPromise();
+      let provider = await Globals.initializeProvider()
 
       if (!provider) {
         callback(undefined, this.app, 'Please install MetaMask');
@@ -44,31 +45,38 @@ export class AuthService {
 
       ethereum = provider;
 
-      await ethereum.request({ method: 'eth_requestAccounts' });
+      let address = await provider.getSigner().getAddress()
 
+      console.log(address)
       this.functions
         .httpsCallable('getNonceToSign')({
-          address: ethereum.selectedAddress,
+          address: address,
         })
         .pipe(first())
         .subscribe(async (response) => {
           if (!response || !response.nonce) {
-            callback(undefined, this.app, 'signin');
+            callback(undefined, this.app, undefined);
             return;
           }
-
+          console.log(response)
           try {
-            let sig = await ethereum.request({
-              method: 'personal_sign',
-              params: [
-                `0x${this.toHex(response.nonce)}`,
-                ethereum.selectedAddress,
-              ],
-            });
+
+            let s = await provider.getSigner().signMessage(`0x${this.toHex(response.nonce)}`)
+            let n = await ethers.utils.verifyMessage(`0x${this.toHex(response.nonce)}`, s)
+            console.log(n)
+            // let sig = await ethereum.request({
+            //   method: 'personal_sign',
+            //   params: [
+            //     `0x${this.toHex(response.nonce)}`,
+            //     ethereum.selectedAddress,
+            //   ],
+            // });
+            console.log(response)
+
             this.functions
               .httpsCallable('verifySignedMessage')({
-                address: ethereum.selectedAddress,
-                signature: sig,
+                address: address,
+                signature: s,
               })
               .pipe(first())
               .subscribe(async (resp) => {

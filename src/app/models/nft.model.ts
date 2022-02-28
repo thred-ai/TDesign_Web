@@ -15,6 +15,14 @@ export class NFT {
   metadata?: string
   url?: string
   price: ethers.BigNumber = ethers.utils.parseUnits('0', 'ether');
+
+
+  get priceNum(){
+    let x = ethers.utils.formatUnits(this.price, 'ether')
+    return Number(x)
+  }
+
+
   name?: string
   description?: string
   traits?: Array<Dict<any>> = []

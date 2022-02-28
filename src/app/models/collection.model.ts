@@ -86,11 +86,13 @@ export class Collection implements ICollection {
   getFloor() {
     return (
       this.NFTs.sort(function (a, b) {
-        if (a.price < b.price) {
-          return 1;
-        }
-        if (a.price > b.price) {
+        let x = a.priceNum
+        let y = b.priceNum
+        if (x < y) {
           return -1;
+        }
+        if (x > y) {
+          return 1;
         }
         return 0;
       })[0]?.price ?? 0

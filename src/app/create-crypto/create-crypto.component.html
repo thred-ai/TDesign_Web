@@ -1,22 +1,22 @@
 <div mat-dialog-title class="d-flex justify-content-between align-items-center">
   <!-- <h2 class="me-2 text-center d-none d-md-block">
-  {{
-    mode == 0
-      ? editingBlock == undefined
-        ? "Drag/Drop to Rearrange"
-        : "Edit Block"
-      : "Edit Page"
-  }}
-</h2> -->
+    {{
+      mode == 0
+        ? editingBlock == undefined
+          ? "Drag/Drop to Rearrange"
+          : "Edit Block"
+        : "Edit Page"
+    }}
+  </h2> -->
 
   <div class="d-flex justify-content-end align-items-center w-100">
     <!-- <a
-    role="button"
-    (click)="close()"
-    class="fw-bolder btn btn-dark rounded-pill px-3 ms-2"
-  >
-    SAVE LAYOUT
-  </a> -->
+      role="button"
+      (click)="close()"
+      class="fw-bolder btn btn-dark rounded-pill px-3 ms-2"
+    >
+      SAVE LAYOUT
+    </a> -->
     <a
       role="button"
       (click)="closeDialog()"
@@ -27,7 +27,7 @@
     </a>
   </div>
 </div>
-<mat-dialog-content class="w-100 h-100 d-block d-md-flex pb-4">
+<mat-dialog-content class="h-100 d-block d-md-flex pb-4">
   <div class="w-100 h-100 w-md-50 card shadow position-relative">
     <ngx-spinner
       bdColor="{{ selectedIndicator().bg_color }}"
@@ -42,7 +42,7 @@
         Generating Signature
       </h3>
     </ngx-spinner>
-    <div class="h-100 w-100 position-absolute" style="overflow-y: scroll">
+    <div class="h-100 w-100 position-md-absolute" style="overflow-y: scroll">
       <form
         class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form"
         [formGroup]="nftForm"
@@ -115,10 +115,10 @@
         >
           <div
             *ngFor="let trait of traits ?? []; index as i"
-            class="shadow my-3 bg-white mx-3 my-3 px-4 rounded-pill"
+            class="shadow my-3 bg-white mx-3 my-3 px-4 rounded-md-pill"
           >
             <div
-              class="d-flex align-items-center justify-content-between h-100"
+              class="d-md-flex align-items-center justify-content-between h-100 text-center"
             >
               <mat-form-field
                 class="w-100 my-0 h-100 p-0 mt-3"
@@ -134,7 +134,7 @@
                 />
               </mat-form-field>
               <mat-form-field
-                class="w-100 ms-1 my-0 h-100 p-0 mt-3"
+                class="w-100 ms-md-1 my-0 h-100 p-0 mt-3"
                 appearance="outline"
               >
                 <input
@@ -147,7 +147,7 @@
                 />
               </mat-form-field>
               <a
-                class="bg-danger rounded-circle p-1 text-light ms-2 d-inline-flex justify-content-center align-items-center"
+                class="bg-danger rounded-circle p-1 text-light my-2 my-md-0 ms-2 d-inline-flex justify-content-center align-items-center"
                 style="aspect-ratio: 1; height: 40px; text-decoration: none"
                 role="button"
                 (click)='removeTrait(i)'
@@ -179,19 +179,19 @@
       </form>
     </div>
     <div
-      class="position-absolute d-flex justify-content-center justify-content-md-end"
+      class="position-md-absolute d-flex justify-content-center my-3 my-md-0 justify-content-md-end"
       style="z-index: 5; bottom: 10px; left: 10px; right: 10px"
     >
       <a
         role="button"
         class="btn mt-2 btn-dark rounded"
-        type="button"
         (click)="save()"
         >Publish NFT</a
       >
+      
     </div>
   </div>
-  <div class="w-100 h-100 w-md-50">
+  <div class="w-100 h-100 w-md-50 mt-3 mt-md-0">
     <div class="w-100 h-100 px-5 mt-0 justify-content-center align-items-top">
       <ngx-file-drop
         dropZoneLabel="Drop files here"
@@ -217,7 +217,7 @@
               <a
                 role="button"
                 class="btn mt-2 btn-dark rounded-pill"
-                type="button"
+                
                 (click)="openFileSelector()"
                 >Browse Files</a
               >
@@ -228,7 +228,7 @@
       <!-- <a
         role="button"
         class="btn mt-2 btn-dark rounded-pill"
-        type="button"
+        
         (click)="openFileSelector()"
         >Browse Files</a
       > -->
