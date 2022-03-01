@@ -102,51 +102,24 @@
                     *ngIf="product.format == 'image'"
                   />
                 </a>
-                <div class="card-body text-center w-100">
+                <div
+                  class="card-body text-start w-100 d-flex justify-content-between align-items-center"
+                >
                   <p
-                    class="fw-bolder w-100"
+                    class="fw-bolder w-100 my-auto"
                     style="
                       text-decoration: none;
                       text-overflow: ellipsis;
                       word-wrap: break-word;
                       word-break: break-all;
                       overflow-x: hidden;
+                      font-size: medium;
                     "
                     style.color="{{ selectedTheme()!.color }}"
                     role="button"
                   >
                     {{ product.name }}
                   </p>
-                  <div
-                    class="d-flex align-items-center justify-content-center w-100"
-                  >
-                    <!-- <a
-                  role="button"
-                  class="btn"
-                  (click)="editProduct(product)"
-                >
-                  <mat-icon
-                    style.color="{{ selectedTheme()!.color }}"
-                    >edit</mat-icon
-                  >
-                </a> -->
-                    <!-- <a
-                role="button"
-                class="btn"
-                (click)="deleteProduct(product)"
-              >
-                <mat-icon
-                  style.color="{{ selectedTheme()!.color }}"
-                  >delete</mat-icon
-                >
-              </a> -->
-                  </div>
-                </div>
-              </div>
-              <div
-                class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
-              >
-                <div class="text-center">
                   <a
                     class="btn btn-outline-{{
                       (storeInfo?.colorStyle)!.text_code
@@ -155,12 +128,15 @@
                     role="button"
                     (click)="routeToProduct(product)"
                   >
-                    {{
-                      (product?.price | price) +
-                        " " +
-                        (storeInfo | collectionPipe: product.contractID)
-                          ?.currency
-                    }}
+                    <mat-icon
+                      class="m-0 p-0 me-1"
+                      style="overflow: hidden; height: 25px"
+                      svgIcon="{{
+                        storeInfo | collectionPipe: product.contractID | matIcon
+                      }}"
+                    >
+                    </mat-icon>
+                    {{ product?.price | price }}
                   </a>
                 </div>
               </div>

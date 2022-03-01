@@ -37,8 +37,10 @@
 
 <div
   *ngIf="
-    isBrowser() && userInfo() &&
-    (provider | providerCheck | async | lowercase) == (userInfo()?.walletAddress | lowercase)
+    isBrowser() &&
+    userInfo() &&
+    (provider | providerCheck | async | lowercase) ==
+      (userInfo()?.walletAddress | lowercase)
   "
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -1184,8 +1186,7 @@
                             "
                           >
                             <!-- Product image-->
-                            <a role="button"
-                              >
+                            <a role="button">
                               <a
                                 role="button"
                                 class="w-100"
@@ -1229,7 +1230,7 @@
                                   *ngIf="product.format == 'image'"
                                 />
                               </a>
-                          </a>
+                            </a>
                             <!-- Product details-->
                             <!-- Product actions-->
                             <div
@@ -2506,7 +2507,7 @@
                     </div>
 
                     <!-- collection.getCurrencyIcon() -->
-  
+
                     <drag-scroll
                       #carousel
                       class="mb-2 w-100 h-100"
@@ -2523,7 +2524,6 @@
                         "
                       >
                         <div class="col h-100">
-                          
                           <div
                             class="bg-{{
                               storeInfo().colorStyle!.back_code
@@ -2539,7 +2539,6 @@
                                 class="w-100"
                                 (click)="routeToProduct(product)"
                               >
-                              
                                 <video
                                   style="
                                     object-fit: cover;
@@ -2552,23 +2551,20 @@
                                   loop="true"
                                   muted="true"
                                   *ngIf="product.format == 'video'"
-                                  (loadeddata)='product.isLoaded = true'
-                                  [class.loading]='!product.isLoaded'
-                                  [src]="product.url!
+                                  (loadeddata)="product.isLoaded = true"
+                                  [class.loading]="!product.isLoaded"
+                                  [src]="
+                                    product.url!
                                       | fileDownloader
                                       | async
                                       | bufferToBase64
                                       | safeUrl
-
                                   "
-                                >
-                                
-                              
-                              </video>
+                                ></video>
 
                                 <img
                                   class="h-100 w-100"
-                                  [class.loading]='!product.isLoaded'
+                                  [class.loading]="!product.isLoaded"
                                   [src]="
                                     product.url!
                                       | fileDownloader
@@ -2584,8 +2580,7 @@
                                   "
                                   onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
                                   *ngIf="product.format == 'image'"
-                                  (load)='product.isLoaded = true'
-                                  
+                                  (load)="product.isLoaded = true"
                                 />
                               </a>
                               <div class="card-body text-center w-100">
@@ -3954,9 +3949,7 @@
       >
         <iframe
           style="width: 100%; height: 100%; position: absolute"
-          [srcdoc]="
-            str | liveEarthViewPipe: views() | safeHtml
-          "
+          [srcdoc]="str | liveEarthViewPipe: views() | safeHtml"
         >
         </iframe>
         <div
@@ -3967,7 +3960,7 @@
             <h1 style="color: white">
               <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
             </h1>
-<!-- 
+            <!-- 
             <a
               role="button"
               class="side d-flex m-0 align-items-center justify-content-start"
@@ -4062,7 +4055,10 @@
         </div>
       </div>
 
-      <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW' && mainLoad" class="h-100">
+      <div
+        *ngIf="getSelectedPanel()?.Title == 'OVERVIEW' && mainLoad"
+        class="h-100"
+      >
         <mat-tab-group mat-stretch-tabs>
           <mat-tab>
             <!-- #docregion label-directive -->
@@ -4079,7 +4075,7 @@
             </ng-template>
             <ng-template matTabContent>
               <div
-                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"
               >
                 <!-- <div class="col mb-2">
                   <div
@@ -4294,7 +4290,7 @@
                     </div>
                   </div>
                 </div> -->
-                <div class="col mb-2" *ngIf='emails() && numbers()'>
+                <div class="col mb-2" *ngIf="emails() && numbers()">
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
                     [class.border-secondary]="
@@ -4384,10 +4380,9 @@
                 </div>
               </div>
               <div
-                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start m-2 m-md-3 m-lg-3"
-                *ngIf='((miscItems)?.length ?? 0) > 0'
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"
+                *ngIf="(miscItems?.length ?? 0) > 0"
               >
-
                 <div class="col mb-2" *ngFor="let item of miscItems">
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
@@ -4453,15 +4448,13 @@
                       style.color="{{ selectedTheme()!.color }}"
                       class="text-center px-2 mx-2 my-2"
                       style="font-weight: bold; font-size: smaller"
-                    >
-                    </p>
+                    ></p>
                   </div>
                 </div>
               </div>
             </ng-template>
           </mat-tab>
-          <mat-tab>
-            <!-- #docregion label-directive -->
+          <!-- <mat-tab>
             <ng-template mat-tab-label>
               <mat-icon
                 class="example-tab-icon text-{{
@@ -4477,7 +4470,7 @@
               <div
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
               >
-                <!-- <div class="col mb-2" *ngFor="let item of charts()">
+                <div class="col mb-2" *ngFor="let item of charts()">
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
                     [class.border-secondary]="
@@ -4538,10 +4531,10 @@
                       </div>
                     </div>
                   </div>
-                </div> -->
+                </div>
               </div>
             </ng-template>
-          </mat-tab>
+          </mat-tab> -->
         </mat-tab-group>
       </div>
     </section>
