@@ -540,6 +540,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       //   return;
       // }
 
+      console.log(this.productToBuy.url)
       this.addTags(
         this.productToBuy.name ?? '',
         this.productToBuy.url?.toString() ?? '',

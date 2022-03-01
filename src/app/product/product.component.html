@@ -59,7 +59,7 @@
               controls="true"
               playsinline="true"
               *ngIf="
-                productToBuy?.format == 'video' && productToBuy.url != undefined
+                productToBuy?.format == 'video' && productToBuy.url != undefined && isBrowser()
               "
               src="{{
                 productToBuy.url! | fileDownloader | async | bufferToBase64
