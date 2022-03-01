@@ -40,7 +40,6 @@
     isBrowser() && userInfo() &&
     (provider | providerCheck | async | lowercase) == (userInfo()?.walletAddress | lowercase)
   "
-  [hidden]="userInfo()?.username == undefined"
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
@@ -3870,7 +3869,7 @@
         </div>
       </div>
 
-      <div *ngIf="getSelectedPanel()?.Title == 'AFFILIATE'" class="h-100">
+      <!-- <div *ngIf="getSelectedPanel()?.Title == 'AFFILIATE'" class="h-100">
         <div
           class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
         >
@@ -3946,7 +3945,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div
         *ngIf="getSelectedPanel()?.Title == 'LIVE VIEW'"
@@ -3954,10 +3953,9 @@
         style="height: 100vh; overflow: hidden; position: relative"
       >
         <iframe
-          *ngIf="orders && (true | liloadedAllProductsPipe: orders ?? [])"
           style="width: 100%; height: 100%; position: absolute"
           [srcdoc]="
-            str | liveEarthPipe: orders | liveEarthViewPipe: views() | safeHtml
+            str | liveEarthViewPipe: views() | safeHtml
           "
         >
         </iframe>
@@ -3969,7 +3967,7 @@
             <h1 style="color: white">
               <b>LIVE VIEW • {{ storeInfo()?.fullName }}</b>
             </h1>
-
+<!-- 
             <a
               role="button"
               class="side d-flex m-0 align-items-center justify-content-start"
@@ -3987,7 +3985,7 @@
               <p class="my-0" style="color: white">
                 Total Sales • <b>{{ totalSales() }}</b>
               </p>
-            </a>
+            </a> -->
 
             <a
               role="button"
@@ -4004,7 +4002,7 @@
                 </span>
               </mat-icon>
               <p class="my-0" style="color: white">
-                Total Views • <b>{{ totalViews() }}</b>
+                Total Views • <b>{{ views().length ?? 0 }}</b>
               </p>
             </a>
           </div>
@@ -4064,7 +4062,7 @@
         </div>
       </div>
 
-      <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW'" class="h-100">
+      <div *ngIf="getSelectedPanel()?.Title == 'OVERVIEW' && mainLoad" class="h-100">
         <mat-tab-group mat-stretch-tabs>
           <mat-tab>
             <!-- #docregion label-directive -->
@@ -4083,7 +4081,7 @@
               <div
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
               >
-                <div class="col mb-2">
+                <!-- <div class="col mb-2">
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
                     [class.border-secondary]="
@@ -4209,7 +4207,6 @@
                             *matFooterCellDef
                             style="border-bottom-style: none"
                           ></td>
-                          <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
                         </ng-container>
                         <ng-container matColumnDef="action">
                           <th
@@ -4257,7 +4254,6 @@
                             </button>
                           </td>
 
-                          <!-- <td mat-cell *matCellDef="let element" *ngIf='element.status == "shipped"'><mat-icon class="text-success">local_shipping</mat-icon></td> -->
                         </ng-container>
 
                         <tr
@@ -4294,12 +4290,11 @@
                             ></a
                           >
                         </h4>
-                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="col mb-2">
+                </div> -->
+                <div class="col mb-2" *ngIf='emails() && numbers()'>
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
                     [class.border-secondary]="
@@ -4390,8 +4385,10 @@
               </div>
               <div
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-3 row-cols-xl-3 justify-content-start m-2 m-md-3 m-lg-3"
+                *ngIf='((miscItems)?.length ?? 0) > 0'
               >
-                <div class="col mb-2" *ngFor="let item of charts(false, true)">
+
+                <div class="col mb-2" *ngFor="let item of miscItems">
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
                     [class.border-secondary]="
@@ -4449,7 +4446,6 @@
                             ></a
                           >
                         </h4>
-                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
                       </div>
                     </div>
                     <p
@@ -4458,7 +4454,6 @@
                       class="text-center px-2 mx-2 my-2"
                       style="font-weight: bold; font-size: smaller"
                     >
-                      <!-- {{ item.xAxisLabel.toUpperCase() }} -->
                     </p>
                   </div>
                 </div>
@@ -4482,7 +4477,7 @@
               <div
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3"
               >
-                <div class="col mb-2" *ngFor="let item of charts()">
+                <!-- <div class="col mb-2" *ngFor="let item of charts()">
                   <div
                     class="card bg-{{ storeInfo().colorStyle!.back_code }}"
                     [class.border-secondary]="
@@ -4524,38 +4519,6 @@
                         [tooltip]="item.tooltip"
                         [dataLabels]="item.dataLabels"
                       ></apx-chart>
-                      <!-- <ngx-charts-area-chart
-                      *ngIf="item.shouldDisplay"
-                      [results]="item.series"
-                      [xAxis]="true"
-                      [yAxis]="false"
-                      [gradient]="true"
-                      [animated]="false"
-                      [customColors]="item.customColors"
-                      [showXAxisLabel]="false"
-                      [showYAxisLabel]="false"
-                      [xAxisLabel]="item.xAxisLabel"
-                      [xAxisTickFormatting]="formatPercent"
-                      [yAxisLabel]="item.yAxisLabel"
-                      style.fill="{{ selectedTheme()!.color }}"
-                    >
-                      >
-                      <ng-template #tooltipTemplate let-model="model">
-                        {{ model.series }} • {{ model.name }}
-                        <h2>
-                          {{ formatGraphElement(model.value, model.series) }}
-                        </h2>
-                      </ng-template>
-
-                      <ng-template #seriesTooltipTemplate let-model="model">
-                        {{ model[0].series }}
-                        <h2>
-                          {{
-                            formatGraphElement(model[0].value, model[0].series)
-                          }}
-                        </h2>
-                      </ng-template>
-                    </ngx-charts-area-chart> -->
                       <div *ngIf="!item.shouldDisplay" class="text-center">
                         <h4
                           class="fw-bolder"
@@ -4572,19 +4535,10 @@
                             ></a
                           >
                         </h4>
-                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
                       </div>
                     </div>
-                    <!-- <p
-                    *ngIf="item.shouldDisplay"
-                    style.color="{{ selectedTheme()!.color }}"
-                    class="text-center px-2 mx-2 my-2"
-                    style="font-weight: bold; font-size: smaller"
-                  >
-                    {{ item.xAxisLabel.toUpperCase() }}
-                  </p> -->
                   </div>
-                </div>
+                </div> -->
               </div>
             </ng-template>
           </mat-tab>

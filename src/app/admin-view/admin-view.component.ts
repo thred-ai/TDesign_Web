@@ -1123,45 +1123,45 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   charts(onlyAffiliates = false, onlyOverview = false) {
-    if (onlyAffiliates) {
-      return this.items
-        .filter((item) => {
-          return (
-            item.name == 'Onboarded Users (Affiliate)' ||
-            item.name == 'Affiliate Revenue'
-          );
-        })
-        .sort(function (a, b) {
-          if (a.index < b.index) {
-            return -1;
-          }
-          if (a.index > b.index) {
-            return 1;
-          }
-          return 0;
-        });
-    }
+    // if (onlyAffiliates) {
+    //   return this.items
+    //     .filter((item) => {
+    //       return (
+    //         item.name == 'Onboarded Users (Affiliate)' ||
+    //         item.name == 'Affiliate Revenue'
+    //       );
+    //     })
+    //     .sort(function (a, b) {
+    //       if (a.index < b.index) {
+    //         return -1;
+    //       }
+    //       if (a.index > b.index) {
+    //         return 1;
+    //       }
+    //       return 0;
+    //     });
+    // }
     if (onlyOverview) {
-      let charts = this.items
-        .filter((item) => {
-          return item.name == 'Gross Revenue' || item.name == 'Net Profit';
-        })
-        .sort(function (a, b) {
-          if (a.index < b.index) {
-            return -1;
-          }
-          if (a.index > b.index) {
-            return 1;
-          }
-          return 0;
-        });
-      let views = this.miscItems.find((item) => {
+      // let charts = this.items
+      //   .filter((item) => {
+      //     return item.name == 'Gross Revenue' || item.name == 'Net Profit';
+      //   })
+      //   .sort(function (a, b) {
+      //     if (a.index < b.index) {
+      //       return -1;
+      //     }
+      //     if (a.index > b.index) {
+      //       return 1;
+      //     }
+      //     return 0;
+      //   });
+      let views = this.miscItems.filter((item) => {
         return item.name == 'Store Views';
       });
-      if (views) {
-        charts.unshift(views);
-      }
-      return charts;
+      // if (views) {
+      //   charts.unshift(views);
+      // }
+      return views;
     }
     if (
       Globals.productsSold == undefined ||
@@ -1201,36 +1201,31 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         }> = [];
 
         data_set.forEach((p) => {
-          if (
-            views?.find(
-              (k) =>
-                k.timestamp.toLocaleDateString() ==
-                p.timestamp.toLocaleDateString()
-            )
-          ) {
+          
             let i = views?.findIndex(
               (k) =>
-                k.timestamp.toLocaleDateString() ==
-                p.timestamp.toLocaleDateString()
+                k.timestamp.toDateString() ==
+                p.timestamp.toDateString() 
             );
-            if (i) {
+            if (i != -1) {
               views[i].views += 1;
             }
-          } else {
-            views?.push({ views: 10, timestamp: p.timestamp });
-          }
+            else {
+              views?.push({ views: 1, timestamp: p.timestamp });
+            }
         });
         dataToUse = views;
       }
+
+
 
       let set = this.organizeAllTime(dataToUse, name);
 
       var index = 0;
       if (name == 'Store Views') {
         index = 0;
-      } else if (name == 'Abandoned Carts') {
-        index = 4;
       }
+
 
       // let item = {
       //   name: name,
@@ -1529,21 +1524,26 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     {
       Category: 'DASHBOARD',
       Options: [
-        // {
-        //   Title: 'OVERVIEW',
-        //   Icon: 'dashboard',
-        //   Active: false,
-        // },
+        {
+          Title: 'OVERVIEW',
+          Icon: 'dashboard',
+          Active: false,
+        },
+        {
+          Title: 'COLLECTIONS',
+          Icon: 'category',
+          Active: false,
+        },
+        {
+          Title: 'LIVE VIEW',
+          Icon: 'public',
+          Active: false,
+        },
         {
           Title: 'AUDIENCE',
           Icon: 'groups',
           Active: false,
         },
-        // {
-        //   Title: 'LIVE VIEW',
-        //   Icon: 'public',
-        //   Active: false,
-        // },
       ],
     },
     {
@@ -1562,11 +1562,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         {
           Title: 'THEMES',
           Icon: 'backup_table',
-          Active: false,
-        },
-        {
-          Title: 'COLLECTIONS',
-          Icon: 'category',
           Active: false,
         },
         {
@@ -1977,6 +1972,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   totalElement(series: Array<number>) {
     var total = 0;
+    if (!series){ return 0}
     series.forEach((item) => {
       total += item;
     });
@@ -1984,11 +1980,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   totalSales() {
-    return this.formatPrice(this.totalElement(this.charts()[1].series[0].data));
+    return 0// this.formatPrice(this.totalElement(this.charts()[1].series[0].data));
   }
 
   totalViews() {
-    return this.totalElement(this.charts()[0].series[0].data);
+    return 0 // this.charts().length > 0 ? this.totalElement(this.charts()[0].series[0].data) : 0
   }
 
   orderCurrency(order?: Order) {
@@ -2080,16 +2076,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   isSpinning = false;
 
+  mainLoad = false
+  
   showSpinner(duration = 500) {
     if (!this.isSpinning) {
       this.isSpinning = true;
       if (isPlatformBrowser(this.platformID)) {
         this.spinner.show('adminSpinner');
       }
-
-      setTimeout(() => {
-        this.spinner.hide('adminSpinner');
-      }, duration);
     }
   }
 
@@ -2106,7 +2100,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   hideSpinner() {
     if (this.isSpinning) {
-      // this.spinner.hide()
+      this.spinner.hide('adminSpinner');
     }
   }
 
@@ -2940,7 +2934,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       user?.uid &&
       !user?.isAnonymous
     ) {
-      this.getMiscStats();
     } else if (
       this.panels[section].Options[index].Title == 'AFFILIATE' &&
       user?.uid &&
@@ -3035,24 +3028,24 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async getAffiliateStats(showEmpty = false) {
-    if (this.activeAffiliates.length == 0) {
-      this.loadService.miscCallback = () => this.getMiscStats();
-      let user = await this.loadService.isLoggedIn();
-      this.loadService.getAffiliateStats(user?.uid!, (affiliates) => {
-        this.activeAffiliates = affiliates;
+    // if (this.activeAffiliates.length == 0) {
+    //   this.loadService.miscCallback = () => this.getMiscStats();
+    //   let user = await this.loadService.isLoggedIn();
+    //   this.loadService.getAffiliateStats(user?.uid!, (affiliates) => {
+    //     this.activeAffiliates = affiliates;
 
-        if (affiliates.length != 0 || showEmpty) {
-          let data = ['Onboarded Users (Affiliate)', 'Affiliate Revenue'];
-          data.forEach((d) => {
-            this.addChart(d, this.activeAffiliates);
-          });
-        }
-      });
-    }
+    //     if (affiliates.length != 0 || showEmpty) {
+    //       let data = ['Onboarded Users (Affiliate)', 'Affiliate Revenue'];
+    //       data.forEach((d) => {
+    //         this.addChart(d, this.activeAffiliates);
+    //       });
+    //     }
+    //   });
+    // }
   }
 
   async getMiscStats() {
-    if (Globals.views == undefined && Globals.dropCarts == undefined) {
+    if (Globals.views == undefined) {
       this.loadService.miscCallback = () => this.getMiscStats();
       let user = await this.loadService.isLoggedIn();
 
@@ -3063,16 +3056,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           name: 'Store Views',
           series: Globals.views,
         },
-        {
-          name: 'Abandoned Carts',
-          series: Globals.dropCarts,
-        },
+        // {
+        //   name: 'Abandoned Carts',
+        //   series: Globals.dropCarts,
+        // },
       ];
 
-      data.forEach((d) => {
-        this.addMiscCharts(d?.name, d?.series ?? []);
-      });
-      this.getSoldProducts();
+      // data.forEach((d) => {
+        this.addMiscCharts(data[0]?.name, data[0]?.series ?? []);
+      // });
+      // this.getSoldProducts();
     }
   }
 
@@ -3114,7 +3107,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.loadService.adminComponent = this;
-    
+    this.getMiscStats()
     this.init();
   }
 
@@ -3207,7 +3200,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     if (Globals.storeInfo?.username) {
       console.log('here3')
 
-      this.showSpinner();
+      this.showSpinner(500);
+      this.mainLoad = true
       this.rootComponent.setOptions();
       this.rootComponent.setFavIcon(
         Globals.storeInfo.profileLink?.toString() ?? ''

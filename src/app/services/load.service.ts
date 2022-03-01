@@ -4399,23 +4399,22 @@ export class LoadService {
           }
         });
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-
-        let sub2 = this.db
-          .collectionGroup('Cart_Info', (ref) => ref.where('UID', '==', uid))
-          .valueChanges()
-          .subscribe((docDatas) => {
-            docDatas.forEach((doc, index) => {
-              const docData = doc as DocumentData;
-              if (docData) {
-                let timestamp = (
-                  docData.Timestamp as firebase.firestore.Timestamp
-                )?.toDate();
-                Globals.dropCarts?.push({ dropCarts: 1, timestamp: timestamp });
-              }
-            });
-            if (isPlatformBrowser(this.platformID)) sub2.unsubscribe();
-            if (this.miscCallback) this.miscCallback();
-          });
+        if (this.miscCallback) this.miscCallback();
+        // let sub2 = this.db
+        //   .collectionGroup('Cart_Info', (ref) => ref.where('UID', '==', uid))
+        //   .valueChanges()
+        //   .subscribe((docDatas) => {
+        //     docDatas.forEach((doc, index) => {
+        //       const docData = doc as DocumentData;
+        //       if (docData) {
+        //         let timestamp = (
+        //           docData.Timestamp as firebase.firestore.Timestamp
+        //         )?.toDate();
+        //         Globals.dropCarts?.push({ dropCarts: 1, timestamp: timestamp });
+        //       }
+        //     });
+            
+        //   });
       });
   }
 
