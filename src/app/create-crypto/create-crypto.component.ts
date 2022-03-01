@@ -1,4 +1,11 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Inject,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { create } from 'ipfs-http-client';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -23,6 +30,7 @@ import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import axios from 'axios';
+import * as html2canvas from 'htmlscreenshots15';
 
 @Component({
   selector: 'app-create-crypto',
@@ -30,10 +38,7 @@ import axios from 'axios';
   styleUrls: ['./create-crypto.component.css'],
 })
 export class CreateCryptoComponent implements OnInit {
-
-  storeInfo?: Store
-
-
+  storeInfo?: Store;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -45,7 +50,7 @@ export class CreateCryptoComponent implements OnInit {
   ) {
     console.log(client);
     this.nftContract = data.contract;
-    this.storeInfo = Globals.storeInfo
+    this.storeInfo = Globals.storeInfo;
   }
 
   nftContract: Collection;
@@ -109,30 +114,27 @@ export class CreateCryptoComponent implements OnInit {
     this.nftForm.controls.lazyMint.setValue(true);
   }
 
-  traits = new Array<any>()
+  traits = new Array<any>();
 
-  addTrait(){
-    
+  addTrait() {
     let trait = {
       trait_type: '',
-      value: ''
-    }
-    this.traits.push(trait)
+      value: '',
+    };
+    this.traits.push(trait);
   }
 
-  removeTrait(i: number){
-    this.traits.splice(i, 1)
+  removeTrait(i: number) {
+    this.traits.splice(i, 1);
   }
 
-  set isLoading(isLoading: boolean){
-    if (isLoading){
-      this.spinner.show('loader')
-    }
-    else{
-      this.spinner.hide('loader')
+  set isLoading(isLoading: boolean) {
+    if (isLoading) {
+      this.spinner.show('loader');
+    } else {
+      this.spinner.hide('loader');
     }
   }
-
 
   admin?: AdminViewComponent;
 
@@ -158,34 +160,39 @@ export class CreateCryptoComponent implements OnInit {
     return new Blob([uInt8Array], { type: imageType });
   }
 
-  err = ''
+  err = '';
 
   async save() {
     if (this.nftForm.valid) {
-      if (window.ethereum && typeof window.ethereum == 'object'){
-        this.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-        Globals.provider = this.provider
+      if (window.ethereum && typeof window.ethereum == 'object') {
+        this.provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          'any'
+        );
+        Globals.provider = this.provider;
       }
-      if (!(this.provider?.getSigner())){
+      if (!this.provider?.getSigner()) {
         try {
-          await Globals.checkProvider()
-          this.provider = Globals.provider
+          await Globals.checkProvider();
+          this.provider = Globals.provider;
         } catch (error) {
-          this.err = 'No Wallet Connected. Please try again'
-          return
+          this.err = 'No Wallet Connected. Please try again';
+          return;
         }
       }
-      if (!(await (this.laodService.networkCheck() ?? false))) { 
-        this.err = 'Please switch your Network to the Polygon Mainnet'
-        return 
+      if (!(await (this.laodService.networkCheck() ?? false))) {
+        this.err = 'Please switch your Network to the Polygon Mainnet';
+        return;
       }
 
       let signer = this.provider?.getSigner();
 
-      let address = await signer?.getAddress() ?? ''
-      if (address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()) { 
-        this.err = 'Wrong Wallet'
-        return 
+      let address = (await signer?.getAddress()) ?? '';
+      if (
+        address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+      ) {
+        this.err = 'Wrong Wallet';
+        return;
       }
 
       let name = this.nftForm.controls.title.value as string;
@@ -197,11 +204,10 @@ export class CreateCryptoComponent implements OnInit {
       let lazyMint = this.nftForm.controls.lazyMint.value as boolean;
       let royalty = (this.nftForm.controls.royalty.value as number) ?? 0.0;
 
-      let traits =
-        (this.traits as Array<Dict<any>>) ?? [];
+      let traits = (this.traits as Array<Dict<any>>) ?? [];
       let external = (this.nftForm.controls.external_url.value as string) ?? '';
 
-      this.isLoading = true
+      this.isLoading = true;
 
       try {
         if (file) {
@@ -253,8 +259,13 @@ export class CreateCryptoComponent implements OnInit {
             if (!cl) {
               return;
             }
-            let tokenId = (cl.collectionCount ?? 0) + 1
-            const voucher = await lazyMinter.createVoucher(tokenId, url2, r, price);
+            let tokenId = (cl.collectionCount ?? 0) + 1;
+            const voucher = await lazyMinter.createVoucher(
+              tokenId,
+              url2,
+              r,
+              price
+            );
             let nft = new NFT(
               tokenId,
               contractNFT,
@@ -267,7 +278,7 @@ export class CreateCryptoComponent implements OnInit {
               url2
             );
 
-            nft.format = format
+            nft.format = format;
             var x = ethers.utils.parseUnits('0.02', 'ether');
             if (voucher) {
               x = voucher['minPrice'] as ethers.BigNumber;
@@ -279,7 +290,7 @@ export class CreateCryptoComponent implements OnInit {
             nft.external_url = external;
             nft.token = undefined;
             nft.isAvailable = true;
-            
+
             // if (!lazyMint) {
             //   await this.mintNFT(voucher, price, contract2, contract3);
             // }
@@ -288,11 +299,18 @@ export class CreateCryptoComponent implements OnInit {
             // const transaction = await contract2.mintAndTransfer(voucher, { value: x });
             // await transaction.wait()
 
+            let img = this.saveVideoThumbail() ?? url
+
             let docID = await this.laodService.saveNFT(
               nft,
-              Globals.storeInfo.uid
+              Globals.storeInfo.uid,
+              undefined,
+              img
             );
-            nft.docID = docID;
+            if (docID) {
+              nft.docID = docID;
+              nft.linkUrl = this.laodService.getURL(docID);
+            }
             const meta = await axios.get(url2);
             nft.url = meta.data.image;
             this.dialogRef.close(nft);
@@ -302,7 +320,7 @@ export class CreateCryptoComponent implements OnInit {
       } catch (error) {
         console.log('Error uploading file: ', error);
       }
-      this.isLoading = false
+      this.isLoading = false;
     } else {
       console.log(this.nftForm.controls.title.invalid);
       console.log(this.nftForm.controls.price.invalid);
@@ -310,7 +328,23 @@ export class CreateCryptoComponent implements OnInit {
     }
   }
 
-  
+  saveVideoThumbail() {
+    let ref = this.video?.nativeElement
+    if (ref) {
+      var canvas = document.createElement('canvas');
+      canvas.width = ref.videoWidth;
+      canvas.height = ref.videoHeight;
+      var ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(ref, 0, 0);
+        let img = canvas.toDataURL();
+        return img;
+      }
+    }
+    return undefined;
+  }
+
+  @ViewChild('video') video?: ElementRef;
 
   selectedIndicator() {
     let co = Globals.storeInfo?.loading?.color;
@@ -338,13 +372,9 @@ export class CreateCryptoComponent implements OnInit {
   ) {
     // router.push('/')
 
-    
-
     let gas = await contract.estimateGas;
 
     console.log(gas);
-
-    
   }
 
   radioChange(event: any) {

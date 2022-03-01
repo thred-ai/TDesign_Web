@@ -14,6 +14,7 @@ export class NFT {
   lazyHash?: Dict<any>
   metadata?: string
   url?: string
+  linkUrl?: string
   price: ethers.BigNumber = ethers.utils.parseUnits('0', 'ether');
 
 

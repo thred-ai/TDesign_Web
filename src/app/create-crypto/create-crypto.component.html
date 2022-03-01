@@ -111,7 +111,7 @@
         </a>
         <div
           class="wrap-input1 w-100 rounded"
-          style="overflow-y: scroll; max-height: 250px;"
+          style="overflow-y: scroll; max-height: 250px"
         >
           <div
             *ngFor="let trait of traits ?? []; index as i"
@@ -150,7 +150,7 @@
                 class="bg-danger rounded-circle p-1 text-light my-2 my-md-0 ms-2 d-inline-flex justify-content-center align-items-center"
                 style="aspect-ratio: 1; height: 40px; text-decoration: none"
                 role="button"
-                (click)='removeTrait(i)'
+                (click)="removeTrait(i)"
               >
                 <mat-icon class="m-0">highlight_off</mat-icon>
               </a>
@@ -182,17 +182,13 @@
       class="position-md-absolute d-flex justify-content-center my-3 my-md-0 justify-content-md-end"
       style="z-index: 5; bottom: 10px; left: 10px; right: 10px"
     >
-    <p *ngIf="err != ''" class="text-danger text-center fw-bold">
-      {{ err }}
-    </p>
-    <br>
-      <a
-        role="button"
-        class="btn mt-2 btn-dark rounded"
-        (click)="save()"
+      <p *ngIf="err != ''" class="text-danger text-center fw-bold">
+        {{ err }}
+      </p>
+      <br />
+      <a role="button" class="btn mt-2 btn-dark rounded" (click)="save()"
         >Publish NFT</a
       >
-      
     </div>
   </div>
   <div class="w-100 h-100 w-md-50 mt-3 mt-md-0">
@@ -221,7 +217,6 @@
               <a
                 role="button"
                 class="btn mt-2 btn-dark rounded-pill"
-                
                 (click)="openFileSelector()"
                 >Browse Files</a
               >
@@ -245,27 +240,30 @@
           style="height: fit-content; width: fit-content; max-width: 100%"
           *ngIf="nftForm.controls.file.value"
         >
-          <img
-            [src]="nftForm.controls.file.value | safeUrl"
-            class="p-0 border rounded"
-            style="object-fit: contain; height: 500px; max-width: 100%"
-            *ngIf="nftForm.controls.format.value == 'image'"
-          />
-          <br />
-          <video
-            style="object-fit: contain; height: 500px; max-width: 100%"
-            *ngIf="nftForm.controls.format.value == 'video'"
-            class="p-0 border rounded"
-            autoplay="true"
-            loop="true"
-            muted="true"
-          >
-            <source
-              *ngIf="nftForm.controls.format.value == 'video'"
+          <div class="w-100 h-100">
+            <img
               [src]="nftForm.controls.file.value | safeUrl"
-              type="video/mp4"
+              class="p-0 border rounded"
+              style="object-fit: contain; height: 500px; max-width: 100%"
+              *ngIf="nftForm.controls.format.value == 'image'"
             />
-          </video>
+            <br />
+            <video
+              style="object-fit: contain; height: 500px; max-width: 100%"
+              *ngIf="nftForm.controls.format.value == 'video'"
+              class="p-0 border rounded"
+              autoplay="true"
+              loop="true"
+              muted="true"
+              #video
+            >
+              <source
+                *ngIf="nftForm.controls.format.value == 'video'"
+                [src]="nftForm.controls.file.value | safeUrl"
+                type="video/mp4"
+              />
+            </video>
+          </div>
         </div>
       </div>
 

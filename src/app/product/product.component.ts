@@ -348,9 +348,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     const data = this.getProductID();
-
-
-    // https://ipfs.infura.io/ipfs/QmRr8XwU5F3hCorrvhQYKX73UpCgaXYeffNLNH56NC77bp
     
     console.log(data);
     this.loadService.myCallback = () => this.checkLoad();
@@ -540,10 +537,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
       //   return;
       // }
 
-      console.log(this.productToBuy.url)
+      console.log(this.productToBuy.linkUrl)
       this.addTags(
         this.productToBuy.name ?? '',
-        this.productToBuy.url?.toString() ?? '',
+        this.productToBuy.linkUrl?.toString() ?? '',
         this.productToBuy.description ?? '',
         'https://shopmythred.com'
       );

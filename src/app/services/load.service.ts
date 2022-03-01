@@ -1234,6 +1234,7 @@ export class LoadService {
             product.docID = doc.id;
             product.isAvailable = true;
             product.forSale = forSale;
+            product.linkUrl = this.getURL(doc.id)
 
             if (metadata) {
               const meta = await axios.get(metadata);
@@ -1249,7 +1250,7 @@ export class LoadService {
               product.description = docData['Description'] as string;
               let uid = docData['UID'] as string;
               let productID = docData['Product_ID'];
-              product.url = this.getURL(uid, productID);
+              product.url = this.getURL(productID);
             }
             products.push(product);
           }
@@ -2743,6 +2744,55 @@ export class LoadService {
     await this.saveStoreInfo(mappedData, uid);
   }
 
+  private async saveNftImage(
+    image: string,
+    productID: string,
+  ) {
+
+    const filePath =
+      'Products/' +
+      productID +
+      '/' +
+      'link_' +
+      productID +
+      '.png';
+
+    let ref = this.storage.ref(filePath);
+
+    const byteArray = Buffer.from(
+      image.replace(/^[\w\d;:\/]+base64\,/g, ''),
+      'base64'
+    );
+
+    // const task = await this.storage.upload(filePath, byteArray);
+    await ref.put(byteArray);
+    const url = this.getURL(productID)
+
+    // if (type == "theme"){
+    //   Globals.userInfo!.themeLink = url
+
+    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //     Globals.storeInfo!.themeLink = url
+    //   }
+    // }
+    // else if (type == "home"){
+    //   Globals.userInfo!.homeLink = url
+
+    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //     Globals.storeInfo!.homeLink = url
+    //   }
+    // }
+    // else if (type == "action"){
+
+    //   Globals.userInfo!.actionLink = url
+
+    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //     Globals.storeInfo!.actionLink = url
+    //   }
+    // }
+    return url;
+  }
+
   private async uploadProductImages(
     image: string,
     type: string,
@@ -2946,13 +2996,17 @@ export class LoadService {
     return undefined;
   }
 
-  async saveNFT(mappedData: NFT, uid?: string, productID?: string) {
+  async saveNFT(mappedData: NFT, uid?: string, productID?: string, image?: string) {
     //add token later
 
     var id = productID;
 
     if (!id) {
       id = mappedData.contractID + mappedData.tokenID;
+    }
+
+    if (image){
+      await this.saveNftImage(image, id)
     }
 
     let data = JSON.parse(
@@ -3926,7 +3980,7 @@ export class LoadService {
               undefined,
               undefined,
               [],
-              this.getURL(uid, productID)
+              this.getURL(productID)
             );
 
             let productCart = new ProductInCart(
@@ -4327,7 +4381,7 @@ export class LoadService {
               undefined,
               undefined,
               [],
-              this.getURL(uid, productID)
+              this.getURL(productID)
             );
 
             let orderProduct = new ProductInCart(
@@ -4470,7 +4524,7 @@ export class LoadService {
               undefined,
               undefined,
               [],
-              this.getURL(uid, productID)
+              this.getURL(productID)
             );
 
             let orderProduct = new ProductInCart(
@@ -4562,6 +4616,7 @@ export class LoadService {
 
           product.isAvailable = true;
           product.forSale = forSale;
+          product.linkUrl = this.getURL(productID)
 
           if (metadata) {
             const meta = await axios.get(metadata);
@@ -4577,7 +4632,7 @@ export class LoadService {
             product.description = docData['Description'] as string;
             let uid = docData['UID'] as string;
             let productID = docData['Product_ID'];
-            product.url = this.getURL(uid, productID);
+            product.url = this.getURL(productID);
           }
 
 
@@ -4681,11 +4736,9 @@ export class LoadService {
     );
   }
 
-  getURL(uid: string, productID: string) {
+  getURL(productID: string) {
     return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FProducts%2F' +
+      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
       productID +
       '%2Flink_' +
       productID +
