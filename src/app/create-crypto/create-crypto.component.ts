@@ -157,7 +157,7 @@ export class CreateCryptoComponent implements OnInit {
     return new Blob([uInt8Array], { type: imageType });
   }
 
-  err = 'hehehehehe'
+  err = ''
 
   async save() {
     if (this.nftForm.valid) {
