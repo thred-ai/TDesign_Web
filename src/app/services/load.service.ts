@@ -743,7 +743,10 @@ export class LoadService {
   getEvents(
     contract: string,
     tokenId: string,
-    callback: (transactions: Array<NftLog>) => any
+    callback: (transactions: Array<NftLog>) => any,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
   ) {
     console.log(tokenId);
     const data = {
@@ -761,7 +764,8 @@ export class LoadService {
             var logs = new Array<NftLog>();
             await Promise.all(
               hashes.map(async (t) => {
-                let block = await Globals.provider?.getBlock(t.blockNumber);
+                
+                let block = await provider.getBlock(t.blockNumber);
                 var type = '';
 
                 if (
@@ -812,6 +816,19 @@ export class LoadService {
         }
       );
   }
+
+
+  async providerCheck(){
+    let address = await (Globals.provider?.getSigner().getAddress())
+    return address
+  }
+
+  
+  async networkCheck(){
+    let network = await (Globals.provider?.getNetwork())
+    return network?.chainId == 137;
+  }
+
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
     var query = this.db.collection('Users/' + uid + '/Numbers', (ref) =>

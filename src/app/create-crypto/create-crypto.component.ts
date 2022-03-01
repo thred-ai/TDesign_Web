@@ -157,8 +157,32 @@ export class CreateCryptoComponent implements OnInit {
     return new Blob([uInt8Array], { type: imageType });
   }
 
+  err = 'hehehehehe'
+
   async save() {
     if (this.nftForm.valid) {
+      if (!(this.provider?.getSigner())){
+        try {
+          await Globals.checkProvider()
+          this.provider = Globals.provider
+        } catch (error) {
+          this.err = 'No Wallet Connected. Please try again'
+          return
+        }
+      }
+      if (!(await (this.laodService.networkCheck() ?? false))) { 
+        this.err = 'Please switch your Network to the Polygon Mainnet'
+        return 
+      }
+
+      let signer = this.provider?.getSigner();
+
+      let address = await signer?.getAddress() ?? ''
+      if (address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()) { 
+        this.err = 'Wrong Wallet'
+        return 
+      }
+
       let name = this.nftForm.controls.title.value as string;
       let description = this.nftForm.controls.description.value as string;
       let cost = this.nftForm.controls.price.value as number;
@@ -205,8 +229,6 @@ export class CreateCryptoComponent implements OnInit {
         /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
         const price = ethers.utils.parseUnits(cost.toString(), 'ether');
         const r = ethers.utils.parseUnits(royalty.toString(), 'ether');
-
-        let signer = this.provider?.getSigner();
 
         console.log(contractNFT);
 

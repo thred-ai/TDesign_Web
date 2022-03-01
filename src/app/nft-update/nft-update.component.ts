@@ -129,8 +129,31 @@ export class NftUpdateComponent implements OnInit {
     return new Blob([uInt8Array], { type: imageType });
   }
 
+  err = ''
+
   async save() {
+    
     if (this.nftForm.valid) {
+
+
+      if (!Globals.provider?.getSigner()){
+        try {
+          await Globals.checkProvider()
+        } catch (error) {
+          this.err = 'No Wallet Connected. Please try again'
+          return
+        }
+        return
+      }
+      if (!(await (this.laodService.networkCheck() ?? false))) { 
+        this.err = 'Please switch your Network to the Polygon Mainnet'
+        return 
+      }
+
+
+      
+
+
       let cost = this.nftForm.controls.price.value as number;
       let forSale = this.nftForm.controls.isListed.value as boolean;
 
@@ -140,6 +163,12 @@ export class NftUpdateComponent implements OnInit {
       const price = ethers.utils.parseUnits(cost.toString(), 'ether');
 
       let signer = this.provider?.getSigner();
+
+      let address = await signer?.getAddress() ?? ''
+      if (address?.toLowerCase() != this.nft?.seller?.toLowerCase()) { 
+        this.err = 'Wrong Wallet'
+        return 
+      }
 
       try {
         if (

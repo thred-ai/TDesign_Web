@@ -62,14 +62,23 @@ export class NftBuyComponent implements OnInit {
   adding = false;
   shake = false;
 
-
-
   async purchase() {
-    this.err = ''
-    if (!Globals.provider?.getSigner()){
-      this.err = 'No Wallet Connected. Please try again'
-      return
+    this.err = '';
+
+    if (!Globals.provider?.getSigner()) {
+      try {
+        await Globals.checkProvider();
+      } catch (error) {
+        this.err = 'No Wallet Connected. Please try again';
+        return;
+      }
+      return;
     }
+    if (!(await (this.loadService.networkCheck() ?? false))) {
+      this.err = 'Please switch your Network to the Polygon Mainnet';
+      return;
+    }
+
     if (this.nft.contractID && this.collection?.ABI) {
       this.adding = true;
       this.shake = true;
@@ -83,25 +92,32 @@ export class NftBuyComponent implements OnInit {
       }, 1500);
 
       try {
-        let val = Globals.provider.getSigner()
+        let val = Globals.provider.getSigner();
 
-        if (typeof val == 'string'){ 
-          this.err = 'No Wallet Connected. Please try again'
-          throw('No Signer')
+        if (typeof val == 'string') {
+          this.err = 'No Wallet Connected. Please try again';
+          throw 'No Signer';
         }
+        let address = (await val?.getAddress()) ?? '';
+
+        if (address?.toLowerCase() == this.nft?.seller?.toLowerCase()) {
+          this.err = 'Same Account';
+          throw 'No Signer';
+        }
+
         let contract = new ethers.Contract(
           this.nft.contractID,
           this.collection?.ABI,
           val as ethers.providers.JsonRpcSigner
         );
-        
+
         var transaction: any = undefined;
 
         if (this.nft.lazyHash?.minPrice as BigNumber) {
-          console.log('yes')
-          console.log(this.nft.lazyHash)
+          console.log('yes');
+          console.log(this.nft.lazyHash);
           if (this.nft.lazyHash?.token && !this.nft.lazyHash.isNative) {
-            console.log('wes')
+            console.log('wes');
 
             let contract3 = new ethers.Contract(
               this.nft.lazyHash?.token,
@@ -117,14 +133,14 @@ export class NftBuyComponent implements OnInit {
               this.nft.lazyHash
             );
           } else {
-            console.log(this.nft.lazyHash)
+            console.log(this.nft.lazyHash);
 
             transaction = await contract.mintAndTransfer(this.nft.lazyHash, {
               value: this.nft.price,
             });
           }
         } else {
-          console.log('no')
+          console.log('no');
 
           let marketItem = {
             itemId: this.nft.itemId,
@@ -138,7 +154,7 @@ export class NftBuyComponent implements OnInit {
             tokenContract:
               this.nft.token ?? '0x0000000000000000000000000000000000000000',
             isNative: !(this.nft.token ?? false),
-            minted: true
+            minted: true,
           };
           if (marketItem.isNative) {
             transaction = await contract.createSale(marketItem, {
@@ -150,7 +166,7 @@ export class NftBuyComponent implements OnInit {
             });
           }
         }
-        console.log(transaction)
+        console.log(transaction);
         if (transaction) {
           await transaction.wait();
           console.log(transaction);
@@ -163,11 +179,13 @@ export class NftBuyComponent implements OnInit {
         }
         this.shake = false;
         this.spinner.hide('purchase');
-        this.dialogRef.close(this.nft)
+        this.dialogRef.close(this.nft);
       } catch (error) {
         console.log(error);
-        if ((error as any).data.code == -32000){
-          this.err = ('Not enough ' + this.collection.currency ?? 'MATIC') + ' in wallet!'
+        if ((error as any).data.code == -32000) {
+          this.err =
+            ('Not enough ' + this.collection.currency ?? 'MATIC') +
+            ' in wallet!';
         }
         this.shake = false;
         this.spinner.hide('purchase');
@@ -175,7 +193,7 @@ export class NftBuyComponent implements OnInit {
     }
   }
 
-  err = ''
+  err = '';
 
   closeDialog() {
     this.dialogRef.close();
@@ -191,26 +209,23 @@ export class NftBuyComponent implements OnInit {
     this.collection = this.data.collection;
   }
 
-  setProvider(){
-    Globals.checkProvider()
+  setProvider() {
+    Globals.checkProvider();
   }
 
-  get signer(){
+  get signer() {
     try {
-      return Globals.provider
+      return Globals.provider;
     } catch (error) {
-      return false
+      return false;
     }
   }
 
   async ngOnInit() {
-
-    // let address = await 
+    // let address = await
     //   let condition = address.toLowerCase() == this.nft.seller.toLowerCase()
-
     //   if (condition){
     //     this.dialogRef.close()
     //   }
-
   }
 }

@@ -34,6 +34,7 @@ export class NFT {
   docID?: string
   isNFT?: boolean
   itemId?: number
+  isLoaded?: boolean
 
   constructor(
     tokenID?: number,

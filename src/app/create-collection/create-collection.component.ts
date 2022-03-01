@@ -83,10 +83,14 @@ export class CreateCollectionComponent implements OnInit {
     this.storeInfo = Globals.storeInfo;
   }
 
+  err = ''
+
   async save() {
-    this.spinner.show('loader');
 
     if (this.nftForm.valid) {
+      
+      this.spinner.show('loader');
+
       let name = (this.nftForm.controls.title.value as string) ?? '';
       let symbol =
         (this.nftForm.controls.symbol.value as string) ?? ''.toUpperCase();
@@ -101,8 +105,27 @@ export class CreateCollectionComponent implements OnInit {
         console.log('ok');
       }
 
+      if (!(signer)){
+        try {
+          await Globals.checkProvider()
+          signer = Globals.provider?.getSigner()
+        } catch (error) {
+          this.err = 'No Wallet Connected. Please try again'
+          return
+        }
+      }
+      if (!(await (this.loadService.networkCheck() ?? false))) { 
+        this.err = 'Please switch your Network to the Polygon Mainnet'
+        return 
+      }
+
       if (signer) {
         let wallet = await signer.getAddress();
+
+        if (wallet.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()) { 
+          this.err = 'Wrong Wallet'
+          return 
+        }
 
         let factory = new ethers.ContractFactory(
           NFTS.abi,

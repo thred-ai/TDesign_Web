@@ -37,9 +37,10 @@
 
 <div
   *ngIf="
-    isBrowser() && storeInfo()
+    isBrowser() && userInfo() &&
+    (provider | providerCheck | async | lowercase) == (userInfo()?.walletAddress | lowercase)
   "
-  [hidden]="storeInfo()?.username == undefined"
+  [hidden]="userInfo()?.username == undefined"
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
@@ -2506,7 +2507,7 @@
                     </div>
 
                     <!-- collection.getCurrencyIcon() -->
-
+  
                     <drag-scroll
                       #carousel
                       class="mb-2 w-100 h-100"
@@ -2523,6 +2524,7 @@
                         "
                       >
                         <div class="col h-100">
+                          
                           <div
                             class="bg-{{
                               storeInfo().colorStyle!.back_code
@@ -2538,6 +2540,7 @@
                                 class="w-100"
                                 (click)="routeToProduct(product)"
                               >
+                              
                                 <video
                                   style="
                                     object-fit: cover;
@@ -2550,22 +2553,30 @@
                                   loop="true"
                                   muted="true"
                                   *ngIf="product.format == 'video'"
-                                  src="{{
-                                    product.url!
+                                  (loadeddata)='product.isLoaded = true'
+                                  [class.loading]='!product.isLoaded'
+                                  [src]="product.url!
                                       | fileDownloader
                                       | async
                                       | bufferToBase64
-                                  }}"
-                                ></video>
+                                      | safeUrl
+
+                                  "
+                                >
+                                
+                              
+                              </video>
 
                                 <img
                                   class="h-100 w-100"
-                                  src="{{
+                                  [class.loading]='!product.isLoaded'
+                                  [src]="
                                     product.url!
                                       | fileDownloader
                                       | async
                                       | bufferToBase64
-                                  }}"
+                                      | safeUrl
+                                  "
                                   alt="ok"
                                   style="
                                     object-fit: cover;
@@ -2574,6 +2585,8 @@
                                   "
                                   onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
                                   *ngIf="product.format == 'image'"
+                                  (load)='product.isLoaded = true'
+                                  
                                 />
                               </a>
                               <div class="card-body text-center w-100">

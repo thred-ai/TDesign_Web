@@ -97,6 +97,9 @@
         </mat-form-field>
       </div>
     </form>
+    <p *ngIf="err != ''" class="text-danger my-1 text-center fw-bold">
+      {{ err }}
+    </p>
     <div class="d-flex justify-content-center m-2 mb-3 mt-0">
       <a
         role="button"
