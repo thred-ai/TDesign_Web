@@ -542,8 +542,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
       this.addTags(
         this.productToBuy.name ?? '',
-        this.productToBuy.url!.toString(),
-        this.formatPrice(0) + '. ' + this.productToBuy.description,
+        this.productToBuy.url?.toString() ?? '',
+        this.productToBuy.description ?? '',
         'https://shopmythred.com'
       );
 

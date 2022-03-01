@@ -1241,7 +1241,9 @@ export class LoadService {
               product.url = meta.data.image;
               product.traits = meta.data.traits;
               product.description = meta.data.description;
-              product.format = await this.getFormat(meta.data.image);
+              if (isPlatformBrowser(this.platformID)){
+                product.format = await this.getFormat(meta.data.image);
+              }
             } else {
               product.name = docData['Name'] as string;
               product.description = docData['Description'] as string;
@@ -4511,11 +4513,11 @@ export class LoadService {
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID).orderBy('Token_ID')
     );
-    if (!(saleProduct && Globals.productsSold)) {
-      query = this.db.collectionGroup('Products', (ref) =>
-        ref.where('Product_ID', '==', productID).where('Public', '==', true).orderBy('Token_ID')
-      );
-    }
+    // if (!(saleProduct && Globals.productsSold)) {
+    //   query = this.db.collectionGroup('Products', (ref) =>
+    //     ref.where('Product_ID', '==', productID).where('Public', '==', true).orderBy('Token_ID')
+    //   );
+    // }
 
     let sub = query.get().subscribe(async (docDatas) => {
       docDatas.docs.forEach(async (doc, index) => {
@@ -4561,13 +4563,15 @@ export class LoadService {
           product.isAvailable = true;
           product.forSale = forSale;
 
-          if (metadata && isPlatformBrowser(this.platformID)) {
+          if (metadata) {
             const meta = await axios.get(metadata);
             product.name = meta.data.name;
             product.url = meta.data.image;
             product.description = meta.data.description;
             product.traits = meta.data.traits;
-            product.format = await this.getFormat(meta.data.image);
+            if (isPlatformBrowser(this.platformID)){
+              product.format = await this.getFormat(meta.data.image);
+            }
           } else {
             product.name = docData['Name'] as string;
             product.description = docData['Description'] as string;
