@@ -43,9 +43,6 @@ export class Globals {
 
   public static set provider(provider: ethers.providers.Web3Provider | undefined){
     this.prov = provider
-    console.log(this.prov)
-    console.log(window)
-
     this.checkNetwork(true,  provider);
   }
 
@@ -81,9 +78,6 @@ export class Globals {
     if (true) {
       const provider = await this.initializeProvider();
       this.provider = provider;
-    }
-    else{
-      console.log('kiev')
     }
   }
 

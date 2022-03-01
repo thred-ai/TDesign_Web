@@ -688,7 +688,6 @@ export class LoadService {
 
       if (isPlatformBrowser(this.platformID)) {
         this.getPosts((products) => {
-          console.log(products);
           Globals.storeInfo!.collections = products;
           this.isLoading = false;
           if (callback) {
@@ -745,7 +744,6 @@ export class LoadService {
     tokenId: string,
     callback: (transactions: Array<NftLog>) => any,
   ) {
-    console.log(tokenId);
     const data = {
       contract: contract,
       tokenId: tokenId,
@@ -763,7 +761,6 @@ export class LoadService {
               hashes.map(async (t) => {
                 
                 let block = await Globals.provider?.getBlock(t.blockNumber);
-                console.log(block)
                 var type = '';
 
                 if (
@@ -792,7 +789,6 @@ export class LoadService {
                   return;
                 }
 
-                console.log(t)
 
                 let log = new NftLog(
                   type,
@@ -1111,7 +1107,6 @@ export class LoadService {
                 uid
               );
             } else {
-              console.log('here');
               if (this.myCallback) this.myCallback();
             }
           }
@@ -1270,10 +1265,8 @@ export class LoadService {
       //   }
       // })
 
-      console.log(col);
 
       this.getCollections(uid, async (c) => {
-        console.log(c);
         if (c) {
           col = col?.concat(c.map((v) => v.contract));
           // col = col.filter((v) => c.find((g) => g.contract == v) == undefined);
@@ -1344,9 +1337,6 @@ export class LoadService {
                 collections.push(collection);
               }
 
-              console.log(collections.length);
-              console.log(col.length);
-              console.log(col);
 
               if (collections.length == col.length) {
                 callback(collections);
@@ -1470,7 +1460,6 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-    console.log(this.rpcEndpoint);
     const nftContract = new ethers.Contract(
       contract.contract,
       contract.ABI ?? NFTS.abi,
@@ -1544,9 +1533,6 @@ export class LoadService {
             }
             resolve(format);
           }
-        };
-        xhttp.onload = function () {
-          console.log(this);
         };
         xhttp.send();
       }
@@ -2013,7 +1999,6 @@ export class LoadService {
                         .doc('Billing_Address')
                         .set(data);
                     }
-                    console.log('ekoeo');
                     callback();
                   },
                   (err) => {

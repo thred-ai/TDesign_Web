@@ -2077,7 +2077,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   isSpinning = false;
 
   mainLoad = false
-  
+
   showSpinner(duration = 500) {
     if (!this.isSpinning) {
       this.isSpinning = true;
@@ -3198,8 +3198,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   async callback() {
     if (Globals.storeInfo?.username) {
-      console.log('here3')
-
       this.showSpinner(500);
       this.mainLoad = true
       this.rootComponent.setOptions();
@@ -3245,13 +3243,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
                 inv.name = name;
               }
             });
-            console.log('here')
             if (!this.provider && !this.needsLogin){
               this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
               this.setProvider()
               
-              console.log('here2')
-
               // let signer = await this.provider?.getSigner()
               // let balance = await signer?.getBalance()
             }
