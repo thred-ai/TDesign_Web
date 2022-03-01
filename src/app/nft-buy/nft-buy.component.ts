@@ -91,6 +91,9 @@ export class NftBuyComponent implements OnInit {
         this.adding = false;
       }, 1500);
 
+      if (window.ethereum && typeof window.ethereum == 'object'){
+        Globals.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      }
       try {
         let val = Globals.provider.getSigner();
 

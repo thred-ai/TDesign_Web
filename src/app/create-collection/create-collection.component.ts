@@ -99,6 +99,9 @@ export class CreateCollectionComponent implements OnInit {
 
       var domain = name.replace(/\s/g, '').toUpperCase();
 
+      if (window.ethereum && typeof window.ethereum == 'object'){
+        Globals.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      }
       if (Globals.provider) {
         signer = Globals.provider.getSigner();
       } else {

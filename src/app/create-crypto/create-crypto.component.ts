@@ -161,6 +161,10 @@ export class CreateCryptoComponent implements OnInit {
 
   async save() {
     if (this.nftForm.valid) {
+      if (window.ethereum && typeof window.ethereum == 'object'){
+        this.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        Globals.provider = this.provider
+      }
       if (!(this.provider?.getSigner())){
         try {
           await Globals.checkProvider()

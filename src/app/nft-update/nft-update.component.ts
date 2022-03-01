@@ -135,7 +135,10 @@ export class NftUpdateComponent implements OnInit {
     
     if (this.nftForm.valid) {
 
-
+      if (window.ethereum && typeof window.ethereum == 'object'){
+        this.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        Globals.provider = this.provider
+      }
       if (!Globals.provider?.getSigner()){
         try {
           await Globals.checkProvider()
