@@ -56,8 +56,8 @@
               autoplay="true"
               loop="true"
               muted="true"
-              controls='true'
-              playsinline='true'
+              controls="true"
+              playsinline="true"
               *ngIf="
                 productToBuy?.format == 'video' && productToBuy.url != undefined
               "
@@ -737,7 +737,8 @@
                                 *matCellDef="let element"
                                 class="text-secondary"
                               >
-                                {{ element.timestamp | dateAgo }}
+                                {{(element | eventTimestamp | async)?.timestamp | dateConstruct | dateAgo}}
+
                               </td>
                             </ng-container>
 

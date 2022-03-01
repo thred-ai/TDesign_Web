@@ -744,9 +744,6 @@ export class LoadService {
     contract: string,
     tokenId: string,
     callback: (transactions: Array<NftLog>) => any,
-    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
-    )
   ) {
     console.log(tokenId);
     const data = {
@@ -765,7 +762,8 @@ export class LoadService {
             await Promise.all(
               hashes.map(async (t) => {
                 
-                let block = await provider.getBlock(t.blockNumber);
+                let block = await Globals.provider?.getBlock(t.blockNumber);
+                console.log(block)
                 var type = '';
 
                 if (
@@ -794,11 +792,13 @@ export class LoadService {
                   return;
                 }
 
+                console.log(t)
+
                 let log = new NftLog(
                   type,
-                  new Date((block?.timestamp ?? 0) * 1000),
                   type == 'list' ? t.topics[2] : t.topics[1],
                   type == 'list' ? '' : t.topics[2],
+                  t.blockNumber,
                   type == 'list'
                     ? t.topics[1]
                     : type == 'sale'

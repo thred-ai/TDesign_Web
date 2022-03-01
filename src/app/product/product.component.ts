@@ -717,10 +717,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
       if (resp as NFT) {
         this.productToBuy = resp as NFT;
         this.nftLogs.push(
-          new NftLog('sale', new Date(), product.seller, seller, product.price)
+          new NftLog('sale', product.seller, seller, 0, product.price)
         );
         this.nftLogs.push(
-          new NftLog('transfer', new Date(), seller, product.seller, '')
+          new NftLog('transfer', seller, product.seller, 0, '')
         );
       } else {
       }

@@ -2,9 +2,10 @@ import { BigNumber } from 'ethers'
 
 export class NftLog {
   event: string
-  timestamp: Date
+  timestamp?: Date
   from: string
   to: string
+  block: number
   price: string | BigNumber
 
   get icon(){
@@ -22,16 +23,18 @@ export class NftLog {
 
   constructor(
     event: string,
-    timestamp: Date,
     from: string,
     to: string,
-    price: string | BigNumber
+    block: number,
+    price: string | BigNumber,
+    timestamp?: Date
     ) {
 
     this.event = event ?? ""
-    this.timestamp = timestamp ?? new Date()
+    this.timestamp = timestamp
     this.from = from ?? ""
     this.to = to ?? ""
+    this.block = block ?? 0
     this.price = price ?? ''
   }
 }

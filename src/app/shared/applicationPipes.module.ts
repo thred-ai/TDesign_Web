@@ -26,6 +26,9 @@ import { ProviderCheckPipe } from '../provider-check.pipe';
 import { NetworkCheckPipe } from '../network-check.pipe';
 import { FileDownloaderPipe } from '../file-downloader.pipe';
 import { BufferToBase64Pipe } from '../buffer-to-base64.pipe';
+import { EventSortPipe } from '../event-sort.pipe';
+import { EventTimestampPipe } from '../event-timestamp.pipe';
+import { DateConstructPipe } from '../date-construct.pipe';
 
 @NgModule({
   imports: [
@@ -59,6 +62,9 @@ import { BufferToBase64Pipe } from '../buffer-to-base64.pipe';
     NetworkCheckPipe,
     FileDownloaderPipe,
     BufferToBase64Pipe,
+    EventSortPipe,
+    EventTimestampPipe,
+    DateConstructPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -87,7 +93,10 @@ import { BufferToBase64Pipe } from '../buffer-to-base64.pipe';
     ProviderCheckPipe,
     NetworkCheckPipe,
     FileDownloaderPipe,
-    BufferToBase64Pipe
+    BufferToBase64Pipe,
+    EventSortPipe,
+    EventTimestampPipe,
+    DateConstructPipe
   ]
 })
 export class ApplicationPipesModule {}
