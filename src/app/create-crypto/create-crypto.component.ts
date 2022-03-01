@@ -208,7 +208,6 @@ export class CreateCryptoComponent implements OnInit {
       let external = (this.nftForm.controls.external_url.value as string) ?? '';
 
       this.isLoading = true;
-
       try {
         if (file) {
           var uploadFile = this.convertBase64ToBlob(file);
@@ -299,8 +298,9 @@ export class CreateCryptoComponent implements OnInit {
             // const transaction = await contract2.mintAndTransfer(voucher, { value: x });
             // await transaction.wait()
 
-            let img = this.saveVideoThumbail() ?? url
+            let img = this.saveVideoThumbail() ?? await this.getImgBase64(file)
 
+            console.log(img)
             let docID = await this.laodService.saveNFT(
               nft,
               Globals.storeInfo.uid,
@@ -326,6 +326,12 @@ export class CreateCryptoComponent implements OnInit {
       console.log(this.nftForm.controls.price.invalid);
       console.log(this.nftForm.controls.file.invalid);
     }
+  }
+
+  async getImgBase64(file: string){
+    var uploadFile = this.convertBase64ToBlob(file);
+    let base64Image = Buffer.from(await(uploadFile.arrayBuffer())).toString('base64')
+    return base64Image
   }
 
   saveVideoThumbail() {
