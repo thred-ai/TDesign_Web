@@ -349,9 +349,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     const data = this.getProductID();
 
-    const meta = await axios.get('https://ipfs.infura.io/ipfs/QmRr8XwU5F3hCorrvhQYKX73UpCgaXYeffNLNH56NC77bp', { responseType: 'arraybuffer' });
-
-    console.log(meta)
 
     // https://ipfs.infura.io/ipfs/QmRr8XwU5F3hCorrvhQYKX73UpCgaXYeffNLNH56NC77bp
     
@@ -542,12 +539,14 @@ export class ProductComponent implements OnInit, AfterViewInit {
       //   }
       //   return;
       // }
+
       this.addTags(
         this.productToBuy.name ?? '',
         this.productToBuy.url!.toString(),
         this.formatPrice(0) + '. ' + this.productToBuy.description,
         'https://shopmythred.com'
       );
+
       if (isPlatformBrowser(this.platformID)) {
         if (Globals.storeInfo.uid == undefined) {
           const storeInfo = this.getStoreName();

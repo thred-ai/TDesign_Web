@@ -4561,7 +4561,7 @@ export class LoadService {
           product.isAvailable = true;
           product.forSale = forSale;
 
-          if (metadata) {
+          if (metadata && isPlatformBrowser(this.platformID)) {
             const meta = await axios.get(metadata);
             product.name = meta.data.name;
             product.url = meta.data.image;
