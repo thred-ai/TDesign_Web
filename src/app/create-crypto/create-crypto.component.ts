@@ -22,6 +22,7 @@ import { AdminViewComponent } from '../admin-view/admin-view.component';
 import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
+import axios from 'axios';
 
 @Component({
   selector: 'app-create-crypto',
@@ -292,7 +293,8 @@ export class CreateCryptoComponent implements OnInit {
               Globals.storeInfo.uid
             );
             nft.docID = docID;
-            nft.url = url;
+            const meta = await axios.get(url2);
+            nft.url = meta.data.image;
             this.dialogRef.close(nft);
           }
         );

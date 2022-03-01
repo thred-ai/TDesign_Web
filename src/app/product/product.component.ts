@@ -204,10 +204,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
     const modalRef = this.dialog.open(NftUpdateComponent, {
       width: '97.5vw',
-      height: '97.5vh',
+      height: '87.5vh',
       maxHeight: '100vh',
       maxWidth: '100vw',
-      panelClass: 'app-full-bleed-sm-dialog',
+      panelClass: 'app-full-bleed-dialog',
       data: {
         nft: product,
         collection: this.collections,
@@ -705,7 +705,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       width: '750px',
       maxHeight: '100vh',
       maxWidth: '100vw',
-      panelClass: 'app-full-bleed-sm-dialog',
+      panelClass: 'app-full-bleed-dialog',
       data: {
         nft: product,
         collection: this.collection,

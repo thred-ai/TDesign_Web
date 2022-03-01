@@ -1,4 +1,5 @@
-<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+<div mat-dialog-title class="d-flex p-2 justify-content-between align-items-center"   style.background-color="{{ selectedTheme()!.bg_color }}"
+>
   <!-- <h2 class="me-2 text-center d-none d-md-block">
       {{
         mode == 0
@@ -22,11 +23,13 @@
     </a>
   </div>
 </div>
-<mat-dialog-content class="h-100">
+<mat-dialog-content class="h-100"
+>
   <div
-    class="w-100 h-100 card shadow"
+    class="w-100 h-100 card shadow rounded-0 px-2"
     *ngIf="signer"
     style="overflow-y: scroll"
+    style.background-color="{{ selectedTheme()!.bg_color }}"
   >
     <ngx-spinner
       bdColor="{{ selectedIndicator().bg_color }}"
@@ -37,13 +40,13 @@
       style.color="{{ selectedIndicator()!.color }}"
       [name]="'purchase'"
     >
-      <h3 [style.font-family]="storeInfo()?.fontName!" class="text-center mt-5">
+      <h3 [style.font-family]="storeInfo()?.fontName!"  class="text-center mt-5">
         Purchasing NFT
       </h3>
     </ngx-spinner>
-    <div class="m-2 text-center">
+    <div class="m-2 text-center bg-transparent">
       <div class="d-flex justify-content-between align-items-center w-100">
-        <div class="h-100 text-start">
+        <div class="h-100 text-start" style.color="{{ selectedTheme()!.color }}">
           <h2 class="h2 my-0">{{ nft.name ?? "" }}</h2>
           <div class="wrap-input1 w-100">
             {{ collection.name ?? "" }}
