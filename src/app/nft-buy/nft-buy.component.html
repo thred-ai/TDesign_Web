@@ -1,4 +1,7 @@
-<div mat-dialog-title class="d-flex p-2 justify-content-between align-items-center"   style.background-color="{{ selectedTheme()!.bg_color }}"
+<div
+  mat-dialog-title
+  class="d-flex p-2 justify-content-between align-items-center"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
 >
   <!-- <h2 class="me-2 text-center d-none d-md-block">
       {{
@@ -23,8 +26,7 @@
     </a>
   </div>
 </div>
-<mat-dialog-content class="h-100"
->
+<mat-dialog-content class="h-100">
   <div
     class="w-100 h-100 card shadow rounded-0 px-2"
     *ngIf="signer"
@@ -40,13 +42,16 @@
       style.color="{{ selectedIndicator()!.color }}"
       [name]="'purchase'"
     >
-      <h3 [style.font-family]="storeInfo()?.fontName!"  class="text-center mt-5">
+      <h3 [style.font-family]="storeInfo()?.fontName!" class="text-center mt-5">
         Purchasing NFT
       </h3>
     </ngx-spinner>
     <div class="m-2 text-center bg-transparent">
       <div class="d-flex justify-content-between align-items-center w-100">
-        <div class="h-100 text-start" style.color="{{ selectedTheme()!.color }}">
+        <div
+          class="h-100 text-start"
+          style.color="{{ selectedTheme()!.color }}"
+        >
           <h2 class="h2 my-0">{{ nft.name ?? "" }}</h2>
           <div class="wrap-input1 w-100">
             {{ collection.name ?? "" }}
@@ -73,23 +78,28 @@
       </div>
 
       <video
-        style="object-fit: cover; aspect-ratio: 1; top: 0; margin-top: 0"
         class="my-3 rounded-10"
         style="object-fit: cover; aspect-ratio: 1; width: 90%; overflow: hidden"
+        poster="/assets/default.png"
         autoplay="true"
         loop="true"
         muted="true"
-        *ngIf="nft.format == 'video'"
+        controls="true"
+        playsinline="true"
+        *ngIf="nft?.format == 'video' && nft.url != undefined"
         src="{{ nft.url! | fileDownloader | async | bufferToBase64 }}"
       ></video>
 
       <img
-        src="{{ nft.url! | fileDownloader | async | bufferToBase64 }}"
-        alt="ok"
+        loading="lazy"
+        id="image"
         class="my-3 rounded-10"
         style="object-fit: cover; aspect-ratio: 1; width: 90%; overflow: hidden"
-        onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
-        *ngIf="nft.format == 'image'"
+        [useSrcset]="true"
+        [defaultImage]="'/assets/default.png'"
+        [lazyLoad]="nft.linkUrl!"
+        alt="ok"
+        *ngIf="nft?.format == 'image'"
       />
 
       <p *ngIf="err != ''" class="text-danger text-center fw-bold">

@@ -52,6 +52,7 @@
                 bottom: 0;
                 margin-bottom: 0;
               "
+              poster="/assets/default.png"
               class="h-100 w-100"
               autoplay="true"
               loop="true"
@@ -59,7 +60,7 @@
               controls="true"
               playsinline="true"
               *ngIf="
-                productToBuy?.format == 'video' && productToBuy.url != undefined && isBrowser()
+                productToBuy?.format == 'video' && productToBuy.url != undefined
               "
               src="{{
                 productToBuy.url! | fileDownloader | async | bufferToBase64
@@ -67,14 +68,15 @@
             ></video>
 
             <img
-              class="h-100 w-100"
-              src="{{
-                productToBuy.url! | fileDownloader | async | bufferToBase64
-              }}"
-              alt="ok"
+              loading="lazy"
+              id="image"
               [hidden]="isZoom"
+              class="h-100 w-100 {{ (storeInfo()?.colorStyle)!.back_code }}"
+              [useSrcset]="true"
+              [defaultImage]="'/assets/default.png'"
+              [lazyLoad]="productToBuy.linkUrl!"
+              alt="ok"
               style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
-              onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
               *ngIf="productToBuy?.format == 'image'"
             />
             <div
@@ -189,7 +191,9 @@
                       style.background-color="{{ selectedTheme()!.bg_color }}"
                       style.color="{{ selectedTheme()!.color }}"
                     >
-                      <p class="text-{{ info.colorStyle!.text_code }} fw-bolder">
+                      <p
+                        class="text-{{ info.colorStyle!.text_code }} fw-bolder"
+                      >
                         {{ p.trait_type.toUpperCase() }}
                       </p>
                       <p style="font-size: medium">
@@ -214,19 +218,27 @@
                   </div>
                 </div>
                 <div *ngIf="panel.type == 2">
-                  <div class="d-flex justify-content-between align-items-center">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
                     <h3>Contract Address</h3>
                     <h3>{{ collections?.contract ?? "" | address }}</h3>
                   </div>
-                  <div class="d-flex justify-content-between align-items-center">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
                     <h3>Token ID</h3>
                     <h3>{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
                   </div>
-                  <div class="d-flex justify-content-between align-items-center">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
                     <h3>Token Standard</h3>
                     <h3>ERC-721</h3>
                   </div>
-                  <div class="d-flex justify-content-between align-items-center">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
                     <h3>Blockchain</h3>
                     <h3>Polygon</h3>
                   </div>
@@ -739,8 +751,11 @@
                                 *matCellDef="let element"
                                 class="text-secondary"
                               >
-                                {{(element | eventTimestamp | async)?.timestamp | dateConstruct | dateAgo}}
-
+                                {{
+                                  (element | eventTimestamp | async)?.timestamp
+                                    | dateConstruct
+                                    | dateAgo
+                                }}
                               </td>
                             </ng-container>
 

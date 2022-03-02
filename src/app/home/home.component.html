@@ -70,36 +70,19 @@
                   class="w-100"
                   (click)="routeToProduct(product)"
                 >
-                  <video
-                    style="
-                      object-fit: cover;
-                      aspect-ratio: 1;
-                      top: 0;
-                      margin-top: 0;
-                    "
-                    class="h-100 w-100"
-                    autoplay="true"
-                    loop="true"
-                    muted="true"
-                    *ngIf="product.format == 'video'"
-                    src="{{
-                      product.url! | fileDownloader | async | bufferToBase64
-                    }}"
-                  ></video>
-
                   <img
-                    class="h-100 w-100"
-                    src="{{
-                      product.url! | fileDownloader | async | bufferToBase64
-                    }}"
+                    loading="lazy"
+                    id="image"
+                    class="h-100 w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+                    [useSrcset]="true"
+                    [defaultImage]="'/assets/default.png'"
+                    [lazyLoad]="product.linkUrl!"
                     alt="ok"
                     style="
                       object-fit: cover;
                       aspect-ratio: 1;
                       margin-bottom: 0.35em;
                     "
-                    onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
-                    *ngIf="product.format == 'image'"
                   />
                 </a>
                 <div
@@ -159,12 +142,16 @@
               class="ms-0 me-0"
               role="button"
               (click)="imgLinkPressed((row.imgLinks ?? [])[i])"
-              ><img
-                style="border-radius: 2.5%"
-                src="{{ img }}"
-                style="width: 100%; height: auto"
-                alt="Product"
-            /></a>
+            >
+              <img
+                loading="lazy"
+                class="h-auto w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+                [useSrcset]="true"
+                [defaultImage]="'/assets/default.png'"
+                [lazyLoad]="img"
+                alt="ok"
+              />
+            </a>
           </div>
         </div>
       </div>

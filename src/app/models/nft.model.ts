@@ -1,6 +1,7 @@
 import { Dict } from '../services/load.service';
 import { nftaddress } from 'config';
 import { ethers } from 'ethers';
+import axios from 'axios';
 
 export class NFT {
   tokenID?: number
@@ -16,6 +17,8 @@ export class NFT {
   url?: string
   linkUrl?: string
   price: ethers.BigNumber = ethers.utils.parseUnits('0', 'ether');
+
+  storeImg?: string = ''
 
 
   get priceNum(){

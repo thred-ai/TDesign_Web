@@ -1,4 +1,8 @@
-<div mat-dialog-title class="d-flex justify-content-between align-items-center" style.background-color="{{ selectedTheme()!.bg_color }}">
+<div
+  mat-dialog-title
+  class="d-flex justify-content-between align-items-center"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
+>
   <!-- <h2 class="me-2 text-center d-none d-md-block">
     {{
       mode == 0
@@ -9,7 +13,10 @@
     }}
   </h2> -->
 
-  <div class="d-flex justify-content-end align-items-center w-100" style.background-color="{{ selectedTheme()!.bg_color }}">
+  <div
+    class="d-flex justify-content-end align-items-center w-100"
+    style.background-color="{{ selectedTheme()!.bg_color }}"
+  >
     <!-- <a
       role="button"
       (click)="close()"
@@ -27,9 +34,14 @@
     </a>
   </div>
 </div>
-<mat-dialog-content class="w-100 h-100 d-block d-md-flex pb-4" style.background-color="{{ selectedTheme()!.bg_color }}">
+<mat-dialog-content
+  class="w-100 h-100 d-block d-md-flex pb-4"
+  style.background-color="{{ selectedTheme()!.bg_color }}"
+>
   <div
-    class="w-100 h-100 w-md-50 card shadow positon-relative bg-{{ storeInfo?.colorStyle!.back_code }}"
+    class="w-100 h-100 w-md-50 card shadow positon-relative bg-{{
+      (storeInfo?.colorStyle)!.back_code
+    }}"
     style="overflow-y: scroll"
     *ngIf="provider"
   >
@@ -55,14 +67,14 @@
             Your NFT's Name, Description, and Price
           </h5> -->
       <div class="wrap-input1 w-100">
-        <h2 class="w-100 text-{{ storeInfo?.colorStyle!.text_code }}">
+        <h2 class="w-100 text-{{ (storeInfo?.colorStyle)!.text_code }}">
           {{ nft!.name }}
         </h2>
       </div>
       <h3 class="h2 my-0 text-secondary">Description</h3>
 
       <div class="wrap-input1 w-100 mt-0">
-        <h2 class="w-100 text-{{ storeInfo?.colorStyle!.text_code }}">
+        <h2 class="w-100 text-{{ (storeInfo?.colorStyle)!.text_code }}">
           {{ nft!.description }}
         </h2>
       </div>
@@ -95,7 +107,9 @@
           </div>
           <div class="w-100" *ngIf="(nft?.traits ?? []).length == 0">
             <div class="wrap-input1 w-100 mt-0">
-              <h2 class="w-100 text-{{ storeInfo?.colorStyle!.text_code }}">No Traits</h2>
+              <h2 class="w-100 text-{{ (storeInfo?.colorStyle)!.text_code }}">
+                No Traits
+              </h2>
             </div>
           </div>
         </div>
@@ -103,8 +117,13 @@
 
       <h3 class="h2 my-0 text-secondary">Price</h3>
       <div class="wrap-input1 w-100">
-        <mat-form-field class="w-100 text-{{ storeInfo?.colorStyle!.text_code }}" appearance="outline">
-          <mat-label class="text-{{ storeInfo?.colorStyle!.text_code }}">Price</mat-label>
+        <mat-form-field
+          class="w-100 text-{{ (storeInfo?.colorStyle)!.text_code }}"
+          appearance="outline"
+        >
+          <mat-label class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
+            >Price</mat-label
+          >
           <input
             matInput
             currencyMask
@@ -117,9 +136,16 @@
         </mat-form-field>
       </div>
       <div class="col mt-4">
-        <h2 class="h2 my-0" style.color="{{ selectedTheme()!.color }}">Listing</h2>
-        <h5 class="mt-0" style.color="{{ selectedTheme()!.color }}">Update the listing status of your NFT.</h5>
-        <mat-radio-group class="text-{{ storeInfo?.colorStyle!.text_code }}" formControlName="isListed">
+        <h2 class="h2 my-0" style.color="{{ selectedTheme()!.color }}">
+          Listing
+        </h2>
+        <h5 class="mt-0" style.color="{{ selectedTheme()!.color }}">
+          Update the listing status of your NFT.
+        </h5>
+        <mat-radio-group
+          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
+          formControlName="isListed"
+        >
           <div>
             <mat-radio-button [value]="true" (change)="radioChange($event)"
               >For Sale</mat-radio-button
@@ -133,21 +159,29 @@
         </mat-radio-group>
       </div>
     </form>
-    
+
     <div
       class="position-absolute"
       style="z-index: 5; bottom: 10px; right: 10px"
     >
-    <p *ngIf="err != ''" class="text-danger text-center fw-bold">
-      {{ err }}
-    </p>
-    <br>
-      <a role="button" class="btn mt-2 btn-{{ storeInfo?.colorStyle!.text_code }} rounded" (click)="save()"
+      <p *ngIf="err != ''" class="text-danger text-center fw-bold">
+        {{ err }}
+      </p>
+      <br />
+      <a
+        role="button"
+        class="btn mt-2 btn-{{ (storeInfo?.colorStyle)!.text_code }} rounded"
+        (click)="save()"
         >Save Changes</a
       >
     </div>
   </div>
-  <div class="w-100 h-100 w-md-50" *ngIf="provider" style.color="{{ selectedTheme()!.color }}" style.background-color="{{ selectedTheme()!.bg_color }}">
+  <div
+    class="w-100 h-100 w-md-50"
+    *ngIf="provider"
+    style.color="{{ selectedTheme()!.color }}"
+    style.background-color="{{ selectedTheme()!.bg_color }}"
+  >
     <div class="w-100 h-100 px-5 mt-0 justify-content-center align-items-top">
       <!-- <a
           role="button"
@@ -167,19 +201,24 @@
           <video
             class="p-0 border rounded"
             style="object-fit: contain; height: 500px; max-width: 100%"
+            poster="/assets/default.png"
             autoplay="true"
             loop="true"
             muted="true"
-            *ngIf="nft?.format == 'video'"
+            controls="true"
+            playsinline="true"
+            *ngIf="nft?.format == 'video' && nft?.url != undefined"
             src="{{ nft?.url! | fileDownloader | async | bufferToBase64 }}"
           ></video>
 
           <img
-            src="{{ nft?.url! | fileDownloader | async | bufferToBase64 }}"
-            alt="ok"
             class="p-0 border rounded"
             style="object-fit: contain; height: 500px; max-width: 100%"
-            onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"
+            loading="lazy"
+            [useSrcset]="true"
+            [defaultImage]="'/assets/default.png'"
+            [lazyLoad]="nft?.linkUrl!"
+            alt="ok"
             *ngIf="nft?.format == 'image'"
           />
         </div>
@@ -234,7 +273,8 @@
     *ngIf="!provider"
     class="d-flex justify-content-center align-items-center w-100"
     style="height: 100%"
-    style.color="{{ selectedTheme()!.color }}" style.background-color="{{ selectedTheme()!.bg_color }}"
+    style.color="{{ selectedTheme()!.color }}"
+    style.background-color="{{ selectedTheme()!.bg_color }}"
   >
     <div class="w-100 text-center">
       <div
@@ -268,7 +308,9 @@
         and try again
       </p>
       <a
-        class="btn btn-{{ storeInfo?.colorStyle!.text_code }} rounded-pill fw-bolder px-3 text-center mt-2"
+        class="btn btn-{{
+          (storeInfo?.colorStyle)!.text_code
+        }} rounded-pill fw-bolder px-3 text-center mt-2"
         (click)="setProvider()"
         style="font-size: 25px"
       >

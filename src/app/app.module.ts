@@ -59,7 +59,6 @@ import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
     NgbModule,
     MatInputModule,
     MatSelectModule,
-
     NgxSpinnerModule,
     DragScrollModule,
     MatSnackBarModule,
@@ -74,7 +73,7 @@ import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
     VgCoreModule,
     VgControlsModule,
     VgBufferingModule,
-    VgOverlayPlayModule
+    VgOverlayPlayModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [

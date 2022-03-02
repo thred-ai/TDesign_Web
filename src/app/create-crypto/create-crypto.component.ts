@@ -314,13 +314,15 @@ export class CreateCryptoComponent implements OnInit {
             const meta = await axios.get(url2);
             nft.url = meta.data.image;
             this.dialogRef.close(nft);
+            this.isLoading = false;
           }
         );
         // }
+        this.isLoading = false;
       } catch (error) {
+        this.isLoading = false;
         console.log('Error uploading file: ', error);
       }
-      this.isLoading = false;
     } else {
       console.log(this.nftForm.controls.title.invalid);
       console.log(this.nftForm.controls.price.invalid);

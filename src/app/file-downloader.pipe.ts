@@ -1,5 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import axios, { AxiosResponse } from 'axios';
+import Axios, { AxiosResponse } from 'axios';
+import { setupCache } from 'axios-cache-interceptor';
+
+// same object, but with updated typings.
+const axios = setupCache(Axios);
+
 
 @Pipe({
   name: 'fileDownloader'

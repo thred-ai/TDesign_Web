@@ -52,7 +52,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CreateCryptoComponent } from '../create-crypto/create-crypto.component';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
-import { SatPopoverModule } from '@ncstate/sat-popover';
+import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
 
 const routes: Routes = [
   {
@@ -117,7 +117,7 @@ const routes: Routes = [
     NgApexchartsModule,
     MatRadioModule,
     NgxFileDropModule,
-    SatPopoverModule,
+    LazyLoadImageModule,
     MonacoEditorModule.forRoot(),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

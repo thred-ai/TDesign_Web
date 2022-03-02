@@ -12,6 +12,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
 
 const routes: Routes = [
   {
@@ -38,6 +39,7 @@ const routes: Routes = [
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    LazyLoadImageModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

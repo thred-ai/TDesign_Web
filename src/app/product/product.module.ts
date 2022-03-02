@@ -21,6 +21,7 @@ import { NftUpdateComponent } from '../nft-update/nft-update.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { MatRadioModule } from '@angular/material/radio';
+import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
 
 const routes: Routes = [
   {
@@ -54,7 +55,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     NgxCurrencyModule,
     MatRadioModule,
-
+    LazyLoadImageModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

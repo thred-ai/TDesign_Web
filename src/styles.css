@@ -4413,6 +4413,22 @@ textarea.form-control-lg {
   padding: 1rem 1rem;
 }
 
+img.ng-lazyloaded {
+  
+  animation: fadein .5s;
+}
+
+
+img.ng-lazyloading.dark {
+  background-color: rgb(27, 27, 27);
+}
+
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .card-title {
   margin-bottom: 0.5rem;
 }
