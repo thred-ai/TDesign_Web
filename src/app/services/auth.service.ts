@@ -146,7 +146,7 @@ export class AuthService {
               undefined,
               undefined,
               nonce,
-              ethereum.selectedAddress
+              ethereum.selectedAddress.toLowercase()
             );
             callback(result.user.uid, this.app);
           } else {
