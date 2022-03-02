@@ -8,6 +8,7 @@ import { Collection } from '../models/collection.model';
 import { ethers, BigNumber } from 'ethers';
 import { BehaviorSubject, from } from 'rxjs';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { LAZYLOAD_IMAGE_HOOKS } from 'ng-lazyload-image';
 var abi = require('human-standard-token-abi');
 
 @Component({

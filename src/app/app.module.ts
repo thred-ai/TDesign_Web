@@ -34,6 +34,7 @@ import { VgCoreModule } from '@videogular/ngx-videogular/core';
 import { VgControlsModule } from '@videogular/ngx-videogular/controls';
 import { VgOverlayPlayModule } from '@videogular/ngx-videogular/overlay-play';
 import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
+import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image'; // <-- include ScrollHooks
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
     VgControlsModule,
     VgBufferingModule,
     VgOverlayPlayModule,
+    LazyLoadImageModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [

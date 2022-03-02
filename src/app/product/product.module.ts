@@ -21,7 +21,7 @@ import { NftUpdateComponent } from '../nft-update/nft-update.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { MatRadioModule } from '@angular/material/radio';
-import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
+import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image'; // <-- import it
 
 const routes: Routes = [
   {
@@ -46,16 +46,17 @@ const routes: Routes = [
     MatSelectModule,
     HttpClientModule,
     NgxSpinnerModule,
+    LazyLoadImageModule,
+    
     NgbModule,
     DragScrollModule,
     MatExpansionModule,
     MatTableModule,
-    RouterModule.forChild(routes),
     ApplicationPipesModule,
     ReactiveFormsModule,
     NgxCurrencyModule,
     MatRadioModule,
-    LazyLoadImageModule
+    RouterModule.forChild(routes),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
