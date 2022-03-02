@@ -172,64 +172,66 @@
                 </mat-icon>
               </mat-expansion-panel-header>
 
-              <p *ngIf="panel.type == 1">{{ panel.description }}</p>
-              <div
-                *ngIf="panel.type == 0"
-                class="row gx-4 row-cols-1 row-cols-md-3 align-items-center justify-content-start"
-              >
+              <ng-template matExpansionPanelContent>
+                <p *ngIf="panel.type == 1">{{ panel.description }}</p>
                 <div
-                  class="col p-2"
-                  *ngFor="let p of productToBuy?.traits ?? []"
+                  *ngIf="panel.type == 0"
+                  class="row gx-4 row-cols-1 row-cols-md-3 align-items-center justify-content-start"
                 >
                   <div
-                    class="card border border-{{
-                      info.colorStyle!.text_code
-                    }} text-center rounded-panel-2 p-1"
-                    style.background-color="{{ selectedTheme()!.bg_color }}"
-                    style.color="{{ selectedTheme()!.color }}"
+                    class="col p-2"
+                    *ngFor="let p of productToBuy?.traits ?? []"
                   >
-                    <p class="text-{{ info.colorStyle!.text_code }} fw-bolder">
-                      {{ p.trait_type.toUpperCase() }}
-                    </p>
-                    <p style="font-size: medium">
-                      {{ p.value }}
-                    </p>
-                    <p class="text-secondary">
-                      {{ (collections.getTraitRarity(p) ?? 0) * 100 }}% have
-                      this trait
+                    <div
+                      class="card border border-{{
+                        info.colorStyle!.text_code
+                      }} text-center rounded-panel-2 p-1"
+                      style.background-color="{{ selectedTheme()!.bg_color }}"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      <p class="text-{{ info.colorStyle!.text_code }} fw-bolder">
+                        {{ p.trait_type.toUpperCase() }}
+                      </p>
+                      <p style="font-size: medium">
+                        {{ p.value }}
+                      </p>
+                      <p class="text-secondary">
+                        {{ (collections.getTraitRarity(p) ?? 0) * 100 }}% have
+                        this trait
+                      </p>
+                    </div>
+                  </div>
+                  <div
+                    class="w-100"
+                    *ngIf="(productToBuy?.traits ?? []).length == 0"
+                  >
+                    <p
+                      class="text-center"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      NO TRAITS
                     </p>
                   </div>
                 </div>
-                <div
-                  class="w-100"
-                  *ngIf="(productToBuy?.traits ?? []).length == 0"
-                >
-                  <p
-                    class="text-center"
-                    style.color="{{ selectedTheme()!.color }}"
-                  >
-                    NO TRAITS
-                  </p>
+                <div *ngIf="panel.type == 2">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>Contract Address</h3>
+                    <h3>{{ collections?.contract ?? "" | address }}</h3>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>Token ID</h3>
+                    <h3>{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>Token Standard</h3>
+                    <h3>ERC-721</h3>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h3>Blockchain</h3>
+                    <h3>Polygon</h3>
+                  </div>
                 </div>
-              </div>
-              <div *ngIf="panel.type == 2">
-                <div class="d-flex justify-content-between align-items-center">
-                  <h3>Contract Address</h3>
-                  <h3>{{ collections?.contract ?? "" | address }}</h3>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <h3>Token ID</h3>
-                  <h3>{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <h3>Token Standard</h3>
-                  <h3>ERC-721</h3>
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <h3>Blockchain</h3>
-                  <h3>Polygon</h3>
-                </div>
-              </div>
+              </ng-template>
               <!-- <mat-action-row>
               <button mat-flat-button (click)="mapanel.close()">
                 Click to close
