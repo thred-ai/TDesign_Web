@@ -28,7 +28,6 @@ export class CreateCollectionComponent implements OnInit {
 
   storeInfo?: Store;
 
-
   tokens = [
     {
       name: 'Default Tokens',
@@ -83,12 +82,10 @@ export class CreateCollectionComponent implements OnInit {
     this.storeInfo = Globals.storeInfo;
   }
 
-  err = ''
+  err = '';
 
   async save() {
-
     if (this.nftForm.valid) {
-      
       this.spinner.show('loader');
 
       let name = (this.nftForm.controls.title.value as string) ?? '';
@@ -99,8 +96,11 @@ export class CreateCollectionComponent implements OnInit {
 
       var domain = name.replace(/\s/g, '').toUpperCase();
 
-      if (window.ethereum && typeof window.ethereum == 'object'){
-        Globals.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      if (window.ethereum && typeof window.ethereum == 'object') {
+        Globals.provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          'any'
+        );
       }
       if (Globals.provider) {
         signer = Globals.provider.getSigner();
@@ -108,26 +108,28 @@ export class CreateCollectionComponent implements OnInit {
         console.log('ok');
       }
 
-      if (!(signer)){
+      if (!signer) {
         try {
-          await Globals.checkProvider()
-          signer = Globals.provider?.getSigner()
+          await Globals.checkProvider();
+          signer = Globals.provider?.getSigner();
         } catch (error) {
-          this.err = 'No Wallet Connected. Please try again'
-          return
+          this.err = 'No Wallet Connected. Please try again';
+          return;
         }
       }
-      if (!(await (this.loadService.networkCheck() ?? false))) { 
-        this.err = 'Please switch your Network to the Polygon Mainnet'
-        return 
+      if (!(await (this.loadService.networkCheck() ?? false))) {
+        this.err = 'Please switch your Network to the Polygon Mainnet';
+        return;
       }
 
       if (signer) {
         let wallet = await signer.getAddress();
 
-        if (wallet.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()) { 
-          this.err = 'Wrong Wallet'
-          return 
+        if (
+          wallet.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+        ) {
+          this.err = 'Wrong Wallet';
+          return;
         }
 
         let factory = new ethers.ContractFactory(
@@ -136,35 +138,50 @@ export class CreateCollectionComponent implements OnInit {
           signer
         );
 
-        let deployed = await factory.deploy(name, symbol, domain, '1', wallet);
-        await deployed.deployed();
+        try {
+          let deployed = await factory.deploy(
+            name,
+            symbol,
+            domain,
+            '1',
+            wallet
+          );
+          await deployed.deployed();
 
-        let address = deployed.address;
-        let collection = new Collection(
-          name,
-          symbol,
-          [],
-          address,
-          'MATIC',
-          0,
-          wallet,
-          true,
-          Globals.storeInfo.uid!,
-          new Date(),
-          domain,
-          undefined,
-          true,
-          NFTS.abi
-        );
+          let address = deployed.address;
+          let collection = new Collection(
+            name,
+            symbol,
+            [],
+            address,
+            'MATIC',
+            0,
+            wallet,
+            true,
+            Globals.storeInfo.uid!,
+            new Date(),
+            domain,
+            undefined,
+            true,
+            NFTS.abi
+          );
 
-        console.log(collection);
+          console.log(collection);
 
-        await this.loadService.saveCollectionInfo(
-          collection,
-          Globals.storeInfo.uid
-        );
+          await this.loadService.saveCollectionInfo(
+            collection,
+            Globals.storeInfo.uid
+          );
 
-        this.dialogRef.close(collection);
+          this.dialogRef.close(collection);
+        } catch (error) {
+          let data = (error as any).data;
+          if (data && data.code == -32000) {
+            this.err = 'Not enough MATIC' + ' in wallet!';
+          } else {
+            this.err = 'Something went wrong, please try again.';
+          }
+        }
       } else {
         console.log('no signer');
       }

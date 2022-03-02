@@ -219,6 +219,7 @@ export class CreateCryptoComponent implements OnInit {
         }
       } catch (error) {
         console.log('Error uploading file: ', error);
+        this.err = 'Something went wrong. Please try again';
       }
 
       let url = this.nftForm.controls.url.value as string;
@@ -298,9 +299,10 @@ export class CreateCryptoComponent implements OnInit {
             // const transaction = await contract2.mintAndTransfer(voucher, { value: x });
             // await transaction.wait()
 
-            let img = this.saveVideoThumbail() ?? await this.getImgBase64(file)
+            let img =
+              this.saveVideoThumbail() ?? (await this.getImgBase64(file));
 
-            console.log(img)
+            console.log(img);
             let docID = await this.laodService.saveNFT(
               nft,
               Globals.storeInfo.uid,
@@ -321,7 +323,12 @@ export class CreateCryptoComponent implements OnInit {
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
-        console.log('Error uploading file: ', error);
+        let data = (error as any).data;
+        if (data && data.code == -32000) {
+          this.err = 'Not enough MATIC' + ' in wallet!';
+        } else {
+          this.err = 'Something went wrong, please try again.';
+        }
       }
     } else {
       console.log(this.nftForm.controls.title.invalid);
@@ -330,14 +337,16 @@ export class CreateCryptoComponent implements OnInit {
     }
   }
 
-  async getImgBase64(file: string){
+  async getImgBase64(file: string) {
     var uploadFile = this.convertBase64ToBlob(file);
-    let base64Image = Buffer.from(await(uploadFile.arrayBuffer())).toString('base64')
-    return base64Image
+    let base64Image = Buffer.from(await uploadFile.arrayBuffer()).toString(
+      'base64'
+    );
+    return base64Image;
   }
 
   saveVideoThumbail() {
-    let ref = this.video?.nativeElement
+    let ref = this.video?.nativeElement;
     if (ref) {
       var canvas = document.createElement('canvas');
       canvas.width = ref.videoWidth;

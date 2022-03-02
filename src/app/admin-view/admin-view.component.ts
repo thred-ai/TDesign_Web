@@ -3265,6 +3265,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
   }
 
+  providerName(){
+    if (Globals.provider){
+      return 'CONNECTED'
+    }
+    return 'CONNECT WALLET'
+  }
+
   async setProvider(){
     await Globals.checkProvider()
   }

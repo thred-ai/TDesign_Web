@@ -67,6 +67,24 @@
           >{{ storeInfo().fullName }}</a
         >
       </div>
+      <ul class="navbar-nav mt-3 w-100 p-0">
+          
+
+        <li class="d-flex justify-content-center align-items-center w-100 text-center px-2" style="flex-shrink: 0">
+          <a
+            data-bs-toggle="collapse"
+            data-bs-target=".navbar-collapse.show"
+            class="btn btn-outline-{{
+              storeInfo().colorStyle!.text_code
+            }} d-flex align-items-center justify-content-center w-100"
+            role="button"
+            [style.font-family]="storeInfo().fontName!"
+          >
+            {{ providerName() }}
+            <mat-icon class="ms-2"> account_balance_wallet </mat-icon>
+          </a>
+        </li>
+      </ul>
       <div class="w-100" style="overflow-y: auto">
         <div class="w-100" *ngFor="let panel of panels; index as s">
           <div
@@ -149,32 +167,6 @@
           >
             <mat-icon>menu_open</mat-icon>
           </a>
-          <div *ngIf="!isMobile()">
-            <a
-              role="button"
-              class="side card shadow fw-bold m-0 me-2 rounded-pill"
-              style="font-size: 15px"
-              (click)="selectSetting(0, 0)"
-            >
-              <div
-                class="d-flex text-{{
-                  storeInfo().colorStyle!.text_code
-                }} btn btn-{{
-                  storeInfo().colorStyle!.back_code
-                }} rounded-pill align-items-center justify-content-center h-100 w-100"
-              >
-                {{ orderCount() == 0 ? "NO" : orderCount() }} ORDERS
-                <mat-icon class="ms-2">
-                  <span
-                    class="material-icons-outlined text-warning"
-                    style="font-size: 25px"
-                  >
-                    monetization_on
-                  </span>
-                </mat-icon>
-              </div>
-            </a>
-          </div>
           <div [hidden]="shouldHideLiveBtn()" *ngIf="intValue == undefined">
             <a
               *ngIf="storeLive()"
@@ -1192,20 +1184,22 @@
                                 class="w-100"
                                 (click)="routeToProduct(product)"
                               >
-                              <img
-                              loading="lazy"
-                              id="image"
-                              class="h-100 w-100 {{ (storeInfo()?.colorStyle)!.back_code }}"
-                              [useSrcset]="true"
-                              [defaultImage]="'/assets/default.png'"
-                              [lazyLoad]="product.linkUrl!"
-                              alt="ok"
-                              style="
-                                object-fit: cover;
-                                aspect-ratio: 1;
-                                margin-bottom: 0.35em;
-                              "
-                            />
+                                <img
+                                  loading="lazy"
+                                  id="image"
+                                  class="h-100 w-100 {{
+                                    (storeInfo()?.colorStyle)!.back_code
+                                  }}"
+                                  [useSrcset]="true"
+                                  [defaultImage]="'/assets/default.png'"
+                                  [lazyLoad]="product.linkUrl!"
+                                  alt="ok"
+                                  style="
+                                    object-fit: cover;
+                                    aspect-ratio: 1;
+                                    margin-bottom: 0.35em;
+                                  "
+                                />
                               </a>
                             </a>
                             <!-- Product details-->
@@ -1250,19 +1244,18 @@
                         <div
                           class="d-block align-items-center text-center text-sm-start w-100"
                         >
-                          <a class="ms-0 me-0" role="button"
-                            >
+                          <a class="ms-0 me-0" role="button">
                             <img
-                            loading="lazy"
-                            class="h-auto w-100 {{
-                              (storeInfo()?.colorStyle)!.back_code
-                            }}"
-                            [useSrcset]="true"
-                            [defaultImage]="'/assets/default.png'"
-                            [lazyLoad]="img"
-                            alt="ok"
-                          />
-                        </a>
+                              loading="lazy"
+                              class="h-auto w-100 {{
+                                (storeInfo()?.colorStyle)!.back_code
+                              }}"
+                              [useSrcset]="true"
+                              [defaultImage]="'/assets/default.png'"
+                              [lazyLoad]="img"
+                              alt="ok"
+                            />
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -1551,7 +1544,7 @@
                 </ul>
 
                 <ul class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 p-0">
-                  <li class="d-flex">
+                  <!-- <li class="d-flex">
                     <div class="nav-item dropdown">
                       <button
                         id="navbarDropdown"
@@ -1567,27 +1560,20 @@
                         />
                       </button>
                     </div>
-                  </li>
+                  </li> -->
+
                   <li class="d-flex mt-1 mb-1" style="flex-shrink: 0">
                     <a
                       data-bs-toggle="collapse"
                       data-bs-target=".navbar-collapse.show"
                       class="btn btn-outline-{{
                         storeInfo().colorStyle!.text_code
-                      }}"
+                      }} d-flex align-items-center justify-content-center"
                       role="button"
                       [style.font-family]="storeInfo().fontName!"
                     >
-                      MY BAG
-                      <span
-                        class="badge bg-{{
-                          storeInfo().colorStyle!.text_code
-                        }} text-{{
-                          storeInfo().colorStyle!.back_code
-                        }} ms-1 rounded-pill"
-                        [style.font-family]="storeInfo().fontName!"
-                        >0</span
-                      >
+                      {{ providerName() }}
+                      <mat-icon class="ms-2"> account_balance_wallet </mat-icon>
                     </a>
                   </li>
                 </ul>
@@ -1615,7 +1601,16 @@
               <div
                 class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
               >
-                <div class="col mb-2 mx-2" [style.width.px]="50">
+              <div class="col mb-2 mx-2" [style.width.px]="50">
+                <a role="button">
+                  <img
+                    [style.width.px]="50"
+                    alt="ok"
+                    src="assets/polygon_logo.svg"
+                  />
+                </a>
+              </div>
+                <!-- <div class="col mb-2 mx-2" [style.width.px]="50">
                   <a role="button">
                     <img
                       style="object-fit: contain; height: 25px"
@@ -1684,7 +1679,7 @@
                       src="assets/microsoftcard.png"
                     />
                   </a>
-                </div>
+                </div> -->
               </div>
 
               <div
@@ -2522,20 +2517,22 @@
                                 class="w-100"
                                 (click)="routeToProduct(product)"
                               >
-                              <img
-                              loading="lazy"
-                              id="image"
-                              class="h-100 w-100 {{ (storeInfo()?.colorStyle)!.back_code }}"
-                              [useSrcset]="true"
-                              [defaultImage]="'/assets/default.png'"
-                              [lazyLoad]="product.linkUrl!"
-                              alt="ok"
-                              style="
-                                object-fit: cover;
-                                aspect-ratio: 1;
-                                margin-bottom: 0.35em;
-                              "
-                            />
+                                <img
+                                  loading="lazy"
+                                  id="image"
+                                  class="h-100 w-100 {{
+                                    (storeInfo()?.colorStyle)!.back_code
+                                  }}"
+                                  [useSrcset]="true"
+                                  [defaultImage]="'/assets/default.png'"
+                                  [lazyLoad]="product.linkUrl!"
+                                  alt="ok"
+                                  style="
+                                    object-fit: cover;
+                                    aspect-ratio: 1;
+                                    margin-bottom: 0.35em;
+                                  "
+                                />
                               </a>
                               <div class="card-body text-center w-100">
                                 <p

@@ -186,10 +186,14 @@ export class NftBuyComponent implements OnInit {
         this.dialogRef.close(this.nft);
       } catch (error) {
         console.log(error);
-        if ((error as any).data.code == -32000) {
+        let data = (error as any).data
+        if (data && data.code == -32000) {
           this.err =
             ('Not enough ' + this.collection.currency ?? 'MATIC') +
             ' in wallet!';
+        }
+        else{
+          this.err = 'Something went wrong, please try again.'
         }
         this.shake = false;
         this.spinner.hide('purchase');

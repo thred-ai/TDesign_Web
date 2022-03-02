@@ -237,7 +237,15 @@ export class NftUpdateComponent implements OnInit {
         this.nft.forSale = forSale
         this.dialogRef.close(this.nft)
       } catch (error) {
-        console.log(error)
+        let data = (error as any).data
+        if (data && data.code == -32000) {
+          this.err =
+            ('Not enough MATIC') +
+            ' in wallet!';
+        }
+        else{
+          this.err = 'Something went wrong, please try again.'
+        }
       }
       this.isLoading = false;
     } else {

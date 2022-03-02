@@ -114,7 +114,7 @@
                         <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
                     </ul>
                 </li> -->
-        <li
+        <!-- <li
           [hidden]="selectedCurrency() == undefined || !shouldShowCurrency()"
           class="nav-item dropdown"
         >
@@ -144,7 +144,7 @@
               >
             </li>
           </ul>
-        </li>
+        </li> -->
       </ul>
 
       <ul

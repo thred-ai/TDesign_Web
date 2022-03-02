@@ -252,6 +252,14 @@ public static socials = [
         img: '/assets/instagram.png',
     },
     {
+        name: 'Discord',
+        img: '/assets/discord.png',
+    },
+    {
+        name: 'Twitter',
+        img: '/assets/twitter.png',
+    },
+    {
         name: 'TikTok',
         img: '/assets/tiktok.png',
     },
@@ -262,10 +270,6 @@ public static socials = [
     {
         name: 'Facebook',
         img: '/assets/facebook.png',
-    },
-    {
-        name: 'Twitter',
-        img: '/assets/twitter.png',
     },
     {
         name: 'Pinterest',
