@@ -391,12 +391,18 @@
         class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
       >
         <div class="col mb-2 mx-2" [style.width.px]="50">
-          <a role="button">
+          <a role="button" [ngbTooltip]="qtipContent"
+          >
+            <ng-template #qtipContent>
+              {{storeInfo().fullName}} is built on the Polygon Blockchain
+            </ng-template>
+
             <img
               [style.width.px]="50"
               alt="ok"
               src="assets/polygon_logo.svg"
             />
+
           </a>
         </div>
         <!-- <div class="col mb-2 mx-2" [style.width.px]="50">

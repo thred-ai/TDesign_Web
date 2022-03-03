@@ -21,6 +21,19 @@ export class NftLog {
     return 'sync_alt'
   }
 
+  get logEvent(){
+    if (this.event == 'mint'){
+      return 'NFT was minted'
+    }
+    else if (this.event == 'sale'){
+      return 'NFT was sold'
+    }
+    else if (this.event == 'list'){
+      return 'NFT was listed'
+    }
+    return 'NFT was transferred'
+  }
+
   constructor(
     event: string,
     from: string,

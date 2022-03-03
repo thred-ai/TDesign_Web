@@ -200,8 +200,8 @@
                         {{ p.value }}
                       </p>
                       <p class="text-secondary">
-                        {{ (collections.getTraitRarity(p) ?? 0) * 100 }}% have
-                        this trait
+                        {{ collections.getTraitRarity(p) ?? "0" }}% have this
+                        trait
                       </p>
                     </div>
                   </div>
@@ -340,7 +340,11 @@
                           class="m-0 p-0 me-2"
                           style="overflow: hidden"
                           svgIcon="{{ collections | matIcon }}"
-                        >
+                          [ngbTooltip]="qtipContent"
+                          >
+                            <ng-template #qtipContent>
+                              {{collection?.currency ?? 'MATIC'}}
+                            </ng-template>
                         </mat-icon>
                         <b style="font-size: 34px">
                           {{ productToBuy?.price | price }}
@@ -681,9 +685,14 @@
                                 <mat-icon
                                   class="m-0 p-0"
                                   style="overflow: hidden"
+                                  [ngbTooltip]="etipContent"
                                 >
                                   {{ element.icon }}
+                                  <ng-template #etipContent>
+                                    {{element.logEvent}}
+                                  </ng-template>
                                 </mat-icon>
+
                                 <!-- <mat-icon
                                   class="m-0 p-0"
                                   style="overflow: hidden"
@@ -786,7 +795,11 @@
                                         | collectionPipe: collection?.contract
                                         | matIcon
                                     }}"
-                                  >
+                                    [ngbTooltip]="ptipContent"
+                                    >
+                                      <ng-template #ptipContent>
+                                        {{collection?.currency ?? 'MATIC'}}
+                                      </ng-template>
                                   </mat-icon>
                                   <p
                                     class="m-0 ms-1 h-100 fw-bolder"

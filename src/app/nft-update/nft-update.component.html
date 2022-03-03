@@ -100,7 +100,7 @@
                 {{ p.value }}
               </p>
               <p class="text-secondary">
-                {{ (collection?.getTraitRarity(p) ?? 0) * 100 }}% have this
+                {{ (collection?.getTraitRarity(p) ?? '0') }}% have this
                 trait
               </p>
             </div>
@@ -200,7 +200,7 @@
         >
           <video
             class="p-0 border rounded"
-            style="object-fit: contain; height: 500px; max-width: 100%"
+            style="object-fit: cover; height: 500px; max-width: 100%"
             poster="/assets/default.png"
             autoplay="true"
             loop="true"
@@ -213,7 +213,7 @@
 
           <img
             class="p-0 border rounded"
-            style="object-fit: contain; height: 500px; max-width: 100%"
+            style="object-fit: cover; height: 500px; max-width: 100%"
             loading="lazy"
             [useSrcset]="true"
             [defaultImage]="'/assets/default.png'"

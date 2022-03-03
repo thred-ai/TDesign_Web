@@ -49,6 +49,7 @@ import { ethers } from 'ethers';
 import { environment } from 'src/environments/environment';
 import { Collection } from '../models/collection.model';
 import { NftLog } from '../models/nft-log.model';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
 
@@ -821,7 +822,15 @@ export class LoadService {
 
   
   async networkCheck(){
-    let network = await (Globals.provider?.getNetwork())
+    
+    var network = await (Globals.provider?.getNetwork())
+    
+    if (network?.chainId == 0 && window.ethereum){
+      let provider = await detectEthereumProvider() as any
+      network = await provider.request({ method: 'eth_chainId' })
+    }
+    console.log(network)
+    console.log(network?.chainId)
     return network?.chainId == 137;
   }
 

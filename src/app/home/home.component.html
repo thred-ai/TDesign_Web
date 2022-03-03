@@ -63,6 +63,7 @@
               [class.border-secondary]="
                 (storeInfo?.colorStyle)!.text_code == 'light'
               "
+              style="overflow: hidden;"
             >
               <div class="pb-0 w-100">
                 <a
@@ -100,6 +101,7 @@
                     "
                     style.color="{{ selectedTheme()!.color }}"
                     role="button"
+                    (click)="routeToProduct(product)"
                   >
                     {{ product.name }}
                   </p>
@@ -115,9 +117,13 @@
                       class="m-0 p-0 me-1"
                       style="overflow: hidden; height: 25px"
                       svgIcon="{{
-                        storeInfo | collectionPipe: product.contractID | matIcon
+                        ((storeInfo | collectionPipe: product.contractID)) | matIcon
                       }}"
-                    >
+                      [ngbTooltip]="qtipContent"
+                      >
+                        <ng-template #qtipContent>
+                          {{(storeInfo | collectionPipe: product.contractID)?.currency ?? 'MATIC'}}
+                        </ng-template>
                     </mat-icon>
                     {{ product?.price | price }}
                   </a>

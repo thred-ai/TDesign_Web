@@ -24,9 +24,9 @@ export interface ICollection {
   available?: boolean;
   rpcEndpoint?: string
 
-  getRarity(nft: NFT): number;
+  getRarity(nft: NFT): string;
 
-  getTraitRarity(trait: Dict<any>): number;
+  getTraitRarity(trait: Dict<any>): string;
 
   getFloor(): ethers.BigNumber;
 
@@ -71,7 +71,7 @@ export class Collection implements ICollection {
       );
       totalRarity += (same.length ?? 0) / this.NFTs.length;
     });
-    return totalRarity;
+    return (totalRarity * 100).toFixed(2);
   }
 
   getTraitRarity(trait: Dict<any>) {
@@ -80,7 +80,7 @@ export class Collection implements ICollection {
         (t) => t.trait_type == trait.trait_type && t.value == trait.value
       )
     );
-    return (same.length ?? 0) / this.NFTs.length;
+    return (((same.length ?? 0) / this.NFTs.length) * 100).toFixed(2);
   }
 
   getFloor() {

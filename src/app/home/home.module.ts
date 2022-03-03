@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const routes: Routes = [
   {
@@ -40,6 +41,7 @@ const routes: Routes = [
     MatButtonModule,
     MatSelectModule,
     LazyLoadImageModule,
+    NgbModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],
