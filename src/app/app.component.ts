@@ -914,7 +914,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.setOptions();
 
     if (await this.loadService.authenticated()){
-      this.openWallet()
+      // this.openWallet()
     }
 
     let provider = await detectEthereumProvider() as any
