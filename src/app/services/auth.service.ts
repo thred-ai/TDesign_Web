@@ -50,7 +50,7 @@ export class AuthService {
       console.log(address)
       this.functions
         .httpsCallable('getNonceToSign')({
-          address: address,
+          address: address.toLowerCase(),
         })
         .pipe(first())
         .subscribe(async (response) => {
