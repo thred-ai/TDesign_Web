@@ -917,6 +917,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.openWallet()
     }
 
+    let provider = await detectEthereumProvider() as any
+    if (provider){
+      // provider.on('accountsChanged', handler: (accounts: Array<string>) => void);
+      provider.on('chainChanged', (_chainId: any) => window.location.reload());
+    }
 
     // if (isPlatformBrowser(this.platformID)){
     //   AOS.init();
