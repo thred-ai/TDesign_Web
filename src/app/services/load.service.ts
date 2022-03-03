@@ -829,8 +829,10 @@ export class LoadService {
       let provider = await detectEthereumProvider() as any
       network = await provider.request({ method: 'eth_chainId' })
     }
-    console.log(network)
-    console.log(network?.chainId)
+    if (network?.name == 'unspecified'){
+
+      return true
+    }
     return network?.chainId == 137;
   }
 
