@@ -919,7 +919,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     let provider = await detectEthereumProvider() as any
     if (provider){
-      // provider.on('accountsChanged', handler: (accounts: Array<string>) => void);
+      provider.on('accountsChanged', (accounts: Array<string>) => window.location.reload());
       provider.on('chainChanged', (_chainId: any) => window.location.reload());
     }
 
@@ -934,7 +934,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     //             console.log(event.url)
     //       }
     // });
-    this.loadService.testSite()
 
   }
 
