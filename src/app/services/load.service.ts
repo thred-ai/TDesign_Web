@@ -1253,9 +1253,9 @@ export class LoadService {
               product.url = meta.data.image;
               product.traits = meta.data.traits;
               product.description = meta.data.description;
-              if (isPlatformBrowser(this.platformID)){
-                product.format = await this.getFormat(meta.data.image);
-              }
+              // if (isPlatformBrowser(this.platformID)){
+              //   product.format = await this.getFormat(meta.data.image);
+              // }
             } else {
               product.name = docData['Name'] as string;
               product.description = docData['Description'] as string;
