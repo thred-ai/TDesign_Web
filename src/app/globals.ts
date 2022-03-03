@@ -36,6 +36,7 @@ export class Globals {
 
   public static prov?: ethers.providers.Web3Provider
 
+  public static chain: number = 30001
 
   public static get provider(){
     return this.prov

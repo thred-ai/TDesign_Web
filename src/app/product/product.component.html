@@ -178,31 +178,35 @@
                 <p *ngIf="panel.type == 1">{{ panel.description }}</p>
                 <div
                   *ngIf="panel.type == 0"
-                  class="row gx-4 row-cols-1 row-cols-md-3 align-items-center justify-content-start"
+                  class="row gx-4 row-cols-1 row-cols-md-3 align-items-top justify-content-start h-100"
                 >
                   <div
-                    class="col p-2"
+                    class="col p-2 m-0"
+                    style="height: 150px;"
                     *ngFor="let p of productToBuy?.traits ?? []"
                   >
                     <div
                       class="card border border-{{
                         info.colorStyle!.text_code
-                      }} text-center rounded-panel-2 p-1"
+                      }} text-center rounded-panel-2 h-100"
+                      style="overflow-y: hidden;"
                       style.background-color="{{ selectedTheme()!.bg_color }}"
                       style.color="{{ selectedTheme()!.color }}"
                     >
+                    <div class="card-body h-100">
                       <p
-                        class="text-{{ info.colorStyle!.text_code }} fw-bolder"
-                      >
-                        {{ p.trait_type.toUpperCase() }}
-                      </p>
-                      <p style="font-size: medium">
-                        {{ p.value }}
-                      </p>
-                      <p class="text-secondary">
-                        {{ collections.getTraitRarity(p) ?? "0" }}% have this
-                        trait
-                      </p>
+                      class="text-{{ info.colorStyle!.text_code }} fw-bolder"
+                    >
+                      {{ p.trait_type.toUpperCase() }}
+                    </p>
+                    <p style="font-size: medium">
+                      {{ p.value }}
+                    </p>
+                    <p class="text-secondary">
+                      {{ collections.getTraitRarity(p) ?? "0" }}% have this
+                      trait
+                    </p>
+                    </div>
                     </div>
                   </div>
                   <div

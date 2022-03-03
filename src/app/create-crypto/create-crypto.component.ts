@@ -264,8 +264,10 @@ export class CreateCryptoComponent implements OnInit {
               tokenId,
               url2,
               r,
-              price
+              price,
+              cl.customToken
             );
+            
             let nft = new NFT(
               tokenId,
               contractNFT,

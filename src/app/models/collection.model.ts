@@ -100,6 +100,14 @@ export class Collection implements ICollection {
   }
 
   getCurrencyIcon() {
+    if (this.customToken){
+      if (this.customToken == '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'){
+        return 'weth_icon'
+      }
+      else if (this.customToken == '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618'){
+        return 'doge_icon'
+      }
+    }
     return 'polygon_icon';
   }
 

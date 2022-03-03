@@ -684,6 +684,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         `polygon_icon`,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/polygon_logo.svg`)
       );
+      this.matIconRegistry.addSvgIcon(
+        `weth_icon`,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/weth_logo.svg`)
+      );
+      this.matIconRegistry.addSvgIcon(
+        `doge_icon`,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/doge_logo.svg`)
+      );
     }
   }
 

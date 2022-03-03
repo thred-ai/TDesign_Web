@@ -35,7 +35,18 @@ export class CreateCollectionComponent implements OnInit {
         {
           name: 'MATIC',
           symbol: 'polygon_icon',
+          contract: 'default'
         },
+        {
+          name: 'WETH',
+          symbol: 'weth_icon',
+          contract: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'
+        },
+        {
+          name: 'DOGE',
+          symbol: 'doge_icon',
+          contract: '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618'
+        }
       ],
     },
   ];
@@ -92,6 +103,8 @@ export class CreateCollectionComponent implements OnInit {
       let symbol =
         (this.nftForm.controls.symbol.value as string) ?? ''.toUpperCase();
 
+      let token = this.nftForm.controls.currency.value as Dict<any>
+      
       var signer: ethers.Signer | undefined = undefined;
 
       var domain = name.replace(/\s/g, '').toUpperCase();
@@ -154,17 +167,19 @@ export class CreateCollectionComponent implements OnInit {
             symbol,
             [],
             address,
-            'MATIC',
+            token.name,
             0,
             wallet,
             true,
             Globals.storeInfo.uid!,
             new Date(),
             domain,
-            undefined,
+            token.contract != 'default' ? token.contract: undefined,
             true,
-            NFTS.abi
+            NFTS.abi,
           );
+
+
 
           console.log(collection);
 
