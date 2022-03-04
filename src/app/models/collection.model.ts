@@ -112,7 +112,6 @@ export class Collection implements ICollection {
   }
 
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
-    console.log(token)
     let contract = new ethers.Contract(token, abi, provider);
     let symbol = await contract.symbol();
     return symbol;

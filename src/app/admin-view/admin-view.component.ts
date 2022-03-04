@@ -2998,7 +2998,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       const connection = await web3Modal.connect();
       provider = new ethers.providers.Web3Provider(connection);
     } catch (error) {
-      console.log(',')
       this.needsLogin = true
     }
     
@@ -3672,7 +3671,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     let sub = modalRef.afterClosed().subscribe(resp => {
       sub.unsubscribe()
       if (resp){
-        console.log(resp)
         let col = resp as NFT
 
         contract.NFTs.push(col)
@@ -3725,7 +3723,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     let sub = modalRef.afterClosed().subscribe(resp => {
       sub.unsubscribe()
       if (resp){
-        console.log(resp)
         let col = resp as Collection
 
         Globals.userInfo?.collections.push(col)

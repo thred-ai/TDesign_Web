@@ -67,7 +67,6 @@ export class NftUpdateComponent implements OnInit {
     }
     this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
 
-    console.log(this.nft);
   }
 
   provider?: ethers.providers.Web3Provider;
@@ -182,7 +181,6 @@ export class NftUpdateComponent implements OnInit {
           this.nft.royalty == undefined
         ) {
           this.isLoading = false;
-          console.log('jones')
           return;
         }
         let contract = new ethers.Contract(
@@ -249,7 +247,6 @@ export class NftUpdateComponent implements OnInit {
       }
       this.isLoading = false;
     } else {
-      console.log(this.nftForm.controls.price.invalid);
     }
   }
 
@@ -284,7 +281,6 @@ export class NftUpdateComponent implements OnInit {
 
     let gas = await contract.estimateGas;
 
-    console.log(gas);
   }
 
   radioChange(event: any) {
@@ -308,7 +304,6 @@ export class NftUpdateComponent implements OnInit {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file(async (file: File) => {
           // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
 
           let arrs = this.acceptedFiles.replace(/\./g, '').split(',');
           let match = arrs.find((j) => {
@@ -349,8 +344,6 @@ export class NftUpdateComponent implements OnInit {
             } else if (file.type.indexOf('video') > -1) {
               format = 'video';
             }
-            console.log(match);
-            console.log(format);
             this.nftForm.controls.format.setValue(format);
             this.fileName = file.name;
             this.cdr.detectChanges();
@@ -363,10 +356,8 @@ export class NftUpdateComponent implements OnInit {
   }
 
   public fileOver(event: any) {
-    console.log(event);
   }
 
   public fileLeave(event: any) {
-    console.log(event);
   }
 }

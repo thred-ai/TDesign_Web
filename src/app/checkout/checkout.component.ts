@@ -58,7 +58,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   cart(){
-    console.log(this.rootComponent.cart)
     return this.rootComponent.cart ?? []
   }
 
@@ -546,7 +545,6 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
           // or show an error message and close the payment.
           this.err = err
           ev.complete('fail');
-          console.log(confirmResult.error)
           return of({
             error: new Error('Error Confirming the payment'),
           });

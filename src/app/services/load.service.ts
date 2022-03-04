@@ -1299,7 +1299,6 @@ export class LoadService {
                     (i: any) => i.tokenId == same.tokenID
                   ) as any;
 
-                  console.log(same)
                   if (c) {
                     same.tokenID = c.tokenId;
                     same.contractID = c.contract;

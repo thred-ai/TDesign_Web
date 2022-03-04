@@ -193,7 +193,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     )
     .subscribe(
       event => {
-        console.log(event)
         this.oldUrl = event.url
         this.ngOnInit()
       } 
@@ -238,7 +237,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   routeToProduct(product: NFT) {
-    console.log(product)
     this.rootComponent.routeToProduct(product.docID ?? '');
   }
 
@@ -329,7 +327,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.homeRows = rows
         this.page = page
-        console.log(rows)
         if (page.loader ?? true){
           this.showSpinner()
         }

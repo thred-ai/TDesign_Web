@@ -295,18 +295,14 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   beforePanelClosed(panel: any) {
     panel.isExpanded = false;
-    console.log('Panel going to close!');
   }
   beforePanelOpened(panel: any) {
     panel.isExpanded = true;
-    console.log('Panel going to  open!');
   }
 
   afterPanelClosed() {
-    console.log('Panel closed!');
   }
   afterPanelOpened() {
-    console.log('Panel opened!');
   }
 
   closeAllPanels() {
@@ -349,7 +345,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     const data = this.getProductID();
     
-    console.log(data);
     this.loadService.myCallback = () => this.checkLoad();
 
     this.loadService.getPost(
@@ -537,7 +532,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
       //   return;
       // }
 
-      console.log(this.productToBuy.linkUrl)
       this.addTags(
         this.productToBuy.name ?? '',
         this.productToBuy.linkUrl?.toString() ?? '',
@@ -559,13 +553,10 @@ export class ProductComponent implements OnInit, AfterViewInit {
             Globals.storeInfo.profileLink?.toString() ?? ''
           );
 
-          console.log(Globals.storeInfo.walletAddress);
           if (
             Globals.storeInfo.walletAddress?.toLowerCase() !=
             this.productToBuy.owner.toLowerCase()
           ) {
-            console.log(this.productToBuy.owner);
-            console.log(Globals.storeInfo.walletAddress);
             this.routingService.routeToStore404(
               this.getStoreName().link,
               this.getStoreName().isCustom
@@ -682,7 +673,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
   async addToCart() {
     // if (this.productToBuy.product == undefined)return;
 
-    console.log(this.collections)
 
     // this.productToBuy.product = JSON.parse(JSON.stringify(this.productToBuy.product))
 
@@ -699,7 +689,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
         console.log(error);
       }
     }
-    console.log('mans')
     const modalRef = this.dialog.open(NftBuyComponent, {
       width: '750px',
       maxHeight: '100vh',

@@ -48,7 +48,6 @@ export class CreateCryptoComponent implements OnInit {
     private laodService: LoadService,
     private spinner: NgxSpinnerService
   ) {
-    console.log(client);
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
   }
@@ -241,7 +240,6 @@ export class CreateCryptoComponent implements OnInit {
         const price = ethers.utils.parseUnits(cost.toString(), 'ether');
         const r = ethers.utils.parseUnits(royalty.toString(), 'ether');
 
-        console.log(contractNFT);
 
         let contract2 = new ethers.Contract(contractNFT, NFTS.abi, signer);
 
@@ -304,7 +302,6 @@ export class CreateCryptoComponent implements OnInit {
             let img =
               this.saveVideoThumbail() ?? (await this.getImgBase64(file));
 
-            console.log(img);
             let docID = await this.laodService.saveNFT(
               nft,
               Globals.storeInfo.uid,
@@ -333,9 +330,7 @@ export class CreateCryptoComponent implements OnInit {
         }
       }
     } else {
-      console.log(this.nftForm.controls.title.invalid);
-      console.log(this.nftForm.controls.price.invalid);
-      console.log(this.nftForm.controls.file.invalid);
+
     }
   }
 
@@ -393,7 +388,6 @@ export class CreateCryptoComponent implements OnInit {
 
     let gas = await contract.estimateGas;
 
-    console.log(gas);
   }
 
   radioChange(event: any) {
@@ -418,7 +412,6 @@ export class CreateCryptoComponent implements OnInit {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file(async (file: File) => {
           // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
 
           let arrs = this.acceptedFiles.replace(/\./g, '').split(',');
           let match = arrs.find((j) => {
@@ -459,8 +452,6 @@ export class CreateCryptoComponent implements OnInit {
             } else if (file.type.indexOf('video') > -1) {
               format = 'video';
             }
-            console.log(match);
-            console.log(format);
             this.nftForm.controls.format.setValue(format);
             this.fileName = file.name;
             this.cdr.detectChanges();
@@ -473,10 +464,8 @@ export class CreateCryptoComponent implements OnInit {
   }
 
   public fileOver(event: any) {
-    console.log(event);
   }
 
   public fileLeave(event: any) {
-    console.log(event);
   }
 }

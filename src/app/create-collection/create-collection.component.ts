@@ -118,7 +118,6 @@ export class CreateCollectionComponent implements OnInit {
       if (Globals.provider) {
         signer = Globals.provider.getSigner();
       } else {
-        console.log('ok');
       }
 
       if (!signer) {
@@ -181,7 +180,6 @@ export class CreateCollectionComponent implements OnInit {
 
 
 
-          console.log(collection);
 
           await this.loadService.saveCollectionInfo(
             collection,
@@ -198,10 +196,8 @@ export class CreateCollectionComponent implements OnInit {
           }
         }
       } else {
-        console.log('no signer');
       }
     } else {
-      console.log('invalid');
     }
     this.spinner.hide();
   }

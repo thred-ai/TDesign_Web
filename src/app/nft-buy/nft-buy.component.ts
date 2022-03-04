@@ -118,11 +118,7 @@ export class NftBuyComponent implements OnInit {
         var transaction: any = undefined;
 
         if (this.nft.lazyHash?.minPrice as BigNumber) {
-          console.log('yes');
-          console.log(this.nft.lazyHash);
           if (this.nft.lazyHash?.token && !this.nft.lazyHash.isNative) {
-            console.log('wes');
-
             let contract3 = new ethers.Contract(
               this.nft.lazyHash?.token,
               abi,
@@ -137,15 +133,11 @@ export class NftBuyComponent implements OnInit {
               this.nft.lazyHash
             );
           } else {
-            console.log(this.nft.lazyHash);
-
             transaction = await contract.mintAndTransfer(this.nft.lazyHash, {
               value: this.nft.price,
             });
           }
         } else {
-          console.log('no');
-
           let marketItem = {
             itemId: this.nft.itemId,
             nftContract: this.nft.contractID,
@@ -170,10 +162,8 @@ export class NftBuyComponent implements OnInit {
             });
           }
         }
-        console.log(transaction);
         if (transaction) {
           await transaction.wait();
-          console.log(transaction);
         }
         if (this.nft?.tokenID) {
           this.nft.seller = await this.collection.ownerOf(
@@ -185,7 +175,6 @@ export class NftBuyComponent implements OnInit {
         this.spinner.hide('purchase');
         this.dialogRef.close(this.nft);
       } catch (error) {
-        console.log(error);
         let data = (error as any).data
         if (data && data.code == -32000) {
           this.err =

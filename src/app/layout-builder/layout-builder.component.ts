@@ -281,15 +281,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   private _filter(value: string): NFT[] {
     const filterValue = ((value as string) ?? '').toLowerCase();
 
-    console.log(filterValue)
 
     let collections = (this.storeInfo.collections ?? []).filter((product) =>
       product.NFTs.find((n) =>
         (n.name ?? '').toLowerCase().includes(filterValue)
       )
     );
-
-    console.log(collections)
 
     var returnArr = new Array<NFT>();
 
@@ -493,7 +490,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       this.data.page?.fullscreen ?? false
     );
 
-    console.log(this.data.page)
     this.layoutForm.controls.isLoader.setValue(
       this.data.page?.loader ?? true
     );
@@ -507,10 +503,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     }
     this.cdr.detectChanges();
     this.onValueChanges();
-
-    console.log(this.storeInfo)
-    console.log(Globals.userInfo)
-
   }
 
   closeDialog() {
@@ -1048,7 +1040,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
     let metaPic = this.layoutForm.controls.metaPic.value as string;
 
-    console.log(rowInfo);
 
     // this.spinner.show('loader');
     // this.title = 'SAVING LAYOUT';
@@ -1195,7 +1186,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       }
     }
     var prod = Array<NFT>();
-    console.log(products)
     products?.forEach((p) => {
       let pro = this.storeInfo.collections
         ?.find((pr) => {

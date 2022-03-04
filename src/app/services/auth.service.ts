@@ -47,7 +47,6 @@ export class AuthService {
 
       let address = await provider.getSigner().getAddress()
 
-      console.log(address)
       this.functions
         .httpsCallable('getNonceToSign')({
           address: address.toLowerCase(),
@@ -77,7 +76,6 @@ export class AuthService {
               })
               .pipe(first())
               .subscribe(async (resp) => {
-                console.log(resp);
                 let user = await this.auth.signInWithCustomToken(resp.token);
                 callback(user.user?.uid, this.app, '');
                 return;
@@ -121,9 +119,6 @@ export class AuthService {
       let ethereum: any;
       var nonce = this.randomString(10);
       let password = this.randomHash();
-      console.log(nonce);
-      console.log(password);
-
       let provider = await from(detectEthereumProvider()).toPromise();
 
       if (!provider) {

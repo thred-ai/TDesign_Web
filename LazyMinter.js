@@ -72,7 +72,6 @@ class LazyMinter {
     // const recoveredAddress = ethers.utils.verifyTypedData(domain, types, voucher, signature);
 
 
-    // console.log(recoveredAddress)
 
     
 
