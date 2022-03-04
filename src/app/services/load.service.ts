@@ -1517,6 +1517,7 @@ export class LoadService {
         const tokenUri = await nftContract.tokenURI(
           Number(i.tokenId.toString())
         );
+ 
         const meta = await axios.get(tokenUri);
         let item = {
           price: i.price,
@@ -4731,8 +4732,7 @@ export class LoadService {
             }
             co.currency = 'MATIC';
             if (product.token && provider) {
-              console.log(product.token)
-              console.log(c.isNative)
+         
               await co.loadCurrency(product.token, provider).then((i) => {
                 co.currency = i;
               });
