@@ -684,6 +684,10 @@ export class AppComponent implements OnInit, AfterViewInit {
         `doge_icon`,
         this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/doge_logo.svg`)
       );
+      this.matIconRegistry.addSvgIcon(
+        `btc_icon`,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/btc_logo.svg`)
+      );
     }
   }
 

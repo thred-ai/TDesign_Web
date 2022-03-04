@@ -107,6 +107,9 @@ export class Collection implements ICollection {
       else if (this.customToken == '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618'){
         return 'doge_icon'
       }
+      else if (this.customToken == '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6'){
+        return 'btc_icon'
+      }
     }
     return 'polygon_icon';
   }

@@ -33,7 +33,6 @@ export class AuthService {
     callback: (uid?: string, app?: AppComponent, error?: string) => any
   ) {
     try {
-      let ethereum: any;
 
       // Step 1: Request (limited) access to users ethereum account
       let provider = await Globals.initializeProvider()
@@ -42,8 +41,6 @@ export class AuthService {
         callback(undefined, this.app, 'Please install MetaMask');
         return;
       }
-
-      ethereum = provider;
 
       let address = await provider.getSigner().getAddress()
 
@@ -59,15 +56,9 @@ export class AuthService {
           }
           try {
 
-            let s = await provider.getSigner().signMessage(`0x${this.toHex(response.nonce)}`)
-            // let n = ethers.utils.verifyMessage(`0x${this.toHex(response.nonce)}`, s)
-            // let sig = await ethereum.request({
-            //   method: 'personal_sign',
-            //   params: [
-            //     `0x${this.toHex(response.nonce)}`,
-            //     ethereum.selectedAddress,
-            //   ],
-            // });
+            let s = await provider.getSigner().signMessage(`0x${this.toHex(`${response.nonce}`)}`)
+
+            console.log(s)
 
             this.functions
               .httpsCallable('verifySignedMessage')({
@@ -81,6 +72,7 @@ export class AuthService {
                 return;
               });
           } catch (error) {
+            console.log(error)
             callback(undefined, this.app, '');
           }
         });
