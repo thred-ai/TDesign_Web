@@ -10,12 +10,13 @@
       class="w-100 text-center"
       *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && !provider"
     >
-    <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
-      NO WALLET
-    </h2>
-    <p class="text-center w-100" [style.font-family]="storeInfo().fontName!">
-      Connect your wallet to purchase NFTs on <br> {{storeInfo().fullName}}
-    </p>
+      <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+        NO WALLET
+      </h2>
+      <p class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+        Connect your wallet to purchase NFTs on <br />
+        {{ storeInfo().fullName }}
+      </p>
       <a
         role="button"
         (click)="openWallet()"
@@ -53,7 +54,12 @@
             class="mb-2 mt-2 p-0"
             style="overflow: hidden"
             svgIcon="{{ token.contract | currencyIcon }}"
+            [ngbTooltip]="qtipContent"
+            role="button"
           >
+            <ng-template #qtipContent>
+              {{ token.name }}
+            </ng-template>
           </mat-icon>
           <h2
             class="text-center my-auto mb-2"

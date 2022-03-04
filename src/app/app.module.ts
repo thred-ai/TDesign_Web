@@ -78,6 +78,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     VgOverlayPlayModule,
     LazyLoadImageModule,
     MatSidenavModule,
+    NgbModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [

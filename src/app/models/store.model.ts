@@ -64,22 +64,22 @@ export class Store {
       name: 'Default Tokens',
       variations: [
         {
-          name: 'Polygon MATIC',
+          name: 'Polygon (MATIC)',
           symbol: 'polygon_icon',
           contract: 'default',
         },
         {
-          name: 'Ethereum (Wrapped)',
+          name: 'Ethereum (WETH)',
           symbol: 'weth_icon',
           contract: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
         },
         {
-          name: 'Bitcoin (Wrapped)',
+          name: 'Bitcoin (WBTC)',
           symbol: 'btc_icon',
           contract: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
         },
         {
-          name: 'DOGE (Wrapped)',
+          name: 'DOGE (LxDOGE)',
           symbol: 'doge_icon',
           contract: '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618',
         },
