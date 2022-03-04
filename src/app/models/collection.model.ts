@@ -103,7 +103,6 @@ export class Collection implements ICollection {
     .find((t) => t.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase()))
     ?.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase())?.symbol ?? 'polygon_icon'
 
-    console.log(symbol)
     return (
       symbol
     );
