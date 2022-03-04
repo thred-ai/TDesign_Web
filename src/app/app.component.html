@@ -2,7 +2,7 @@
   <mat-drawer
     class="w-100 w-md-25 p-3 bg-{{
       storeInfo().colorStyle!.back_code
-    }} text-secondary"
+    }} text-{{ storeInfo().colorStyle!.text_code }}"
     [position]="'end'"
     #drawer
   >
@@ -21,7 +21,7 @@
       <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
         NO WALLET
       </h2>
-      <p class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+      <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
         Connect your wallet to purchase NFTs on <br />
         {{ storeInfo().fullName }}
       </p>
@@ -31,6 +31,7 @@
         class="btn mt-2 fw-bold btn-outline-{{
           storeInfo().colorStyle!.text_code
         }} rounded-pill"
+        [style.font-family]="storeInfo().fontName!"
       >
         CONNECT WALLET
       </a>
@@ -42,7 +43,7 @@
       <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
         BALANCE
       </h2>
-      <p class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+      <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
         Tokens shown here are used by collections in this marketplace.
       </p>
       <div
@@ -72,7 +73,6 @@
           <h2
             class="text-center my-auto mb-2"
             style="font-size: xx-large"
-            [style.font-family]="storeInfo().fontName!"
           >
             {{
               provider
@@ -91,6 +91,7 @@
         class="btn mt-2 fw-bold btn-outline-{{
           storeInfo().colorStyle!.text_code
         }} rounded-pill"
+        [style.font-family]="storeInfo().fontName!"
       >
         DISCONNECT
       </a>
