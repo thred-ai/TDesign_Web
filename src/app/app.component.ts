@@ -904,6 +904,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     return 'CONNECT WALLET'
   }
 
+  setProvider(){
+    if (window.ethereum){
+      Globals.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+    }
+  }
+
 
   async ngOnInit() {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
@@ -913,6 +919,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.app = this;
 
     this.setOptions();
+    this.setProvider()
 
     if (await this.loadService.authenticated()){
       // this.openWallet()

@@ -163,7 +163,7 @@
             Lazy minting means your NFT gets minted at time of purchase,
             allowing you to avoid upfront Gas Fees.
           </h5>
-          <mat-radio-group [disabled]="true" formControlName="lazyMint">
+          <mat-radio-group formControlName="lazyMint">
             <div>
               <mat-radio-button [value]="true" (change)="radioChange($event)"
                 >Lazy Mint</mat-radio-button
@@ -180,7 +180,7 @@
     </div>
     <div
       class="position-md-absolute d-flex justify-content-center my-3 my-md-0 justify-content-md-end"
-      style="z-index: 5; bottom: 10px; left: 10px; right: 10px"
+      style="z-index: 5; bottom: 10px; right: 10px"
     >
       <p *ngIf="err != ''" class="text-danger text-center fw-bold">
         {{ err }}

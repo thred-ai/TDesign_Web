@@ -244,7 +244,7 @@ export class CreateCryptoComponent implements OnInit {
         const r = ethers.utils.parseUnits(royalty.toString(), 'ether');
 
 
-        let contract2 = new ethers.Contract(contractNFT, NFTS.abi, signer);
+        let contract2 = new ethers.Contract(contractNFT, this.nftContract.ABI ?? NFTS.abi, signer);
 
         const lazyMinter = new LazyMinter(
           contract2,
@@ -268,6 +268,11 @@ export class CreateCryptoComponent implements OnInit {
               price,
               cl.customToken
             );
+
+            if (!lazyMint){
+              let transaction = await contract2.mintNFT(voucher)
+              await transaction.wait()
+            }
             
             let nft = new NFT(
               tokenId,
@@ -291,7 +296,7 @@ export class CreateCryptoComponent implements OnInit {
             nft.description = description;
             nft.traits = traits;
             nft.external_url = external;
-            nft.token = undefined;
+            nft.token = cl.customToken;
             nft.isAvailable = true;
 
             // if (!lazyMint) {
