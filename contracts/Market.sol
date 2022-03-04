@@ -358,6 +358,8 @@ contract NFT is
         _setTokenURI(voucher.tokenId, voucher.uri);
         bool created = createMarketItem(payable(msg.sender), payable(msg.sender), voucher);
         if (created){
+            uint256 itemId = _itemIds.current();
+            idToMarketItem[itemId].forSale = true;
             emit ListedNFT(true, voucher.minPrice, msg.sender, voucher.tokenId);
         }
         return true;

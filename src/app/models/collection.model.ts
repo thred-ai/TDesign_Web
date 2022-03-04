@@ -99,10 +99,13 @@ export class Collection implements ICollection {
 
   getCurrencyIcon() {
     let token = this.customToken ?? 'default';
+    let symbol = Globals.storeInfo?.tokens
+    .find((t) => t.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase()))
+    ?.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase())?.symbol ?? 'polygon_icon'
+
+    console.log(symbol)
     return (
-      Globals.storeInfo?.tokens
-        .find((t) => t.variations.find((s) => s.contract == token))
-        ?.variations.find((s) => s.contract == token)?.symbol ?? 'polygon_icon'
+      symbol
     );
   }
 

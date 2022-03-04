@@ -1530,7 +1530,7 @@ export class LoadService {
           name: meta.data.name,
           description: meta.data.description,
           contract: i.nftContract,
-          token: i.token,
+          token: i.tokenContract,
           isNative: i.isNative,
           uri: tokenUri,
           itemId: i.itemId,
@@ -4701,6 +4701,8 @@ export class LoadService {
             co.name = created.name;
             co.symbol = created.symbol;
 
+            console.log(created)
+
             let c = created.tokens.find(
               (i: any) => i.tokenId == product.tokenID
             ) as any;
@@ -4729,6 +4731,8 @@ export class LoadService {
             }
             co.currency = 'MATIC';
             if (product.token && provider) {
+              console.log(product.token)
+              console.log(c.isNative)
               await co.loadCurrency(product.token, provider).then((i) => {
                 co.currency = i;
               });

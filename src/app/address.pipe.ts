@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
   name: 'address',
 })
 export class AddressPipe implements PipeTransform {
-  transform(value: string | undefined, trim: boolean = true): string {
+  transform(value: string | null | undefined, trim: boolean = true): string {
     if (
       value &&
       value != ethers.constants.AddressZero &&

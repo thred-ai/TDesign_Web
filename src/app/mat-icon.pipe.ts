@@ -7,11 +7,12 @@ import { Collection } from './models/collection.model';
 export class MatIconPipe implements PipeTransform {
 
   transform(value?: Collection): string {
-    console.log(value)
     if (value){
-      console.log(value)
-      return value!.getCurrencyIcon() ?? '';
+      let icon = value!.getCurrencyIcon() ?? '';
+      console.log(icon)
+      return icon
     }
+    console.log('none')
     return '';
   }
 

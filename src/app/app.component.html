@@ -1,5 +1,5 @@
-<mat-drawer-container class="example-container">
-  <mat-drawer
+<mat-sidenav-container class="example-container">
+  <mat-sidenav
     class="w-100 w-md-25 p-3 bg-{{
       storeInfo().colorStyle!.back_code
     }} text-{{ storeInfo().colorStyle!.text_code }}"
@@ -40,14 +40,36 @@
       class="w-100 text-center"
       *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && provider"
     >
-      <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
-        BALANCE
+      <h2 class="text-center w-100 mb-0" [style.font-family]="storeInfo().fontName!">
+        MY ACCOUNT
       </h2>
-      <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
-        Tokens shown here are used by collections in this marketplace.
+      <p class="text-center text-secondary w-100 mt-0 mb-3" style="font-size: smaller;" [style.font-family]="storeInfo().fontName!">
+        {{provider
+          | providerAddress | async | address: false}}
       </p>
+
+      <h3 class="text-center w-100 d-flex align-items-center justify-content-center mb-1" [style.font-family]="storeInfo().fontName!">
+        BALANCE
+        <mat-icon
+
+            class="ms-2 p-0"
+            style="overflow: hidden"
+            [ngbTooltip]="htipContent"
+            role="button"
+          >
+            <ng-template #htipContent>
+              Tokens shown below are used by the collections on this marketplace.
+            </ng-template>
+          help
+          </mat-icon>
+      </h3>
+
+      <!-- <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
+        Tokens shown here are used by collections in this marketplace.
+      </p> -->
+
       <div
-        class="w-100 text-center my-2"
+        class="w-100 text-center mt-0 mb-3"
         *ngFor="let token of storeInfo()?.allTokens ?? []"
       >
         <a
@@ -96,8 +118,8 @@
         DISCONNECT
       </a>
     </div>
-  </mat-drawer>
-  <mat-drawer-content class="h-100">
+  </mat-sidenav>
+  <mat-sidenav-content class="h-100">
     <div
       *ngIf="
         !isAdmin() &&
@@ -666,5 +688,5 @@
         </p>
       </div>
     </footer>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
