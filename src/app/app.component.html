@@ -6,6 +6,14 @@
     [position]="'end'"
     #drawer
   >
+    <mat-icon
+      class="ms-2 mt-2 p-0 text-{{ storeInfo().colorStyle!.text_code }} fw-bolder"
+      style="overflow: hidden"
+      role="button"
+      (click)='drawer.toggle()'
+    >
+      close
+    </mat-icon>
     <div
       class="w-100 text-center"
       *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && !provider"
