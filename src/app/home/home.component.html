@@ -306,6 +306,9 @@
     </div>
   </div>
 </section>
+<section *ngIf='isLoading' style="height: 100vh; width: 100%">
+
+</section>
 <section
   *ngIf="isBrowser() && storeInfo && storeInfo?.username && !storeInfo?.active"
   class="py-5"
