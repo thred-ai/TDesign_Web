@@ -190,9 +190,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
     })[0].img;
   }
 
-
-
-
   async updateNFT() {
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
 
@@ -223,7 +220,31 @@ export class ProductComponent implements OnInit, AfterViewInit {
     });
   }
 
-  displayedColumns: string[] = ['symbol', 'from', 'to', 'date', 'price'];
+  viewTxPolygonScan(log: NftLog) {
+    if (!log.txHash) {
+      return;
+    }
+    var urlLink = `https://polygonscan.com/tx/${log.txHash}`;
+
+    console.log(urlLink)
+    const link = document.createElement('a');
+    link.target = '_blank';
+
+    let url: string = '';
+    if (!/^http[s]?:\/\//.test(urlLink)) {
+      url += 'http://';
+    }
+
+    url += urlLink;
+
+    link.href = url;
+
+    link.setAttribute('visibility', 'hidden');
+    link.click();
+    link.remove();
+  }
+
+  displayedColumns: string[] = ['symbol', 'from', 'to', 'price', 'date'];
   dataSource: Array<Dict<any>> = [
     // {price: '0.02 MATIC', from: nftaddress.slice(nftaddress.length-4)},
   ];
@@ -300,10 +321,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
     panel.isExpanded = true;
   }
 
-  afterPanelClosed() {
-  }
-  afterPanelOpened() {
-  }
+  afterPanelClosed() {}
+  afterPanelOpened() {}
 
   closeAllPanels() {
     this.Accordion?.closeAll();
@@ -334,17 +353,17 @@ export class ProductComponent implements OnInit, AfterViewInit {
     this.rootComponent.routeToAbout();
   }
 
-  get provider(){
-    return Globals.provider
+  get provider() {
+    return Globals.provider;
   }
 
-  u(){
-    return this.productToBuy?.url ?? undefined
+  u() {
+    return this.productToBuy?.url ?? undefined;
   }
 
   async ngOnInit() {
     const data = this.getProductID();
-    
+
     this.loadService.myCallback = () => this.checkLoad();
 
     this.loadService.getPost(
@@ -656,7 +675,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   adding = false;
   shake = false;
-
   isMobile() {
     if (isPlatformBrowser(this.platformID)) {
       let height = window.innerHeight;
@@ -672,7 +690,6 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
   async addToCart() {
     // if (this.productToBuy.product == undefined)return;
-
 
     // this.productToBuy.product = JSON.parse(JSON.stringify(this.productToBuy.product))
 
@@ -700,16 +717,26 @@ export class ProductComponent implements OnInit, AfterViewInit {
         signer: signer,
       },
     });
-    let sub = modalRef.afterClosed().subscribe((resp) => {
+    let sub = modalRef.afterClosed().subscribe(async (resp) => {
       sub.unsubscribe();
-      if (resp as NFT) {
-        this.productToBuy = resp as NFT;
-        this.nftLogs.push(
-          new NftLog('sale', product.seller, seller, 0, product.price)
-        );
-        this.nftLogs.push(
-          new NftLog('transfer', seller, product.seller, 0, '')
-        );
+      if (resp) {
+        console.log(resp)
+        this.productToBuy = resp.nft as NFT;
+        this.loadService.openSnackBar('Transaction Sent!')
+        if (this.productToBuy?.tokenID && resp.tx) {
+          await resp.tx.wait()
+          this.loadService.openSnackBar('NFT Purchased!')
+          this.productToBuy.seller = await this.collections?.ownerOf(
+            this.productToBuy.tokenID,
+          );
+          this.nftLogs.push(
+            new NftLog('sale', this.productToBuy.seller, seller, 0, product.price, new Date(), resp.tx.hash)
+          );
+          this.nftLogs.push(
+            new NftLog('transfer', seller, product.seller, 0, '', new Date(), resp.tx.hash)
+          );
+          this.cdr.detectChanges()
+        }
       } else {
       }
     });

@@ -50,7 +50,7 @@ import { environment } from 'src/environments/environment';
 import { Collection } from '../models/collection.model';
 import { NftLog } from '../models/nft-log.model';
 import detectEthereumProvider from '@metamask/detect-provider';
-import { MatIconRegistry } from "@angular/material/icon";
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
 const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
@@ -482,24 +482,22 @@ export class LoadService {
 
   isLoading = true;
 
-  
-
-
-  registerTokens(tokens: Dict<any>[] = [], store: Store = Globals.storeInfo){
-    tokens.forEach(t => {
-      if (!t.contract || !t.name || !t.url || !t.symbol) { return }
+  registerTokens(tokens: Dict<any>[] = [], store: Store = Globals.storeInfo) {
+    tokens.forEach((t) => {
+      if (!t.contract || !t.name || !t.url || !t.symbol) {
+        return;
+      }
       store.tokens[1].variations.push({
         name: t.name,
         symbol: `${t.name ?? ''}_token`,
         contract: t.contract,
-      })
+      });
       this.matIconRegistry.addSvgIcon(
         `${t.name ?? ''}_token`,
         this.domSanitizer.bypassSecurityTrustResourceUrl(t.url)
       );
-    })
+    });
   }
-
 
   async getUser(
     username?: string,
@@ -568,9 +566,9 @@ export class LoadService {
 
         let orders = (docData['Orders'] as number) ?? 0;
         let wallet = (docData['Address'] as string) ?? '';
-        let tokens = docData['Custom_Tokens'] as Dict<any>[]
+        let tokens = docData['Custom_Tokens'] as Dict<any>[];
 
-        this.registerTokens(tokens)
+        this.registerTokens(tokens);
 
         var coupons = new Array<Coupon>();
         discounts.forEach((discount) => {
@@ -769,7 +767,7 @@ export class LoadService {
   getEvents(
     contract: string,
     tokenId: string,
-    callback: (transactions: Array<NftLog>) => any,
+    callback: (transactions: Array<NftLog>) => any
   ) {
     const data = {
       contract: contract,
@@ -786,8 +784,7 @@ export class LoadService {
             var logs = new Array<NftLog>();
             await Promise.all(
               hashes.map(async (t) => {
-                
-                let block = await Globals.provider?.getBlock(t.blockNumber);
+                console.log(t);
                 var type = '';
 
                 if (
@@ -816,7 +813,6 @@ export class LoadService {
                   return;
                 }
 
-
                 let log = new NftLog(
                   type,
                   type == 'list' ? t.topics[2] : t.topics[1],
@@ -826,7 +822,9 @@ export class LoadService {
                     ? t.topics[1]
                     : type == 'sale'
                     ? t.topics[0]
-                    : undefined
+                    : undefined,
+                  undefined,
+                  t.transactionHash
                 );
                 logs.push(log);
               })
@@ -840,28 +838,23 @@ export class LoadService {
       );
   }
 
-
-  async providerCheck(){
-    let address = await (Globals.provider?.getSigner().getAddress())
-    return address
+  async providerCheck() {
+    let address = await Globals.provider?.getSigner().getAddress();
+    return address;
   }
 
-  
-  async networkCheck(){
-    
-    var network = await (Globals.provider?.getNetwork())
-    
-    if (network?.chainId == 0 && window.ethereum){
-      let provider = await detectEthereumProvider() as any
-      network = await provider.request({ method: 'eth_chainId' })
-    }
-    if (network?.name == 'unspecified'){
+  async networkCheck() {
+    var network = await Globals.provider?.getNetwork();
 
-      return true
+    if (network?.chainId == 0 && window.ethereum) {
+      let provider = (await detectEthereumProvider()) as any;
+      network = await provider.request({ method: 'eth_chainId' });
+    }
+    if (network?.name == 'unspecified') {
+      return true;
     }
     return network?.chainId == 137;
   }
-
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
     var query = this.db.collection('Users/' + uid + '/Numbers', (ref) =>
@@ -989,7 +982,7 @@ export class LoadService {
             let orders = (docData['Orders'] as number) ?? 0;
             let wallet = (docData['Address'] as string) ?? '';
 
-            let tokens = docData['Custom_Tokens'] as Dict<any>[]
+            let tokens = docData['Custom_Tokens'] as Dict<any>[];
 
             var coupons = new Array<Coupon>();
             discounts.forEach((discount) => {
@@ -1083,7 +1076,7 @@ export class LoadService {
               wallet
             );
 
-            this.registerTokens(tokens, Globals.userInfo)
+            this.registerTokens(tokens, Globals.userInfo);
 
             let list = (docData['image_list'] as Array<string>) ?? [];
 
@@ -1215,12 +1208,18 @@ export class LoadService {
     const time = firebase.firestore.Timestamp.now();
 
     var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-      ref.where('Available', '==', true).where('Public', '==', true).orderBy('Token_ID')
+      ref
+        .where('Available', '==', true)
+        .where('Public', '==', true)
+        .orderBy('Token_ID')
     );
 
     if (filterID) {
       query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-        ref.where('Available', '==', true).where('Public', '==', true).orderBy('Token_ID')
+        ref
+          .where('Available', '==', true)
+          .where('Public', '==', true)
+          .orderBy('Token_ID')
       );
     }
 
@@ -1274,7 +1273,7 @@ export class LoadService {
             product.docID = doc.id;
             product.isAvailable = true;
             product.forSale = forSale;
-            product.linkUrl = this.getURL(doc.id)
+            product.linkUrl = this.getURL(doc.id);
 
             if (metadata) {
               const meta = await axios.get(metadata);
@@ -1307,7 +1306,6 @@ export class LoadService {
       //     col.push(p.contractID)
       //   }
       // })
-
 
       this.getCollections(uid, async (c) => {
         if (c) {
@@ -1380,7 +1378,6 @@ export class LoadService {
                 collections.push(collection);
               }
 
-
               if (collections.length == col.length) {
                 callback(collections);
                 return;
@@ -1390,7 +1387,6 @@ export class LoadService {
         );
 
         if (col.length == 0) {
-           
           callback(collections);
           return;
         }
@@ -1401,8 +1397,6 @@ export class LoadService {
       });
     });
   }
-
-
 
   rand(length: number, current?: number | string): string | number {
     current = current ? current : '';
@@ -1517,7 +1511,7 @@ export class LoadService {
         const tokenUri = await nftContract.tokenURI(
           Number(i.tokenId.toString())
         );
- 
+
         const meta = await axios.get(tokenUri);
         let item = {
           price: i.price,
@@ -2785,18 +2779,9 @@ export class LoadService {
     await this.saveStoreInfo(mappedData, uid);
   }
 
-  private async saveNftImage(
-    image: string,
-    productID: string,
-  ) {
-
+  private async saveNftImage(image: string, productID: string) {
     const filePath =
-      'Products/' +
-      productID +
-      '/' +
-      'link_' +
-      productID +
-      '.png';
+      'Products/' + productID + '/' + 'link_' + productID + '.png';
 
     let ref = this.storage.ref(filePath);
 
@@ -2807,7 +2792,7 @@ export class LoadService {
 
     // const task = await this.storage.upload(filePath, byteArray);
     await ref.put(byteArray);
-    const url = this.getURL(productID)
+    const url = this.getURL(productID);
 
     // if (type == "theme"){
     //   Globals.userInfo!.themeLink = url
@@ -3037,7 +3022,12 @@ export class LoadService {
     return undefined;
   }
 
-  async saveNFT(mappedData: NFT, uid?: string, productID?: string, image?: string) {
+  async saveNFT(
+    mappedData: NFT,
+    uid?: string,
+    productID?: string,
+    image?: string
+  ) {
     //add token later
 
     var id = productID;
@@ -3046,8 +3036,8 @@ export class LoadService {
       id = mappedData.contractID + mappedData.tokenID;
     }
 
-    if (image){
-      await this.saveNftImage(image, id)
+    if (image) {
+      await this.saveNftImage(image, id);
     }
 
     let data = JSON.parse(
@@ -4495,7 +4485,7 @@ export class LoadService {
         //         Globals.dropCarts?.push({ dropCarts: 1, timestamp: timestamp });
         //       }
         //     });
-            
+
         //   });
       });
   }
@@ -4608,11 +4598,6 @@ export class LoadService {
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID).orderBy('Token_ID')
     );
-    // if (!(saleProduct && Globals.productsSold)) {
-    //   query = this.db.collectionGroup('Products', (ref) =>
-    //     ref.where('Product_ID', '==', productID).where('Public', '==', true).orderBy('Token_ID')
-    //   );
-    // }
 
     let sub = query.get().subscribe(async (docDatas) => {
       docDatas.docs.forEach(async (doc, index) => {
@@ -4655,7 +4640,7 @@ export class LoadService {
 
           product.isAvailable = true;
           product.forSale = forSale;
-          product.linkUrl = this.getURL(productID)
+          product.linkUrl = this.getURL(productID);
 
           if (metadata) {
             const meta = await axios.get(metadata);
@@ -4663,7 +4648,7 @@ export class LoadService {
             product.url = meta.data.image;
             product.description = meta.data.description;
             product.traits = meta.data.traits;
-            if (isPlatformBrowser(this.platformID)){
+            if (isPlatformBrowser(this.platformID)) {
               product.format = await this.getFormat(meta.data.image);
             }
           } else {
@@ -4673,10 +4658,6 @@ export class LoadService {
             let productID = docData['Product_ID'];
             product.url = this.getURL(productID);
           }
-
-
-          
-
 
           if (product.contractID) {
             let co = new Collection(
@@ -4692,9 +4673,9 @@ export class LoadService {
               new Date()
             );
 
-            if (!isPlatformBrowser(this.platformID)){
-              callback(product, co)
-              return
+            if (!isPlatformBrowser(this.platformID)) {
+              callback(product, co);
+              return;
             }
 
             let created = await this.getCreated(co, provider);
@@ -4702,7 +4683,7 @@ export class LoadService {
             co.name = created.name;
             co.symbol = created.symbol;
 
-            console.log(created)
+            console.log(created);
 
             let c = created.tokens.find(
               (i: any) => i.tokenId == product.tokenID
@@ -4732,7 +4713,6 @@ export class LoadService {
             }
             co.currency = 'MATIC';
             if (product.token && provider) {
-         
               await co.loadCurrency(product.token, provider).then((i) => {
                 co.currency = i;
               });
@@ -4750,21 +4730,6 @@ export class LoadService {
         sub.unsubscribe();
       }
     });
-    // if (saleProduct && Globals.productsSold != undefined) {
-    //   saleProduct.product = product;
-    // } else {
-    //   if (cartProduct) {
-    //     cartProduct.product = product;
-    //   } else {
-    //     if (orderProduct) {
-    //       product.price = orderProduct.product?.price ?? 0;
-    //       orderProduct.product = product;
-    //     } else if (selectedProduct) {
-    //       selectedProduct.product = product;
-    //     }
-    //     if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-    //   }
-    // }
   }
 
   getTemplatesFiltered(products: Array<Product>) {

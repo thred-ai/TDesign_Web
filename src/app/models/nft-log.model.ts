@@ -7,6 +7,7 @@ export class NftLog {
   to: string
   block: number
   price: string | BigNumber
+  txHash: string
 
   get icon(){
     if (this.event == 'mint'){
@@ -40,7 +41,8 @@ export class NftLog {
     to: string,
     block: number,
     price: string | BigNumber,
-    timestamp?: Date
+    timestamp?: Date,
+    txHash?: string
     ) {
 
     this.event = event ?? ""
@@ -49,5 +51,6 @@ export class NftLog {
     this.to = to ?? ""
     this.block = block ?? 0
     this.price = price ?? ''
+    this.txHash = txHash ?? ''
   }
 }

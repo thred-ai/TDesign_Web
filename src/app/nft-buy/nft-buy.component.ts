@@ -162,18 +162,15 @@ export class NftBuyComponent implements OnInit {
             });
           }
         }
-        if (transaction) {
-          await transaction.wait();
-        }
-        if (this.nft?.tokenID) {
-          this.nft.seller = await this.collection.ownerOf(
-            this.nft.tokenID,
-            Globals.provider
-          );
-        }
+        // if (transaction) {
+        //   await transaction.wait();
+        // }
+        
         this.shake = false;
         this.spinner.hide('purchase');
-        this.dialogRef.close(this.nft);
+        console.log(transaction)
+
+        this.dialogRef.close({nft: this.nft, tx: transaction});
       } catch (error) {
         let data = (error as any).data
         console.log(error)

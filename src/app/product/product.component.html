@@ -182,31 +182,33 @@
                 >
                   <div
                     class="col p-2 m-0"
-                    style="height: 150px;"
+                    style="height: 150px"
                     *ngFor="let p of productToBuy?.traits ?? []"
                   >
                     <div
                       class="card border border-{{
                         info.colorStyle!.text_code
                       }} text-center rounded-panel-2 h-100"
-                      style="overflow-y: hidden;"
+                      style="overflow-y: hidden"
                       style.background-color="{{ selectedTheme()!.bg_color }}"
                       style.color="{{ selectedTheme()!.color }}"
                     >
-                    <div class="card-body h-100">
-                      <p
-                      class="text-{{ info.colorStyle!.text_code }} fw-bolder"
-                    >
-                      {{ p.trait_type.toUpperCase() }}
-                    </p>
-                    <p style="font-size: medium">
-                      {{ p.value }}
-                    </p>
-                    <p class="text-secondary">
-                      {{ collections.getTraitRarity(p) ?? "0" }}% have this
-                      trait
-                    </p>
-                    </div>
+                      <div class="card-body h-100">
+                        <p
+                          class="text-{{
+                            info.colorStyle!.text_code
+                          }} fw-bolder"
+                        >
+                          {{ p.trait_type.toUpperCase() }}
+                        </p>
+                        <p style="font-size: medium">
+                          {{ p.value }}
+                        </p>
+                        <p class="text-secondary">
+                          {{ collections.getTraitRarity(p) ?? "0" }}% have this
+                          trait
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div
@@ -345,10 +347,10 @@
                           style="overflow: hidden"
                           svgIcon="{{ collections | matIcon }}"
                           [ngbTooltip]="qtipContent"
-                          >
-                            <ng-template #qtipContent>
-                              {{collections?.currency ?? 'MATIC'}}
-                            </ng-template>
+                        >
+                          <ng-template #qtipContent>
+                            {{ collections?.currency ?? "MATIC" }}
+                          </ng-template>
                         </mat-icon>
                         <b style="font-size: 34px">
                           {{ productToBuy?.price | price }}
@@ -660,7 +662,7 @@
                           </mat-icon>
                         </mat-expansion-panel-header>
 
-                        <div *ngIf="panel.type == 1" style="overflow-x: scroll">
+                        <div *ngIf="panel.type == 1" style="overflow: scroll; max-height: 345px;">
                           <table
                             *ngIf="(nftLogs.length ?? 0) > 0"
                             mat-table
@@ -693,7 +695,7 @@
                                 >
                                   {{ element.icon }}
                                   <ng-template #etipContent>
-                                    {{element.logEvent}}
+                                    {{ element.logEvent }}
                                   </ng-template>
                                 </mat-icon>
 
@@ -749,29 +751,6 @@
                               </td>
                             </ng-container>
 
-                            <ng-container matColumnDef="date">
-                              <th
-                                mat-header-cell
-                                *matHeaderCellDef
-                                class="text-{{
-                                  info.colorStyle!.text_code
-                                }} padding"
-                              >
-                                Date
-                              </th>
-                              <td
-                                mat-cell
-                                *matCellDef="let element"
-                                class="text-secondary"
-                              >
-                                {{
-                                  (element | eventTimestamp | async)?.timestamp
-                                    | dateConstruct
-                                    | dateAgo
-                                }}
-                              </td>
-                            </ng-container>
-
                             <ng-container matColumnDef="price">
                               <th
                                 mat-header-cell
@@ -800,10 +779,15 @@
                                         | matIcon
                                     }}"
                                     [ngbTooltip]="ptipContent"
-                                    >
-                                      <ng-template #ptipContent>
-                                        {{collection?.currency ?? 'MATIC'}}
-                                      </ng-template>
+                                  >
+                                    <ng-template #ptipContent>
+                                      {{
+                                        (
+                                          info
+                                          | collectionPipe: collection?.contract
+                                        )?.currency ?? "MATIC"
+                                      }}
+                                    </ng-template>
                                   </mat-icon>
                                   <p
                                     class="m-0 ms-1 h-100 fw-bolder"
@@ -812,6 +796,45 @@
                                     {{ element.price | price }}
                                   </p>
                                 </div>
+                              </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="date">
+                              <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                class="text-{{
+                                  info.colorStyle!.text_code
+                                }} padding"
+                              >
+                                Date
+                              </th>
+                              <td
+                                mat-cell
+                                *matCellDef="let element"
+                                class="text-secondary"
+                              >
+                              <div class="d-flex justify-content-center align-items-center">
+                                {{
+                                  (element | eventTimestamp | async)?.timestamp
+                                    | dateConstruct
+                                    | dateAgo
+                                }}
+                                <mat-icon
+                                  style="overflow: hidden"
+                                  class="p-0 ms-1 text-{{
+                                    info.colorStyle!.text_code
+                                  }}"
+                                  (click)='viewTxPolygonScan(element)'
+                                  [inline]='true'
+                                  [ngbTooltip]="gtipContent"
+                                >
+                                launch
+                                  <ng-template #gtipContent>
+                                    View on Polygonscan
+                                  </ng-template>
+                                </mat-icon>
+                              </div>
                               </td>
                             </ng-container>
                             <tr
