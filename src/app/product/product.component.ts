@@ -682,6 +682,8 @@ export class ProductComponent implements OnInit, AfterViewInit {
   async addToCart() {
     // if (this.productToBuy.product == undefined)return;
 
+    console.log(this.collections)
+
     // this.productToBuy.product = JSON.parse(JSON.stringify(this.productToBuy.product))
 
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;

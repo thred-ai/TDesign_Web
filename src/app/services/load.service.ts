@@ -1241,7 +1241,6 @@ export class LoadService {
 
             product.price = cost ?? 0.02;
             product.seller = ownerAddress;
-            product.token = token;
             product.docID = doc.id;
             product.isAvailable = true;
             product.forSale = forSale;
@@ -1300,6 +1299,7 @@ export class LoadService {
                     (i: any) => i.tokenId == same.tokenID
                   ) as any;
 
+                  console.log(same)
                   if (c) {
                     same.tokenID = c.tokenId;
                     same.contractID = c.contract;
@@ -4601,7 +4601,6 @@ export class LoadService {
           let royalty = (docData['Royalty'] as number) ?? 0;
           let lazyHash = docData['Lazy_Hash'] as Dict<any>;
           let metadata = docData['Metadata'] as string;
-          let token = docData['Token'] as string;
           let forSale = docData['forSale'] as boolean;
           var cost = ethers.utils.parseUnits('0.02', 'ether');
           if (lazyHash) {
@@ -4621,7 +4620,6 @@ export class LoadService {
           );
 
           product.price = cost;
-          product.token = token;
           product.docID = doc.id;
           product.seller = ownerAddress;
 

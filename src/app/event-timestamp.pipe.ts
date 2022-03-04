@@ -26,7 +26,6 @@ export class EventTimestampPipe implements PipeTransform {
       rpcEndpoint
     )
 
-    console.log(provider)
 
     return provider.getBlock(value.block);
   }

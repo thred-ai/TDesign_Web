@@ -14,16 +14,12 @@ export class ProductsPipePipe implements PipeTransform {
 
 
     var prods = new Array<NFT>()
-    console.log(data)
 
     data.products.forEach((i: Collection) => {
-      console.log(i)
       i.NFTs.forEach((j: any) => {
         prods = prods.concat(j)
       })
     })
-
-    console.log(prods)
 
     if (data.row.smart_products !== undefined) {
       if (data.row.smart_products == 0) {
@@ -36,7 +32,6 @@ export class ProductsPipePipe implements PipeTransform {
       }
     }
     var prod = Array<NFT>();
-    console.log(data.row.products)
     data.row.products?.forEach((p: string) => {
       let pro = prods?.find((pr: NFT) => {
         return pr.docID == p;

@@ -35,7 +35,6 @@ class LazyMinter {
     this.contract = contract
     this.signer = signer
     this.domain = domain
-    console.log(signer)
   }
 
   /**
@@ -55,7 +54,6 @@ class LazyMinter {
     let isNative = (token == '0x0000000000000000000000000000000000000000')
     const voucher = { tokenId, minPrice, royalty, uri, token, isNative} //mint }
 
-    console.log(voucher)
     const domain = await this._signingDomain()
     const types = {
       NFTVoucher: [
@@ -93,7 +91,6 @@ class LazyMinter {
       return this._domain
     }
     const chainId = (await this.signer.provider.getNetwork()).chainId
-    console.log(chainId)
     this._domain = {
       name: this.domain,
       version: SIGNING_DOMAIN_VERSION,

@@ -13,15 +13,11 @@ export class NetworkCheckPipe implements PipeTransform {
   }
 
   async networkCheck(prov: ethers.providers.Web3Provider | undefined){
-    console.log(window)
-    console.log(prov)
     var network = await (prov?.getNetwork())
     if (network?.chainId == 0 && window.ethereum){
       let provider = await detectEthereumProvider() as any
       network = await provider.request({ method: 'eth_chainId' })
     }
-    console.log(network)
-    console.log(network?.chainId)
     if (network?.name == 'unspecified'){
       return {
         chainId: 137

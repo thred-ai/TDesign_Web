@@ -259,12 +259,9 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   routeToProfile(selected?: string) {
-    console.log('routing here')
     if (Globals.userInfo?.username) {
-      console.log('has user')
       this.loadService.myCallback = undefined;
       if (Globals.storeInfo.uid != Globals.userInfo?.uid) {
-        console.log('not store')
         // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
         this.routingService.routeToProfile(
           Globals.userInfo?.username!,
@@ -273,13 +270,9 @@ export class AppComponent implements OnInit, AfterViewInit {
           'https://shopmythred.com/' + Globals.userInfo?.username
         );
       } else {
-        console.log('has store')
-        console.log(Globals.storeInfo)
-        console.log(Globals.userInfo)
         if (Globals.storeInfo?.username) {
           if (this.isAdmin()) {
             this.reloadCurrentRoute();
-            console.log('admin')
             return
           } else {
             this.routingService.routeToProfile(
@@ -287,7 +280,6 @@ export class AppComponent implements OnInit, AfterViewInit {
               this.getStoreName().isCustom,
               selected
             );
-            console.log('no admin')
             return
           }
         }
@@ -769,15 +761,12 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   routeToLink(h: string) {
 
-    console.log(h)
 
 
 
     let link = this.storeInfo()?.pages?.find((p) => p.id == h)?.url ?? 'home';
 
 
-
-    console.log(link)
 
 
     if (Globals.storeInfo.username)
