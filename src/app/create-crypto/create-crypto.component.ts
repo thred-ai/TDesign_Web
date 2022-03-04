@@ -258,6 +258,7 @@ export class CreateCryptoComponent implements OnInit {
           this.nftContract.contract,
           async (cl) => {
             if (!cl) {
+              throw('ERROR')
               return;
             }
             let tokenId = (cl.collectionCount ?? 0) + 1;
@@ -268,6 +269,7 @@ export class CreateCryptoComponent implements OnInit {
               price,
               cl.customToken
             );
+
 
             if (!lazyMint){
               let transaction = await contract2.mintNFT(voucher)
@@ -327,7 +329,6 @@ export class CreateCryptoComponent implements OnInit {
           }
         );
         // }
-        this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
         let data = (error as any).data;
