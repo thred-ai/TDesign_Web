@@ -82,7 +82,7 @@
           </mat-select-trigger>
             <mat-optgroup
               class="text-dark bg-light"
-              *ngFor="let c of tokens"
+              *ngFor="let c of storeInfo?.tokens ?? []"
               [label]="c.name"
             >
               <mat-option

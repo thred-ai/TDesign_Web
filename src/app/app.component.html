@@ -1,112 +1,215 @@
-<div
-  *ngIf="
-    !isAdmin() &&
-    !isLanding() &&
-    storeInfo().uid != undefined &&
-    storeInfo().uid != '' &&
-    storeInfo().uid == signedInUid && provider &&
-    (provider | networkCheck | async)?.chainId == 137
-  "
-  class="navbar navbar-expand-lg navbar-light bg-secondary w-100"
->
-  <div
-    class="container-fluid d-flex justify-content-end px-2 w-100 text-start px-md-5"
-    style="min-height: 50px;"
+<mat-drawer-container class="example-container">
+  <mat-drawer
+    class="w-100 w-md-25 p-3 bg-{{
+      storeInfo().colorStyle!.back_code
+    }} text-secondary"
+    [position]="'end'"
+    #drawer
   >
-    <a role="button" class="btn btn-dark" (click)="accountPressed()">
-      EDIT STORE INFO
-    </a>
-  </div>
-</div>
-
-<div
-  *ngIf="
-    !isLanding() &&
-    storeInfo().uid != undefined &&
-    storeInfo().uid != '' &&
-    ((provider | networkCheck | async)?.chainId ?? 137) != 137
-    && provider && !closeBanner
-  "
-  class="mt-0 w-100"
-  style="position: fixed; z-index: 1000;"
-  style.background-color="{{selectedTheme(0.85)!.color}}"
->
-  <div
-    class="d-flex justify-content-between align-items-center px-2 w-100 h-100 text-start"
-    style="padding-top: 0.8em; padding-bottom: 0.8em"
-  >
-  <mat-icon class="me-2 text-{{ storeInfo().colorStyle!.back_code }} h-100" style="aspect-ratio: 1;"></mat-icon>
-
-  <div class="d-flex justify-content-center align-items-center">
-    <p class="text-center fw-bolder my-auto text-{{ storeInfo().colorStyle!.back_code }}" style="font-size: small;">
-      TO USE {{storeInfo().fullName}}, PLEASE SWITCH YOUR NETWORK TO POLYGON MAINNET
+    <div
+      class="w-100 text-center"
+      *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && !provider"
+    >
+    <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+      NO WALLET
+    </h2>
+    <p class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+      Connect your wallet to purchase NFTs on <br> {{storeInfo().fullName}}
     </p>
-    <mat-icon svgIcon="polygon_icon" class="ms-2"></mat-icon>
-  </div>
-  
-  <mat-icon class="ms-2 text-{{ storeInfo().colorStyle!.back_code }} h-100" role="button" (click)='closeBanner = true' style="aspect-ratio: 1;">close</mat-icon>
-  </div>
-</div>
-
-<nav
-  *ngIf="isBrowser() && !isAdmin() && !isLanding()"
-  [hidden]="storeInfo().username == undefined || storeInfo().username == ''"
-  class="navbar navbar-expand-lg navbar-{{
-    storeInfo().colorStyle!.nav_code
-  }} bg-{{ storeInfo().colorStyle!.back_code }} w-100"
->
-  <div
-    class="container-fluid d-flex justify-content-between px-2 w-100 text-start"
-    style="min-height: 50px"
-    [class.my-2]="isAdmin()"
-    [class.px-md-3]="isAdmin()"
-    [class.px-md-5]="!isAdmin()"
-  >
-    <div class="d-flex justify-content-start">
-      <img class="set-img" [src]="storeInfo().profileLink" />
       <a
-        class="navbar-brand px-2 text-{{ storeInfo().colorStyle!.text_code }}"
         role="button"
-        (click)="routeToHome()"
-        [class.smallTitle]="isMobile()"
-        [class.bigTitle]="!isMobile()"
-        [style.font-family]="storeInfo().fontName!"
-        >{{ storeInfo().fullName }}</a
+        (click)="openWallet()"
+        class="btn mt-2 fw-bold btn-outline-{{
+          storeInfo().colorStyle!.text_code
+        }} rounded-pill"
       >
+        CONNECT WALLET
+      </a>
+    </div>
+    <div
+      class="w-100 text-center"
+      *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && provider"
+    >
+      <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+        BALANCE
+      </h2>
+      <p class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+        Tokens shown here are used by collections in this marketplace.
+      </p>
+      <div
+        class="w-100 text-center my-2"
+        *ngFor="let token of storeInfo()?.allTokens ?? []"
+      >
+        <a
+          role="button"
+          style="text-decoration: none"
+          class="card bg-{{
+            storeInfo().colorStyle!.back_code
+          }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
+            storeInfo().colorStyle!.text_code
+          }} border-secondary"
+        >
+          <mat-icon
+            class="mb-2 mt-2 p-0"
+            style="overflow: hidden"
+            svgIcon="{{ token.contract | currencyIcon }}"
+          >
+          </mat-icon>
+          <h2
+            class="text-center my-auto mb-2"
+            style="font-size: xx-large"
+            [style.font-family]="storeInfo().fontName!"
+          >
+            {{
+              provider
+                | providerAddress
+                | async
+                | walletBalance: provider:token.contract
+                | async
+                | big2Num
+            }}
+          </h2>
+        </a>
+      </div>
+      <a
+        role="button"
+        (click)="openWallet()"
+        class="btn mt-2 fw-bold btn-outline-{{
+          storeInfo().colorStyle!.text_code
+        }} rounded-pill"
+      >
+        DISCONNECT
+      </a>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content class="h-100">
+    <div
+      *ngIf="
+        !isAdmin() &&
+        !isLanding() &&
+        storeInfo().uid != undefined &&
+        storeInfo().uid != '' &&
+        storeInfo().uid == signedInUid &&
+        provider &&
+        (provider | networkCheck | async)?.chainId == 137
+      "
+      class="navbar navbar-expand-lg navbar-light bg-secondary w-100"
+    >
+      <div
+        class="container-fluid d-flex justify-content-end px-2 w-100 text-start px-md-5"
+        style="min-height: 50px"
+      >
+        <a role="button" class="btn btn-dark" (click)="accountPressed()">
+          EDIT STORE INFO
+        </a>
+      </div>
+    </div>
+    <!-- let address = await provider.getSigner().getAddress() -->
+    <div
+      *ngIf="
+        !isLanding() &&
+        storeInfo().uid != undefined &&
+        storeInfo().uid != '' &&
+        ((provider | networkCheck | async)?.chainId ?? 137) != 137 &&
+        provider &&
+        !closeBanner
+      "
+      class="mt-0 w-100"
+      style="position: fixed; z-index: 1000"
+      style.background-color="{{ selectedTheme(0.85)!.color }}"
+    >
+      <div
+        class="d-flex justify-content-between align-items-center px-2 w-100 h-100 text-start"
+        style="padding-top: 0.8em; padding-bottom: 0.8em"
+      >
+        <mat-icon
+          class="me-2 text-{{ storeInfo().colorStyle!.back_code }} h-100"
+          style="aspect-ratio: 1"
+        ></mat-icon>
+
+        <div class="d-flex justify-content-center align-items-center">
+          <p
+            class="text-center fw-bolder my-auto text-{{
+              storeInfo().colorStyle!.back_code
+            }}"
+            style="font-size: small"
+          >
+            TO USE {{ storeInfo().fullName }}, PLEASE SWITCH YOUR NETWORK TO
+            POLYGON MAINNET
+          </p>
+          <mat-icon svgIcon="polygon_icon" class="ms-2"></mat-icon>
+        </div>
+
+        <mat-icon
+          class="ms-2 text-{{ storeInfo().colorStyle!.back_code }} h-100"
+          role="button"
+          (click)="closeBanner = true"
+          style="aspect-ratio: 1"
+          >close</mat-icon
+        >
+      </div>
     </div>
 
-    <button
-      class="navbar-toggler"
-      
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
+    <nav
+      *ngIf="isBrowser() && !isAdmin() && !isLanding()"
+      [hidden]="storeInfo().username == undefined || storeInfo().username == ''"
+      class="navbar navbar-expand-lg navbar-{{
+        storeInfo().colorStyle!.nav_code
+      }} bg-{{ storeInfo().colorStyle!.back_code }} w-100"
     >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul
-        class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 no-bar"
-        style="overflow-x: scroll"
+      <div
+        class="container-fluid d-flex justify-content-between px-2 w-100 text-start"
+        style="min-height: 50px"
+        [class.my-2]="isAdmin()"
+        [class.px-md-3]="isAdmin()"
+        [class.px-md-5]="!isAdmin()"
       >
-        <li *ngFor="let l of storeInfo().header ?? []" class="nav-item">
+        <div class="d-flex justify-content-start">
+          <img class="set-img" [src]="storeInfo().profileLink" />
           <a
-            data-bs-toggle="collapse"
-            data-bs-target=".navbar-collapse.show"
-            class="nav-link"
-            aria-current="page"
+            class="navbar-brand px-2 text-{{
+              storeInfo().colorStyle!.text_code
+            }}"
             role="button"
-            (click)="routeToLink(l); false"
-            href='{{l | storeChecker : true}}'
+            (click)="routeToHome()"
+            [class.smallTitle]="isMobile()"
+            [class.bigTitle]="!isMobile()"
             [style.font-family]="storeInfo().fontName!"
-            >{{ headerName(l) }}</a
+            >{{ storeInfo().fullName }}</a
           >
-        </li>
-        <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo().username}}/blogs">Blogs</a></li> -->
+        </div>
 
-        <!-- <li *ngIf="isShopComponent(); else elseBlock" class="nav-item dropdown">
+        <button
+          class="navbar-toggler"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul
+            class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 no-bar"
+            style="overflow-x: scroll"
+          >
+            <li *ngFor="let l of storeInfo().header ?? []" class="nav-item">
+              <a
+                data-bs-toggle="collapse"
+                data-bs-target=".navbar-collapse.show"
+                class="nav-link"
+                aria-current="page"
+                role="button"
+                (click)="routeToLink(l); (false)"
+                href="{{ l | storeChecker: true }}"
+                [style.font-family]="storeInfo().fontName!"
+                >{{ headerName(l) }}</a
+              >
+            </li>
+            <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo().username}}/blogs">Blogs</a></li> -->
+
+            <!-- <li *ngIf="isShopComponent(); else elseBlock" class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" [style.font-family]="storeInfo().fontName!">SHOP</a>
                     <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
                         <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">All Products</a></li>
@@ -114,7 +217,7 @@
                         <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
                     </ul>
                 </li> -->
-        <!-- <li
+            <!-- <li
           [hidden]="selectedCurrency() == undefined || !shouldShowCurrency()"
           class="nav-item dropdown"
         >
@@ -145,13 +248,13 @@
             </li>
           </ul>
         </li> -->
-      </ul>
+          </ul>
 
-      <ul
-        *ngIf="!isAdmin()"
-        class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 p-0"
-      >
-        <!-- <li *ngIf="!hideCart()" class="d-flex">
+          <ul
+            *ngIf="!isAdmin()"
+            class="navbar-nav me-0 mb-2 ms-auto mb-lg-0 ms-lg-0 p-0"
+          >
+            <!-- <li *ngIf="!hideCart()" class="d-flex">
           <div class="nav-item dropdown">
             <button
               id="navbarDropdown"
@@ -226,186 +329,189 @@
             </ul>
           </div>
         </li> -->
-        <li
-          class="d-flex mt-1 mb-1"
-          style="flex-shrink: 0"
-        >
-          <a
-            data-bs-toggle="collapse"
-            data-bs-target=".navbar-collapse.show"
-            class="btn btn-outline-{{ storeInfo().colorStyle!.text_code }} d-flex align-items-center justify-content-center"
-            role="button"
-            (click)="openWallet()"
-            [style.font-family]="storeInfo().fontName!"
-          >
-            {{providerName()}}
-            <mat-icon class="ms-2">
-              account_balance_wallet
-            </mat-icon>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div
-  *ngIf="storeInfo().banners && (storeInfo().banners?.length ?? 0) > 0 && !isAdmin() && !isLanding()"
-  class="w-100"
-  style="height: 45px"
->
-  <div *ngIf="storeInfo().bannerStyle == 1" class="w-100 h-100" id="outer">
-    <div class="w-100 h-100">
-      <div class="w-100 h-100 loop">
-        <div class="d-flex w-100 h-100 align-items-center" id="content">
-          <div
-            class="d-flex h-100 align-items-center"
-            *ngFor="let _ of arrLength()"
-          >
-            <h2
-              *ngFor="let banner of storeInfo().banners"
-              style.color="{{ bannerTheme(banner)!.color }}"
-              style.background-color="{{ bannerTheme(banner)!.bg_color }}"
-              class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
-              style="
-                font-size: calc(
-                  14px + (16 - 14) * (100vw - 400px) / (800 - 400)
-                );
-              "
-            >
-              <div *ngIf="banner.text != ''">
-                {{(banner.text ?? '')}}
-              </div>
-              <mat-icon
-                class="mt-1"
-                *ngIf="banner.icon != ''"
-                style="font-size: inherit"
+            <li class="d-flex mt-1 mb-1" style="flex-shrink: 0">
+              <a
+                data-bs-toggle="collapse"
+                data-bs-target=".navbar-collapse.show"
+                class="btn btn-outline-{{
+                  storeInfo().colorStyle!.text_code
+                }} d-flex align-items-center justify-content-center"
+                role="button"
+                (click)="drawer.toggle()"
+                [style.font-family]="storeInfo().fontName!"
               >
-                <span class="ms-1 material-icons-outlined">
-                  {{ banner.icon }}
-                </span>
-              </mat-icon>
-            </h2>
-          </div>
+                {{ providerName() }}
+                <mat-icon class="ms-2"> account_balance_wallet </mat-icon>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
-  </div>
+    </nav>
 
-  <div
-    *ngIf="storeInfo().bannerStyle == 0"
-    class="w-100 h-100"
-    style.background-color="{{ bannerTheme()!.bg_color }}"
-  >
     <div
-      class="h-100 w-100 d-flex justify-content-between align-items-center"
-      style="position: relative"
+      *ngIf="
+        storeInfo().banners &&
+        (storeInfo().banners?.length ?? 0) > 0 &&
+        !isAdmin() &&
+        !isLanding()
+      "
+      class="w-100"
+      style="height: 45px"
     >
-      <div class="w-100 h-100 d-flex">
-        <drag-scroll
-          #carousel
-          class="w-100 h-100"
-          [scrollbar-hidden]="true"
-          [indexChanged]="didMove()"
-        >
-          <div
-            drag-scroll-item
-            class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-            *ngFor="let banner of storeInfo().banners"
-          >
-            <h2
-              style.color="{{ bannerTheme(banner)!.color }}"
-              class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
-              [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
-              style="
-                font-size: calc(
-                  14px + (16 - 14) * (100vw - 400px) / (800 - 400)
-                );
-              "
-            >
-              <div *ngIf="banner.text != ''" class="mb-1">
-                {{(banner.text ?? 'fs')}}
+      <div *ngIf="storeInfo().bannerStyle == 1" class="w-100 h-100" id="outer">
+        <div class="w-100 h-100">
+          <div class="w-100 h-100 loop">
+            <div class="d-flex w-100 h-100 align-items-center" id="content">
+              <div
+                class="d-flex h-100 align-items-center"
+                *ngFor="let _ of arrLength()"
+              >
+                <h2
+                  *ngFor="let banner of storeInfo().banners"
+                  style.color="{{ bannerTheme(banner)!.color }}"
+                  style.background-color="{{ bannerTheme(banner)!.bg_color }}"
+                  class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
+                  style="
+                    font-size: calc(
+                      14px + (16 - 14) * (100vw - 400px) / (800 - 400)
+                    );
+                  "
+                >
+                  <div *ngIf="banner.text != ''">
+                    {{ banner.text ?? "" }}
+                  </div>
+                  <mat-icon
+                    class="mt-1"
+                    *ngIf="banner.icon != ''"
+                    style="font-size: inherit"
+                  >
+                    <span class="ms-1 material-icons-outlined">
+                      {{ banner.icon }}
+                    </span>
+                  </mat-icon>
+                </h2>
               </div>
-              <mat-icon *ngIf="banner.icon != ''" style="font-size: inherit">
-                <span class="ms-1 material-icons-outlined">
-                  {{ banner.icon }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        *ngIf="storeInfo().bannerStyle == 0"
+        class="w-100 h-100"
+        style.background-color="{{ bannerTheme()!.bg_color }}"
+      >
+        <div
+          class="h-100 w-100 d-flex justify-content-between align-items-center"
+          style="position: relative"
+        >
+          <div class="w-100 h-100 d-flex">
+            <drag-scroll
+              #carousel
+              class="w-100 h-100"
+              [scrollbar-hidden]="true"
+              [indexChanged]="didMove()"
+            >
+              <div
+                drag-scroll-item
+                class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
+                *ngFor="let banner of storeInfo().banners"
+              >
+                <h2
+                  style.color="{{ bannerTheme(banner)!.color }}"
+                  class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
+                  [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
+                  style="
+                    font-size: calc(
+                      14px + (16 - 14) * (100vw - 400px) / (800 - 400)
+                    );
+                  "
+                >
+                  <div *ngIf="banner.text != ''" class="mb-1">
+                    {{ banner.text ?? "fs" }}
+                  </div>
+                  <mat-icon
+                    *ngIf="banner.icon != ''"
+                    style="font-size: inherit"
+                  >
+                    <span class="ms-1 material-icons-outlined">
+                      {{ banner.icon }}
+                    </span>
+                  </mat-icon>
+                </h2>
+              </div>
+            </drag-scroll>
+          </div>
+          <div
+            class="w-100 d-flex justify-content-between align-items-center"
+            style="position: absolute"
+          >
+            <a
+              *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+              class="d-none d-md-block"
+              role="button"
+              (click)="moveLeft()"
+            >
+              <mat-icon
+                class="ms-3 ms-md-5 mt-1"
+                style.color="{{ bannerTheme()!.color }}"
+              >
+                <span class="material-icons-outlined" style="font-size: 30px">
+                  chevron_left
                 </span>
               </mat-icon>
-            </h2>
+            </a>
+            <a
+              *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+              class="d-none d-md-block"
+              role="button"
+              (click)="moveRight()"
+            >
+              <mat-icon
+                class="me-3 me-md-5 mt-1"
+                style.color="{{ bannerTheme()!.color }}"
+              >
+                <span class="material-icons-outlined" style="font-size: 30px">
+                  chevron_right
+                </span>
+              </mat-icon>
+            </a>
           </div>
-        </drag-scroll>
-      </div>
-      <div
-        class="w-100 d-flex justify-content-between align-items-center"
-        style="position: absolute"
-      >
-        <a
-          *ngIf="(storeInfo().banners?.length ?? 0) > 1"
-          class="d-none d-md-block"
-          role="button"
-          (click)="moveLeft()"
-        >
-          <mat-icon
-            class="ms-3 ms-md-5 mt-1"
-            style.color="{{ bannerTheme()!.color }}"
-          >
-            <span class="material-icons-outlined" style="font-size: 30px">
-              chevron_left
-            </span>
-          </mat-icon>
-        </a>
-        <a
-          *ngIf="(storeInfo().banners?.length ?? 0) > 1"
-          class="d-none d-md-block"
-          role="button"
-          (click)="moveRight()"
-        >
-          <mat-icon
-            class="me-3 me-md-5 mt-1"
-            style.color="{{ bannerTheme()!.color }}"
-          >
-            <span class="material-icons-outlined" style="font-size: 30px">
-              chevron_right
-            </span>
-          </mat-icon>
-        </a>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<router-outlet (activate)="activateComponent($event)"></router-outlet>
+    <router-outlet (activate)="activateComponent($event)"></router-outlet>
 
-<footer
-  *ngIf="
-    isBrowser() &&
-    (storeInfo()?.username ?? '') != '' &&
-    !isAdmin() &&
-    !isLanding()
-  "
-  class="py-5 bg-{{ storeInfo().colorStyle!.back_code }}"
->
-  <div class="container-fluid px-3 w-100 d-block justify-content-center">
-    <div class="d-block d-md-flex justify-content-between">
-      <div
-        class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
-      >
-        <div class="col mb-2 mx-2" [style.width.px]="50">
-          <a role="button" [ngbTooltip]="qtipContent"
+    <footer
+      *ngIf="
+        isBrowser() &&
+        (storeInfo()?.username ?? '') != '' &&
+        !isAdmin() &&
+        !isLanding()
+      "
+      class="py-5 bg-{{ storeInfo().colorStyle!.back_code }}"
+    >
+      <div class="container-fluid px-3 w-100 d-block justify-content-center">
+        <div class="d-block d-md-flex justify-content-between">
+          <div
+            class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
           >
-            <ng-template #qtipContent>
-              {{storeInfo().fullName}} is built on the Polygon Blockchain
-            </ng-template>
+            <div class="col mb-2 mx-2" [style.width.px]="50">
+              <a role="button" [ngbTooltip]="qtipContent">
+                <ng-template #qtipContent>
+                  {{ storeInfo().fullName }} is built on the Polygon Blockchain
+                </ng-template>
 
-            <img
-              [style.width.px]="50"
-              alt="ok"
-              src="assets/polygon_logo.svg"
-            />
-
-          </a>
-        </div>
-        <!-- <div class="col mb-2 mx-2" [style.width.px]="50">
+                <img
+                  [style.width.px]="50"
+                  alt="ok"
+                  src="assets/polygon_logo.svg"
+                />
+              </a>
+            </div>
+            <!-- <div class="col mb-2 mx-2" [style.width.px]="50">
           <a role="button">
             <img
               style="object-fit: contain; height: 25px"
@@ -465,52 +571,52 @@
             />
           </a>
         </div> -->
-      </div>
+          </div>
 
-      <div
-        class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
-      >
-        <div
-          class="col mb-4 mx-3"
-          *ngFor="let social of storeInfo().socials"
-          [style.width.px]="45"
-        >
-          <a role="button" (click)="openSocial(social.link)">
-            <img
-              class="rounded-circle"
-              style="object-fit: contain"
-              [style.width.px]="45"
-              alt="ok"
-              [src]="getLinkImg(social.name)"
-            />
-          </a>
-        </div>
-      </div>
-      <div class="w-100 d-none d-md-block">
-        <div>
-          <div class="w-100 row row-cols-3 justify-content-end">
+          <div
+            class="row w-100 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center"
+          >
             <div
-              class="col m-0 mx-2"
-              style="width: fit-content"
-              *ngFor="let col of storeInfo().footer ?? []"
+              class="col mb-4 mx-3"
+              *ngFor="let social of storeInfo().socials"
+              [style.width.px]="45"
             >
-              <a
-                class="footer-link"
-                role="button"
-                *ngFor="let link of col.link; index as j"
-                (click)='routeToLink(link); false'
-                href='{{link | storeChecker : true}}'
-              >
-                <p [style.font-family]="storeInfo().fontName!">
-                  {{ headerName(link) }}
-                </p>
+              <a role="button" (click)="openSocial(social.link)">
+                <img
+                  class="rounded-circle"
+                  style="object-fit: contain"
+                  [style.width.px]="45"
+                  alt="ok"
+                  [src]="getLinkImg(social.name)"
+                />
               </a>
             </div>
           </div>
+          <div class="w-100 d-none d-md-block">
+            <div>
+              <div class="w-100 row row-cols-3 justify-content-end">
+                <div
+                  class="col m-0 mx-2"
+                  style="width: fit-content"
+                  *ngFor="let col of storeInfo().footer ?? []"
+                >
+                  <a
+                    class="footer-link"
+                    role="button"
+                    *ngFor="let link of col.link; index as j"
+                    (click)="routeToLink(link); (false)"
+                    href="{{ link | storeChecker: true }}"
+                  >
+                    <p [style.font-family]="storeInfo().fontName!">
+                      {{ headerName(link) }}
+                    </p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
+        <!-- <div class="w-100 row row-cols-4 row-cols-md-7 row-cols-xl-7 justify-content-end">
             <div class="col mb-4 mx-2" [style.width.px]="50">
                 
             </div>
@@ -527,21 +633,23 @@
                 
             </div>
         </div> -->
-  </div>
-  <div class="container">
-    <p
-      class="m-0 text-center text-{{ storeInfo().colorStyle!.text_code }}"
-      [style.font-family]="storeInfo().fontName!"
-    >
-      &copy; {{ storeInfo().fullName }} 2022
-    </p>
-  </div>
-  <div class="container">
-    <p
-      class="m-0 text-center text-{{ storeInfo().colorStyle!.text_code }}"
-      [style.font-family]="storeInfo().fontName!"
-    >
-      Powered by Thred
-    </p>
-  </div>
-</footer>
+      </div>
+      <div class="container">
+        <p
+          class="m-0 text-center text-{{ storeInfo().colorStyle!.text_code }}"
+          [style.font-family]="storeInfo().fontName!"
+        >
+          &copy; {{ storeInfo().fullName }} 2022
+        </p>
+      </div>
+      <div class="container">
+        <p
+          class="m-0 text-center text-{{ storeInfo().colorStyle!.text_code }}"
+          [style.font-family]="storeInfo().fontName!"
+        >
+          Powered by Thred
+        </p>
+      </div>
+    </footer>
+  </mat-drawer-content>
+</mat-drawer-container>

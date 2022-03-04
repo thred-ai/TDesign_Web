@@ -59,6 +59,53 @@ export class Store {
 
   collections: Array<Collection> = [];
 
+  tokens = [
+    {
+      name: 'Default Tokens',
+      variations: [
+        {
+          name: 'Polygon MATIC',
+          symbol: 'polygon_icon',
+          contract: 'default',
+        },
+        {
+          name: 'Ethereum (Wrapped)',
+          symbol: 'weth_icon',
+          contract: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+        },
+        {
+          name: 'Bitcoin (Wrapped)',
+          symbol: 'btc_icon',
+          contract: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+        },
+        {
+          name: 'DOGE (Wrapped)',
+          symbol: 'doge_icon',
+          contract: '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618',
+        },
+      ],
+    },
+    {
+      name: 'Custom Tokens',
+      variations: [],
+    },
+  ];
+
+  get allTokens() {
+    let all: Dict<any>[] = [];
+
+    this.tokens
+      .map((v) => v.variations)
+      .forEach((t) => {
+        all = all.concat(t);
+      });
+    return all.filter((a) =>
+      this.collections.find(
+        (c) => a.contract == 'default' || c.customToken == a.contract
+      )
+    );
+  }
+
   constructor(
     uid?: string,
     dpID?: string,
@@ -157,7 +204,6 @@ export class Store {
       bg_color: [24.0, 15.0, 43.0, 0.9],
     };
 
-
     this.header = header ?? ['1', '2', '3'];
     this.footer = footer ?? [
       {
@@ -181,7 +227,7 @@ export class Store {
             'dark',
             'glow',
             [10.0, 10.0, 10.0, 1],
-            [255.0, 255.0, 255.0, 1],
+            [255.0, 255.0, 255.0, 1]
           );
 
     this.fontName = fontName ?? 'Montserrat'; //"Roboto"
@@ -208,7 +254,7 @@ export class Store {
     }
     this.customURL = customURL;
     this.fb_pixel = fb_pixel;
-    this.active = (active ?? false)
+    this.active = active ?? false;
 
     this.coupons = coupons ?? [];
     this.banners = banners ?? [];
@@ -222,9 +268,7 @@ export class Store {
         'Home',
         '1',
         'home',
-        homeRows ?? [
-          new Row('NEW COLLECTION', undefined, 0, 0, undefined, 4)
-        ]
+        homeRows ?? [new Row('NEW COLLECTION', undefined, 0, 0, undefined, 4)]
       ),
       new Page('about', 'About', '2', 'about', [
         new Row(

@@ -22,7 +22,7 @@ export interface ICollection {
   uid?: string;
   timestamp?: Date;
   available?: boolean;
-  rpcEndpoint?: string
+  rpcEndpoint?: string;
 
   getRarity(nft: NFT): string;
 
@@ -56,14 +56,12 @@ export class Collection implements ICollection {
   timestamp?: Date;
   available?: boolean;
   ABI: string;
-  rpcEndpoint?: string
+  rpcEndpoint?: string;
 
   getRarity(nft: NFT) {
     var totalRarity = 0;
 
     (nft.traits ?? []).forEach((trait: any) => {
-      // let type = trait.trait_type as string
-      // let value = trait.value as any
       let same = this.NFTs.filter((n) =>
         n.traits?.find(
           (t) => t.trait_type == trait.trait_type && t.value == trait.value
@@ -86,8 +84,8 @@ export class Collection implements ICollection {
   getFloor() {
     return (
       this.NFTs.sort(function (a, b) {
-        let x = a.priceNum
-        let y = b.priceNum
+        let x = a.priceNum;
+        let y = b.priceNum;
         if (x < y) {
           return -1;
         }
@@ -100,18 +98,12 @@ export class Collection implements ICollection {
   }
 
   getCurrencyIcon() {
-    if (this.customToken){
-      if (this.customToken == '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'){
-        return 'weth_icon'
-      }
-      else if (this.customToken == '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618'){
-        return 'doge_icon'
-      }
-      else if (this.customToken == '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6'){
-        return 'btc_icon'
-      }
-    }
-    return 'polygon_icon';
+    let token = this.customToken ?? 'default';
+    return (
+      Globals.storeInfo?.tokens
+        .find((t) => t.variations.find((s) => s.contract == token))
+        ?.variations.find((s) => s.contract == token)?.symbol ?? 'polygon_icon'
+    );
   }
 
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
@@ -126,20 +118,23 @@ export class Collection implements ICollection {
     return symbol;
   }
 
-  async ownerOf(tokenId: number, provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-    this.rpcEndpoint
-  )) {
+  async ownerOf(
+    tokenId: number,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+  ) {
     let contract = new ethers.Contract(this.contract, this.ABI, provider);
     let owner = await contract.ownerOf(tokenId);
     return owner;
   }
 
 
-  hashedTokenId(tokenId: number){
-    let strTokenId = String(tokenId)
-    var zero = ethers.constants.HashZero
+  hashedTokenId(tokenId: number) {
+    let strTokenId = String(tokenId);
+    let zero = ethers.constants.HashZero;
 
-    return zero.substr(0, (zero.length - strTokenId.length)) + strTokenId
+    return zero.substr(0, zero.length - strTokenId.length) + strTokenId;
   }
 
   constructor(
@@ -158,7 +153,6 @@ export class Collection implements ICollection {
     available?: boolean,
     ABI?: string
   ) {
-    
     if (environment.rpc) {
       this.rpcEndpoint = environment.rpc;
     } else {

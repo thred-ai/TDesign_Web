@@ -29,6 +29,10 @@ import { BufferToBase64Pipe } from '../buffer-to-base64.pipe';
 import { EventSortPipe } from '../event-sort.pipe';
 import { EventTimestampPipe } from '../event-timestamp.pipe';
 import { DateConstructPipe } from '../date-construct.pipe';
+import { WalletBalancePipe } from '../wallet-balance.pipe';
+import { ProviderAddressPipe } from '../provider-address.pipe';
+import { Big2NumPipe } from '../big-2-num.pipe';
+import { CurrencyIconPipe } from '../currency-icon.pipe';
 
 @NgModule({
   imports: [
@@ -65,6 +69,10 @@ import { DateConstructPipe } from '../date-construct.pipe';
     EventSortPipe,
     EventTimestampPipe,
     DateConstructPipe,
+    WalletBalancePipe,
+    ProviderAddressPipe,
+    Big2NumPipe,
+    CurrencyIconPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -96,7 +104,11 @@ import { DateConstructPipe } from '../date-construct.pipe';
     BufferToBase64Pipe,
     EventSortPipe,
     EventTimestampPipe,
-    DateConstructPipe
+    DateConstructPipe,
+    WalletBalancePipe,
+    ProviderAddressPipe,
+    Big2NumPipe,
+    CurrencyIconPipe
   ]
 })
 export class ApplicationPipesModule {}

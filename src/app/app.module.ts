@@ -34,7 +34,8 @@ import { VgCoreModule } from '@videogular/ngx-videogular/core';
 import { VgControlsModule } from '@videogular/ngx-videogular/controls';
 import { VgOverlayPlayModule } from '@videogular/ngx-videogular/overlay-play';
 import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
-import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image'; // <-- include ScrollHooks
+import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- include ScrollHooks
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -75,7 +76,8 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
     VgControlsModule,
     VgBufferingModule,
     VgOverlayPlayModule,
-    LazyLoadImageModule
+    LazyLoadImageModule,
+    MatSidenavModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [

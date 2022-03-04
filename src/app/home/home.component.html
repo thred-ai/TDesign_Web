@@ -63,7 +63,7 @@
               [class.border-secondary]="
                 (storeInfo?.colorStyle)!.text_code == 'light'
               "
-              style="overflow: hidden;"
+              style="overflow: hidden"
             >
               <div class="pb-0 w-100">
                 <a
@@ -117,13 +117,16 @@
                       class="m-0 p-0 me-1"
                       style="overflow: hidden; height: 25px"
                       svgIcon="{{
-                        ((storeInfo | collectionPipe: product.contractID)) | matIcon
+                        storeInfo | collectionPipe: product.contractID | matIcon
                       }}"
                       [ngbTooltip]="qtipContent"
-                      >
-                        <ng-template #qtipContent>
-                          {{(storeInfo | collectionPipe: product.contractID)?.currency ?? 'MATIC'}}
-                        </ng-template>
+                    >
+                      <ng-template #qtipContent>
+                        {{
+                          (storeInfo | collectionPipe: product.contractID)
+                            ?.currency ?? "MATIC"
+                        }}
+                      </ng-template>
                     </mat-icon>
                     {{ product?.price | price }}
                   </a>
@@ -306,9 +309,11 @@
     </div>
   </div>
 </section>
-<section *ngIf='isLoading' style="height: 100vh; width: 100%">
-
-</section>
+<section
+  *ngIf="isLoading"
+  class="bg-{{ (storeInfos()?.colorStyle)!.back_code }}"
+  style="height: 100vh; width: 100%"
+></section>
 <section
   *ngIf="isBrowser() && storeInfo && storeInfo?.username && !storeInfo?.active"
   class="py-5"

@@ -50,6 +50,8 @@ import { environment } from 'src/environments/environment';
 import { Collection } from '../models/collection.model';
 import { NftLog } from '../models/nft-log.model';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { MatIconRegistry } from "@angular/material/icon";
+import { DomSanitizer } from '@angular/platform-browser';
 
 const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
 
@@ -70,7 +72,9 @@ export class LoadService {
     private storage: AngularFireStorage,
     private stripeService: StripeService,
     private snackBar: MatSnackBar,
-    private http: HttpClient
+    private http: HttpClient,
+    private domSanitizer: DomSanitizer,
+    private matIconRegistry: MatIconRegistry
   ) {
     if (environment.rpc) {
       this.rpcEndpoint = environment.rpc;
@@ -478,6 +482,25 @@ export class LoadService {
 
   isLoading = true;
 
+  
+
+
+  registerTokens(tokens: Dict<any>[] = [], store: Store = Globals.storeInfo){
+    tokens.forEach(t => {
+      if (!t.contract || !t.name || !t.url || !t.symbol) { return }
+      store.tokens[1].variations.push({
+        name: t.name,
+        symbol: `${t.name ?? ''}_token`,
+        contract: t.contract,
+      })
+      this.matIconRegistry.addSvgIcon(
+        `${t.name ?? ''}_token`,
+        this.domSanitizer.bypassSecurityTrustResourceUrl(t.url)
+      );
+    })
+  }
+
+
   async getUser(
     username?: string,
     uid?: string,
@@ -545,6 +568,9 @@ export class LoadService {
 
         let orders = (docData['Orders'] as number) ?? 0;
         let wallet = (docData['Address'] as string) ?? '';
+        let tokens = docData['Custom_Tokens'] as Dict<any>[]
+
+        this.registerTokens(tokens)
 
         var coupons = new Array<Coupon>();
         discounts.forEach((discount) => {
@@ -963,6 +989,8 @@ export class LoadService {
             let orders = (docData['Orders'] as number) ?? 0;
             let wallet = (docData['Address'] as string) ?? '';
 
+            let tokens = docData['Custom_Tokens'] as Dict<any>[]
+
             var coupons = new Array<Coupon>();
             discounts.forEach((discount) => {
               coupons.push(
@@ -1054,6 +1082,8 @@ export class LoadService {
               footer,
               wallet
             );
+
+            this.registerTokens(tokens, Globals.userInfo)
 
             let list = (docData['image_list'] as Array<string>) ?? [];
 

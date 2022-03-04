@@ -386,6 +386,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
   }
 
+  storeInfos(){
+    return Globals.storeInfo
+  }
+
   rowText(row: Row) {
     let replaced = row.html ?? '';
 

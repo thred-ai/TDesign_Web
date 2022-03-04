@@ -28,33 +28,7 @@ export class CreateCollectionComponent implements OnInit {
 
   storeInfo?: Store;
 
-  tokens = [
-    {
-      name: 'Available Tokens',
-      variations: [
-        {
-          name: 'Polygon MATIC',
-          symbol: 'polygon_icon',
-          contract: 'default'
-        },
-        {
-          name: 'Ethereum (Wrapped)',
-          symbol: 'weth_icon',
-          contract: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'
-        },
-        {
-          name: 'Bitcoin (Wrapped)',
-          symbol: 'btc_icon',
-          contract: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6'
-        },
-        {
-          name: 'DOGE (Wrapped)',
-          symbol: 'doge_icon',
-          contract: '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618'
-        }
-      ],
-    },
-  ];
+  
 
   selectedThemeFn() {
     let co = Globals.storeInfo?.colorStyle?.btn_color;
@@ -94,9 +68,11 @@ export class CreateCollectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
-    this.nftForm.controls.currency.setValue(this.tokens[0].variations[0]);
+    this.nftForm.controls.currency.setValue(Globals.storeInfo.tokens[0].variations[0]);
     this.storeInfo = Globals.storeInfo;
   }
+
+  
 
   err = '';
 
