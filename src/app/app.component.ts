@@ -920,7 +920,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     let provider = await detectEthereumProvider() as any
     if (provider){
-      provider.on('accountsChanged', (accounts: Array<string>) => window.location.reload());
+      provider.on('accountsChanged', (accounts: Array<string>) => console.log(accounts));
       provider.on('chainChanged', (_chainId: any) => window.location.reload());
     }
 
