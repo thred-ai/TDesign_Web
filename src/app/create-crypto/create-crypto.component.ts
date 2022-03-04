@@ -109,6 +109,9 @@ export class CreateCryptoComponent implements OnInit {
 
   ngOnInit(): void {
     this.provider = this.data.provider;
+
+    if (this.nftContract.currency)
+    this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`
     // if (this.admin.selected)
     this.nftForm.controls.lazyMint.setValue(true);
   }

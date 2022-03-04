@@ -696,7 +696,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
       panelClass: 'app-full-bleed-dialog',
       data: {
         nft: product,
-        collection: this.collection,
+        collection: this.collections,
         signer: signer,
       },
     });
