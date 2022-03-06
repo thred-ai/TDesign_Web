@@ -73,8 +73,8 @@
         {{ provider | providerAddress | async | address: false }}
       </p>
 
-      <mat-tab-group mat-stretch-tabs class="h-100">
-        <mat-tab>
+      <mat-tab-group mat-stretch-tabs style="height: 100vh;">
+        <mat-tab class="h-100">
           <!-- #docregion label-directive -->
           <ng-template mat-tab-label>
             <mat-icon
@@ -82,7 +82,7 @@
                 storeInfo().colorStyle!.text_code
               }}"
             >
-              add_box</mat-icon
+            token</mat-icon
             >
             <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
               TOKENS
@@ -93,7 +93,8 @@
           Tokens shown here are used by collections in this marketplace.
         </p> -->
 
-          <div
+        <div style="height: 70vh;"> 
+<div
             class="w-100 text-center mt-2 mb-3"
             *ngFor="let token of storeInfo()?.allTokens ?? []"
           >
@@ -129,16 +130,16 @@
               </h2>
             </a>
           </div>
-
           <p
             [style.font-family]="storeInfo().fontName!"
-            class="text-center text-secondary my-2"
+            class="text-center text-secondary mt-2"
             style="font-size: small"
           >
             These tokens are used to buy/sell on <br />{{
               storeInfo().fullName
             }}
           </p>
+        </div>          
         </mat-tab>
         <mat-tab class="h-100">
           <!-- #docregion label-directive -->
@@ -147,7 +148,7 @@
               class="example-tab-icon text-{{
                 storeInfo().colorStyle!.text_code
               }}"
-              >add_box</mat-icon
+              >category</mat-icon
             >
             <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
               NFTs
@@ -220,7 +221,6 @@
                     #carousel2
                     class="mb-2 w-100 h-100"
                     [scrollbar-hidden]="true"
-                    [scroll-x-wheel-enabled]="false"
                   >
                     <div
                       drag-scroll-item
