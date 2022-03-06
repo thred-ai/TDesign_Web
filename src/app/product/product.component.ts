@@ -68,11 +68,14 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   collection?: Collection;
   get collections() {
     if (this.collection) {
-      return Globals.storeInfo.collections?.find(
-        (c) => c.contract == this.collection?.contract
+      let c = Globals.storeInfo.collections?.find(
+        (c: Collection) => c.contract == this.collection?.contract
       );
+      if (c as Collection){
+        return c
+      }
     }
-    return this.collection;
+    return undefined;
   }
 
   usdDisplayPrice = 0;

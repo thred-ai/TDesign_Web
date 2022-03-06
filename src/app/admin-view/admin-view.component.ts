@@ -3249,6 +3249,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               // let signer = await this.provider?.getSigner()
               // let balance = await signer?.getBalance()
             }
+            Globals.storeInfo = Globals.userInfo!
             this.hideSpinner();
             this.setForm();
             this.showWelcomeModal();
