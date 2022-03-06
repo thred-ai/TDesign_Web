@@ -137,10 +137,11 @@
   </div>
   <div
     *ngIf="!signer"
-    class="d-flex justify-content-center align-items-center"
+    class="d-flex justify-content-center align-items-center p-3 pb-4"
     style="height: 100%"
+    style.background-color="{{ selectedTheme()!.bg_color }}"
   >
-    <div class="w-100 text-center">
+    <div class="w-100 text-center" [style.font-family]="storeInfo()?.fontName!">
       <div
         class="d-flex justify-content-center align-items-center mb-4"
         style="height: 100px"
@@ -159,6 +160,7 @@
       <h2
         class="fw-bolder w-100 text-center"
         style="font-size: 35px; line-height: 1.2em"
+        style.color="{{ selectedIndicator()!.color }}"
       >
         Cannot Connect to Wallet
       </h2>

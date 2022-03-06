@@ -161,8 +161,9 @@
               (afterExpand)="afterPanelOpened()"
               *ngFor="let panel of accordionList; index as i"
               #mapanel="matExpansionPanel"
+              
             >
-              <mat-expansion-panel-header>
+              <mat-expansion-panel-header [style.font-family]="info.fontName!">
                 <mat-panel-title class="text-{{ info.colorStyle!.text_code }}">
                   <b>{{ panel.title }}</b>
                 </mat-panel-title>
@@ -175,10 +176,11 @@
               </mat-expansion-panel-header>
 
               <ng-template matExpansionPanelContent>
-                <p *ngIf="panel.type == 1">{{ panel.description }}</p>
+                <p [style.font-family]="info.fontName!" *ngIf="panel.type == 1">{{ panel.description }}</p>
                 <div
                   *ngIf="panel.type == 0"
                   class="row gx-4 row-cols-1 row-cols-md-3 align-items-top justify-content-start h-100"
+                  [style.font-family]="info.fontName!"
                 >
                   <div
                     class="col p-2 m-0"
@@ -224,30 +226,30 @@
                     </p>
                   </div>
                 </div>
-                <div *ngIf="panel.type == 2">
+                <div *ngIf="panel.type == 2" >
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3>Contract Address</h3>
-                    <h3>{{ collections?.contract ?? "" | address }}</h3>
+                    <h3 [style.font-family]="info.fontName!">Contract Address</h3>
+                    <h3 [style.font-family]="info.fontName!">{{ collections?.contract ?? "" | address }}</h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3>Token ID</h3>
-                    <h3>{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
+                    <h3 [style.font-family]="info.fontName!">Token ID</h3>
+                    <h3 [style.font-family]="info.fontName!">{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3>Token Standard</h3>
-                    <h3>ERC-721</h3>
+                    <h3 [style.font-family]="info.fontName!">Token Standard</h3>
+                    <h3 [style.font-family]="info.fontName!">ERC-721</h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3>Blockchain</h3>
-                    <h3>Polygon</h3>
+                    <h3 [style.font-family]="info.fontName!">Blockchain</h3>
+                    <h3 [style.font-family]="info.fontName!">Polygon</h3>
                   </div>
                 </div>
               </ng-template>
@@ -666,7 +668,7 @@
                         *ngFor="let panel of accordionList3; index as i"
                         #mapanel="matExpansionPanel"
                       >
-                        <mat-expansion-panel-header>
+                        <mat-expansion-panel-header [style.font-family]="info.fontName!">
                           <mat-panel-title
                             class="text-{{ info.colorStyle!.text_code }}"
                           >
@@ -685,6 +687,7 @@
                         <div
                           *ngIf="panel.type == 1"
                           style="overflow: scroll; max-height: 345px"
+                          [style.font-family]="info.fontName!"
                         >
                           <table
                             *ngIf="(nftLogs.length ?? 0) > 0"
@@ -703,6 +706,7 @@
                                 mat-header-cell
                                 *matHeaderCellDef
                                 class="text-{{ info.colorStyle!.text_code }}"
+                                [style.font-family]="info.fontName!"
                               >
                                 Event
                               </th>
@@ -712,12 +716,12 @@
                                 style.color="{{ selectedTheme()!.color }}"
                               >
                                 <mat-icon
-                                  class="m-0 p-0"
+                                  class="m-0 p-0 hover-icon"
                                   style="overflow: hidden"
                                   [ngbTooltip]="etipContent"
                                 >
                                   {{ element.icon }}
-                                  <ng-template #etipContent>
+                                  <ng-template #etipContent [style.font-family]="info.fontName!">
                                     {{ element.logEvent }}
                                   </ng-template>
                                 </mat-icon>
@@ -743,6 +747,7 @@
                                 class="text-{{
                                   info.colorStyle!.text_code
                                 }} padding"
+                                [style.font-family]="info.fontName!"
                               >
                                 From
                               </th>
@@ -750,6 +755,7 @@
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
+                                [style.font-family]="info.fontName!"
                               >
                                 {{ element.from | address }}
                               </td>
@@ -762,6 +768,7 @@
                                 class="text-{{
                                   info.colorStyle!.text_code
                                 }} padding"
+                                [style.font-family]="info.fontName!"
                               >
                                 To
                               </th>
@@ -769,6 +776,7 @@
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
+                                [style.font-family]="info.fontName!"
                               >
                                 {{ element.to | address }}
                               </td>
@@ -781,6 +789,7 @@
                                 class="text-{{
                                   info.colorStyle!.text_code
                                 }} padding"
+                                [style.font-family]="info.fontName!"
                               >
                                 Price
                               </th>
@@ -788,6 +797,7 @@
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
+
                               >
                                 <div
                                   class="d-flex justify-content-start align-items-center w-100"
@@ -803,7 +813,7 @@
                                     }}"
                                     [ngbTooltip]="ptipContent"
                                   >
-                                    <ng-template #ptipContent>
+                                    <ng-template #ptipContent [style.font-family]="info.fontName!">
                                       {{
                                         (
                                           info
@@ -815,6 +825,7 @@
                                   <p
                                     class="m-0 ms-1 h-100 fw-bolder"
                                     style="font-size: large"
+                                    [style.font-family]="info.fontName!"
                                   >
                                     {{ element.price | price }}
                                   </p>
@@ -829,6 +840,7 @@
                                 class="text-{{
                                   info.colorStyle!.text_code
                                 }} padding"
+                                [style.font-family]="info.fontName!"
                               >
                                 Date
                               </th>
@@ -839,6 +851,7 @@
                               >
                                 <div
                                   class="d-flex justify-content-center align-items-center"
+                                  [style.font-family]="info.fontName!"
                                 >
                                   {{
                                     (element | eventTimestamp | async)
@@ -856,7 +869,7 @@
                                     [ngbTooltip]="gtipContent"
                                   >
                                     launch
-                                    <ng-template #gtipContent>
+                                    <ng-template #gtipContent [style.font-family]="info.fontName!">
                                       View on Polygonscan
                                     </ng-template>
                                   </mat-icon>

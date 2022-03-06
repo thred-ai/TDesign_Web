@@ -181,6 +181,10 @@ apple-pay-button {
   cursor: pointer;
 }
 
+.hover-icon:hover{
+  color: rgb(1, 216, 216);
+}
+
 .mat-row:hover .mat-cell {
   border-color: currentColor;
 }
