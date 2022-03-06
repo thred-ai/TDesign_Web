@@ -8,11 +8,17 @@ import { Globals } from './globals';
 export class OwnedCollectionsPipe implements PipeTransform {
 
   transform(value: Array<Collection> | undefined, address: string | null | undefined): Array<Collection> {
-    console.log(value)
 
     if (value && address){
-      let same = value?.filter(c => c.NFTs.find(n => n.seller.toLowerCase() == address?.toLowerCase())) ?? []
-      console.log(same)
+      let same = new Array<Collection>()
+      value.forEach(v => {
+        if (v.NFTs.findIndex(n => `${n.seller.toLowerCase()}` == `${address.toLowerCase()}`) != -1){
+          same.push(v)
+        }
+        else{
+          console.log(v)
+        }
+      })
       return same
     }
     return []

@@ -73,7 +73,7 @@
         {{ provider | providerAddress | async | address: false }}
       </p>
 
-      <mat-tab-group mat-stretch-tabs style="height: 100vh;">
+      <mat-tab-group mat-stretch-tabs>
         <mat-tab class="h-100">
           <!-- #docregion label-directive -->
           <ng-template mat-tab-label>
@@ -93,7 +93,7 @@
           Tokens shown here are used by collections in this marketplace.
         </p> -->
 
-        <div style="height: 70vh;"> 
+        <div style="min-height: 70vh;"> 
 <div
             class="w-100 text-center mt-2 mb-3"
             *ngFor="let token of storeInfo()?.allTokens ?? []"
@@ -155,15 +155,12 @@
             </span>
           </ng-template>
 
-          <div class="w-100 h-100 justify-content-center" *ngIf="((storeInfo().collections
-          | ownedCollections: (provider | providerAddress | async)
-          | collectionFilter: 'timestamp-asc')?.length ?? 0) > 0;else empty_collections">
+          <div class="w-100 h-100 justify-content-center pt-3 pb-1" *ngIf="(ownedCollections(provider | providerAddress | async)?.length ?? 0) > 0;else empty_collections">
             <!-- [indexChanged]="didMove()" -->
             <div
-              class="mb-1 mt-4 w-100"
+              class=" w-100"
               *ngFor="
-                let collection of storeInfo().collections
-                  | ownedCollections: (provider | providerAddress | async)
+                let collection of ownedCollections(provider | providerAddress | async)
                   | collectionFilter: 'timestamp-asc'
               "
             >
@@ -226,10 +223,9 @@
                       drag-scroll-item
                       class="h-100 px-3 w-100 h-100 w-md-50"
                       *ngFor="
-                        let product of collection.NFTs ?? []
+                        let product of ownedProducts(provider | providerAddress | async, collection) ?? []
                           | sortCol
                             : 'tokenId-asc'
-                            : (provider | providerAddress | async)
                       "
                     >
                       <div class="col h-100">

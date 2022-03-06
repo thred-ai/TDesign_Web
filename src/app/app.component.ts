@@ -54,6 +54,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ethers } from 'ethers';
 import { from } from 'rxjs';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { Collection } from './models/collection.model';
 
 @Component({
   selector: 'app-root',
@@ -100,6 +101,20 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   moveLeft() {
     this.ds!.moveLeft();
+  }
+
+  ownedCollections(address: string | null | undefined){
+    if (address){
+      return Globals.storeInfo.collections?.filter(c => c.NFTs.find(n => n.seller.toLowerCase() == address.toLowerCase())) ?? []
+    }
+    return []
+  }
+
+  ownedProducts(address: string | null | undefined, collection: Collection){
+    if (address){
+      return collection.NFTs.filter(n => n.seller.toLowerCase() == address.toLowerCase())
+    }
+    return []
   }
 
   moveRight() {
