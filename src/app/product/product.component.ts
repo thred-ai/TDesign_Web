@@ -189,8 +189,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.sub = _router.events.subscribe((event: any) => {
         // You only receive NavigationStart events
         if (event instanceof NavigationEnd){
-          this.productToBuy = undefined
-          this.collection = undefined
           this.ngOnInit()
         }
       });

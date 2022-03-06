@@ -6543,6 +6543,10 @@ img.ng-lazyloading.dark {
     position: fixed !important;
 }
 
+mat-sidenav-content{
+  background: linear-gradient(to left, rgb(26, 20, 82), #0F0824);
+}
+
 .shadow-lg {
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
 }

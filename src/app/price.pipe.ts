@@ -8,12 +8,12 @@ export class PricePipe implements PipeTransform {
 
   transform(value: BigNumber | string | undefined): string {
     if (value){
-      
+      console.log(value)
       if (typeof value == 'object'){
         return ethers.utils.formatEther(value);
       }
       else if (typeof value == 'string'){
-        let val = ethers.utils.parseUnits(`${Number(value)}`, 'wei')
+        let val = ethers.utils.parseUnits(`${BigInt(value)}`, 'wei')
         return ethers.utils.formatEther(val)
       }
     }
