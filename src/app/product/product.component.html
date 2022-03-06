@@ -364,6 +364,7 @@
                           style.color="{{ selectedTheme()!.color }}"
                           [style.font-family]="info.fontName!"
                           [ngbTooltip]="priceConvertTooltip"
+                          *ngIf='rates.length > 0'
                         >
                           <ng-template #priceConvertTooltip>
                             {{ "Asset price in USD" }}

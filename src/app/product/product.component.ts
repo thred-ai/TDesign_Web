@@ -78,6 +78,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return undefined;
   }
 
+  get rates(){
+    return Globals.rates
+  }
+
   usdDisplayPrice = 0;
 
   quantityNumbers: Array<number> = [];
