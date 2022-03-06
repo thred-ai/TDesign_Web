@@ -308,7 +308,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   shouldHide(){
-    return ((this.storeInfo?.collections.map(i => i?.NFTs).filter( j => j.length > 0))?.length ?? 0) == 0
+    return ((this.storeInfo?.collections?.map(i => i?.NFTs).filter( j => j.length > 0))?.length ?? 0) == 0
   }
 
 

@@ -76,7 +76,7 @@
           </mat-form-field>
         </div>
         <div class="wrap-input1 w-100">
-          <mat-form-field class="w-100" appearance="outline">
+          <mat-form-field class="w-100 mb-1" appearance="outline">
             <mat-label>Price</mat-label>
             <input
               matInput
@@ -87,10 +87,16 @@
               formControlName="price"
               placeholder="Price"
             />
+            <mat-hint style="font-size: 12px" align="start">
+              {{
+                nftForm.controls.price.value
+                  | ratePipe: (nftContract | productCurrency)
+              }}
+            </mat-hint>
           </mat-form-field>
         </div>
         <div class="wrap-input1 w-100">
-          <mat-form-field class="w-100" appearance="outline">
+          <mat-form-field class="w-100 mb-2" appearance="outline">
             <mat-label>Royalties</mat-label>
             <input
               matInput
@@ -101,6 +107,13 @@
               formControlName="royalty"
               placeholder="Royalties %"
             />
+            <mat-hint style="font-size: 12px" align="start">
+              {{
+                ((nftForm.controls.royalty.value / 100) * nftForm.controls.price.value)
+                  | str
+                  | ratePipe: (nftContract | productCurrency)
+              }}
+            </mat-hint>
           </mat-form-field>
         </div>
 
@@ -160,7 +173,7 @@
         <div class="col mt-4">
           <h2 class="h2 my-0">Lazy Minting</h2>
           <h5 class="mt-0">
-            Lazy minting means your NFT gets minted at time of purchase,
+            Lazy minting allows you to mint your NFT at the time of purchase,
             allowing you to avoid upfront Gas Fees.
           </h5>
           <mat-radio-group formControlName="lazyMint">

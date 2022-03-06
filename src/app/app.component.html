@@ -6,14 +6,30 @@
     [position]="'end'"
     #drawer
   >
-    <mat-icon
-      class="ms-2 mt-2 p-0 text-{{ storeInfo().colorStyle!.text_code }} fw-bolder"
-      style="overflow: hidden"
-      role="button"
-      (click)='drawer.toggle()'
-    >
-      close
-    </mat-icon>
+    <div class="m-2 mb-4 d-flex justify-content-between align-items-center">
+      <mat-icon
+        class="p-0 text-{{ storeInfo().colorStyle!.text_code }} fw-bolder"
+        style="overflow: hidden"
+        role="button"
+        (click)="drawer.toggle()"
+      >
+        close
+      </mat-icon>
+      <a
+        role="button"
+        (click)="openWallet()"
+        class="btn fw-bold btn-outline-{{
+          storeInfo().colorStyle!.text_code
+        }} rounded-pill"
+        [style.font-family]="storeInfo().fontName!"
+        *ngIf="
+          storeInfo().uid != undefined && storeInfo().uid != '' && provider
+        "
+      >
+        DISCONNECT
+      </a>
+    </div>
+
     <div
       class="w-100 text-center"
       *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && !provider"
@@ -21,8 +37,11 @@
       <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
         NO WALLET
       </h2>
-      <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
-        Connect your wallet to purchase NFTs on <br />
+      <p
+        class="text-center w-100 text-secondary"
+        [style.font-family]="storeInfo().fontName!"
+      >
+        Connect your wallet to view/purchase NFTs on <br />
         {{ storeInfo().fullName }}
       </p>
       <a
@@ -37,86 +56,276 @@
       </a>
     </div>
     <div
-      class="w-100 text-center"
+      class="w-100 h-100 text-center"
       *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && provider"
     >
-      <h2 class="text-center w-100 mb-0" [style.font-family]="storeInfo().fontName!">
-        MY ACCOUNT
-      </h2>
-      <p class="text-center text-secondary w-100 mt-0 mb-3" style="font-size: smaller;" [style.font-family]="storeInfo().fontName!">
-        {{provider
-          | providerAddress | async | address: false}}
-      </p>
-
-      <h3 class="text-center w-100 d-flex align-items-center justify-content-center mb-1" [style.font-family]="storeInfo().fontName!">
-        BALANCE
-        <mat-icon
-
-            class="ms-2 p-0"
-            style="overflow: hidden"
-            [ngbTooltip]="htipContent"
-            role="button"
-          >
-            <ng-template #htipContent>
-              Tokens shown below are used by the collections on this marketplace.
-            </ng-template>
-          help
-          </mat-icon>
-      </h3>
-
-      <!-- <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
-        Tokens shown here are used by collections in this marketplace.
-      </p> -->
-
-      <div
-        class="w-100 text-center mt-0 mb-3"
-        *ngFor="let token of storeInfo()?.allTokens ?? []"
-      >
-        <a
-          role="button"
-          style="text-decoration: none"
-          class="card bg-{{
-            storeInfo().colorStyle!.back_code
-          }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
-            storeInfo().colorStyle!.text_code
-          }} border-secondary"
-        >
-          <mat-icon
-            class="mb-2 mt-2 p-0"
-            style="overflow: hidden"
-            svgIcon="{{ token.contract | currencyIcon }}"
-            [ngbTooltip]="qtipContent"
-            role="button"
-          >
-            <ng-template #qtipContent>
-              {{ token.name }}
-            </ng-template>
-          </mat-icon>
-          <h2
-            class="text-center my-auto mb-2"
-            style="font-size: xx-large"
-          >
-            {{
-              provider
-                | providerAddress
-                | async
-                | walletBalance: provider:token.contract
-                | async
-                | big2Num
-            }}
-          </h2>
-        </a>
-      </div>
-      <a
-        role="button"
-        (click)="openWallet()"
-        class="btn mt-2 fw-bold btn-outline-{{
-          storeInfo().colorStyle!.text_code
-        }} rounded-pill"
+      <h2
+        class="text-center w-100 mb-0"
         [style.font-family]="storeInfo().fontName!"
       >
-        DISCONNECT
-      </a>
+        MY ACCOUNT
+      </h2>
+      <p
+        class="text-center text-secondary w-100 mt-0 mb-3"
+        style="font-size: smaller"
+        [style.font-family]="storeInfo().fontName!"
+      >
+        {{ provider | providerAddress | async | address: false }}
+      </p>
+
+      <mat-tab-group mat-stretch-tabs class="h-100">
+        <mat-tab>
+          <!-- #docregion label-directive -->
+          <ng-template mat-tab-label>
+            <mat-icon
+              class="example-tab-icon text-{{
+                storeInfo().colorStyle!.text_code
+              }}"
+            >
+              add_box</mat-icon
+            >
+            <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
+              TOKENS
+            </span>
+          </ng-template>
+
+          <!-- <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
+          Tokens shown here are used by collections in this marketplace.
+        </p> -->
+
+          <div
+            class="w-100 text-center mt-2 mb-3"
+            *ngFor="let token of storeInfo()?.allTokens ?? []"
+          >
+            <a
+              role="button"
+              style="text-decoration: none"
+              class="card bg-{{
+                storeInfo().colorStyle!.back_code
+              }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
+                storeInfo().colorStyle!.text_code
+              }} border-secondary"
+            >
+              <mat-icon
+                class="mb-2 mt-2 p-0"
+                style="overflow: hidden"
+                svgIcon="{{ token.contract | currencyIcon }}"
+                [ngbTooltip]="qtipContent"
+                role="button"
+              >
+                <ng-template #qtipContent>
+                  {{ token.name }}
+                </ng-template>
+              </mat-icon>
+              <h2 class="text-center my-auto mb-2" style="font-size: xx-large">
+                {{
+                  provider
+                    | providerAddress
+                    | async
+                    | walletBalance: provider:token.contract
+                    | async
+                    | big2Num
+                }}
+              </h2>
+            </a>
+          </div>
+
+          <p
+            [style.font-family]="storeInfo().fontName!"
+            class="text-center text-secondary my-2"
+            style="font-size: small"
+          >
+            These tokens are used to buy/sell on <br />{{
+              storeInfo().fullName
+            }}
+          </p>
+        </mat-tab>
+        <mat-tab class="h-100">
+          <!-- #docregion label-directive -->
+          <ng-template mat-tab-label>
+            <mat-icon
+              class="example-tab-icon text-{{
+                storeInfo().colorStyle!.text_code
+              }}"
+              >add_box</mat-icon
+            >
+            <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
+              NFTs
+            </span>
+          </ng-template>
+
+          <div class="w-100 h-100 justify-content-center" *ngIf="((storeInfo().collections
+          | ownedCollections: (provider | providerAddress | async)
+          | collectionFilter: 'timestamp-asc')?.length ?? 0) > 0;else empty_collections">
+            <!-- [indexChanged]="didMove()" -->
+            <div
+              class="mb-1 mt-4 w-100"
+              *ngFor="
+                let collection of storeInfo().collections
+                  | ownedCollections: (provider | providerAddress | async)
+                  | collectionFilter: 'timestamp-asc'
+              "
+            >
+              <div
+                class="w-100 h-100 d-flex justify-content-between align-items-center"
+              >
+                <!-- <mat-icon
+                  role="button"
+                  (click)="move(carousel, 0)"
+                  class="d-none d-md-block bg-{{
+                    storeInfo().colorStyle!.back_code
+                  }} text-{{
+                    storeInfo().colorStyle!.text_code
+                  }} fw-bolder rounded-circle ms-0"
+                  [class.opacity-0]="collection.NFTs.length == 0"
+                >
+                  chevron_left
+                </mat-icon> -->
+                <div class="w-100 h-100">
+                  <div
+                    class="d-flex align-items-center text-center justify-content-center w-100"
+                  >
+                    <a
+                      role="button"
+                      class="bg-{{
+                        storeInfo().colorStyle!.back_code
+                      }} side text-secondary d-inline-flex mx-auto mx-md-3 me-md-1 p-2 px-3 mt-0 mb-3 align-items-center justify-content-start"
+                      style="font-size: 18px; text-decoration: none"
+                      [style.font-family]="storeInfo().fontName!"
+                    >
+                      <!-- {{ collection.symbol }} -->
+                      <b
+                        class="text-{{ storeInfo().colorStyle!.text_code }}"
+                        style="font-size: 18px"
+                      >
+                        {{ collection.name }}
+                      </b>
+                    </a>
+                    <!-- <a
+                    role="button"
+                    class="side fw-bold text-{{
+                      storeInfo().colorStyle!.text_code
+                    }} d-inline-flex mx-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                    style="font-size: 18px"
+                  >
+                  ADD NFT
+                    <mat-icon class="ms-2 text-danger" svgIcon='{{ collection.getCurrencyIcon() }}'>
+                    </mat-icon>
+                  </a> -->
+                  </div>
+
+                  <!-- collection.getCurrencyIcon() -->
+
+                  <drag-scroll
+                    #carousel2
+                    class="mb-2 w-100 h-100"
+                    [scrollbar-hidden]="true"
+                    [scroll-x-wheel-enabled]="false"
+                  >
+                    <div
+                      drag-scroll-item
+                      class="h-100 px-3 w-100 h-100 w-md-50"
+                      *ngFor="
+                        let product of collection.NFTs ?? []
+                          | sortCol
+                            : 'tokenId-asc'
+                            : (provider | providerAddress | async)
+                      "
+                    >
+                      <div class="col h-100">
+                        <div
+                          class="bg-{{
+                            storeInfo().colorStyle!.back_code
+                          }} shadow rounded border border-secondary mb-3"
+                          [class.border-secondary]="
+                            storeInfo()!.colorStyle!.text_code == 'light'
+                          "
+                          style="overflow: hidden"
+                        >
+                          <div class="pb-0 w-100">
+                            <a
+                              role="button"
+                              class="w-100"
+                              role="button"
+                              (click)="
+                                routeToProduct(product.docID!); drawer.toggle()
+                              "
+                            >
+                              <img
+                                loading="lazy"
+                                id="image"
+                                class="h-100 w-100 {{
+                                  (storeInfo()?.colorStyle)!.back_code
+                                }}"
+                                [useSrcset]="true"
+                                [defaultImage]="'/assets/default.png'"
+                                [lazyLoad]="product.linkUrl!"
+                                alt="ok"
+                                style="
+                                  object-fit: cover;
+                                  aspect-ratio: 1;
+                                  margin-bottom: 0.35em;
+                                "
+                              />
+                            </a>
+                          </div>
+                          <div
+                            class="card-footer w-100 p-4 pt-0 pt-2 pb-1 border-top-0 bg-transparent"
+                          >
+                            <div class="text-center w-100">
+                              <p
+                                class="fw-bolder w-100"
+                                style="
+                                  text-decoration: none;
+                                  text-overflow: ellipsis;
+                                  word-wrap: break-word;
+                                  word-break: break-all;
+                                  overflow-x: hidden;
+                                "
+                                style.color="{{ selectedTheme()!.color }}"
+                                [style.font-family]="storeInfo().fontName!"
+                                role="button"
+                                (click)="
+                                  routeToProduct(product.docID!);
+                                  drawer.toggle()
+                                "
+                              >
+                                {{ product.name }}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </drag-scroll>
+                </div>
+                <!-- <mat-icon
+                  role="button"
+                  (click)="move(carousel, 1)"
+                  [class.opacity-0]="collection.NFTs.length == 0"
+                  class="d-none d-md-block bg-{{
+                    storeInfo().colorStyle!.back_code
+                  }} text-{{
+                    storeInfo().colorStyle!.text_code
+                  }} fw-bolder rounded-circle me-0"
+                >
+                  chevron_right
+                </mat-icon> -->
+              </div>
+            </div>
+          </div>
+          <ng-template #empty_collections class="w-100">
+            <p
+            [style.font-family]="storeInfo().fontName!"
+            class="text-center text-secondary my-2 w-100"
+            style="font-size: medium; height: 80vh;"
+          >
+            No NFTs owned
+          </p>
+          </ng-template>
+
+        </mat-tab>
+      </mat-tab-group>
     </div>
   </mat-sidenav>
   <mat-sidenav-content class="h-100">
@@ -408,6 +617,7 @@
                   *ngFor="let banner of storeInfo().banners"
                   style.color="{{ bannerTheme(banner)!.color }}"
                   style.background-color="{{ bannerTheme(banner)!.bg_color }}"
+                  [style.font-family]="storeInfo().fontName!"
                   class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
                   style="
                     font-size: calc(
@@ -457,6 +667,7 @@
               >
                 <h2
                   style.color="{{ bannerTheme(banner)!.color }}"
+                  [style.font-family]="storeInfo().fontName!"
                   class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
                   [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
                   style="

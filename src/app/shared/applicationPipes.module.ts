@@ -33,6 +33,10 @@ import { WalletBalancePipe } from '../wallet-balance.pipe';
 import { ProviderAddressPipe } from '../provider-address.pipe';
 import { Big2NumPipe } from '../big-2-num.pipe';
 import { CurrencyIconPipe } from '../currency-icon.pipe';
+import { RatePipePipe } from '../rate-pipe.pipe';
+import { ProductCurrencyPipe } from '../product-currency.pipe';
+import { StrPipe } from '../str.pipe';
+import { OwnedCollectionsPipe } from '../owned-collections.pipe';
 
 @NgModule({
   imports: [
@@ -73,6 +77,10 @@ import { CurrencyIconPipe } from '../currency-icon.pipe';
     ProviderAddressPipe,
     Big2NumPipe,
     CurrencyIconPipe,
+    RatePipePipe,
+    ProductCurrencyPipe,
+    StrPipe,
+    OwnedCollectionsPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -108,7 +116,11 @@ import { CurrencyIconPipe } from '../currency-icon.pipe';
     WalletBalancePipe,
     ProviderAddressPipe,
     Big2NumPipe,
-    CurrencyIconPipe
+    CurrencyIconPipe,
+    RatePipePipe,
+    ProductCurrencyPipe,
+    StrPipe,
+    OwnedCollectionsPipe
   ]
 })
 export class ApplicationPipesModule {}

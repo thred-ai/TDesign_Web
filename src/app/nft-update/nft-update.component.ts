@@ -328,6 +328,8 @@ export class NftUpdateComponent implements OnInit {
           //   // Sanitized logo returned from backend
           // })
 
+          
+
           let buffer = await file.arrayBuffer();
 
           var blob = new Blob([buffer]);

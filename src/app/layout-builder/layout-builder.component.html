@@ -187,6 +187,7 @@
                                   "
                                   style.color="{{ selectedTheme!.color }}"
                                   role="button"
+                                  [style.font-family]="storeInfo.fontName!"
                                 >
                                   {{ product.name }}
                                 </p>
@@ -1047,6 +1048,7 @@
                               14px + (16 - 14) * (100vh - 400px) / (800 - 400)
                             );
                           "
+                          [style.font-family]="storeInfo.fontName!"
                         >
                           <div *ngIf="banner.text != ''">
                             {{ banner.text ?? "" }}
@@ -1109,6 +1111,7 @@
                               14px + (16 - 14) * (100vw - 400px) / (800 - 400)
                             );
                           "
+                          [style.font-family]="storeInfo.fontName!"
                         >
                           <div *ngIf="banner.text != ''" class="mb-1">
                             {{ banner.text ?? "fs" }}
@@ -1287,6 +1290,7 @@
                                 font-size: small;
                               "
                               style.color="{{ selectedTheme!.color }}"
+                              [style.font-family]="storeInfo.fontName!"
                               role="button"
                             >
                               {{ product.name }}

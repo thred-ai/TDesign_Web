@@ -356,6 +356,24 @@
                           {{ productToBuy?.price | price }}
                         </b>
                       </a>
+                      <div class="w-100">
+                        <h3
+                          role="button"
+                          style="font-size: 18px; width: fit-content;"
+                          style.color="{{ selectedTheme()!.color }}"
+                          [style.font-family]="info.fontName!"
+                          [ngbTooltip]="priceConvertTooltip"
+                        >
+                          <ng-template #priceConvertTooltip>
+                            {{ "Asset price in USD" }}
+                          </ng-template>
+                          {{
+                            productToBuy?.price
+                              | price
+                              | ratePipe: (collections | productCurrency)
+                          }}
+                        </h3>
+                      </div>
                     </div>
                     <div [class.stayFixed]="isMobile()">
                       <!-- <div class="container px-4 mt-3 order-1 order-sm-3" >
@@ -662,7 +680,10 @@
                           </mat-icon>
                         </mat-expansion-panel-header>
 
-                        <div *ngIf="panel.type == 1" style="overflow: scroll; max-height: 345px;">
+                        <div
+                          *ngIf="panel.type == 1"
+                          style="overflow: scroll; max-height: 345px"
+                        >
                           <table
                             *ngIf="(nftLogs.length ?? 0) > 0"
                             mat-table
@@ -814,27 +835,30 @@
                                 *matCellDef="let element"
                                 class="text-secondary"
                               >
-                              <div class="d-flex justify-content-center align-items-center">
-                                {{
-                                  (element | eventTimestamp | async)?.timestamp
-                                    | dateConstruct
-                                    | dateAgo
-                                }}
-                                <mat-icon
-                                  style="overflow: hidden"
-                                  class="p-0 ms-1 text-{{
-                                    info.colorStyle!.text_code
-                                  }}"
-                                  (click)='viewTxPolygonScan(element)'
-                                  [inline]='true'
-                                  [ngbTooltip]="gtipContent"
+                                <div
+                                  class="d-flex justify-content-center align-items-center"
                                 >
-                                launch
-                                  <ng-template #gtipContent>
-                                    View on Polygonscan
-                                  </ng-template>
-                                </mat-icon>
-                              </div>
+                                  {{
+                                    (element | eventTimestamp | async)
+                                      ?.timestamp
+                                      | dateConstruct
+                                      | dateAgo
+                                  }}
+                                  <mat-icon
+                                    style="overflow: hidden"
+                                    class="p-0 ms-1 text-{{
+                                      info.colorStyle!.text_code
+                                    }}"
+                                    (click)="viewTxPolygonScan(element)"
+                                    [inline]="true"
+                                    [ngbTooltip]="gtipContent"
+                                  >
+                                    launch
+                                    <ng-template #gtipContent>
+                                      View on Polygonscan
+                                    </ng-template>
+                                  </mat-icon>
+                                </div>
                               </td>
                             </ng-container>
                             <tr

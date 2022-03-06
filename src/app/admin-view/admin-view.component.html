@@ -2640,7 +2640,7 @@
             </div>
           </div>
           <div
-            *ngIf="storeInfo().collections?.length == 0"
+            *ngIf="storeInfo().collections && storeInfo().collections!.length == 0"
             class="container px-4 px-lg-5 mt-0 pt-0"
           >
             <div
@@ -2665,9 +2665,9 @@
                   </span>
                 </mat-icon>
               </a>
-              <!-- <a role="button" (click)="createNewProduct()" class="w-100 side">
-                <img class="rounded w-100" src="/assets/design_image.png" />
-              </a> -->
+              <a role="button" (click)="createNewProduct()" class="w-100 side">
+                <img class="rounded w-100" src="/assets/nft_default.png" />
+              </a>
             </div>
           </div>
         </div>

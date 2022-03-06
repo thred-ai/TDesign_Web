@@ -75,7 +75,7 @@ export class CreateCryptoComponent implements OnInit {
     precision: 0,
     prefix: '',
     suffix: ' %',
-    max: 100,
+    max: 15,
     min: 1,
     inputMode: CurrencyMaskInputMode.NATURAL,
   };

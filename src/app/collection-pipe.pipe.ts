@@ -9,7 +9,7 @@ export class CollectionPipePipe implements PipeTransform {
   transform(value: Store, contract?: string) {
 
     if (contract){
-      return value.collections.find(c => c.contract == contract)
+      return value.collections?.find(c => c.contract == contract)
     }
     return undefined
   }

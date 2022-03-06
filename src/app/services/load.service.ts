@@ -491,6 +491,7 @@ export class LoadService {
         name: t.name,
         symbol: `${t.name ?? ''}_token`,
         contract: t.contract,
+        api_name: t.api_name
       });
       this.matIconRegistry.addSvgIcon(
         `${t.name ?? ''}_token`,
@@ -879,6 +880,18 @@ export class LoadService {
         }
       });
       callback(arr);
+      if (isPlatformBrowser(this.platformID)) {
+        sub.unsubscribe();
+      }
+    });
+  }
+
+  async getCryptoRates(callback: (arr: Array<Dict<any>>) => any) {
+    var query = this.db.doc('Crypto_Rates/THRED_COINS')
+    let sub = query.get().subscribe((doc) => {
+      let coins = (doc.data() as any).coins ?? []
+      console.log(coins)
+      callback(coins);
       if (isPlatformBrowser(this.platformID)) {
         sub.unsubscribe();
       }

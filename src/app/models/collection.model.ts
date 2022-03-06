@@ -108,6 +108,16 @@ export class Collection implements ICollection {
     );
   }
 
+  getApiName() {
+    let token = this.customToken ?? 'default';
+    let api_name = Globals.storeInfo?.tokens
+    .find((t) => t.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase()))
+    ?.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase())?.api_name ?? 'matic-network'
+    return (
+      api_name
+    );
+  }
+
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
     let contract = new ethers.Contract(token, abi, provider);
     let symbol = await contract.symbol();

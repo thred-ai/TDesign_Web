@@ -3725,8 +3725,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       if (resp){
         let col = resp as Collection
 
-        Globals.userInfo?.collections.push(col)
-        Globals.storeInfo.collections.push(col)
+        Globals.userInfo?.collections?.push(col)
+        Globals.storeInfo.collections?.push(col)
 
         this.toast('Collection Created!')
         this.cdr.detectChanges()

@@ -36,6 +36,7 @@ import { VgOverlayPlayModule } from '@videogular/ngx-videogular/overlay-play';
 import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
 import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- include ScrollHooks
 import {MatSidenavModule} from '@angular/material/sidenav';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -78,7 +79,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     VgOverlayPlayModule,
     LazyLoadImageModule,
     MatSidenavModule,
-    NgbModule
+    NgbModule,
+    MatTabsModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [

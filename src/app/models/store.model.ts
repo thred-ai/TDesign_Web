@@ -57,7 +57,7 @@ export class Store {
   header?: Array<string> = [];
   footer?: Array<Dict<any>> = [];
 
-  collections: Array<Collection> = [];
+  collections?: Array<Collection>;
 
   tokens = [
     {
@@ -67,21 +67,25 @@ export class Store {
           name: 'Polygon (MATIC)',
           symbol: 'polygon_icon',
           contract: 'default',
+          api_name: 'matic-network'
         },
         {
           name: 'Ethereum (WETH)',
           symbol: 'weth_icon',
           contract: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+          api_name: 'ethereum'
         },
         {
           name: 'Bitcoin (WBTC)',
           symbol: 'btc_icon',
           contract: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
+          api_name: 'bitcoin'
         },
         {
           name: 'DOGE (LxDOGE)',
           symbol: 'doge_icon',
           contract: '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618',
+          api_name: 'dogecoin'
         },
       ],
     },
@@ -100,7 +104,7 @@ export class Store {
         all = all.concat(t);
       });
     return all.filter((a) =>
-      this.collections.find(
+      this.collections?.find(
         (c) => a.contract == 'default' || c.customToken == a.contract
       )
     );

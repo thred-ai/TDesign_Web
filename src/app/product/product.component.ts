@@ -6,9 +6,10 @@ import {
   AfterViewInit,
   ViewChild,
   HostListener,
+  OnDestroy,
 } from '@angular/core';
 
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { Country } from '../models/shipping-country.model';
 import { Title, Meta } from '@angular/platform-browser';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
@@ -35,15 +36,16 @@ import { nftaddress } from 'config';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { NftBuyComponent } from '../nft-buy/nft-buy.component';
 import { NftUpdateComponent } from '../nft-update/nft-update.component';
-import { from } from 'rxjs';
+import { from, Subscription } from 'rxjs';
 import detectEthereumProvider from '@metamask/detect-provider';
 import axios from 'axios';
+import { filter, map } from 'rxjs/operators';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.css'],
 })
-export class ProductComponent implements OnInit, AfterViewInit {
+export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('carousel', { read: DragScrollComponent })
   ds?: DragScrollComponent;
 
@@ -66,7 +68,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
   collection?: Collection;
   get collections() {
     if (this.collection) {
-      return Globals.storeInfo.collections.find(
+      return Globals.storeInfo.collections?.find(
         (c) => c.contract == this.collection?.contract
       );
     }
@@ -170,6 +172,7 @@ export class ProductComponent implements OnInit, AfterViewInit {
     @Inject(PLATFORM_ID) private platformID: Object,
     private cdr: ChangeDetectorRef,
     private router: ActivatedRoute,
+    private _router: Router,
     private titleService: Title,
     private metaService: Meta,
     private loadService: LoadService,
@@ -181,8 +184,38 @@ export class ProductComponent implements OnInit, AfterViewInit {
   ) {
     Globals.selectedTemplate = undefined;
     Globals.selectedCurrency = undefined;
-    Globals.storeInfo.uid = undefined;
+    // Globals.storeInfo.uid = undefined
+    setTimeout(() => {
+      this.sub = _router.events.subscribe((event: any) => {
+        // You only receive NavigationStart events
+        if (event instanceof NavigationEnd){
+          this.productToBuy = undefined
+          this.collection = undefined
+          this.ngOnInit()
+        }
+      });
+    }, 2000);
   }
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe()
+  }
+
+  sub?: Subscription
+
+  // private sub = this._router.events
+  //   .pipe(
+  //     filter(event => event instanceof NavigationStart),
+  //     map(event => event as NavigationStart),  // appease typescript
+  //     filter(event => (event.url !== this.oldUrl) && !event.url.includes('my-store'))
+  //   )
+  //   .subscribe(
+  //     event => {
+  //       this.oldUrl = event.url
+  //       this.ngOnInit()
+  //     } 
+  // );
+
+  // oldUrl = ''
 
   getLinkImg(name: string) {
     return Globals.socials.filter((obj) => {
@@ -366,11 +399,14 @@ export class ProductComponent implements OnInit, AfterViewInit {
 
     this.loadService.myCallback = () => this.checkLoad();
 
+    console.log(data)
+
     this.loadService.getPost(
       data.full,
       (nft?: NFT, collection?: Collection) => {
         this.selectedIndex = 0;
         if (nft) {
+          console.log(nft)
           this.productToBuy = nft;
           this.accordionList[1].description = this.productToBuy.description;
           this.cdr.detectChanges();
