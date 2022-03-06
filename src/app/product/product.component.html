@@ -721,7 +721,7 @@
                                   [ngbTooltip]="etipContent"
                                 >
                                   {{ element.icon }}
-                                  <ng-template #etipContent [style.font-family]="info.fontName!">
+                                  <ng-template #etipContent>
                                     {{ element.logEvent }}
                                   </ng-template>
                                 </mat-icon>
@@ -813,7 +813,7 @@
                                     }}"
                                     [ngbTooltip]="ptipContent"
                                   >
-                                    <ng-template #ptipContent [style.font-family]="info.fontName!">
+                                    <ng-template #ptipContent>
                                       {{
                                         (
                                           info
@@ -869,7 +869,7 @@
                                     [ngbTooltip]="gtipContent"
                                   >
                                     launch
-                                    <ng-template #gtipContent [style.font-family]="info.fontName!">
+                                    <ng-template #gtipContent>
                                       View on Polygonscan
                                     </ng-template>
                                   </mat-icon>

@@ -77,7 +77,6 @@ import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
 import axios from 'axios';
-import { nftaddress } from 'config';
 import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';

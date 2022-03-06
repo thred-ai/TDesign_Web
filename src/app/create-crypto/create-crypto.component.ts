@@ -16,11 +16,11 @@ import {
   FileSystemDirectoryEntry,
 } from 'ngx-file-drop';
 import { CurrencyMaskInputMode } from 'ngx-currency';
-import { nftaddress } from 'config';
 import { NFT } from '../models/nft.model';
 import { Globals } from '../globals';
 import { ethers, BigNumber } from 'ethers';
-const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
+const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant.sol/ERC721Merchant.json');
+const ERC721_FANCY_MERCHANT = require('artifacts/contracts/ERC721FancyMerchant.sol/ERC721FancyMerchant.json');
 
 const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
 import { LazyMinter, NFTVoucher } from 'LazyMinter';
@@ -30,7 +30,6 @@ import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import axios from 'axios';
-import * as html2canvas from 'htmlscreenshots15';
 
 @Component({
   selector: 'app-create-crypto',
@@ -80,18 +79,6 @@ export class CreateCryptoComponent implements OnInit {
     inputMode: CurrencyMaskInputMode.NATURAL,
   };
 
-  contracts = [
-    {
-      name: 'Public Contracts',
-      contracts: [
-        {
-          name: 'Thred Main ERC721 Contract ' + '(' + nftaddress + ')',
-          value: nftaddress,
-        },
-      ],
-    },
-  ];
-
   nftForm = this.fb.group({
     title: [null, Validators.required],
     description: [null],
@@ -111,7 +98,7 @@ export class CreateCryptoComponent implements OnInit {
     this.provider = this.data.provider;
 
     if (this.nftContract.currency)
-    this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`
+      this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`;
     // if (this.admin.selected)
     this.nftForm.controls.lazyMint.setValue(true);
   }
@@ -243,24 +230,35 @@ export class CreateCryptoComponent implements OnInit {
         const price = ethers.utils.parseUnits(cost.toString(), 'ether');
         const r = ethers.utils.parseUnits(royalty.toString(), 'ether');
 
-
-        let contract2 = new ethers.Contract(contractNFT, this.nftContract.ABI ?? NFTS.abi, signer);
-
-        const lazyMinter = new LazyMinter(
-          contract2,
-          signer!,
-          this.nftContract.domain ?? 'THRED-NFT'
-        );
-
         //tokenid 0x3C68CE8504087f89c640D02d133646d98e64ddd9
 
         this.laodService.getCollection(
           this.nftContract.contract,
           async (cl) => {
             if (!cl) {
-              throw('ERROR')
+              throw 'ERROR';
               return;
             }
+            var contract2 = new ethers.Contract(
+              contractNFT,
+              this.nftContract.ABI ?? ERC721_MERCHANT.abi,
+              signer
+            );
+
+            if (cl.customToken) {
+              contract2 = new ethers.Contract(
+                contractNFT,
+                this.nftContract.ABI ?? ERC721_FANCY_MERCHANT.abi,
+                signer
+              );
+            }
+
+            const lazyMinter = new LazyMinter(
+              contract2,
+              signer!,
+              this.nftContract.domain ?? 'THRED-NFT'
+            );
+
             let tokenId = (cl.collectionCount ?? 0) + 1;
             const voucher = await lazyMinter.createVoucher(
               tokenId,
@@ -270,12 +268,11 @@ export class CreateCryptoComponent implements OnInit {
               cl.customToken
             );
 
-
-            if (!lazyMint){
-              let transaction = await contract2.mintNFT(voucher)
-              await transaction.wait()
+            if (!lazyMint) {
+              let transaction = await contract2.mintNFT(voucher);
+              await transaction.wait();
             }
-            
+
             let nft = new NFT(
               tokenId,
               contractNFT,
@@ -339,7 +336,6 @@ export class CreateCryptoComponent implements OnInit {
         }
       }
     } else {
-
     }
   }
 
@@ -396,7 +392,6 @@ export class CreateCryptoComponent implements OnInit {
     // router.push('/')
 
     let gas = await contract.estimateGas;
-
   }
 
   radioChange(event: any) {
@@ -472,9 +467,7 @@ export class CreateCryptoComponent implements OnInit {
     }
   }
 
-  public fileOver(event: any) {
-  }
+  public fileOver(event: any) {}
 
-  public fileLeave(event: any) {
-  }
+  public fileLeave(event: any) {}
 }

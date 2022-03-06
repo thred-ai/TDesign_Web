@@ -868,7 +868,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   setInterval() {
     if (this.interval) {
-      console.log('ma')
       return;
     }
     if (Globals.storeInfo.bannerStyle == 0) {
@@ -961,7 +960,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     // });
 
     this.loadService.getCryptoRates((rates: Dict<any>[]) => {
-      console.log(rates)
       Globals.rates = rates
     })
 

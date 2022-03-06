@@ -32,7 +32,6 @@ import { NftLog } from '../models/nft-log.model';
 import { Collection } from '../models/collection.model';
 import { ethers, BigNumber } from 'ethers';
 import { MatAccordion } from '@angular/material/expansion/accordion';
-import { nftaddress } from 'config';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
 import { NftBuyComponent } from '../nft-buy/nft-buy.component';
 import { NftUpdateComponent } from '../nft-update/nft-update.component';
@@ -264,7 +263,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     var urlLink = `https://polygonscan.com/tx/${log.txHash}`;
 
-    console.log(urlLink)
     const link = document.createElement('a');
     link.target = '_blank';
 
@@ -404,14 +402,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.loadService.myCallback = () => this.checkLoad();
 
-    console.log(data)
-
     this.loadService.getPost(
       data.full,
       (nft?: NFT, collection?: Collection) => {
         this.selectedIndex = 0;
         if (nft) {
-          console.log(nft)
           this.productToBuy = nft;
           this.accordionList[1].description = this.productToBuy.description;
           this.cdr.detectChanges();
@@ -761,7 +756,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     let sub = modalRef.afterClosed().subscribe(async (resp) => {
       sub.unsubscribe();
       if (resp) {
-        console.log(resp)
         this.productToBuy = resp.nft as NFT;
         this.loadService.openSnackBar('Transaction Sent!')
         if (this.productToBuy?.tokenID && resp.tx) {

@@ -1,5 +1,5 @@
 import { Dict } from '../services/load.service';
-import { nftaddress } from 'config';
+import { nftaddress, erc721Merchant, erc721FancyMerchant } from 'config';
 import { ethers } from 'ethers';
 import axios from 'axios';
 
@@ -51,7 +51,7 @@ export class NFT {
     seller?: string
   ) {
     this.tokenID = tokenID;
-    this.contractID = contractID ?? nftaddress;
+    this.contractID = contractID ?? erc721Merchant;
     this.owner = owner ?? '';
     this.sold = sold ?? false;
     this.lazyMint = lazyMint ?? true;

@@ -53,7 +53,6 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 
-const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
 
 export interface Dict<T> {
   [key: string]: T;
@@ -785,7 +784,6 @@ export class LoadService {
             var logs = new Array<NftLog>();
             await Promise.all(
               hashes.map(async (t) => {
-                console.log(t);
                 var type = '';
 
                 if (
@@ -890,7 +888,6 @@ export class LoadService {
     var query = this.db.doc('Crypto_Rates/THRED_COINS')
     let sub = query.get().subscribe((doc) => {
       let coins = (doc.data() as any).coins ?? []
-      console.log(coins)
       callback(coins);
       if (isPlatformBrowser(this.platformID)) {
         sub.unsubscribe();
@@ -1512,7 +1509,7 @@ export class LoadService {
   ) {
     const nftContract = new ethers.Contract(
       contract.contract,
-      contract.ABI ?? NFTS.abi,
+      contract.ABI,
       provider
     );
     // const data = await marketContract.fetchItemsCreated();
@@ -4696,7 +4693,6 @@ export class LoadService {
             co.name = created.name;
             co.symbol = created.symbol;
 
-            console.log(created);
 
             let c = created.tokens.find(
               (i: any) => i.tokenId == product.tokenID

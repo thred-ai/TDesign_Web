@@ -16,7 +16,6 @@ export class OwnedCollectionsPipe implements PipeTransform {
           same.push(v)
         }
         else{
-          console.log(v)
         }
       })
       return same

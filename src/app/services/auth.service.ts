@@ -58,8 +58,6 @@ export class AuthService {
 
             let s = await provider.getSigner().signMessage(`0x${this.toHex(`${response.nonce}`)}`)
 
-            console.log(s)
-
             this.functions
               .httpsCallable('verifySignedMessage')({
                 address: address,

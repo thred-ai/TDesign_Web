@@ -7,7 +7,9 @@ import { Collection } from '../models/collection.model';
 import { LoadService, Dict } from '../services/load.service';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
-const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
+const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant.sol/ERC721Merchant.json');
+const ERC721_FANCY_MERCHANT = require('artifacts/contracts/ERC721FancyMerchant.sol/ERC721FancyMerchant.json');
+
 
 @Component({
   selector: 'app-create-collection',
@@ -72,7 +74,7 @@ export class CreateCollectionComponent implements OnInit {
     this.storeInfo = Globals.storeInfo;
   }
 
-  
+
 
   err = '';
 
@@ -125,9 +127,20 @@ export class CreateCollectionComponent implements OnInit {
           return;
         }
 
+        var abi: any = ERC721_MERCHANT.abi
+        var bytecode: any = ERC721_MERCHANT.bytecode
+
+
+        let toke = token.contract != 'default' ? token.contract: undefined
+
+        if (toke){
+          abi = ERC721_FANCY_MERCHANT.abi
+          bytecode = ERC721_FANCY_MERCHANT.bytecode
+        }
+
         let factory = new ethers.ContractFactory(
-          NFTS.abi,
-          NFTS.bytecode,
+          abi,
+          bytecode,
           signer
         );
 
@@ -156,7 +169,7 @@ export class CreateCollectionComponent implements OnInit {
             domain,
             token.contract != 'default' ? token.contract: undefined,
             true,
-            NFTS.abi,
+            abi,
           );
 
 

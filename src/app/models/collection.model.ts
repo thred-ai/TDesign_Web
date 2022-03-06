@@ -4,7 +4,7 @@ import { Dict } from '../services/load.service';
 import { Globals } from '../globals';
 import { environment } from 'src/environments/environment';
 var abi = require('human-standard-token-abi');
-const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
+const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant.sol/ERC721Merchant.json');
 
 export interface ICollection {
   name: string;
@@ -183,6 +183,6 @@ export class Collection implements ICollection {
     this.uid = uid;
     this.timestamp = timestamp;
     this.available = available;
-    this.ABI = ABI ?? NFTS.abi;
+    this.ABI = ABI ?? ERC721_MERCHANT.abi;
   }
 }

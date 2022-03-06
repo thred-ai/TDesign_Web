@@ -24,8 +24,6 @@ export class WalletBalancePipe implements PipeTransform {
     wallet: string,
     provider: ethers.providers.Web3Provider
   ) {
-    console.log(contract)
-    console.log(wallet)
     let c = new ethers.Contract(contract, abi, provider);
     let owner = c.balanceOf(wallet);
     return owner;

@@ -9,12 +9,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Store } from '../models/store.model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CurrencyMaskInputMode } from 'ngx-currency';
-import { nftaddress } from 'config';
 import { AdminViewComponent } from '../admin-view/admin-view.component';
 import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 import { LazyMinter } from 'LazyMinter';
-var abi = require('human-standard-token-abi');
-const NFTS = require('artifacts/contracts/Market.sol/NFT.json');
 
 @Component({
   selector: 'app-nft-update',
@@ -185,7 +182,7 @@ export class NftUpdateComponent implements OnInit {
         }
         let contract = new ethers.Contract(
           this.collection.contract,
-          NFTS.abi,
+          this.collection.ABI,
           signer
         );
         if (this.nft?.lazyMint && this.nft.lazyHash) {
