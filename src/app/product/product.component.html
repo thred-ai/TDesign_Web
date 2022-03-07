@@ -854,7 +854,7 @@
                                   [style.font-family]="info.fontName!"
                                 >
                                   {{
-                                    (element | eventTimestamp | async)
+                                    (element | eventTimestamp: provider | async)
                                       ?.timestamp
                                       | dateConstruct
                                       | dateAgo

@@ -422,7 +422,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           this.collection = collection;
           this.checkLoad();
         }
-      }
+      },
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      this.provider
     );
 
     for (let i = 0; i < 9; i++) {
@@ -763,6 +768,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           this.loadService.openSnackBar('NFT Purchased!')
           this.productToBuy.seller = await this.collections?.ownerOf(
             this.productToBuy.tokenID,
+            Globals.provider
           );
           this.nftLogs.push(
             new NftLog('sale', this.productToBuy.seller, seller, 0, product.price, new Date(), resp.tx.hash)

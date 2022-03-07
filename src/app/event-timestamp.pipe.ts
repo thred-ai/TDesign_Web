@@ -10,8 +10,12 @@ export class EventTimestampPipe implements PipeTransform {
   
   
 
-  transform(value: NftLog) {
-    var rpcEndpoint = ''
+  transform(value: NftLog, provider?: ethers.providers.Provider) {
+
+    let p = provider
+
+    if (!p){
+      var rpcEndpoint = ''
     if (environment.rpc) {
       rpcEndpoint = environment.rpc;
     } else {
@@ -21,13 +25,13 @@ export class EventTimestampPipe implements PipeTransform {
     if (rpcEndpoint == ''){
       return null
     }
+      p = new ethers.providers.JsonRpcProvider(
+        rpcEndpoint
+      )
+    }
 
-    let provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      rpcEndpoint
-    )
 
-
-    return provider.getBlock(value.block);
+    return p.getBlock(value.block);
   }
 
 }

@@ -719,7 +719,7 @@ export class LoadService {
             callback(Globals.storeInfo);
           }
           if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        });
+        }, undefined, Globals.provider);
         this.rootComponent?.getCart();
         sub.unsubscribe();
       }
@@ -1147,8 +1147,8 @@ export class LoadService {
                   if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
                 },
                 undefined,
-                undefined,
-                uid
+                Globals.provider,
+                uid,
               );
             } else {
               if (this.myCallback) this.myCallback();
@@ -1215,7 +1215,6 @@ export class LoadService {
     ),
     uid = Globals.storeInfo.uid
   ) {
-    const time = firebase.firestore.Timestamp.now();
 
     var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
       ref
