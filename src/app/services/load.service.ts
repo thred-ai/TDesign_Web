@@ -1512,8 +1512,8 @@ export class LoadService {
       provider
     );
     // const data = await marketContract.fetchItemsCreated();
-    const data1 = await nftContract.name();
-    const data2 = await nftContract.symbol();
+    // const data1 = await nftContract.name();
+    // const data2 = await nftContract.symbol();
     const data3 = await nftContract.fetchMarketItems();
     const items = await Promise.all(
       data3.map(async (i: any, index: number) => {
@@ -1545,8 +1545,8 @@ export class LoadService {
       })
     );
     return {
-      name: data1,
-      symbol: data2,
+      // name: data1,
+      // symbol: data2,
       tokens: items,
     };
   }
@@ -4689,8 +4689,8 @@ export class LoadService {
 
             let created = await this.getCreated(co, provider);
 
-            co.name = created.name;
-            co.symbol = created.symbol;
+            // co.name = created.name;
+            // co.symbol = created.symbol;
 
 
             let c = created.tokens.find(
