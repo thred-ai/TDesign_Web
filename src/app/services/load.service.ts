@@ -1360,6 +1360,9 @@ export class LoadService {
                       );
                     }
                   }
+                  else if (same.url){
+                    same.format = await this.getFormat(same.url);
+                  }
 
                   // if (index == 0){
                   //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
@@ -4657,9 +4660,9 @@ export class LoadService {
             product.url = meta.data.image;
             product.description = meta.data.description;
             product.traits = meta.data.traits;
-            if (isPlatformBrowser(this.platformID)) {
-              product.format = await this.getFormat(meta.data.image);
-            }
+            // if (isPlatformBrowser(this.platformID)) {
+            //   product.format = await this.getFormat(meta.data.image);
+            // }
           } else {
             product.name = docData['Name'] as string;
             product.description = docData['Description'] as string;
@@ -4719,7 +4722,11 @@ export class LoadService {
                 product.seller = await co.ownerOf(product.tokenID, provider);
               }
             }
+            else if (product.url){
+              product.format = await this.getFormat(product.url);
+            }
             co.currency = 'MATIC';
+            console.log(product)
             if (product.token && provider) {
               await co.loadCurrency(product.token, provider).then((i) => {
                 co.currency = i;

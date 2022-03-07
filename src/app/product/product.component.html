@@ -37,13 +37,14 @@
         >
           <a
             role="button"
-            class="card-img-top w-100"
+            class="card-img-top w-100 position-relative"
             style="cursor: zoom-in; object-fit: cover; aspect-ratio: 1"
             (mousemove)="zoomIn($event)"
             (mouseleave)="zoomOut()"
             (click)="open()"
           >
             <video
+              #video
               style="
                 object-fit: cover;
                 aspect-ratio: 1;
@@ -53,12 +54,13 @@
                 margin-bottom: 0;
               "
               poster="/assets/default.png"
-              class="h-100 w-100"
-              autoplay="true"
-              loop="true"
-              muted="true"
-              controls="true"
-              playsinline="true"
+              class="h-100 w-100 position-absolute"
+              autoplay
+              muted
+              loop
+              playsinline
+              controls
+              poster='{{productToBuy.linkUrl!}}'
               *ngIf="
                 productToBuy?.format == 'video' && productToBuy.url != undefined
               "
@@ -71,7 +73,9 @@
               loading="lazy"
               id="image"
               [hidden]="isZoom"
-              class="h-100 w-100 {{ (storeInfo()?.colorStyle)!.back_code }}"
+              class="h-100 w-100 {{
+                (storeInfo()?.colorStyle)!.back_code
+              }} position-absolute"
               [useSrcset]="true"
               [defaultImage]="'/assets/default.png'"
               [lazyLoad]="productToBuy.linkUrl!"
@@ -83,7 +87,7 @@
               [hidden]="!isZoom"
               (mousemove)="zoomIn($event)"
               (mouseleave)="zoomOut()"
-              class="card-img-top w-100"
+              class="card-img-top w-100 position-absolute"
               style="
                 cursor: zoom-in;
                 aspect-ratio: 1;
@@ -161,7 +165,6 @@
               (afterExpand)="afterPanelOpened()"
               *ngFor="let panel of accordionList; index as i"
               #mapanel="matExpansionPanel"
-              
             >
               <mat-expansion-panel-header [style.font-family]="info.fontName!">
                 <mat-panel-title class="text-{{ info.colorStyle!.text_code }}">
@@ -176,7 +179,9 @@
               </mat-expansion-panel-header>
 
               <ng-template matExpansionPanelContent>
-                <p [style.font-family]="info.fontName!" *ngIf="panel.type == 1">{{ panel.description }}</p>
+                <p [style.font-family]="info.fontName!" *ngIf="panel.type == 1">
+                  {{ panel.description }}
+                </p>
                 <div
                   *ngIf="panel.type == 0"
                   class="row gx-4 row-cols-1 row-cols-md-3 align-items-top justify-content-start h-100"
@@ -194,7 +199,7 @@
                       style="overflow-y: hidden"
                       style.background-color="{{ selectedTheme()!.bg_color }}"
                       style.color="{{ selectedTheme()!.color }}"
-                      *ngIf='collections'
+                      *ngIf="collections"
                     >
                       <div class="card-body h-100">
                         <p
@@ -226,18 +231,24 @@
                     </p>
                   </div>
                 </div>
-                <div *ngIf="panel.type == 2" >
+                <div *ngIf="panel.type == 2">
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3 [style.font-family]="info.fontName!">Contract Address</h3>
-                    <h3 [style.font-family]="info.fontName!">{{ collections?.contract ?? "" | address }}</h3>
+                    <h3 [style.font-family]="info.fontName!">
+                      Contract Address
+                    </h3>
+                    <h3 [style.font-family]="info.fontName!">
+                      {{ collections?.contract ?? "" | address }}
+                    </h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
                     <h3 [style.font-family]="info.fontName!">Token ID</h3>
-                    <h3 [style.font-family]="info.fontName!">{{ productToBuy?.tokenID ?? "Not Minted" }}</h3>
+                    <h3 [style.font-family]="info.fontName!">
+                      {{ productToBuy?.tokenID ?? "Not Minted" }}
+                    </h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
@@ -362,11 +373,11 @@
                       <div class="w-100">
                         <h3
                           role="button"
-                          style="font-size: 18px; width: fit-content;"
+                          style="font-size: 18px; width: fit-content"
                           style.color="{{ selectedTheme()!.color }}"
                           [style.font-family]="info.fontName!"
                           [ngbTooltip]="priceConvertTooltip"
-                          *ngIf='rates.length > 0'
+                          *ngIf="rates.length > 0"
                         >
                           <ng-template #priceConvertTooltip>
                             {{ "Asset price in USD" }}
@@ -668,7 +679,9 @@
                         *ngFor="let panel of accordionList3; index as i"
                         #mapanel="matExpansionPanel"
                       >
-                        <mat-expansion-panel-header [style.font-family]="info.fontName!">
+                        <mat-expansion-panel-header
+                          [style.font-family]="info.fontName!"
+                        >
                           <mat-panel-title
                             class="text-{{ info.colorStyle!.text_code }}"
                           >
@@ -797,7 +810,6 @@
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
-
                               >
                                 <div
                                   class="d-flex justify-content-start align-items-center w-100"

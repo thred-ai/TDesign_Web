@@ -782,6 +782,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     });
 
+
+
     // let mappedData = {
     //   WALLET: product.owner,
     //   Timestamp: new Date(),
@@ -825,6 +827,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     //         completed()
     //     }
     // })
+  }
+
+  hasClass(element: HTMLVideoElement, c: string){
+    return element.src == undefined
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string) {
