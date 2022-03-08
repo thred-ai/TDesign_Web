@@ -182,7 +182,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   autoCoupon(product: Product){
 
-    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+    var autoCoupon = this.storeInfo()?.coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
       if(a.amt < b.amt) { return 1; }
       if(a.amt > b.amt) { return -1; }
       return 0;
@@ -192,7 +192,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   cartDiscount(){
 
-    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
+    var autoCoupon = this.storeInfo()?.coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
       (coupon.type == 'order_val' && (this.total(true) ?? 0) >= coupon.threshold) && coupon.auto}).sort(function(a, b){
         if(a.amt < b.amt) { return 1; }
         if(a.amt > b.amt) { return -1; }
@@ -283,15 +283,15 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
   async callback(){
     if (await this.loadService.authenticated()){
-      if (Globals.storeInfo.username){
+      if (Globals.storeInfo?.username){
         // this.cardOptions.style!.paymentRequestButton.theme = this.theme()
 
         this.loadingName = this.storeInfo()?.fullName ?? ''
         this.showSpinner()
-        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
+        this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink?.toString() ?? '')
 
         this.rootComponent.setOptions()
-        this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+        this.addTags(Globals.storeInfo?.fullName ?? "Thred", (Globals.storeInfo?.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo?.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo?.username)
 
         if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
           this.loadService.getCustomer()
@@ -353,7 +353,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         country: same[0].name,
         currency: same[0].currency_name.toLowerCase(),
         total: {
-          label: Globals.storeInfo.fullName ?? "Thred Apps Inc.",
+          label: Globals.storeInfo?.fullName ?? "Thred Apps Inc.",
           amount: amount,
         },
         requestPayerName: true,
@@ -366,7 +366,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         country: 'US',
         currency: 'usd',
         total: {
-          label: Globals.storeInfo.fullName ?? "Thred Apps Inc.",
+          label: Globals.storeInfo?.fullName ?? "Thred Apps Inc.",
           amount: amount,
         },
         requestPayerName: true,
@@ -376,7 +376,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
   }
 
   theme(){
-    if (this.storeInfo().colorStyle.back_code == 'light'){
+    if (this.storeInfo()?.colorStyle.back_code == 'light'){
       return 'dark'
     }
     return 'light'
@@ -468,7 +468,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
     event.target.disabled = true;
 
-    let storeID = this.storeInfo().uid!
+    let storeID = this.storeInfo()?.uid!
     this.loadService.createPayment(storeID, true, (order_id: string, client_secret: string, err?: any) => {
       this.spinner.hide()
       if (err){
@@ -496,7 +496,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
     Globals.shippingTax = undefined
 
     const storeInfo = this.getStoreName()
-    this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom)
+    this.downloadAllStoreInfo(storeInfo?.link, storeInfo?.isCustom)
 
   }
 
@@ -532,7 +532,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
 
 
 
-    let storeID = this.storeInfo().uid!
+    let storeID = this.storeInfo()?.uid!
     this.loadService.createPayment(storeID, false, (order_id: string, client_secret: string, err?: any) => {
       return this.stripeService.confirmCardPayment(
         client_secret,

@@ -10,7 +10,7 @@ export class StoreBannerPipe implements PipeTransform {
 
   transform(banner: Banner, index: number): Dict<any> {
     if (!banner) {
-      banner = Globals.storeInfo.banners[index];
+      banner = Globals.storeInfo?.banners[index];
     }
 
     let co = banner.color;

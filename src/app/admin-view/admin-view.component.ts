@@ -80,6 +80,8 @@ import axios from 'axios';
 import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';
+import { Store } from '../models/store.model';
+import { take } from 'rxjs/operators';
 
 // artifacts/contracts/Market.sol/NFTMarket
 export type ChartOptions = {
@@ -125,7 +127,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   invTitle = 'FULFILLED BY THRED';
 
   headerName(h: string) {
-    return this.storeInfo()?.pages?.find((p) => p.id == h)?.title ?? '';
+    return this.storeInfo?.pages?.find((p) => p.id == h)?.title ?? '';
   }
 
   socials() {
@@ -201,16 +203,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.name = 'My Domain';
     modalRef.componentInstance.isDomain = true;
 
-    if (Globals.storeInfo.customURL) {
+    if (Globals.storeInfo?.customURL) {
       modalRef.componentInstance.socialForm.controls.link.setValue(
-        Globals.storeInfo.customURL?.fullURL
+        Globals.storeInfo?.customURL?.fullURL
       );
     }
 
     let sub = modalRef.dismissed.subscribe((domain: string) => {
       sub.unsubscribe();
       if (domain != '0') {
-        if (domain != Globals.storeInfo.customURL?.fullURL) {
+        if (domain != Globals.storeInfo?.customURL?.fullURL) {
           if (domain == undefined) {
             return;
           }
@@ -227,29 +229,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
                 this.toast('Custom Domain Saved!');
               }
             },
-            Globals.storeInfo.uid
+            Globals.storeInfo?.uid
           );
         }
       }
     });
   }
 
-  autoCoupon(product: Product) {
-    var autoCoupon = this.storeInfo()
-      .coupons?.filter((coupon) => {
-        return coupon.products.includes(product.productID) && coupon.auto;
-      })
-      .sort(function (a, b) {
-        if (a.amt < b.amt) {
-          return 1;
-        }
-        if (a.amt > b.amt) {
-          return -1;
-        }
-        return 0;
-      })[0];
-    return autoCoupon;
-  }
+ 
 
   mainPrice(product: NFT) {
     // let coupon = this.autoCoupon(product);
@@ -282,19 +269,19 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           (success) => {
             this.toast('Page Removed!');
           },
-          Globals.storeInfo.uid
+          Globals.storeInfo?.uid
         );
       }
     );
   }
 
   urlText() {
-    var url = 'https://shopmythred.com/' + this.storeInfo().username;
+    var url = 'https://shopmythred.com/' + this.storeInfo?.username;
 
-    if (this.storeInfo().customURL?.status == 2) {
+    if (this.storeInfo?.customURL?.status == 2) {
       url =
-        this.storeInfo().customURL?.fullURL != undefined
-          ? this.storeInfo().customURL?.fullURL!
+        this.storeInfo?.customURL?.fullURL != undefined
+          ? this.storeInfo?.customURL?.fullURL!
           : url;
     }
 
@@ -364,7 +351,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               isFinished = true;
               this.intValue = undefined;
             },
-            Globals.storeInfo.uid
+            Globals.storeInfo?.uid
           );
         }
       } else if (layouts == '0') {
@@ -423,7 +410,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               this.toast('Popup Saved!');
             }
           },
-          Globals.storeInfo.uid
+          Globals.storeInfo?.uid
         );
       }
     });
@@ -573,7 +560,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           (success) => {
             this.toast('Popup Removed');
           },
-          Globals.storeInfo.uid
+          Globals.storeInfo?.uid
         );
       }
     );
@@ -583,7 +570,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //   const modalRef = this.dialog.open(CouponInfoComponent, {
   //     width: '800px',
   //     data: {
-  //       coupons: Globals.storeInfo.coupons,
+  //       coupons: Globals.storeInfo?.coupons,
   //       editCoupon: coupon,
   //       products: this.storeProducts?.filter((product) => {
   //         return (
@@ -614,7 +601,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //               this.toast('Coupon Saved!');
   //             }
   //           },
-  //           Globals.storeInfo.uid
+  //           Globals.storeInfo?.uid
   //         );
   //       }
   //     }
@@ -643,16 +630,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //         (success) => {
   //           this.toast('Coupon Removed');
   //         },
-  //         Globals.storeInfo.uid
+  //         Globals.storeInfo?.uid
   //       );
   //     }
   //   );
   }
 
   domainNotSetUp() {
-    if (Globals.storeInfo.customURL?.status == 1) {
+    if (Globals.storeInfo?.customURL?.status == 1) {
       return true;
-    } else if (Globals.storeInfo.customURL?.status == 2) {
+    } else if (Globals.storeInfo?.customURL?.status == 2) {
       return false;
     } else {
       return undefined;
@@ -1448,13 +1435,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return Globals.loaders;
   }
 
-  storeInfo() {
-    return Globals.storeInfo;
-  }
+  storeInfo?: Store
 
-  userInfo() {
-    return Globals.userInfo;
-  }
+  userInfo?: Store
+
 
   availableCurrencies() {
     return Globals.availableCurrencies;
@@ -1510,9 +1494,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       console.log(iframe);
 
       // iframe.contentWindow?.postMessage(JSON.parse(JSON.stringify({
-      //   storeInfo: this.storeInfo(),
+      //   storeInfo: this.storeInfo,
       //   themeInfo: {
-      //     themes: this.storeInfo().colorStyle,
+      //     themes: this.storeInfo?.colorStyle,
       //     colors: this.selectedTheme()
       //   }
       // })), 'http://localhost:3000')
@@ -1730,6 +1714,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   inventory?: Array<Inventory>;
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;
@@ -2272,7 +2261,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
     var prod = Array<NFT>();
     products?.forEach((p) => {
-      let pro = Globals.storeInfo.collections?.find((pr) => {
+      let pro = Globals.storeInfo?.collections?.find((pr) => {
         let k = pr.NFTs?.find((n) => {
           return String(n.tokenID) == p;
         });
@@ -2288,7 +2277,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   newArrivalProducts() {
-    return (Globals.storeInfo.collections ?? [])[0].NFTs
+    return (Globals.storeInfo?.collections ?? [])[0].NFTs
       ?.sort(function (a, b) {
         // if (a.timestamp > b.timestamp) {
         //   return -1;
@@ -2302,7 +2291,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   featuredProducts() {
-    return (Globals.storeInfo.collections ?? [])[0].NFTs
+    return (Globals.storeInfo?.collections ?? [])[0].NFTs
       ?.sort(function (a, b) {
         // if (a.likes > b.likes) {
         //   return -1;
@@ -2398,14 +2387,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     if (this.storeForm.controls.profile_pic.value) {
       return this.storeForm.controls.profile_pic.value;
     }
-    return this.userInfo()?.profileLink;
+    return this.userInfo?.profileLink;
   }
 
   getUsername() {
     if (this.storeForm.controls.full_name.value) {
       return this.storeForm.controls.full_name.value;
     }
-    return this.userInfo()?.fullName ?? "Brian's Tees";
+    return this.userInfo?.fullName ?? "Brian's Tees";
   }
 
   saveProfile() {
@@ -2718,7 +2707,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           this.toast('Store Header Updated!');
         }
       },
-      Globals.storeInfo.uid
+      Globals.storeInfo?.uid
     );
   }
 
@@ -3009,13 +2998,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     this.toast('Affiliate link copied to clipboard!');
     var host = 'shopmythred.com';
 
-    this.clipboard.copy(host + '/?affiliate=' + this.storeInfo().uid);
+    this.clipboard.copy(host + '/?affiliate=' + this.storeInfo?.uid);
   }
 
   getSoldProducts() {
     if (Globals.productsSold == undefined) {
       this.loadService.saleCallback = () => this.getSoldProducts();
-      this.loadService.getSoldProducts(this.storeInfo()?.uid);
+      this.loadService.getSoldProducts(this.storeInfo?.uid);
     } else {
       let data = ['Products Sold', 'Gross Revenue', 'Net Profit'];
       data.forEach((d) => {
@@ -3088,12 +3077,12 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   storeBio() {
-    let bio = this.storeInfo().bio;
+    let bio = this.storeInfo?.bio;
 
     if (bio == '' || bio == undefined) {
       return this.defaultBio?.replace(
         /FULL9NAME/g,
-        this.storeInfo().fullName?.trim() ?? 'This brand'
+        this.storeInfo?.fullName?.trim() ?? 'This brand'
       );
     }
     return bio?.replace(/\n/g, '<br>') ?? '';
@@ -3106,6 +3095,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.loadService.adminComponent = this;
     this.getMiscStats()
+    Globals.sInfo.pipe(take(2)).subscribe(s => {
+      this.storeInfo = s
+    })
+    Globals.uInfo.pipe(take(2)).subscribe(s => {
+      this.userInfo = s
+    })
+    
     this.init();
   }
 
@@ -3200,16 +3196,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       this.mainLoad = true
       this.rootComponent.setOptions();
       this.rootComponent.setFavIcon(
-        Globals.storeInfo.profileLink?.toString() ?? ''
+        Globals.storeInfo?.profileLink?.toString() ?? ''
       );
 
       this.addTags(
-        Globals.storeInfo.fullName ?? 'Thred',
+        Globals.storeInfo?.fullName ?? 'Thred',
         (
-          Globals.storeInfo.profileLink ?? new URL('https://shopmythred.com')
+          Globals.storeInfo?.profileLink ?? new URL('https://shopmythred.com')
         ).toString(),
-        Globals.storeInfo.bio ?? 'Check out my Thred Store!',
-        'shopmythred.com/' + Globals.storeInfo.username
+        Globals.storeInfo?.bio ?? 'Check out my Thred Store!',
+        'shopmythred.com/' + Globals.storeInfo?.username
       );
 
       if (isPlatformBrowser(this.platformID)) {
@@ -3389,7 +3385,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       //     if (success){
       //       this.toast("Popup Saved!")
       //     }
-      //   }, Globals.storeInfo.uid)
+      //   }, Globals.storeInfo?.uid)
       // }
     });
   }
@@ -3516,7 +3512,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
 
     const storeInfo = this.getStoreName();
-    this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom);
+    this.downloadAllStoreInfo(storeInfo?.link, storeInfo?.isCustom);
 
     if (this.classApplied) {
       this.state = 'rotated';
@@ -3726,7 +3722,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         let col = resp as Collection
 
         Globals.userInfo?.collections?.push(col)
-        Globals.storeInfo.collections?.push(col)
+        Globals.storeInfo?.collections?.push(col)
 
         this.toast('Collection Created!')
         this.cdr.detectChanges()

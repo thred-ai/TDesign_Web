@@ -10,16 +10,16 @@ type = {{selectedIndicator().name}}
 [fullScreen] = "true"
 style.color = "{{selectedIndicator()!.color}}"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!"> Updating Billing Information...
+<h3 class="text-center mt-5" [style.font-family]="storeInfo()?.fontName!"> Updating Billing Information...
 </h3>
 </ngx-spinner>
 
   <!-- Header-->
-  <header *ngIf="isBrowser()" [hidden]="storeInfo().username == undefined || storeInfo().username == ''" class="bg-{{storeInfo().colorStyle!.back_code}} py-6" style="height: fit-content;">
+  <header *ngIf="isBrowser()" [hidden]="storeInfo()?.username == undefined || storeInfo()?.username == ''" class="bg-{{storeInfo()?.colorStyle!.back_code}} py-6" style="height: fit-content;">
     <img class="w-100 h-100" [src]='storeInfo()!.themeLink?.toString()'>
   </header>
   
-    <section *ngIf="isBrowser() && storeInfo().username != undefined && cardOptions.style!.base!.color == selectedTheme().color" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
+    <section *ngIf="isBrowser() && storeInfo()?.username != undefined && cardOptions.style!.base!.color == selectedTheme().color" class="py-5" style.background-color="{{selectedTheme()!.bg_color}}">
       <div class="container pb-5 mb-2 mb-md-4">
   
           <div class="row mt-3">
@@ -36,15 +36,15 @@ style.color = "{{selectedIndicator()!.color}}"
                 
   
   
-                  <mat-card class="shipping-card bg-{{storeInfo().colorStyle!.back_code}} mt-0">
+                  <mat-card class="shipping-card bg-{{storeInfo()?.colorStyle!.back_code}} mt-0">
                     <mat-card-header>
-                      <mat-card-title style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">Billing Method</mat-card-title>
+                      <mat-card-title style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo()?.fontName!">Billing Method</mat-card-title>
                     </mat-card-header>
                     <mat-card-content>
                       <div class="row">
                           <div class="col">
                             <mat-form-field class="full-width">
-                              <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput style.color="{{selectedTheme()!.color}}" formControlName="cardholder">
+                              <input class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput style.color="{{selectedTheme()!.color}}" formControlName="cardholder">
                               <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Cardholder Name</mat-placeholder>
                               <mat-error *ngIf="billingForm.controls['cardholder'].hasError('required')">
                                   Cardholder name is <strong>required</strong>
@@ -67,18 +67,18 @@ style.color = "{{selectedIndicator()!.color}}"
                       <div class="row">
                         <div class="col">
                           <mat-form-field class="full-width">
-                            <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="company" >
+                            <input class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput formControlName="company" >
                             <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Company (Optional)</mat-placeholder>
                           </mat-form-field>
                         </div>
                       </div>
                       <div class="row mt-5">
                           <mat-card-header>
-                              <mat-card-title class="text-{{storeInfo().colorStyle!.text_code}}" [style.font-family]="storeInfo().fontName!">Billing Address</mat-card-title>
+                              <mat-card-title class="text-{{storeInfo()?.colorStyle!.text_code}}" [style.font-family]="storeInfo()?.fontName!">Billing Address</mat-card-title>
                             </mat-card-header>
                         <div class="col">
                           <mat-form-field class="full-width">
-                            <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="address">
+                            <input class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput formControlName="address">
                             <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Address</mat-placeholder>
                             <mat-error *ngIf="billingForm.controls['address'].hasError('required')">
                               Address is <strong>required</strong>
@@ -88,7 +88,7 @@ style.color = "{{selectedIndicator()!.color}}"
                       </div>
                       <div class="row" *ngIf="!hasUnitNumber">
                         <div class="col">
-                          <button class="text-{{storeInfo().colorStyle!.text_code}}" mat-button  (click)="hasUnitNumber = !hasUnitNumber">
+                          <button class="text-{{storeInfo()?.colorStyle!.text_code}}" mat-button  (click)="hasUnitNumber = !hasUnitNumber">
                             + Add C/O, Apt, Suite, Unit
                           </button>
                         </div>
@@ -96,19 +96,19 @@ style.color = "{{selectedIndicator()!.color}}"
                       <div class="row" *ngIf="hasUnitNumber">
                         <div class="col">
                           <mat-form-field class="full-width">
-                            <textarea class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="address2"></textarea>
+                            <textarea class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput formControlName="address2"></textarea>
                             <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Address 2</mat-placeholder>
                           </mat-form-field>
                         </div>
                       </div>
                       <div class="row">
                           <div class="col">
-                              <mat-form-field class="full-width text-{{storeInfo().colorStyle!.text_code}}">
+                              <mat-form-field class="full-width text-{{storeInfo()?.colorStyle!.text_code}}">
                                 <mat-select formControlName="country">
-                                  <mat-select-trigger class="text-{{storeInfo().colorStyle!.text_code}}">
+                                  <mat-select-trigger class="text-{{storeInfo()?.colorStyle!.text_code}}">
                                     {{billingForm.controls['country'].value}}
                                   </mat-select-trigger>
-                                  <mat-option class="not-empty-select text-{{storeInfo().colorStyle!.text_code}} bg-{{storeInfo().colorStyle!.back_code}}" *ngFor="let country of countries()" [value]="country.name">
+                                  <mat-option class="not-empty-select text-{{storeInfo()?.colorStyle!.text_code}} bg-{{storeInfo()?.colorStyle!.back_code}}" *ngFor="let country of countries()" [value]="country.name">
                                     {{ country.name }}
                                   </mat-option>
                                 </mat-select>
@@ -122,7 +122,7 @@ style.color = "{{selectedIndicator()!.color}}"
                             </div>
                         <div class="col">
                           <mat-form-field class="full-width">
-                            <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="city">
+                            <input class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput formControlName="city">
                             <mat-placeholder  [style.color] = 'selectedTheme()!.color'>City</mat-placeholder>
                             <mat-error *ngIf="billingForm.controls['city'].hasError('required')">
                               City is <strong>required</strong>
@@ -132,7 +132,7 @@ style.color = "{{selectedIndicator()!.color}}"
                         <div class="col">
                           <mat-form-field class="full-width">
 
-                            <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput formControlName="state">
+                            <input class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput formControlName="state">
                             <mat-placeholder  [style.color] = 'selectedTheme()!.color'>Province/State</mat-placeholder>
                             <mat-error *ngIf="billingForm.controls['state'].hasError('required')">
                               State is <strong>required</strong>
@@ -143,7 +143,7 @@ style.color = "{{selectedIndicator()!.color}}"
                       <div class="row">
                         <div class="col">
                           <mat-form-field class="full-width">
-                            <input class="text-{{storeInfo().colorStyle!.text_code}}" matInput #postalCode maxlength="10" formControlName="postalCode">
+                            <input class="text-{{storeInfo()?.colorStyle!.text_code}}" matInput #postalCode maxlength="10" formControlName="postalCode">
                             <mat-placeholder  [style.color] = 'selectedTheme()!.color'>{{getZipFieldName(billingForm.controls['country'].value)}}</mat-placeholder>
                             <mat-hint align="end">{{postalCode.value.length}} / 5</mat-hint>
                           </mat-form-field>
@@ -160,13 +160,13 @@ style.color = "{{selectedIndicator()!.color}}"
             </section>
             <!-- Sidebar-->
             <aside class="col-lg-4 pt-4 pt-lg-0 ps-xl-5">
-                <div class="bg-{{storeInfo().colorStyle!.back_code}} rounded-3 shadow-lg p-4">
+                <div class="bg-{{storeInfo()?.colorStyle!.back_code}} rounded-3 shadow-lg p-4">
                   <div class="py-2 px-xl-2">
                     <div class="text-center mb-4 pb-3 border-bottom">
-                      <!-- <h2 [style.font-family]="storeInfo().fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2> -->
+                      <!-- <h2 [style.font-family]="storeInfo()?.fontName!" class="h6 mb-3 pb-1" style.color="{{selectedTheme()!.color}}">Subtotal</h2> -->
                     </div>
-                    <div class="text-center mt-2"><a [style.font-family]="storeInfo().fontName!" class="btn mt-4 d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" (click) = "addCard()" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}"  [innerHTML]="'Save Billing Info'"></a></div>
-                    <p [hidden]="err == ''" [style.font-family]="storeInfo().fontName!" class = "text-center mt-3 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
+                    <div class="text-center mt-2"><a [style.font-family]="storeInfo()?.fontName!" class="btn mt-4 d-flex flex-wrap" style="font-weight:bold; font-size:20px; justify-content: center;" (click) = "addCard()" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}"  [innerHTML]="'Save Billing Info'"></a></div>
+                    <p [hidden]="err == ''" [style.font-family]="storeInfo()?.fontName!" class = "text-center mt-3 mb-3" style = "line-height:1.0em; font-size: 12px; height: 15px; font-weight: normal; color: red;">
                       {{err}}
                     </p>
                   </div>

@@ -240,7 +240,7 @@
             loading="lazy"
             [useSrcset]="true"
             [defaultImage]="'/assets/default.png'"
-            [lazyLoad]="nft?.linkUrl!"
+            [lazyLoad]="nft?.linkUrl ?? '/assets/default.png'"
             alt="ok"
             *ngIf="nft?.format == 'image'"
           />
@@ -275,7 +275,7 @@
               <img
               class="h-100"
               style="object-fit: contain; aspect-ratio: 1;"
-              src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
+              src="{{this.layoutForm.controls.metaPic.value ?? storeInfo?.profileLink}}"
             />
               <p
               class="ms-3 my-auto"

@@ -167,14 +167,14 @@ export class CartComponent implements OnInit {
     }
 
   async callback(){
-    if (Globals.storeInfo.username){
+    if (Globals.storeInfo?.username){
       if (isPlatformBrowser(this.platformID)){
           this.showSpinner()
       }
       this.rootComponent.setOptions()
-      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
+      this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink?.toString() ?? '')
 
-      this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+      this.addTags(Globals.storeInfo?.fullName ?? "Thred", (Globals.storeInfo?.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo?.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo?.username)
       if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getCountries()
       }
@@ -222,7 +222,7 @@ export class CartComponent implements OnInit {
 
     
     const storeInfo = this.getStoreName()
-    this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom)
+    this.downloadAllStoreInfo(storeInfo?.link, storeInfo?.isCustom)
 
   }
 
@@ -266,7 +266,7 @@ export class CartComponent implements OnInit {
     if (this.cartDiscount()){
       return undefined
     }
-    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
+    var autoCoupon = this.storeInfo()?.coupons?.filter(coupon => { return coupon.products.includes(product.productID) && coupon.auto}).sort(function(a, b){
       if(a.amt < b.amt) { return 1; }
       if(a.amt > b.amt) { return -1; }
       return 0;
@@ -299,7 +299,7 @@ export class CartComponent implements OnInit {
 
   cartDiscount(){
 
-    var autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
+    var autoCoupon = this.storeInfo()?.coupons?.filter(coupon => { return (coupon.type == 'order_qty' && this.totalLength() >= coupon.threshold) ||
       (coupon.type == 'order_val' && (this.total(true) ?? 0) >= coupon.threshold) && coupon.auto}).sort(function(a, b){
         if(a.amt < b.amt) { return 1; }
         if(a.amt > b.amt) { return -1; }

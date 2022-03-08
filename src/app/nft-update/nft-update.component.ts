@@ -202,7 +202,7 @@ export class NftUpdateComponent implements OnInit {
           this.nft.lazyHash = voucher;
           this.nft.forSale = forSale
   
-          await this.laodService.updateNFT(this.nft, Globals.storeInfo.uid, this.nft.docID)
+          await this.laodService.updateNFT(this.nft, Globals.storeInfo?.uid, this.nft.docID)
   
         } else {
           // updateItem(
@@ -252,6 +252,11 @@ export class NftUpdateComponent implements OnInit {
   }
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;

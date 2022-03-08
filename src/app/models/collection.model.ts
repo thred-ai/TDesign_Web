@@ -23,7 +23,7 @@ export interface ICollection {
   timestamp?: Date;
   available?: boolean;
   rpcEndpoint?: string;
-  volume?: number
+  volume?: number;
 
   getRarity(nft: NFT): string;
 
@@ -117,23 +117,33 @@ export class Collection implements ICollection {
 
   getCurrencyIcon() {
     let token = this.customToken ?? 'default';
-    let symbol = Globals.storeInfo?.tokens
-    .find((t) => t.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase()))
-    ?.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase())?.symbol ?? 'polygon_icon'
+    let symbol =
+      Globals.storeInfo?.tokens
+        .find((t) =>
+          t.variations.find(
+            (s) => s.contract.toLowerCase() == token.toLowerCase()
+          )
+        )
+        ?.variations.find(
+          (s) => s.contract.toLowerCase() == token.toLowerCase()
+        )?.symbol ?? 'polygon_icon';
 
-    return (
-      symbol
-    );
+    return symbol;
   }
 
   getApiName() {
     let token = this.customToken ?? 'default';
-    let api_name = Globals.storeInfo?.tokens
-    .find((t) => t.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase()))
-    ?.variations.find((s) => s.contract.toLowerCase() == token.toLowerCase())?.api_name ?? 'matic-network'
-    return (
-      api_name
-    );
+    let api_name =
+      Globals.storeInfo?.tokens
+        .find((t) =>
+          t.variations.find(
+            (s) => s.contract.toLowerCase() == token.toLowerCase()
+          )
+        )
+        ?.variations.find(
+          (s) => s.contract.toLowerCase() == token.toLowerCase()
+        )?.api_name ?? 'matic-network';
+    return api_name;
   }
 
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
@@ -142,8 +152,8 @@ export class Collection implements ICollection {
     return symbol;
   }
 
-  get owners(){
-    return this.NFTs.filter(n => !(n.forSale)).length ?? 0
+  get owners() {
+    return this.NFTs.filter((n) => !n.forSale).length ?? 0;
   }
 
   async loadName(token: string, provider: ethers.providers.Provider) {
@@ -162,7 +172,6 @@ export class Collection implements ICollection {
     let owner = await contract.ownerOf(tokenId);
     return owner;
   }
-
 
   hashedTokenId(tokenId: number) {
     let strTokenId = String(tokenId);
@@ -196,10 +205,15 @@ export class Collection implements ICollection {
 
     this.name = name ?? '';
     this.symbol = symbol ?? '';
-    this.NFTs = NFTs = [];
+    this.collectionCount = collectionCount ?? 0;
+
+
     this.contract = contract;
+
+    this.NFTs = this.nftCount(collectionCount, contract);
+
     this.customToken = customToken;
-    this.collectionCount = collectionCount;
+
     this.domain = domain;
     this.currency = currency;
     this.isPublic = isPublic;
@@ -207,6 +221,26 @@ export class Collection implements ICollection {
     this.timestamp = timestamp;
     this.available = available;
     this.ABI = ABI ?? ERC721_MERCHANT.abi;
-    this.volume = volume ?? 0
+    this.volume = volume ?? 0;
+    
+  }
+
+  nftCount(collectionCount: number, contract: string){
+    let nfts = new Array<NFT>()
+    for (let i = 0; i < (collectionCount ?? 0); i++) {
+      nfts.push(new NFT(
+        i + 1,
+        '',
+        contract,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        ''
+      ))
+    }
+    return nfts
   }
 }

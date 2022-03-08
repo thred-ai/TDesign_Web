@@ -61,7 +61,7 @@
           <a
           role="button"
           class="text-secondary text-{{
-            storeInfo().colorStyle!.text_code
+            storeInfo()?.colorStyle!.text_code
           }} d-inline-flex mx-0 align-items-center w-100 justify-content-end"
           style="font-size: 18px; text-decoration: none"
         >
@@ -116,7 +116,7 @@
         style="object-fit: cover; aspect-ratio: 1; width: 90%; overflow: hidden"
         [useSrcset]="true"
         [defaultImage]="'/assets/default.png'"
-        [lazyLoad]="nft.linkUrl!"
+        [lazyLoad]="nft?.linkUrl ?? '/assets/default.png'"
         alt="ok"
         *ngIf="nft?.format == 'image'"
       />

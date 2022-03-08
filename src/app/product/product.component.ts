@@ -39,6 +39,7 @@ import { from, Subscription } from 'rxjs';
 import detectEthereumProvider from '@metamask/detect-provider';
 import axios from 'axios';
 import { filter, map } from 'rxjs/operators';
+import { Store } from '../models/store.model';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -48,9 +49,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('carousel', { read: DragScrollComponent })
   ds?: DragScrollComponent;
 
-  storeInfo() {
-    return Globals.storeInfo;
-  }
+  storeInfo?: Store
+
   availableCurrencies() {
     return Globals.availableCurrencies;
   }
@@ -67,7 +67,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   collection?: Collection;
   get collections() {
     if (this.collection) {
-      let c = Globals.storeInfo.collections?.find(
+      let c = Globals.storeInfo?.collections?.find(
         (c: Collection) => c.contract == this.collection?.contract
       );
       if (c as Collection){
@@ -190,7 +190,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {
     Globals.selectedTemplate = undefined;
     Globals.selectedCurrency = undefined;
-    // Globals.storeInfo.uid = undefined
+    // Globals.storeInfo?.uid = undefined
     setTimeout(() => {
       this.sub = _router.events.subscribe((event: any) => {
         // You only receive NavigationStart events
@@ -287,48 +287,14 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   nftLogs: Array<NftLog> = [];
 
-  autoCoupon(product: Product) {
-    var autoCoupon = this.storeInfo()
-      .coupons?.filter((coupon) => {
-        return coupon.products.includes(product.productID) && coupon.auto;
-      })
-      .sort(function (a, b) {
-        if (a.amt < b.amt) {
-          return 1;
-        }
-        if (a.amt > b.amt) {
-          return -1;
-        }
-        return 0;
-      })[0];
 
-    // if (!autoCoupon){
-    //   autoCoupon = this.storeInfo().coupons?.filter(coupon => { return (coupon.type == 'order_qty' && (this.productToBuy.quantity ?? 0) >= coupon.threshold) ||
-    //   (coupon.type == 'order_val' && (this.productToBuy.product?.price ?? 0) >= coupon.threshold)}).sort(function(a, b){
-    //     if(a.amt < b.amt) { return -1; }
-    //     if(a.amt > b.amt) { return 1; }
-    //     return 0;
-    //   })[0]
-    // }
-
-    return autoCoupon;
-  }
 
   get info() {
     return Globals.storeInfo;
   }
 
   mainPrice(product: Product) {
-    let coupon = this.autoCoupon(product);
-    if (coupon) {
-      if (coupon.style == 0) {
-        return (
-          (product.price ?? 0) / 100 - ((product.price ?? 0) / 100) * coupon.amt
-        );
-      } else if (coupon.style == 1) {
-        return (product.price ?? 0) / 100 - (coupon.amt ?? 0) * 100;
-      }
-    }
+    
     return (product.price ?? 0) / 100;
   }
 
@@ -368,6 +334,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;
@@ -399,6 +370,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   async ngOnInit() {
     const data = this.getProductID();
+
+    Globals.sInfo.subscribe(s => {
+      this.storeInfo = s
+    })
 
     this.loadService.myCallback = () => this.checkLoad();
 
@@ -600,21 +575,21 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       );
 
       if (isPlatformBrowser(this.platformID)) {
-        if (Globals.storeInfo.uid == undefined) {
+        if (Globals.storeInfo?.uid == undefined) {
           const storeInfo = this.getStoreName();
           this.loadService.getUser(
-            storeInfo.link,
+            storeInfo?.link,
             undefined,
-            storeInfo.isCustom
+            storeInfo?.isCustom
           );
         } else {
           this.showSpinner();
           this.rootComponent.setFavIcon(
-            Globals.storeInfo.profileLink?.toString() ?? ''
+            Globals.storeInfo?.profileLink?.toString() ?? ''
           );
 
           if (
-            Globals.storeInfo.walletAddress?.toLowerCase() !=
+            Globals.storeInfo?.walletAddress?.toLowerCase() !=
             this.productToBuy.owner.toLowerCase()
           ) {
             this.routingService.routeToStore404(
@@ -842,7 +817,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       content: description,
     });
     var newTitle = title;
-    if (Globals.storeInfo.fullName) {
+    if (Globals.storeInfo?.fullName) {
       newTitle += ' - ' + Globals.storeInfo?.fullName ?? '';
     }
     this.titleService.setTitle(newTitle);

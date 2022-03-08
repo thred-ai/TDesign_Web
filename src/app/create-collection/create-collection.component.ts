@@ -51,6 +51,11 @@ export class CreateCollectionComponent implements OnInit {
   }
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;
@@ -70,7 +75,7 @@ export class CreateCollectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
-    this.nftForm.controls.currency.setValue(Globals.storeInfo.tokens[0].variations[0]);
+    this.nftForm.controls.currency.setValue(Globals.storeInfo?.tokens[0].variations[0]);
     this.storeInfo = Globals.storeInfo;
   }
 
@@ -164,7 +169,7 @@ export class CreateCollectionComponent implements OnInit {
             0,
             wallet,
             true,
-            Globals.storeInfo.uid!,
+            Globals.storeInfo?.uid!,
             new Date(),
             domain,
             token.contract != 'default' ? token.contract: undefined,
@@ -178,7 +183,7 @@ export class CreateCollectionComponent implements OnInit {
 
           await this.loadService.saveCollectionInfo(
             collection,
-            Globals.storeInfo.uid
+            Globals.storeInfo?.uid
           );
 
           this.dialogRef.close(collection);

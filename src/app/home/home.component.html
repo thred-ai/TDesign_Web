@@ -77,7 +77,7 @@
                     class="h-100 w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
                     [useSrcset]="true"
                     [defaultImage]="'/assets/default.png'"
-                    [lazyLoad]="product.linkUrl!"
+                    [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
                     alt="ok"
                     style="
                       object-fit: cover;
@@ -100,7 +100,7 @@
                       font-size: medium;
                     "
                     style.color="{{ selectedTheme()!.color }}"
-                    [style.font-family]="storeInfo.fontName!"
+                    [style.font-family]="storeInfo?.fontName!"
                     role="button"
                     (click)="routeToProduct(product)"
                   >

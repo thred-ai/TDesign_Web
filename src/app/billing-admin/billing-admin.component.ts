@@ -209,7 +209,11 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
   }
 
   selectedIndicator(){
-    
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color
     let bco = Globals.storeInfo?.loading?.bg_color
     let name = Globals.storeInfo?.loading?.name
@@ -233,9 +237,9 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
       this.cardOptions.style!.base!.iconColor = this.selectedTheme().color
       this.cardOptions.style!.base!['::placeholder']!.color = this.selectedTheme().color
 
-      if (Globals.storeInfo.username){
-        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
-        this.addTags(Globals.storeInfo.fullName ?? "Thred", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com"))?.toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+      if (Globals.storeInfo?.username){
+        this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink?.toString() ?? '')
+        this.addTags(Globals.storeInfo?.fullName ?? "Thred", (Globals.storeInfo?.profileLink ?? new URL("https://shopmythred.com"))?.toString(), Globals.storeInfo?.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo?.username)
         if (Globals.billingInfo == undefined && isPlatformBrowser(this.platformID)){
           this.loadService.getBillingAddress()
         }
@@ -324,7 +328,7 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
     Globals.billingInfo = undefined
 
     const storeInfo = this.getStoreName()
-    this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom)
+    this.downloadAllStoreInfo(storeInfo?.link, storeInfo?.isCustom)
 
   }
 

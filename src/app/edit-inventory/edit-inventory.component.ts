@@ -318,7 +318,7 @@ export class EditInventoryComponent implements OnInit {
     this.loadService.saveInventory(inv, (inventory?: Inventory) => {
       this.spinner.hide('newInvSpinner')
       this.dialogRef.close(inventory)
-    }, Globals.storeInfo.uid)
+    }, Globals.storeInfo?.uid)
 
   }
 

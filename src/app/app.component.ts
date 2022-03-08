@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   mode = 'All Products';
 
   storeInfo() {
-    return Globals.storeInfo;
+    return Globals.storeInfo ?? new Store()
   }
 
   userInfo() {
@@ -105,7 +105,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ownedCollections(address: string | null | undefined){
     if (address){
-      return Globals.storeInfo.collections?.filter(c => c.NFTs.find(n => n.seller.toLowerCase() == address.toLowerCase())) ?? []
+      return Globals.storeInfo?.collections?.filter(c => c.NFTs.find(n => n?.seller.toLowerCase() == address.toLowerCase())) ?? []
     }
     return []
   }
@@ -119,7 +119,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   moveRight() {
 
-    if (this.ds?.currIndex == (this.storeInfo().banners?.length ?? 0) - 1) {
+    if (this.ds?.currIndex == (this.storeInfo()?.banners?.length ?? 0) - 1) {
       this.ds?.moveTo(0);
     } else {
       this.ds?.moveRight();
@@ -228,7 +228,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   bannerTheme(banner?: Banner) {
     if (!banner) {
-      banner = this.storeInfo().banners[this.ds?.currIndex ?? 0];
+      banner = this.storeInfo()?.banners[this.ds?.currIndex ?? 0];
     }
 
     let co = banner.color;
@@ -277,7 +277,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   routeToProfile(selected?: string) {
     if (Globals.userInfo?.username) {
       this.loadService.myCallback = undefined;
-      if (Globals.storeInfo.uid != Globals.userInfo?.uid) {
+      if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
         // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
         this.routingService.routeToProfile(
           Globals.userInfo?.username!,
@@ -340,51 +340,51 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   routeToHome() {
     this.setOptions();
-    if (Globals.storeInfo.username)
+    if (Globals.storeInfo?.username)
       this.routingService.routeToHome(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
 
   routeToImgLink(link?: string) {
     this.setOptions();
-    if (Globals.storeInfo.username && link)
+    if (Globals.storeInfo?.username && link)
       this.routingService.linkImgPressed(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         link,
         this.getStoreName().isCustom
       );
   }
 
   routeToOrders() {
-    if (Globals.storeInfo.username)
+    if (Globals.storeInfo?.username)
       this.routingService.routeToOrders(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
 
   routeToShop() {
-    if (Globals.storeInfo.username)
+    if (Globals.storeInfo?.username)
       this.routingService.routeToShop(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
 
   routeToAbout() {
-    if (Globals.storeInfo.username)
+    if (Globals.storeInfo?.username)
       this.routingService.routeToAbout(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
 
   routeToCart() {
-    if (Globals.storeInfo.username)
+    if (Globals.storeInfo?.username)
       this.routingService.routeToCart(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -393,7 +393,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (Globals.storeInfo?.username)
       this.routingService.routeToProduct(
         productID,
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -402,7 +402,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (Globals.storeInfo?.username)
       this.routingService.routeToOrder(
         orderID,
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -410,7 +410,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   routeToShipping() {
     if (Globals.storeInfo?.username)
       this.routingService.routeToShipping(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -418,7 +418,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   routeToBilling() {
     if (Globals.storeInfo?.username)
       this.routingService.routeToBilling(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -426,7 +426,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   routeToBillingAdmin() {
     if (Globals.storeInfo?.username)
       this.routingService.routeToBillingAdmin(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -434,7 +434,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   routeToReview() {
     if (Globals.storeInfo?.username)
       this.routingService.routeToReview(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         this.getStoreName().isCustom
       );
   }
@@ -455,7 +455,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         modalRef.componentInstance.authMode = authMode;
         if (prefillUser) {
           modalRef.componentInstance.loginForm.controls.username.setValue(
-            Globals.storeInfo.username
+            Globals.storeInfo?.username
           );
         }
       }
@@ -489,7 +489,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   storeLink(link: string) {
-    return link.replace('STORE_NAME', this.storeInfo().username ?? '');
+    return link.replace('STORE_NAME', this.storeInfo()?.username ?? '');
   }
 
   cartLength() {
@@ -598,7 +598,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   applyProductFilter(template?: Template) {
     // let id = template?.productCode;
     // this.mode = this.titleCase(template?.templateDisplayName ?? 'All Products');
-    // if (Globals.storeInfo.username) {
+    // if (Globals.storeInfo?.username) {
     //   this.loadService.myCallback = () => this.cdr.detectChanges();
     //   // this.loadService.getPosts(id)
     //   this.loadService.getPosts((products) => {
@@ -759,7 +759,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         document
           .getElementById('body')
           ?.classList.add(
-            'bg-' + (color ?? this.storeInfo().colorStyle.back_code)
+            'bg-' + (color ?? this.storeInfo()?.colorStyle.back_code)
           );
       }
     }
@@ -789,9 +789,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 
 
-    if (Globals.storeInfo.username)
+    if (Globals.storeInfo?.username)
       this.routingService.routeToDynamicLink(
-        Globals.storeInfo.username,
+        Globals.storeInfo?.username,
         link,
         this.getStoreName().isCustom
       );
@@ -870,7 +870,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     if (this.interval) {
       return;
     }
-    if (Globals.storeInfo.bannerStyle == 0) {
+    if (Globals.storeInfo?.bannerStyle == 0) {
       this.interval = setInterval(() => {
         this.moveRight();
       }, 3000);
@@ -906,11 +906,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   arrLength() {
-    if (this.storeInfo().banners.length == 0) {
+    if (this.storeInfo()?.banners.length == 0) {
       return [];
     }
 
-    return Array(12 / this.storeInfo().banners.length).fill(0);
+    return Array(12 / this.storeInfo()?.banners.length).fill(0);
   }
 
   providerName(){

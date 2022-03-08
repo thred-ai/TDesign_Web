@@ -174,13 +174,13 @@ export class ViewOrderInfoComponent implements OnInit {
     }
 
   async callback(orderID: string){
-    if (Globals.storeInfo.username){
+    if (Globals.storeInfo?.username){
       this.rootComponent.setOptions()
-      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
+      this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink?.toString() ?? '')
 
       this.showSpinner()
       
-      this.addTags((Globals.storeInfo.fullName ?? "Thred") + " - " + "Orders", (Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo.username)
+      this.addTags((Globals.storeInfo?.fullName ?? "Thred") + " - " + "Orders", (Globals.storeInfo?.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo?.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo?.username)
 
       if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getTemplates()
@@ -188,7 +188,7 @@ export class ViewOrderInfoComponent implements OnInit {
       else if (Globals.selectedOrder == undefined && isPlatformBrowser(this.platformID)){
         this.loadService.getOrder(orderID)
       }
-      else if (Globals.selectedOrder?.merchantUID != Globals.storeInfo.uid){
+      else if (Globals.selectedOrder?.merchantUID != Globals.storeInfo?.uid){
         this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
         return
       }
@@ -302,7 +302,7 @@ export class ViewOrderInfoComponent implements OnInit {
     Globals.shippingInfo = undefined
 
     const storeInfo = this.getStoreName()
-    this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom)
+    this.downloadAllStoreInfo(storeInfo?.link, storeInfo?.isCustom)
 
   }
 

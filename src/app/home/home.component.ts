@@ -101,6 +101,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (pro) {
         prod.push(pro);
       }
+      else{
+        prod.push(new NFT())
+      }
     });
     return prod;
   }
@@ -233,6 +236,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadService.homeComponent = this
+    Globals.sInfo.subscribe(s => {
+      this.storeInfo = s
+    })
     this.init()
   }
 
@@ -249,7 +255,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   selectedIndicator(){
-
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color
     let bco = Globals.storeInfo?.loading?.bg_color
     let name = Globals.storeInfo?.loading?.name
@@ -313,12 +323,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   callback(){ 
-    if (Globals.storeInfo.username){
+    if (Globals.storeInfo?.username){
 
-      this.rootComponent.setFavIcon(Globals.storeInfo.profileLink?.toString() ?? '')
+      this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink?.toString() ?? '')
       const routeParams = this.router.snapshot.paramMap;
       const storeID = routeParams.get('page') as string;
-      let page = Globals.storeInfo.pages?.find(p => p.url == storeID)
+      let page = Globals.storeInfo?.pages?.find(p => p.url == storeID)
       let rows = page?.rows
 
 
@@ -366,7 +376,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-    this.downloadAllStoreInfo(storeInfo.link, storeInfo.isCustom)
+    this.downloadAllStoreInfo(storeInfo?.link, storeInfo?.isCustom)
     
 
   }
@@ -382,7 +392,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   downloadAllStoreInfo(storeName: string, isCustom = false){
     this.loadService.myCallback = () => this.callback()
     this.loadService.getUser(storeName, undefined, isCustom, store => {
-      this.storeInfo = store
+      
     })
   }
 
@@ -495,7 +505,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       else{
         this.err = "An Error Occured, Try Again Later"
       }
-    }, this.popupForm.controls.name.value, Globals.storeInfo.uid)
+    }, this.popupForm.controls.name.value, Globals.storeInfo?.uid)
 
   }
 
@@ -527,19 +537,19 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     let seo = page?.seo
 
-    let title = (seo?.title ?? "").trim() != "" ? (seo?.title ?? "") : (Globals.storeInfo.fullName + '-' + page?.title) ?? "Thred"
+    let title = (seo?.title ?? "").trim() != "" ? (seo?.title ?? "") : (Globals.storeInfo?.fullName + '-' + page?.title) ?? "Thred"
 
 
     let metaTitle = (seo?.meta?.title ?? "").trim() != "" ? (seo?.meta?.title ?? "") : title
 
 
 
-    let description = (seo?.description ?? "").trim() != "" ? (seo?.description ?? "") : Globals.storeInfo.bio ?? "Check out my Thred Store!"
+    let description = (seo?.description ?? "").trim() != "" ? (seo?.description ?? "") : Globals.storeInfo?.bio ?? "Check out my Thred Store!"
 
     let metaDescription = (seo?.meta?.description ?? "").trim() != "" ? (seo?.meta?.description ?? "") : description
 
 
-    let imgUrl = (seo?.meta?.pic ?? "").trim() != "" ? (seo?.meta?.pic ?? "") : ((Globals.storeInfo.profileLink ?? new URL("https://shopmythred.com")).toString())
+    let imgUrl = (seo?.meta?.pic ?? "").trim() != "" ? (seo?.meta?.pic ?? "") : ((Globals.storeInfo?.profileLink ?? new URL("https://shopmythred.com")).toString())
 
     let url = (seo?.meta?.url ?? "").trim() != "" ? (seo?.meta?.url ?? "") : this.urlText()
 

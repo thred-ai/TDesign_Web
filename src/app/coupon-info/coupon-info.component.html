@@ -97,7 +97,7 @@
                             </mat-chip-list>
                             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                             <mat-option class="fw-bolder" [value]="'ALL'">
-                                <img class="rounded p-1 py-2" style="width: 50px; height: 50px; object-fit: contain;" src='{{storeInfo().profileLink}}'/>
+                                <img class="rounded p-1 py-2" style="width: 50px; height: 50px; object-fit: contain;" src='{{storeInfo()?.profileLink}}'/>
                                     ALL PRODUCTS
                             </mat-option>
                               <mat-option *ngFor="let product of filteredProducts | async" [value]="product.productID">

@@ -1,14 +1,14 @@
 <mat-sidenav-container class="example-container" style="min-height: 100vh">
   <mat-sidenav
     class="w-100 w-md-25 p-3 bg-{{
-      storeInfo().colorStyle!.back_code
-    }} h-100 text-{{ storeInfo().colorStyle!.text_code }}"
+      storeInfo()?.colorStyle!.back_code
+    }} h-100 text-{{ storeInfo()?.colorStyle!.text_code }}"
     [position]="'end'"
     #drawer
   >
     <div class="m-2 mb-4 d-flex justify-content-between align-items-center">
       <mat-icon
-        class="p-0 text-{{ storeInfo().colorStyle!.text_code }} fw-bolder"
+        class="p-0 text-{{ storeInfo()?.colorStyle!.text_code }} fw-bolder"
         style="overflow: hidden"
         role="button"
         (click)="drawer.toggle()"
@@ -19,11 +19,11 @@
         role="button"
         (click)="openWallet()"
         class="btn fw-bold btn-outline-{{
-          storeInfo().colorStyle!.text_code
+          storeInfo()?.colorStyle!.text_code
         }} rounded-pill"
-        [style.font-family]="storeInfo().fontName!"
+        [style.font-family]="storeInfo()?.fontName!"
         *ngIf="
-          storeInfo().uid != undefined && storeInfo().uid != '' && provider
+          storeInfo()?.uid != undefined && storeInfo()?.uid != '' && provider
         "
       >
         DISCONNECT
@@ -32,43 +32,43 @@
 
     <div
       class="w-100 text-center"
-      *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && !provider"
+      *ngIf="storeInfo()?.uid != undefined && storeInfo()?.uid != '' && !provider"
     >
-      <h2 class="text-center w-100" [style.font-family]="storeInfo().fontName!">
+      <h2 class="text-center w-100" [style.font-family]="storeInfo()?.fontName!">
         NO WALLET
       </h2>
       <p
         class="text-center w-100 text-secondary"
-        [style.font-family]="storeInfo().fontName!"
+        [style.font-family]="storeInfo()?.fontName!"
       >
         Connect your wallet to view/purchase NFTs on <br />
-        {{ storeInfo().fullName }}
+        {{ storeInfo()?.fullName }}
       </p>
       <a
         role="button"
         (click)="openWallet()"
         class="btn mt-2 fw-bold btn-outline-{{
-          storeInfo().colorStyle!.text_code
+          storeInfo()?.colorStyle!.text_code
         }} rounded-pill"
-        [style.font-family]="storeInfo().fontName!"
+        [style.font-family]="storeInfo()?.fontName!"
       >
         CONNECT WALLET
       </a>
     </div>
     <div
       class="w-100 h-100 text-center"
-      *ngIf="storeInfo().uid != undefined && storeInfo().uid != '' && provider"
+      *ngIf="storeInfo()?.uid != undefined && storeInfo()?.uid != '' && provider"
     >
       <h2
         class="text-center w-100 mb-0"
-        [style.font-family]="storeInfo().fontName!"
+        [style.font-family]="storeInfo()?.fontName!"
       >
         MY ACCOUNT
       </h2>
       <p
         class="text-center text-secondary w-100 mt-0 mb-3"
         style="font-size: smaller"
-        [style.font-family]="storeInfo().fontName!"
+        [style.font-family]="storeInfo()?.fontName!"
       >
         {{ provider | providerAddress | async | address: false }}
       </p>
@@ -79,17 +79,17 @@
           <ng-template mat-tab-label>
             <mat-icon
               class="example-tab-icon text-{{
-                storeInfo().colorStyle!.text_code
+                storeInfo()?.colorStyle!.text_code
               }}"
             >
             token</mat-icon
             >
-            <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
+            <span class="ms-2 text-{{ storeInfo()?.colorStyle!.text_code }}">
               TOKENS
             </span>
           </ng-template>
 
-          <!-- <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo().fontName!">
+          <!-- <p class="text-center w-100 text-secondary" [style.font-family]="storeInfo()?.fontName!">
           Tokens shown here are used by collections in this marketplace.
         </p> -->
 
@@ -102,9 +102,9 @@
               role="button"
               style="text-decoration: none"
               class="card bg-{{
-                storeInfo().colorStyle!.back_code
+                storeInfo()?.colorStyle!.back_code
               }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
-                storeInfo().colorStyle!.text_code
+                storeInfo()?.colorStyle!.text_code
               }} border-secondary"
             >
               <mat-icon
@@ -131,12 +131,12 @@
             </a>
           </div>
           <p
-            [style.font-family]="storeInfo().fontName!"
+            [style.font-family]="storeInfo()?.fontName!"
             class="text-center text-secondary mt-2"
             style="font-size: small"
           >
             These tokens are used to buy/sell on <br />{{
-              storeInfo().fullName
+              storeInfo()?.fullName
             }}
           </p>
         </div>          
@@ -146,11 +146,11 @@
           <ng-template mat-tab-label>
             <mat-icon
               class="example-tab-icon text-{{
-                storeInfo().colorStyle!.text_code
+                storeInfo()?.colorStyle!.text_code
               }}"
               >category</mat-icon
             >
-            <span class="ms-2 text-{{ storeInfo().colorStyle!.text_code }}">
+            <span class="ms-2 text-{{ storeInfo()?.colorStyle!.text_code }}">
               NFTs
             </span>
           </ng-template>
@@ -171,9 +171,9 @@
                   role="button"
                   (click)="move(carousel, 0)"
                   class="d-none d-md-block bg-{{
-                    storeInfo().colorStyle!.back_code
+                    storeInfo()?.colorStyle!.back_code
                   }} text-{{
-                    storeInfo().colorStyle!.text_code
+                    storeInfo()?.colorStyle!.text_code
                   }} fw-bolder rounded-circle ms-0"
                   [class.opacity-0]="collection.NFTs.length == 0"
                 >
@@ -186,14 +186,14 @@
                     <a
                       role="button"
                       class="bg-{{
-                        storeInfo().colorStyle!.back_code
+                        storeInfo()?.colorStyle!.back_code
                       }} side text-secondary d-inline-flex mx-auto mx-md-3 me-md-1 p-2 px-3 mt-0 mb-3 align-items-center justify-content-start"
                       style="font-size: 18px; text-decoration: none"
-                      [style.font-family]="storeInfo().fontName!"
+                      [style.font-family]="storeInfo()?.fontName!"
                     >
                       <!-- {{ collection.symbol }} -->
                       <b
-                        class="text-{{ storeInfo().colorStyle!.text_code }}"
+                        class="text-{{ storeInfo()?.colorStyle!.text_code }}"
                         style="font-size: 18px"
                       >
                         {{ collection.name }}
@@ -202,7 +202,7 @@
                     <!-- <a
                     role="button"
                     class="side fw-bold text-{{
-                      storeInfo().colorStyle!.text_code
+                      storeInfo()?.colorStyle!.text_code
                     }} d-inline-flex mx-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                     style="font-size: 18px"
                   >
@@ -231,7 +231,7 @@
                       <div class="col h-100">
                         <div
                           class="bg-{{
-                            storeInfo().colorStyle!.back_code
+                            storeInfo()?.colorStyle!.back_code
                           }} shadow rounded border border-secondary mb-3"
                           [class.border-secondary]="
                             storeInfo()!.colorStyle!.text_code == 'light'
@@ -255,7 +255,7 @@
                                 }}"
                                 [useSrcset]="true"
                                 [defaultImage]="'/assets/default.png'"
-                                [lazyLoad]="product.linkUrl!"
+                                [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
                                 alt="ok"
                                 style="
                                   object-fit: cover;
@@ -279,7 +279,7 @@
                                   overflow-x: hidden;
                                 "
                                 style.color="{{ selectedTheme()!.color }}"
-                                [style.font-family]="storeInfo().fontName!"
+                                [style.font-family]="storeInfo()?.fontName!"
                                 role="button"
                                 (click)="
                                   routeToProduct(product.docID!);
@@ -300,9 +300,9 @@
                   (click)="move(carousel, 1)"
                   [class.opacity-0]="collection.NFTs.length == 0"
                   class="d-none d-md-block bg-{{
-                    storeInfo().colorStyle!.back_code
+                    storeInfo()?.colorStyle!.back_code
                   }} text-{{
-                    storeInfo().colorStyle!.text_code
+                    storeInfo()?.colorStyle!.text_code
                   }} fw-bolder rounded-circle me-0"
                 >
                   chevron_right
@@ -312,7 +312,7 @@
           </div>
           <ng-template #empty_collections class="w-100">
             <p
-            [style.font-family]="storeInfo().fontName!"
+            [style.font-family]="storeInfo()?.fontName!"
             class="text-center text-secondary my-2 w-100"
             style="font-size: medium; height: 80vh;"
           >
@@ -329,9 +329,9 @@
       *ngIf="
         !isAdmin() &&
         !isLanding() &&
-        storeInfo().uid != undefined &&
-        storeInfo().uid != '' &&
-        storeInfo().uid == signedInUid &&
+        storeInfo()?.uid != undefined &&
+        storeInfo()?.uid != '' &&
+        storeInfo()?.uid == signedInUid &&
         provider &&
         (provider | networkCheck | async)?.chainId == 137
       "
@@ -350,8 +350,8 @@
     <div
       *ngIf="
         !isLanding() &&
-        storeInfo().uid != undefined &&
-        storeInfo().uid != '' &&
+        storeInfo()?.uid != undefined &&
+        storeInfo()?.uid != '' &&
         ((provider | networkCheck | async)?.chainId ?? 137) != 137 &&
         provider &&
         !closeBanner
@@ -365,25 +365,25 @@
         style="padding-top: 0.8em; padding-bottom: 0.8em"
       >
         <mat-icon
-          class="me-2 text-{{ storeInfo().colorStyle!.back_code }} h-100"
+          class="me-2 text-{{ storeInfo()?.colorStyle!.back_code }} h-100"
           style="aspect-ratio: 1"
         ></mat-icon>
 
         <div class="d-flex justify-content-center align-items-center">
           <p
             class="text-center fw-bolder my-auto text-{{
-              storeInfo().colorStyle!.back_code
+              storeInfo()?.colorStyle!.back_code
             }}"
             style="font-size: small"
           >
-            TO USE {{ storeInfo().fullName }}, PLEASE SWITCH YOUR NETWORK TO
+            TO USE {{ storeInfo()?.fullName }}, PLEASE SWITCH YOUR NETWORK TO
             POLYGON MAINNET
           </p>
           <mat-icon svgIcon="polygon_icon" class="ms-2"></mat-icon>
         </div>
 
         <mat-icon
-          class="ms-2 text-{{ storeInfo().colorStyle!.back_code }} h-100"
+          class="ms-2 text-{{ storeInfo()?.colorStyle!.back_code }} h-100"
           role="button"
           (click)="closeBanner = true"
           style="aspect-ratio: 1"
@@ -394,10 +394,10 @@
 
     <nav
       *ngIf="isBrowser() && !isAdmin() && !isLanding()"
-      [hidden]="storeInfo().username == undefined || storeInfo().username == ''"
+      [hidden]="storeInfo()?.username == undefined || storeInfo()?.username == ''"
       class="navbar navbar-expand-lg navbar-{{
-        storeInfo().colorStyle!.nav_code
-      }} bg-{{ storeInfo().colorStyle!.back_code }} w-100"
+        storeInfo()?.colorStyle!.nav_code
+      }} bg-{{ storeInfo()?.colorStyle!.back_code }} w-100"
     >
       <div
         class="container-fluid d-flex justify-content-between px-2 w-100 text-start"
@@ -407,17 +407,17 @@
         [class.px-md-5]="!isAdmin()"
       >
         <div class="d-flex justify-content-start">
-          <img class="set-img" [src]="storeInfo().profileLink" />
+          <img class="set-img" [src]="storeInfo()?.profileLink" />
           <a
             class="navbar-brand px-2 text-{{
-              storeInfo().colorStyle!.text_code
+              storeInfo()?.colorStyle!.text_code
             }}"
             role="button"
             (click)="routeToHome()"
             [class.smallTitle]="isMobile()"
             [class.bigTitle]="!isMobile()"
-            [style.font-family]="storeInfo().fontName!"
-            >{{ storeInfo().fullName }}</a
+            [style.font-family]="storeInfo()?.fontName!"
+            >{{ storeInfo()?.fullName }}</a
           >
         </div>
 
@@ -436,7 +436,7 @@
             class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 no-bar"
             style="overflow-x: scroll"
           >
-            <li *ngFor="let l of storeInfo().header ?? []" class="nav-item">
+            <li *ngFor="let l of storeInfo()?.header ?? []" class="nav-item">
               <a
                 data-bs-toggle="collapse"
                 data-bs-target=".navbar-collapse.show"
@@ -445,18 +445,18 @@
                 role="button"
                 (click)="routeToLink(l); (false)"
                 href="{{ l | storeChecker: true }}"
-                [style.font-family]="storeInfo().fontName!"
+                [style.font-family]="storeInfo()?.fontName!"
                 >{{ headerName(l) }}</a
               >
             </li>
-            <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo().username}}/blogs">Blogs</a></li> -->
+            <!-- <li class="nav-item"><a class="nav-link" href="/{{storeInfo()?.username}}/blogs">Blogs</a></li> -->
 
             <!-- <li *ngIf="isShopComponent(); else elseBlock" class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" [style.font-family]="storeInfo().fontName!">SHOP</a>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" [style.font-family]="storeInfo()?.fontName!">SHOP</a>
                     <ul class="dropdown-menu"  aria-labelledby="navbarDropdown" style.background-color="{{selectedTheme()!.bg_color}}">
-                        <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo().fontName!">All Products</a></li>
+                        <li><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter()" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo()?.fontName!">All Products</a></li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo().fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
+                        <li *ngFor="let type of availableTemplates()"><a data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" class="dropdown-item" role=button (click)="applyProductFilter(type)" [style.font-family]="storeInfo()?.fontName!" style.color="{{selectedTheme()!.color}}">{{titleCase(type.templateDisplayName)}}</a></li>
                     </ul>
                 </li> -->
             <!-- <li
@@ -484,7 +484,7 @@
                 style.color="{{ selectedTheme()!.color }}"
                 role="button"
                 (click)="updateCurrency(currency)"
-                [style.font-family]="storeInfo().fontName!"
+                [style.font-family]="storeInfo()?.fontName!"
                 >{{ currency.name }} {{ currency.flag }}</a
               >
             </li>
@@ -507,7 +507,7 @@
               <img
                 class="rounded-circle set-img"
                 src="/assets/account_{{
-                  storeInfo().colorStyle!.text_code
+                  storeInfo()?.colorStyle!.text_code
                 }}.png"
               />
             </button>
@@ -516,7 +516,7 @@
               aria-labelledby="navbarDropdown"
               style.background-color="{{ selectedTheme()!.bg_color }}"
             >
-              <li *ngIf="storeInfo().uid == userInfo()?.uid">
+              <li *ngIf="storeInfo()?.uid == userInfo()?.uid">
                 <a
                   data-bs-toggle="collapse"
                   data-bs-target=".navbar-collapse.show"
@@ -524,7 +524,7 @@
                   role="button"
                   (click)="accountPressed()"
                   style.color="{{ selectedTheme()!.color }}"
-                  [style.font-family]="storeInfo().fontName!"
+                  [style.font-family]="storeInfo()?.fontName!"
                   >{{ settings(false)[0]?.Title }}</a
                 >
               </li>
@@ -536,7 +536,7 @@
                   role="button"
                   (click)="routeToOrders()"
                   style.color="{{ selectedTheme()!.color }}"
-                  [style.font-family]="storeInfo().fontName!"
+                  [style.font-family]="storeInfo()?.fontName!"
                   >{{ option.Title }}</a
                 >
               </li>
@@ -550,7 +550,7 @@
                   role="button"
                   (click)="signInPressed()"
                   style.color="{{ selectedTheme()!.color }}"
-                  [style.font-family]="storeInfo().fontName!"
+                  [style.font-family]="storeInfo()?.fontName!"
                   >{{ settings(false)[profileSettings.length - 1]?.Title }}</a
                 >
               </li>
@@ -564,7 +564,7 @@
                   role="button"
                   (click)="signOutPressed()"
                   style.color="{{ selectedTheme()!.color }}"
-                  [style.font-family]="storeInfo().fontName!"
+                  [style.font-family]="storeInfo()?.fontName!"
                   >{{ settings(false)[profileSettings.length - 1]?.Title }}</a
                 >
               </li>
@@ -576,11 +576,11 @@
                 data-bs-toggle="collapse"
                 data-bs-target=".navbar-collapse.show"
                 class="btn btn-outline-{{
-                  storeInfo().colorStyle!.text_code
+                  storeInfo()?.colorStyle!.text_code
                 }} d-flex align-items-center justify-content-center"
                 role="button"
                 (click)="drawer.toggle()"
-                [style.font-family]="storeInfo().fontName!"
+                [style.font-family]="storeInfo()?.fontName!"
               >
                 {{ providerName() }}
                 <mat-icon class="ms-2"> account_balance_wallet </mat-icon>
@@ -593,15 +593,15 @@
 
     <div
       *ngIf="
-        storeInfo().banners &&
-        (storeInfo().banners?.length ?? 0) > 0 &&
+        storeInfo()?.banners &&
+        (storeInfo()?.banners?.length ?? 0) > 0 &&
         !isAdmin() &&
         !isLanding()
       "
       class="w-100"
       style="height: 45px"
     >
-      <div *ngIf="storeInfo().bannerStyle == 1" class="w-100 h-100" id="outer">
+      <div *ngIf="storeInfo()?.bannerStyle == 1" class="w-100 h-100" id="outer">
         <div class="w-100 h-100">
           <div class="w-100 h-100 loop">
             <div class="d-flex w-100 h-100 align-items-center" id="content">
@@ -610,10 +610,10 @@
                 *ngFor="let _ of arrLength()"
               >
                 <h2
-                  *ngFor="let banner of storeInfo().banners"
+                  *ngFor="let banner of storeInfo()?.banners"
                   style.color="{{ bannerTheme(banner)!.color }}"
                   style.background-color="{{ bannerTheme(banner)!.bg_color }}"
-                  [style.font-family]="storeInfo().fontName!"
+                  [style.font-family]="storeInfo()?.fontName!"
                   class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
                   style="
                     font-size: calc(
@@ -641,7 +641,7 @@
       </div>
 
       <div
-        *ngIf="storeInfo().bannerStyle == 0"
+        *ngIf="storeInfo()?.bannerStyle == 0"
         class="w-100 h-100"
         style.background-color="{{ bannerTheme()!.bg_color }}"
       >
@@ -659,13 +659,13 @@
               <div
                 drag-scroll-item
                 class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-                *ngFor="let banner of storeInfo().banners"
+                *ngFor="let banner of storeInfo()?.banners"
               >
                 <h2
                   style.color="{{ bannerTheme(banner)!.color }}"
-                  [style.font-family]="storeInfo().fontName!"
+                  [style.font-family]="storeInfo()?.fontName!"
                   class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
-                  [class.my-auto]="(storeInfo().banners?.length ?? 0) == 1"
+                  [class.my-auto]="(storeInfo()?.banners?.length ?? 0) == 1"
                   style="
                     font-size: calc(
                       14px + (16 - 14) * (100vw - 400px) / (800 - 400)
@@ -692,7 +692,7 @@
             style="position: absolute"
           >
             <a
-              *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+              *ngIf="(storeInfo()?.banners?.length ?? 0) > 1"
               class="d-none d-md-block"
               role="button"
               (click)="moveLeft()"
@@ -707,7 +707,7 @@
               </mat-icon>
             </a>
             <a
-              *ngIf="(storeInfo().banners?.length ?? 0) > 1"
+              *ngIf="(storeInfo()?.banners?.length ?? 0) > 1"
               class="d-none d-md-block"
               role="button"
               (click)="moveRight()"
@@ -735,7 +735,7 @@
         !isAdmin() &&
         !isLanding()
       "
-      class="py-5 bg-{{ storeInfo().colorStyle!.back_code }}"
+      class="py-5 bg-{{ storeInfo()?.colorStyle!.back_code }}"
     >
       <div class="container-fluid px-3 w-100 d-block justify-content-center">
         <div class="d-block d-md-flex justify-content-between">
@@ -745,7 +745,7 @@
             <div class="col mb-2 mx-2" [style.width.px]="50">
               <a role="button" [ngbTooltip]="qtipContent">
                 <ng-template #qtipContent>
-                  {{ storeInfo().fullName }} is built on the Polygon Blockchain
+                  {{ storeInfo()?.fullName }} is built on the Polygon Blockchain
                 </ng-template>
 
                 <img
@@ -822,7 +822,7 @@
           >
             <div
               class="col mb-4 mx-3"
-              *ngFor="let social of storeInfo().socials"
+              *ngFor="let social of storeInfo()?.socials"
               [style.width.px]="45"
             >
               <a role="button" (click)="openSocial(social.link)">
@@ -842,7 +842,7 @@
                 <div
                   class="col m-0 mx-2"
                   style="width: fit-content"
-                  *ngFor="let col of storeInfo().footer ?? []"
+                  *ngFor="let col of storeInfo()?.footer ?? []"
                 >
                   <a
                     class="footer-link"
@@ -851,7 +851,7 @@
                     (click)="routeToLink(link); (false)"
                     href="{{ link | storeChecker: true }}"
                   >
-                    <p [style.font-family]="storeInfo().fontName!">
+                    <p [style.font-family]="storeInfo()?.fontName!">
                       {{ headerName(link) }}
                     </p>
                   </a>
@@ -880,16 +880,16 @@
       </div>
       <div class="container">
         <p
-          class="m-0 text-center text-{{ storeInfo().colorStyle!.text_code }}"
-          [style.font-family]="storeInfo().fontName!"
+          class="m-0 text-center text-{{ storeInfo()?.colorStyle!.text_code }}"
+          [style.font-family]="storeInfo()?.fontName!"
         >
-          &copy; {{ storeInfo().fullName }} 2022
+          &copy; {{ storeInfo()?.fullName }} 2022
         </p>
       </div>
       <div class="container">
         <p
-          class="m-0 text-center text-{{ storeInfo().colorStyle!.text_code }}"
-          [style.font-family]="storeInfo().fontName!"
+          class="m-0 text-center text-{{ storeInfo()?.colorStyle!.text_code }}"
+          [style.font-family]="storeInfo()?.fontName!"
         >
           Powered by Thred
         </p>

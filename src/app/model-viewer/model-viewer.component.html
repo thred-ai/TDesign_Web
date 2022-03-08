@@ -1,7 +1,7 @@
 
 
-<div class="card-body p-0 pb-0 bg-{{storeInfo().colorStyle!.back_code}}">
-    <button [style.font-family]="storeInfo().fontName!" class="btn text-{{storeInfo().colorStyle!.text_code}}" 
+<div class="card-body p-0 pb-0 bg-{{storeInfo()?.colorStyle!.back_code}}">
+    <button [style.font-family]="storeInfo()?.fontName!" class="btn text-{{storeInfo()?.colorStyle!.text_code}}" 
     (click) = 'openBtn()' 
     type="submit"
     style='
@@ -19,7 +19,7 @@
         </iframe>
         <div *ngIf="!isMobile()" style="z-index: 2; position: absolute; " >
             
-            <a role="button" [style.font-family]="storeInfo().fontName!" class="d-inline-flex btn btn-{{storeInfo().colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold m-2" style="font-size: 15px;"[ngbTooltip]="etipContent">
+            <a role="button" [style.font-family]="storeInfo()?.fontName!" class="d-inline-flex btn btn-{{storeInfo()?.colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold m-2" style="font-size: 15px;"[ngbTooltip]="etipContent">
                 <ng-template #etipContent>
                     
                     <div *ngIf='!showScInfo' class="d-flex">
@@ -43,7 +43,7 @@
                 </ng-template>
 
                 <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
-                    <span class="material-icons-outlined text-{{storeInfo().colorStyle!.back_code}}" style="font-size: 25px;">
+                    <span class="material-icons-outlined text-{{storeInfo()?.colorStyle!.back_code}}" style="font-size: 25px;">
                         help_outline
                     </span>
                 </mat-icon>
@@ -62,7 +62,7 @@ style.color = "{{selectedIndicator()!.color}}"
 [disableAnimation] = "true"
 [name]="'modelSpinner'"
 >
-<h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">Launching Model Viewer...
+<h3 class="text-center mt-5" [style.font-family]="storeInfo()?.fontName!">Launching Model Viewer...
 </h3>
 </ngx-spinner>
     </div>

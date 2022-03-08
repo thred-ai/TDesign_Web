@@ -8,7 +8,7 @@
     style.color="{{ selectedIndicator()!.color }}"
     [name]="'loader'"
   >
-    <h3 [style.font-family]="storeInfo.fontName!" class="text-center mt-5">
+    <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
       {{ title }}
     </h3>
   </ngx-spinner>
@@ -117,10 +117,10 @@
                       >
                         <p
                           class="text-center text-{{
-                            storeInfo.colorStyle!.text_code
+                            storeInfo?.colorStyle!.text_code
                           }}"
                           style="line-height: 1.2em"
-                          [style.font-family]="storeInfo.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                         >
                           {{
                             (aRow.index == i ? aRow?.row : undefined)?.text ??
@@ -142,14 +142,14 @@
                             let product of ([]
                               | productsPipe
                                 : {
-                                    products: storeInfo.collections ?? [],
+                                    products: storeInfo?.collections ?? [],
                                     row: aRow.index == i ? aRow?.row : row
                                   }) ?? []
                           "
                         >
                           <div
                             class="bg-{{
-                              storeInfo.colorStyle!.back_code
+                              storeInfo?.colorStyle!.back_code
                             }} shadow rounded border border-secondary"
                             [class.border-secondary]="
                               storeInfo!.colorStyle!.text_code == 'light'
@@ -166,7 +166,7 @@
                                   }}"
                                   [useSrcset]="true"
                                   [defaultImage]="'/assets/default.png'"
-                                  [lazyLoad]="product.linkUrl!"
+                                  [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
                                   alt="ok"
                                   style="
                                     object-fit: cover;
@@ -187,7 +187,7 @@
                                   "
                                   style.color="{{ selectedTheme!.color }}"
                                   role="button"
-                                  [style.font-family]="storeInfo.fontName!"
+                                  [style.font-family]="storeInfo?.fontName!"
                                 >
                                   {{ product.name }}
                                 </p>
@@ -356,7 +356,7 @@
                             padding-right: 2px;
                           "
                           style.color="{{ selectedTheme!.color }}"
-                          [style.font-family]="storeInfo.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                           [innerHTML]="
                             ((aRow.index == i ? aRow?.row : undefined) ?? row)
                               .html | safeTextRows: true
@@ -387,8 +387,8 @@
                             6
                         "
                         class="w-100 w-md-75 mt-3 card text-{{
-                          storeInfo.colorStyle!.text_code
-                        }} bg-{{ storeInfo.colorStyle!.back_code }} mx-auto"
+                          storeInfo?.colorStyle!.text_code
+                        }} bg-{{ storeInfo?.colorStyle!.back_code }} mx-auto"
                       >
                         <mat-form-field
                           *ngIf="
@@ -404,7 +404,7 @@
                           <input
                             type="text"
                             matInput
-                            class="text-{{ storeInfo.colorStyle!.text_code }}"
+                            class="text-{{ storeInfo?.colorStyle!.text_code }}"
                             style.color="{{ selectedTheme!.color }}"
                           />
                         </mat-form-field>
@@ -422,7 +422,7 @@
                           <input
                             type="email"
                             matInput
-                            class="text-{{ storeInfo.colorStyle!.text_code }}"
+                            class="text-{{ storeInfo?.colorStyle!.text_code }}"
                             style.color="{{ selectedTheme!.color }}"
                           />
                         </mat-form-field>
@@ -909,7 +909,7 @@
                     class="{{
                       (storeInfo?.colorStyle)!.back_code
                     }} me-2 rounded"
-                    [src]='product.linkUrl!'
+                    [src]='product.linkUrl ?? ""'
                     style="
                       object-fit: cover;
                       width: 35px; 
@@ -1013,14 +1013,14 @@
             <div
               *ngIf="
                 !(layoutForm.controls.isFullscreen.value ?? false) &&
-                storeInfo.banners &&
-                (storeInfo.banners?.length ?? 0) > 0
+                storeInfo?.banners &&
+                (storeInfo?.banners?.length ?? 0) > 0
               "
               class="w-100 rounded"
               style="height: 35px"
             >
               <div
-                *ngIf="storeInfo.bannerStyle == 1"
+                *ngIf="storeInfo?.bannerStyle == 1"
                 class="w-100 h-100"
                 id="outer"
               >
@@ -1035,7 +1035,7 @@
                         *ngFor="let _ of arrLength()"
                       >
                         <h2
-                          *ngFor="let banner of storeInfo.banners"
+                          *ngFor="let banner of storeInfo?.banners"
                           style.color="{{
                             (banner | storeBanner: ds?.currIndex ?? 0).color
                           }}"
@@ -1048,7 +1048,7 @@
                               14px + (16 - 14) * (100vh - 400px) / (800 - 400)
                             );
                           "
-                          [style.font-family]="storeInfo.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                         >
                           <div *ngIf="banner.text != ''">
                             {{ banner.text ?? "" }}
@@ -1070,11 +1070,11 @@
               </div>
 
               <div
-                *ngIf="storeInfo.bannerStyle == 0"
+                *ngIf="storeInfo && storeInfo?.bannerStyle == 0"
                 class="w-100 h-100"
                 style.background-color="{{
                   (
-                    storeInfo.banners[this.ds?.currIndex ?? 0]
+                    storeInfo?.banners![this.ds?.currIndex ?? 0]
                     | storeBanner: this.ds?.currIndex ?? 0
                   ).bg_color
                 }}"
@@ -1089,29 +1089,30 @@
                       class="w-100 h-100"
                       [scrollbar-hidden]="true"
                       [indexChanged]="didMove()"
+                      *ngIf="storeInfo"
                     >
                       <div
                         drag-scroll-item
                         class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-                        *ngFor="let banner of storeInfo.banners"
+                        *ngFor="let banner of storeInfo?.banners ?? []"
                       >
                         <h2
                           style.color="{{
                             (
-                              storeInfo.banners[this.ds?.currIndex ?? 0]
+                              storeInfo?.banners![this.ds?.currIndex ?? 0]
                               | storeBanner: this.ds?.currIndex ?? 0
                             ).color
                           }}"
                           class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
                           [class.my-auto]="
-                            (storeInfo.banners?.length ?? 0) == 1
+                            (storeInfo?.banners?.length ?? 0) == 1
                           "
                           style="
                             font-size: calc(
                               14px + (16 - 14) * (100vw - 400px) / (800 - 400)
                             );
                           "
-                          [style.font-family]="storeInfo.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                         >
                           <div *ngIf="banner.text != ''" class="mb-1">
                             {{ banner.text ?? "fs" }}
@@ -1133,7 +1134,7 @@
                     style="position: absolute"
                   >
                     <a
-                      *ngIf="(storeInfo.banners?.length ?? 0) > 1"
+                      *ngIf="storeInfo && (storeInfo?.banners?.length ?? 0) > 1"
                       class="d-none d-md-block"
                       role="button"
                       (click)="moveLeft()"
@@ -1142,7 +1143,7 @@
                         class="ms-3 ms-md-5 mt-1"
                         style.color="{{
                           (
-                            storeInfo.banners[this.ds?.currIndex ?? 0]
+                            storeInfo?.banners![this.ds?.currIndex ?? 0]
                             | storeBanner: this.ds?.currIndex ?? 0
                           ).color
                         }}"
@@ -1156,7 +1157,7 @@
                       </mat-icon>
                     </a>
                     <a
-                      *ngIf="(storeInfo.banners?.length ?? 0) > 1"
+                      *ngIf="storeInfo && (storeInfo?.banners?.length ?? 0) > 1"
                       class="d-none d-md-block"
                       role="button"
                       (click)="moveRight()"
@@ -1165,7 +1166,7 @@
                         class="me-3 me-md-5 mt-1"
                         style.color="{{
                           (
-                            storeInfo.banners[this.ds?.currIndex ?? 0]
+                            storeInfo?.banners![this.ds?.currIndex ?? 0]
                             | storeBanner: this.ds?.currIndex ?? 0
                           ).color
                         }}"
@@ -1219,10 +1220,10 @@
                   >
                     <p
                       class="text-center text-{{
-                        storeInfo.colorStyle!.text_code
+                        storeInfo?.colorStyle!.text_code
                       }}"
                       style="line-height: 1.2em"
-                      [style.font-family]="storeInfo.fontName!"
+                      [style.font-family]="storeInfo?.fontName!"
                     >
                       {{
                         (aRow.index == i ? aRow?.row : undefined)?.text ??
@@ -1243,14 +1244,14 @@
                         let product of ([]
                           | productsPipe
                             : {
-                                products: storeInfo.collections ?? [],
+                                products: storeInfo?.collections ?? [],
                                 row: aRow.index == i ? aRow?.row : row
                               }) ?? []
                       "
                     >
                       <div
                         class="bg-{{
-                          storeInfo.colorStyle!.back_code
+                          storeInfo?.colorStyle!.back_code
                         }} shadow rounded border border-secondary"
                         [class.border-secondary]="
                           storeInfo!.colorStyle!.text_code == 'light'
@@ -1267,7 +1268,7 @@
                               }}"
                               [useSrcset]="true"
                               [defaultImage]="'/assets/default.png'"
-                              [lazyLoad]="product.linkUrl!"
+                              [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
                               alt="ok"
                               style="
                                 object-fit: cover;
@@ -1290,7 +1291,7 @@
                                 font-size: small;
                               "
                               style.color="{{ selectedTheme!.color }}"
-                              [style.font-family]="storeInfo.fontName!"
+                              [style.font-family]="storeInfo?.fontName!"
                               role="button"
                             >
                               {{ product.name }}
@@ -1442,7 +1443,7 @@
                   >
                     <div
                       class="p-3 h-100"
-                      [style.font-family]="storeInfo.fontName!"
+                      [style.font-family]="storeInfo?.fontName!"
                       style.color="{{ selectedTheme!.color }}"
                       [innerHTML]="
                         ((aRow.index == i ? aRow?.row : undefined) ?? row).html
@@ -1484,8 +1485,8 @@
                         6
                     "
                     class="w-100 w-md-50 mt-3 card text-{{
-                      storeInfo.colorStyle!.text_code
-                    }} bg-{{ storeInfo.colorStyle!.back_code }} mx-auto"
+                      storeInfo?.colorStyle!.text_code
+                    }} bg-{{ storeInfo?.colorStyle!.back_code }} mx-auto"
                   >
                     <mat-form-field
                       *ngIf="
@@ -1501,7 +1502,7 @@
                       <input
                         type="text"
                         matInput
-                        class="text-{{ storeInfo.colorStyle!.text_code }}"
+                        class="text-{{ storeInfo?.colorStyle!.text_code }}"
                         style.color="{{ selectedTheme!.color }}"
                       />
                     </mat-form-field>
@@ -1519,7 +1520,7 @@
                       <input
                         type="email"
                         matInput
-                        class="text-{{ storeInfo.colorStyle!.text_code }}"
+                        class="text-{{ storeInfo?.colorStyle!.text_code }}"
                         style.color="{{ selectedTheme!.color }}"
                       />
                     </mat-form-field>
@@ -1818,7 +1819,7 @@
             <img
             class="h-100"
             style="object-fit: contain; aspect-ratio: 1;"
-            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink}}"
+            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo?.profileLink}}"
           />
             <p
             class="ms-3 my-auto"
@@ -1865,7 +1866,7 @@
               class="h-100"
               style="object-fit: contain; aspect-ratio: 1"
               src="{{
-                this.layoutForm.controls.metaPic.value ?? storeInfo.profileLink
+                this.layoutForm.controls.metaPic.value ?? storeInfo?.profileLink
               }}"
             />
             <p

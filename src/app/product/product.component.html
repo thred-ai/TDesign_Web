@@ -60,7 +60,7 @@
               loop
               playsinline
               controls
-              poster='{{productToBuy.linkUrl!}}'
+              poster='{{productToBuy.linkUrl ?? ""}}'
               *ngIf="
                 productToBuy?.format == 'video' && productToBuy.url != undefined
               "
@@ -74,11 +74,11 @@
               id="image"
               [hidden]="isZoom"
               class="h-100 w-100 {{
-                (storeInfo()?.colorStyle)!.back_code
+                (storeInfo?.colorStyle)!.back_code
               }} position-absolute"
               [useSrcset]="true"
               [defaultImage]="'/assets/default.png'"
-              [lazyLoad]="productToBuy.linkUrl!"
+              [lazyLoad]="productToBuy?.linkUrl ?? '/assets/default.png'"
               alt="ok"
               style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
               *ngIf="productToBuy?.format == 'image'"

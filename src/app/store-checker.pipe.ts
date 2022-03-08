@@ -22,7 +22,7 @@ export class StoreCheckerPipe implements PipeTransform {
     if (this.getStoreName().isCustom){
       return v
     }
-    return Globals.storeInfo.username + v
+    return Globals.storeInfo?.username + v
   }
 
 

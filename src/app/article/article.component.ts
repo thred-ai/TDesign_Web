@@ -59,7 +59,7 @@ export class ArticleComponent implements OnInit {
   }
 
   productUrl(item: Dict<any>){
-    return this.loadService.getURL(this.storeInfo().uid ?? "", item.Content)
+    return this.loadService.getURL(this.storeInfo()?.uid ?? "", item.Content)
   }
 
   coverUrl(){
@@ -97,15 +97,15 @@ export class ArticleComponent implements OnInit {
         }
         else{
         }
-        this.rootComponent.setFavIcon(Globals.storeInfo.profileLink!.toString())
+        this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink!.toString())
         this.addTags(Globals.selectedBlog?.title ?? "", Globals.selectedBlog?.coverURl?.toString() ?? "", "", "https://shopmythred.com")
         if (isPlatformBrowser(this.platformID)){
-          if (Globals.storeInfo.uid == undefined){
+          if (Globals.storeInfo?.uid == undefined){
             const storeName = this.getStoreName()
             this.loadService.getUser(storeName)
             return
           }
-          else if (Globals.storeInfo.uid != Globals.selectedBlog.uid){
+          else if (Globals.storeInfo?.uid != Globals.selectedBlog.uid){
               // this.routingService.routeTo404(this.getStoreName().isCustom)
               return
           }
@@ -143,7 +143,7 @@ export class ArticleComponent implements OnInit {
       this.metaService.updateTag({property: 'og:url', content: url})
       this.metaService.updateTag({property: 'og:description', content: description})
       var newTitle = title
-      if (Globals.storeInfo.fullName){
+      if (Globals.storeInfo?.fullName){
         newTitle += " - " + Globals.storeInfo?.fullName ?? ""
       }
       this.titleService.setTitle(newTitle)

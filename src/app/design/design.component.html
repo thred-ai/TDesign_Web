@@ -10,7 +10,7 @@
         [name]="'iSpinner'"
         [disableAnimation] = "true"
     >
-        <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">GENERATING PRODUCT...</h3>
+        <h3 class="text-center mt-5" [style.font-family]="storeInfo()?.fontName!">GENERATING PRODUCT...</h3>
     </ngx-spinner>
     <div mat-dialog-title class="bg-white rounded-top d-flex justify-content-between align-items-center px-4 py-2 mb-0" style="height: 70px;">
         <a role="button" (click)="cancel()" style="text-shadow: 2px 2px 4px #42424281;">
@@ -79,7 +79,7 @@
                         [name]="'designSpinner'"
                         [disableAnimation] = "true"
                     >
-                    <h3 class="text-center mt-5" [style.font-family]="storeInfo().fontName!">GENERATING PRODUCT...</h3>
+                    <h3 class="text-center mt-5" [style.font-family]="storeInfo()?.fontName!">GENERATING PRODUCT...</h3>
                     </ngx-spinner>
                 </div>
                 <div class="d-flex justify-content-between w-100" style="position: absolute; pointer-events: none;">

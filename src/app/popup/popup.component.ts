@@ -38,7 +38,11 @@ export class PopupComponent implements OnInit {
   }
 
   selectedIndicator(){
-
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color
     let bco = Globals.storeInfo?.loading?.bg_color
     let name = Globals.storeInfo?.loading?.name
@@ -114,7 +118,7 @@ export class PopupComponent implements OnInit {
       else{
         this.err = "An Error Occured, Try Again Later"
       }
-    }, this.popupForm.controls.name.value, Globals.storeInfo.uid)
+    }, this.popupForm.controls.name.value, Globals.storeInfo?.uid)
 
     this.close()
 

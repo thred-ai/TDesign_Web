@@ -123,7 +123,7 @@ export class LoadService {
   async logView() {
     if (
       !Globals.didLog &&
-      Globals.storeInfo.uid &&
+      Globals.storeInfo?.uid &&
       isPlatformBrowser(this.platformID)
     ) {
       Globals.didLog = true;
@@ -133,7 +133,7 @@ export class LoadService {
       };
       this.functions
         .httpsCallable('updateView')({
-          storeUID: Globals.storeInfo.uid!,
+          storeUID: Globals.storeInfo?.uid!,
           coords: coords,
         })
         .pipe(first())
@@ -268,7 +268,7 @@ export class LoadService {
   }
 
   async getInv(code: string, callback: (inventory: Inventory) => any) {
-    let uid = Globals.storeInfo.uid;
+    let uid = Globals.storeInfo?.uid;
     let sub = this.db
       .collection('Users/' + uid + '/Inventory', (ref) =>
         ref.where('id', '==', code)
@@ -654,6 +654,8 @@ export class LoadService {
           wallet
         );
 
+        Globals.sInfo.next(Globals.storeInfo)
+
         if (banners.length > 0) {
           this.rootComponent?.setInterval();
         }
@@ -942,7 +944,6 @@ export class LoadService {
   }
 
   async getCustomer() {
-    Globals.userInfo = new Store();
 
     let uid = (await this.isLoggedIn())?.uid;
 
@@ -1089,6 +1090,8 @@ export class LoadService {
               footer,
               wallet
             );
+
+            Globals.uInfo.next(Globals.userInfo)
 
             this.registerTokens(tokens, Globals.userInfo);
 
@@ -1243,7 +1246,7 @@ export class LoadService {
     provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
       this.rpcEndpoint
     ),
-    uid = Globals.storeInfo.uid
+    uid = Globals.storeInfo?.uid
   ) {
     
     let provider2 = await this.checkProviderChain(provider)
@@ -1281,7 +1284,7 @@ export class LoadService {
             let contractID = docData['Contract_Address'] as string;
             let ownerAddress =
               (docData['Owner_Address'] as string) ??
-              Globals.storeInfo.walletAddress ??
+              Globals.storeInfo?.walletAddress ??
               '';
             let sold = (docData['Sold'] as boolean) ?? false;
             let lazyMint = (docData['Lazy'] as boolean) ?? true;
@@ -1328,7 +1331,6 @@ export class LoadService {
             } else {
               product.name = docData['Name'] as string;
               product.description = docData['Description'] as string;
-              let uid = docData['UID'] as string;
               let productID = docData['Product_ID'];
               product.url = this.getURL(productID);
             }
@@ -1355,78 +1357,84 @@ export class LoadService {
         }
         await Promise.all(
           col.map(async (contractID: string) => {
-            this.getCollection(contractID, async (collection) => {
-              let created = await this.getCreated(collection!, provider2);
-
-              if (!collection) {
-                return;
-              }
-              products
-                .filter((x) => x.contractID == contractID)
-                .forEach(async (same: NFT, index: number) => {
-                  let c = created.tokens.find(
-                    (i: any) => i.tokenId == same.tokenID
-                  ) as any;
-
-                  if (c) {
-                    same.tokenID = c.tokenId;
-                    same.contractID = c.contract;
-                    same.owner = c.owner;
-                    same.name = c.name;
-                    same.format = c.content;
-                    same.royalty = c.royalty;
-                    same.metadata = c.uri;
-                    same.seller = c.seller;
-                    same.token = c.isNative ? undefined : c.token;
-                    same.description = c.description;
-                    same.price = c.price;
-                    same.url = c.image;
-                    same.itemId = c.itemId;
-                    same.forSale = c.forSale;
-                    same.lazyMint = c.minted == false;
-                    same.lazyHash = same.lazyMint ? same.lazyHash : undefined;
-                    if (same.tokenID && provider) {
-                      same.seller = await collection.ownerOf(
-                        same.tokenID,
-                        provider2
-                      );
+            setTimeout(() => {
+              this.getCollection(contractID, async (collection) => {
+                let created = await this.getCreated(collection!);
+  
+                if (!collection) {
+                  return;
+                }
+                await Promise.all(products
+                  .filter((x) => x.contractID == contractID)
+                  .map(async (same: NFT, index: number) => {
+                    let c = created.tokens.find(
+                      (i: any) => i.tokenId == same.tokenID
+                    ) as any;
+  
+                    if (c) {
+                      same.tokenID = c.tokenId;
+                      same.contractID = c.contract;
+                      same.owner = c.owner;
+                      same.name = c.name;
+                      same.format = c.content;
+                      same.royalty = c.royalty;
+                      same.metadata = c.uri;
+                      same.seller = c.seller;
+                      same.token = c.isNative ? undefined : c.token;
+                      same.description = c.description;
+                      same.price = c.price;
+                      same.url = c.image;
+                      same.itemId = c.itemId;
+                      same.forSale = c.forSale;
+                      same.lazyMint = c.minted == false;
+                      same.lazyHash = same.lazyMint ? same.lazyHash : undefined;
+                      if (same.tokenID && provider) {
+                        same.seller = await collection.ownerOf(
+                          same.tokenID,
+                          provider2
+                        );
+                      }
                     }
-                  }
-                  // else if (same.url){
-                  //   same.format = await this.getFormat(same.url);
-                  // }
-
-                  // if (index == 0){
-                  //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
-                  // }
-
-                  if (same.token && provider2) {
-                    await collection
-                      .loadCurrency(same.token, provider2)
-                      .then((i) => {
-                        collection.currency = i;
-                      });
-                  } else {
-                    collection.currency = 'MATIC';
-                  }
-                  collection.NFTs.push(same);
-                });
-
-              let sameIndex = collections.findIndex(
-                (d) => d.contract == contractID
-              );
-
-              if (sameIndex != -1) {
-                collections[sameIndex] = collection;
-              } else {
-                collections.push(collection);
-              }
-
-              if (collections.length == col.length) {
-                callback(collections);
-                return;
-              }
-            });
+                    // else if (same.url){
+                    //   same.format = await this.getFormat(same.url);
+                    // }
+  
+                    // if (index == 0){
+                    //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
+                    // }
+  
+                    if (same.token && provider2) {
+                      await collection
+                        .loadCurrency(same.token, provider2)
+                        .then((i) => {
+                          collection.currency = i;
+                        });
+                    } else {
+                      collection.currency = 'MATIC';
+                    }
+                    console.log("")
+                    collection.NFTs[index] = same;
+                    console.log(collection)
+                    console.log(index)
+                    console.log("")
+                  }));
+  
+                let sameIndex = collections.findIndex(
+                  (d) => d.contract == contractID
+                );
+  
+                if (sameIndex != -1) {
+                  collections[sameIndex] = collection;
+                } else {
+                  collections.push(collection);
+                }
+  
+                if (collections.length == col.length) {
+                  callback(collections);
+                  return;
+                }
+              });
+            }, 100);
           })
         );
 
@@ -1455,7 +1463,7 @@ export class LoadService {
   }
 
   async getCollections(
-    uid = Globals.storeInfo.uid,
+    uid = Globals.storeInfo?.uid,
     callback: (data?: Array<Collection>) => any
   ) {
     let query = this.db.collection('Collections', (ref) =>
@@ -1477,7 +1485,7 @@ export class LoadService {
             new Collection(
               d.name,
               d.symbol,
-              d.NFTs,
+              undefined,
               d.contract,
               d.currency ?? 'MATIC',
               d.collectionCount ?? 0,
@@ -1634,7 +1642,7 @@ export class LoadService {
     // if (this.shopComponent) this.shopComponent.storeProducts?.unshift(product);
 
     if (this.adminComponent)
-      Globals.storeInfo.collections
+      Globals.storeInfo?.collections
         ?.find((c) => c.contract == contract)
         ?.NFTs.unshift(product);
 
@@ -1716,18 +1724,18 @@ export class LoadService {
     // }
 
     if (this.adminComponent) {
-      let p = Globals.storeInfo.collections
+      let p = Globals.storeInfo?.collections
         ?.find((c) => c.contract == contract)
         ?.NFTs.filter((obj) => {
           return obj.docID == product.docID;
         })[0] as NFT;
 
-      let index = Globals.storeInfo.collections
+      let index = Globals.storeInfo?.collections
         ?.find((c) => c.contract == contract)
         ?.NFTs.indexOf(p);
 
       if (index != undefined) {
-        Globals.storeInfo.collections
+        Globals.storeInfo?.collections
           ?.find((c) => c.contract == contract)
           ?.NFTs.splice(index, 1);
       }
@@ -1751,7 +1759,7 @@ export class LoadService {
     const time = firebase.firestore.Timestamp.now();
 
     var query = this.db.collection(
-      'Users/' + Globals.storeInfo.uid + '/Blogs',
+      'Users/' + Globals.storeInfo?.uid + '/Blogs',
       (ref) =>
         ref
           .where('Timestamp', '<=', time)
@@ -2440,7 +2448,7 @@ export class LoadService {
   async addToCart(mappedData: Dict<any>) {
     let uid = (await this.isLoggedIn())?.uid;
 
-    const storeUID = Globals.storeInfo.uid;
+    const storeUID = Globals.storeInfo?.uid;
 
     if (!storeUID) {
       return;
@@ -2461,7 +2469,7 @@ export class LoadService {
     this.rootComponent!.cart = undefined;
     this.rootComponent?.getCart();
 
-    let homePopup = Globals.storeInfo.popups?.find((popup) => {
+    let homePopup = Globals.storeInfo?.popups?.find((popup) => {
       return popup.trigger == 1;
     });
     if (homePopup) {
@@ -2484,9 +2492,9 @@ export class LoadService {
 
     await this.saveUsername(mappedData, uid);
 
-    if (Globals.storeInfo.profileLink) {
+    if (Globals.storeInfo?.profileLink) {
       this.rootComponent?.setFavIcon(
-        Globals.storeInfo.profileLink?.toString() ?? ''
+        Globals.storeInfo?.profileLink?.toString() ?? ''
       );
     }
     callback(true);
@@ -2727,7 +2735,7 @@ export class LoadService {
       // Globals.userInfo!.slogan = mappedData.slogan
       // Globals.userInfo!.fontName = mappedData.font
 
-      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
       //   if (matchingTheme){
       //     Globals.storeInfo!.colorStyle = matchingTheme
       //     Globals.storeInfo!.fontName = mappedData.font
@@ -2843,14 +2851,14 @@ export class LoadService {
     // if (type == "theme"){
     //   Globals.userInfo!.themeLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.themeLink = url
     //   }
     // }
     // else if (type == "home"){
     //   Globals.userInfo!.homeLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.homeLink = url
     //   }
     // }
@@ -2858,7 +2866,7 @@ export class LoadService {
 
     //   Globals.userInfo!.actionLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.actionLink = url
     //   }
     // }
@@ -2894,14 +2902,14 @@ export class LoadService {
     // if (type == "theme"){
     //   Globals.userInfo!.themeLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.themeLink = url
     //   }
     // }
     // else if (type == "home"){
     //   Globals.userInfo!.homeLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.homeLink = url
     //   }
     // }
@@ -2909,7 +2917,7 @@ export class LoadService {
 
     //   Globals.userInfo!.actionLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.actionLink = url
     //   }
     // }
@@ -2951,14 +2959,14 @@ export class LoadService {
     // if (type == "theme"){
     //   Globals.userInfo!.themeLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.themeLink = url
     //   }
     // }
     // else if (type == "home"){
     //   Globals.userInfo!.homeLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.homeLink = url
     //   }
     // }
@@ -2966,7 +2974,7 @@ export class LoadService {
 
     //   Globals.userInfo!.actionLink = url
 
-    //   if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
     //     Globals.storeInfo!.actionLink = url
     //   }
     // }
@@ -2990,31 +2998,31 @@ export class LoadService {
       if (type == 'theme') {
         Globals.userInfo!.themeLink = url;
 
-        if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
           Globals.storeInfo!.themeLink = url;
         }
       } else if (type == 'home') {
         Globals.userInfo!.homeLink = url;
 
-        if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
           Globals.storeInfo!.homeLink = url;
         }
       } else if (type == 'home_top') {
         Globals.userInfo!.homeLinkTop = url;
 
-        if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
           Globals.storeInfo!.homeLinkTop = url;
         }
       } else if (type == 'shop_top') {
         Globals.userInfo!.shopLinkTop = url;
 
-        if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
           Globals.storeInfo!.shopLinkTop = url;
         }
       } else if (type == 'action') {
         Globals.userInfo!.actionLink = url;
 
-        if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
           Globals.storeInfo!.actionLink = url;
         }
       }
@@ -3058,7 +3066,7 @@ export class LoadService {
       // Globals.userInfo!.slogan = mappedData.slogan
       // Globals.userInfo!.fontName = mappedData.font
 
-      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
       //   if (matchingTheme){
       //     Globals.storeInfo!.colorStyle = matchingTheme
       //     Globals.storeInfo!.fontName = mappedData.font
@@ -3122,7 +3130,7 @@ export class LoadService {
       // Globals.userInfo!.slogan = mappedData.slogan
       // Globals.userInfo!.fontName = mappedData.font
 
-      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
       //   if (matchingTheme){
       //     Globals.storeInfo!.colorStyle = matchingTheme
       //     Globals.storeInfo!.fontName = mappedData.font
@@ -3175,7 +3183,7 @@ export class LoadService {
       // Globals.userInfo!.slogan = mappedData.slogan
       // Globals.userInfo!.fontName = mappedData.font
 
-      // if (Globals.storeInfo.uid == Globals.userInfo?.uid){
+      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
       //   if (matchingTheme){
       //     Globals.storeInfo!.colorStyle = matchingTheme
       //     Globals.storeInfo!.fontName = mappedData.font
@@ -3234,7 +3242,7 @@ export class LoadService {
         if (matchingTheme) {
           Globals.userInfo!.colorStyle = matchingTheme;
         }
-        if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
           if (matchingTheme) {
             Globals.storeInfo!.colorStyle = matchingTheme;
             Globals.storeInfo!.fontName = mappedData.font;
@@ -3294,7 +3302,7 @@ export class LoadService {
     Globals.userInfo!.dpID = picID;
     Globals.userInfo!.profileLink = url;
 
-    if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+    if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
       Globals.storeInfo!.dpID = picID;
       Globals.storeInfo!.profileLink = url;
     }
@@ -3359,7 +3367,7 @@ export class LoadService {
     uid?: string
   ) {
     var popups = new Array<Popup>();
-    Globals.storeInfo.popups?.forEach((p) => {
+    Globals.storeInfo?.popups?.forEach((p) => {
       popups.push(p);
     });
     var same = popups.find((c) => {
@@ -3515,7 +3523,7 @@ export class LoadService {
     uid?: string
   ) {
     var coupons = new Array<Coupon>();
-    Globals.storeInfo.coupons?.forEach((c) => {
+    Globals.storeInfo?.coupons?.forEach((c) => {
       coupons.push(c);
     });
     let same = coupons.find((c) => {
@@ -3578,13 +3586,13 @@ export class LoadService {
     };
     if (uid && data) {
       if (data.Coupons) {
-        let p = Globals.storeInfo.coupons?.find((obj) => {
+        let p = Globals.storeInfo?.coupons?.find((obj) => {
           return obj.code == coupon.code;
         });
 
         if (p) {
-          let index = Globals.storeInfo.coupons?.indexOf(p);
-          Globals.storeInfo.coupons?.splice(index!, 1);
+          let index = Globals.storeInfo?.coupons?.indexOf(p);
+          Globals.storeInfo?.coupons?.splice(index!, 1);
         }
       }
       await this.db.collection('Users').doc(uid).update(data);
@@ -3605,12 +3613,12 @@ export class LoadService {
     };
     if (uid && data) {
       if (data.Popups) {
-        let p = Globals.storeInfo.popups?.find((obj) => {
+        let p = Globals.storeInfo?.popups?.find((obj) => {
           return obj.trigger == popup.trigger;
         });
         if (p) {
-          let index = Globals.storeInfo.popups?.indexOf(p);
-          Globals.storeInfo.popups?.splice(index!, 1);
+          let index = Globals.storeInfo?.popups?.indexOf(p);
+          Globals.storeInfo?.popups?.splice(index!, 1);
         }
       }
       await this.db.collection('Users').doc(uid).update(data);
@@ -3638,7 +3646,7 @@ export class LoadService {
       Globals.userInfo!.username = mappedData.username;
       Globals.userInfo!.fullName = mappedData.full_name;
 
-      if (Globals.storeInfo.uid == Globals.userInfo?.uid) {
+      if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
         Globals.storeInfo!.username = mappedData.username;
         Globals.storeInfo!.fullName = mappedData.full_name;
       }
@@ -3665,7 +3673,7 @@ export class LoadService {
       Cart_List: mappedData,
     };
 
-    const storeUID = Globals.storeInfo.uid;
+    const storeUID = Globals.storeInfo?.uid;
 
     if (!storeUID) {
       return;
@@ -3889,7 +3897,7 @@ export class LoadService {
   }
 
   roundedFavIconLink() {
-    return Globals.storeInfo.profileLink;
+    return Globals.storeInfo?.profileLink;
   }
 
   async setUsername(
@@ -4010,7 +4018,7 @@ export class LoadService {
     callback: (cart: Array<ProductInCart>) => any
   ) {
     const uid = (await this.isLoggedIn())?.uid;
-    const storeUID = Globals.storeInfo.uid;
+    const storeUID = Globals.storeInfo?.uid;
 
     if (!storeUID || !uid) {
       callback([]);
@@ -4314,7 +4322,7 @@ export class LoadService {
 
   async getOrders(callback: (orders: Array<Order>) => any) {
     const uid = (await this.isLoggedIn())?.uid;
-    const storeUID = Globals.storeInfo.uid;
+    const storeUID = Globals.storeInfo?.uid;
 
     if (!storeUID || !uid) {
       if (this.myCallback) this.myCallback();
@@ -4657,7 +4665,7 @@ export class LoadService {
           let contractID = docData['Contract_Address'] as string;
           let ownerAddress =
             (docData['Owner_Address'] as string) ??
-            Globals.storeInfo.walletAddress ??
+            Globals.storeInfo?.walletAddress ??
             '';
           let sold = (docData['Sold'] as boolean) ?? false;
           let lazyMint = (docData['Lazy'] as boolean) ?? true;
@@ -4716,9 +4724,9 @@ export class LoadService {
               product.contractID,
               'MATIC',
               0,
-              Globals.storeInfo.walletAddress ?? '',
+              Globals.storeInfo?.walletAddress ?? '',
               true,
-              Globals.storeInfo.uid ?? '',
+              Globals.storeInfo?.uid ?? '',
               new Date()
             );
 
@@ -4727,7 +4735,7 @@ export class LoadService {
               return;
             }
 
-            let created = await this.getCreated(co, provider2);
+            let created = await this.getCreated(co);
 
             // co.name = created.name;
             // co.symbol = created.symbol;

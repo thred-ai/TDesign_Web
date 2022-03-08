@@ -29,7 +29,7 @@
                     <h3   class="fw-normal ps-4" style="font-style: italic">{{getShippingAddressFourth()}}</h3>
                     <h3   class="fw-normal ps-4" style="font-style: italic">{{getShippingAddressFifth()}}</h3>
                   </div>
-                  <!-- <p><a   role="button" (click)="routeToShipping()" href="/{{storeInfo().username}}/shipping-address" class="text-primary text-decoration-none ps-4" style="font-weight: bold;">Change</a></p> -->
+                  <!-- <p><a   role="button" (click)="routeToShipping()" href="/{{storeInfo()?.username}}/shipping-address" class="text-primary text-decoration-none ps-4" style="font-weight: bold;">Change</a></p> -->
                 </div>
               </div>
           </div>
@@ -39,7 +39,7 @@
                   <div [hidden]="stillLoadingProducts()" class="text-accent">
                     <h2 class="h6 mb-3 pb-1 ps-4 mt-2">2. Payment Method </h2>
                     <h3 class="fw-normal ps-4" style="font-style: italic">{{getBillingAddressFirst()}}</h3>
-                    <p><a href="/{{storeInfo().username}}/billing-info" class="text-primary text-decoration-none ps-4" style="font-weight: bold;">Change</a></p>
+                    <p><a href="/{{storeInfo()?.username}}/billing-info" class="text-primary text-decoration-none ps-4" style="font-weight: bold;">Change</a></p>
                     </div>
                 </div>
             </div> -->

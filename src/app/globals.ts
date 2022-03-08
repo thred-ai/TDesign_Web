@@ -13,6 +13,7 @@ import { Dict } from './services/load.service'
 import { ethers } from 'ethers'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import Web3Modal from 'web3modal';
+import { BehaviorSubject } from 'rxjs'
 
 
 @Injectable({
@@ -20,7 +21,11 @@ import Web3Modal from 'web3modal';
 })
 export class Globals {
 
-  public static storeInfo: Store = new Store()
+  public static sInfo = new BehaviorSubject<Store>(new Store())
+
+  public static uInfo = new BehaviorSubject<Store>(new Store())
+
+  public static storeInfo = new Store()
 
   public static userInfo?: Store = undefined
 

@@ -37,14 +37,14 @@ export class LoginComponent implements OnInit {
     if (this.isLanding) {
       return 'light';
     }
-    return Globals.storeInfo.colorStyle.text_code;
+    return Globals.storeInfo?.colorStyle.text_code;
   }
 
   backCode() {
     if (this.isLanding) {
       return 'dark';
     }
-    return Globals.storeInfo.colorStyle.back_code;
+    return Globals.storeInfo?.colorStyle.back_code;
   }
 
   connect() {
@@ -141,6 +141,11 @@ export class LoginComponent implements OnInit {
   }
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;
@@ -280,10 +285,10 @@ export class LoginComponent implements OnInit {
     } else {
       let user = await this.load.isLoggedIn();
       if (
-        Globals.storeInfo.uid &&
-        Globals.storeInfo.uid != '' &&
+        Globals.storeInfo?.uid &&
+        Globals.storeInfo?.uid != '' &&
         user?.uid &&
-        user?.uid != Globals.storeInfo.uid &&
+        user?.uid != Globals.storeInfo?.uid &&
         user?.email &&
         Globals.isNewUser &&
         !user?.isAnonymous
@@ -299,7 +304,7 @@ export class LoginComponent implements OnInit {
             }
           },
           undefined,
-          Globals.storeInfo.uid
+          Globals.storeInfo?.uid
         );
       }
       this.modalService.dismissAll('success');
@@ -359,7 +364,7 @@ export class LoginComponent implements OnInit {
             } else {
               app?.setOptions();
               app!.signedIn = true;
-              app!.signedInUid = Globals.storeInfo.uid;
+              app!.signedInUid = Globals.storeInfo?.uid;
               this.close();
             }
           },
@@ -457,7 +462,7 @@ export class LoginComponent implements OnInit {
                   this.hideSpinner();
                 } else {
                   app!.signedIn = true;
-                  app!.signedInUid = Globals.storeInfo.uid;
+                  app!.signedInUid = Globals.storeInfo?.uid;
                   app?.setOptions();
                   this.hideSpinner();
                   this.close();

@@ -311,7 +311,7 @@ export class CreateCryptoComponent implements OnInit {
 
             let docID = await this.laodService.saveNFT(
               nft,
-              Globals.storeInfo.uid,
+              Globals.storeInfo?.uid,
               undefined,
               img
             );
@@ -366,6 +366,11 @@ export class CreateCryptoComponent implements OnInit {
   @ViewChild('video') video?: ElementRef;
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;

@@ -1,7 +1,7 @@
 <!-- Navigation-->
 <router-outlet></router-outlet>
 
-<header *ngIf="isBrowser();" class="bg-{{storeInfo().colorStyle!.back_code}} py-6">
+<header *ngIf="isBrowser();" class="bg-{{storeInfo()?.colorStyle!.back_code}} py-6">
     <div class="cover" [ngStyle]="{'background-image': coverUrl()}">
         <div [hidden]="selectedBlog()?.title == undefined" class="d-flex align-items-center justify-content-center" style="height: 600px; font-weight: bold;font-size:35px">
             <p class = "text-center" style = "line-height:1.2em;text-shadow: 2px 2px #42424281;">
@@ -31,7 +31,7 @@
                                     <img class="card-img-top" src='{{productUrl(item)}}' alt='ok' onerror="this.src='https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';"/>
                                     <!-- Product actions-->
                                     <div class="card-footer p-4 pt-0 pb-0 border-top-0 bg-transparent">
-                                        <div class="text-center"><a class="btn btn-outline-dark mt-3" style="font-weight:bold" href="/{{storeInfo().username}}/products/{{item.Content}}">View Product</a></div>
+                                        <div class="text-center"><a class="btn btn-outline-dark mt-3" style="font-weight:bold" href="/{{storeInfo()?.username}}/products/{{item.Content}}">View Product</a></div>
                                     </div>
                                 </div>
                            </ng-template>
@@ -41,17 +41,17 @@
     <hr>
     </div>
 
-    <img class="rounded-circle mx-auto d-block mb-4 mt-5" style="max-width: 120px" src='{{storeInfo().profileLink}}'/>
+    <img class="rounded-circle mx-auto d-block mb-4 mt-5" style="max-width: 120px" src='{{storeInfo()?.profileLink}}'/>
     <p class = "text-center px-5 mx-5" style = "font-size: 18px;line-height:1.2em;font-weight: bold;">
-        {{storeInfo().fullName}}
+        {{storeInfo()?.fullName}}
        </p>
        <p class = "text-center px-5 mx-5" style = "font-size: 14px;line-height:1.2em;font-weight: normal; color:dimgray">
-        Follow us on Thred! @{{storeInfo().username}}
+        Follow us on Thred! @{{storeInfo()?.username}}
        </p>
   </section>
 
-  <footer *ngIf="isBrowser();" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
-    <div class="container"><p class="m-0 text-center text-white">&copy; {{storeInfo().fullName}} 2021</p></div>
+  <footer *ngIf="isBrowser();" class="py-5 bg-{{storeInfo()?.colorStyle!.back_code}}">
+    <div class="container"><p class="m-0 text-center text-white">&copy; {{storeInfo()?.fullName}} 2021</p></div>
     <div class="container"><p class="m-0 text-center text-white">Powered by Thred</p></div>
   </footer>
   <script *ngIf="isBrowser();" src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

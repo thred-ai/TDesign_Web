@@ -7,7 +7,7 @@ import { Globals } from './globals';
 export class HtmlPipe implements PipeTransform {
 
   transform(value: string) {
-    var replaced = value.replace(/thred.storePic/g, Globals.storeInfo.profileLink?.toString() ?? "")
+    var replaced = value.replace(/thred.storePic/g, Globals.storeInfo?.profileLink?.toString() ?? "")
 
     return replaced
   }

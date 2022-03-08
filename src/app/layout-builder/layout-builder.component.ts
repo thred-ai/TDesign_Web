@@ -65,12 +65,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   urlText(showHttps = false) {
-    var url = 'https://shopmythred.com/' + this.storeInfo.username;
+    var url = 'https://shopmythred.com/' + this.storeInfo?.username;
 
-    if (this.storeInfo.customURL?.status == 2) {
+    if (this.storeInfo?.customURL?.status == 2) {
       url =
-        this.storeInfo.customURL.fullURL != undefined
-          ? this.storeInfo.customURL.fullURL
+        this.storeInfo?.customURL.fullURL != undefined
+          ? this.storeInfo?.customURL.fullURL
           : url;
     }
 
@@ -250,7 +250,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     } else if (id === '2') {
       return 'ALL PRODUCTS';
     }
-    return this.storeInfo.collections?.find(col => {
+    return this.storeInfo?.collections?.find(col => {
       return col.NFTs.find((product: NFT) => product.docID == id);
     })?.NFTs.find((product: NFT) => product.docID == id)?.name ?? 'NFT';
   }
@@ -282,7 +282,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     const filterValue = ((value as string) ?? '').toLowerCase();
 
 
-    let collections = (this.storeInfo.collections ?? []).filter((product) =>
+    let collections = (this.storeInfo?.collections ?? []).filter((product) =>
       product.NFTs.find((n) =>
         (n.name ?? '').toLowerCase().includes(filterValue)
       )
@@ -330,7 +330,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           : new Array<NFT>().concat
               .apply(
                 [],
-                this.storeInfo.collections?.map((s) => {
+                this.storeInfo?.collections?.map((s) => {
                   return s.NFTs;
                 }) ?? []
               )
@@ -458,28 +458,28 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       this.data.page?.seo?.title
         ? this.data.page?.seo!.title
         : (this.data.page?.title ?? '').trim() != ''
-        ? this.storeInfo.fullName + ' - ' + this.data.page?.title
-        : this.storeInfo.fullName
+        ? this.storeInfo?.fullName + ' - ' + this.data.page?.title
+        : this.storeInfo?.fullName
     );
 
     this.layoutForm.controls.seoDesc.setValue(
       this.data.page?.seo?.description
         ? this.data.page?.seo!.description
-        : this.storeInfo.bio
+        : this.storeInfo?.bio
     );
 
     this.layoutForm.controls.metaTitle.setValue(
       this.data.page?.seo?.meta.title
         ? this.data.page?.seo!.meta.title
         : (this.data.page?.title ?? '').trim() != ''
-        ? this.storeInfo.fullName + ' - ' + this.data.page?.title
-        : this.storeInfo.fullName
+        ? this.storeInfo?.fullName + ' - ' + this.data.page?.title
+        : this.storeInfo?.fullName
     );
 
     this.layoutForm.controls.metaDesc.setValue(
       this.data.page?.seo?.meta.description
         ? this.data.page?.seo!.meta.description
-        : this.storeInfo.bio
+        : this.storeInfo?.bio
     );
 
     this.layoutForm.controls.seoTags.setValue(
@@ -990,6 +990,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   selectedIndicator() {
+    if (!Globals.storeInfo) { return {
+      name: '',
+      color: '',
+      bg_color: '',
+    }}
     let co = this.storeInfo?.loading?.color;
     let bco = this.storeInfo?.loading?.bg_color;
     let name = this.storeInfo?.loading?.name;
@@ -1020,22 +1025,22 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     let seoTitle =
       (this.layoutForm.controls.seoTitle.value as string) ??
-      this.storeInfo.fullName ??
+      this.storeInfo?.fullName ??
       '';
     let seoDesc =
       (this.layoutForm.controls.seoDesc.value as string) ??
-      this.storeInfo.bio ??
+      this.storeInfo?.bio ??
       '';
     let seoTags =
       (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
 
     let metaTitle =
       (this.layoutForm.controls.metaTitle.value as string) ??
-      this.storeInfo.fullName ??
+      this.storeInfo?.fullName ??
       '';
     let metaDesc =
       (this.layoutForm.controls.metaDesc.value as string) ??
-      this.storeInfo.bio ??
+      this.storeInfo?.bio ??
       '';
     let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
     let metaPic = this.layoutForm.controls.metaPic.value as string;
@@ -1117,7 +1122,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   autoCoupon(product: Product) {
-    var autoCoupon = this.storeInfo.coupons
+    var autoCoupon = this.storeInfo?.coupons
       ?.filter((coupon) => {
         return coupon.products.includes(product.productID) && coupon.auto;
       })
@@ -1187,7 +1192,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     }
     var prod = Array<NFT>();
     products?.forEach((p) => {
-      let pro = this.storeInfo.collections
+      let pro = this.storeInfo?.collections
         ?.find((pr) => {
           let k = pr.NFTs?.find((n) => {
             return n.docID == p;
@@ -1230,7 +1235,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   moveRight() {
-    if (this.ds?.currIndex == (this.storeInfo.banners?.length ?? 0) - 1) {
+    if (this.ds?.currIndex == (this.storeInfo?.banners?.length ?? 0) - 1) {
       this.ds?.moveTo(0);
     } else {
       this.ds?.moveRight();
@@ -1247,7 +1252,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     if (this.interval) {
       return;
     }
-    if (this.storeInfo.bannerStyle == 0) {
+    if (this.storeInfo?.bannerStyle == 0) {
       this.interval = setInterval(() => {
         this.moveRight();
       }, 3000);
@@ -1283,15 +1288,15 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   arrLength() {
-    if (this.storeInfo.banners.length == 0) {
+    if (this.storeInfo?.banners.length == 0) {
       return [];
     }
 
-    return Array(12 / this.storeInfo.banners.length).fill(0);
+    return Array(12 / this.storeInfo?.banners.length).fill(0);
   }
 
   newArrivalProducts() {
-    return (this.storeInfo.collections ?? [])[0].NFTs?.sort(function (a, b) {
+    return (this.storeInfo?.collections ?? [])[0].NFTs?.sort(function (a, b) {
       // if (a.timestamp > b.timestamp) {
       //   return -1;
       // }
@@ -1303,7 +1308,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   featuredProducts() {
-    return (this.storeInfo.collections ?? [])[0].NFTs?.sort(function (a, b) {
+    return (this.storeInfo?.collections ?? [])[0].NFTs?.sort(function (a, b) {
       // if (a.likes > b.likes) {
       //   return -1;
       // }
@@ -1315,6 +1320,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   allProducts() {
-    return this.storeInfo.collections;
+    return this.storeInfo?.collections;
   }
 }

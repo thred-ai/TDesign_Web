@@ -3,7 +3,7 @@
 
 
   <!-- Header-->
-  <header *ngIf="isBrowser();" class="bg-{{storeInfo().colorStyle!.back_code}} py-5">
+  <header *ngIf="isBrowser();" class="bg-{{storeInfo()?.colorStyle!.back_code}} py-5">
     <div class="container px-4 px-lg-5 my-5">
         <div class="text-center text-white">
             <p class="display-4 fw-bolder">BLOGS</p>
@@ -20,11 +20,11 @@
                     <div class="card-body p-2 pb-5">
                         <div class="text-center">
                             <h5 class="fw-bolder" style = "font-size: 30px;line-height:1.2em;">{{blog.title}}</h5>
-                            <h5 class="fw-normal" style = "color: gray; font-size: 15px;">{{storeInfo().fullName}} • {{format(blog.timestamp)}}</h5>
+                            <h5 class="fw-normal" style = "color: gray; font-size: 15px;">{{storeInfo()?.fullName}} • {{format(blog.timestamp)}}</h5>
                         </div>
                     </div>
                     <div class="card-footer p-4 pt-0 pb-3 border-top-0 bg-transparent">
-                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" style="font-weight:bold" href="/{{storeInfo().username}}/blogs/{{blog.blogID}}">READ MORE</a></div>
+                        <div class="text-center"><a class="btn btn-outline-dark mt-auto" style="font-weight:bold" href="/{{storeInfo()?.username}}/blogs/{{blog.blogID}}">READ MORE</a></div>
                     </div>
                 </div>
             </div>
@@ -32,8 +32,8 @@
     </div>
   </section>
   <!-- Footer-->
-  <footer *ngIf="isBrowser();" class="py-5 bg-{{storeInfo().colorStyle!.back_code}}">
-    <div class="container"><p class="m-0 text-center text-white">&copy; {{storeInfo().fullName}} 2021</p></div>
+  <footer *ngIf="isBrowser();" class="py-5 bg-{{storeInfo()?.colorStyle!.back_code}}">
+    <div class="container"><p class="m-0 text-center text-white">&copy; {{storeInfo()?.fullName}} 2021</p></div>
     <div class="container"><p class="m-0 text-center text-white">Powered by Thred</p></div>
   </footer>
   <!-- Bootstrap core JS-->

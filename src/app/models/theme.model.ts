@@ -1,12 +1,12 @@
 
 export class StoreTheme {
-  name: string
-  back_code: string
-  text_code: string
-  nav_code: string
-  style: string
-  bg_color: Array<number>
-  btn_color: Array<number> 
+  name: string = ''
+  back_code: string = ''
+  text_code: string = ''
+  nav_code: string = ''
+  style: string = ''
+  bg_color: Array<number> = []
+  btn_color: Array<number> = []
   img?: URL
 
   constructor(

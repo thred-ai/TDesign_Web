@@ -10,7 +10,7 @@ interface IGlobals {
 })
 export class StorePipe implements PipeTransform {
 
-  transform(value: IGlobals) {
+  transform(value: any) {
     return Globals.storeInfo;
   }
 
