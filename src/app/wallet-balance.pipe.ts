@@ -10,6 +10,7 @@ export class WalletBalancePipe implements PipeTransform {
   transform(value: string | null | undefined, provider: ethers.providers.Web3Provider | undefined, customToken: string = 'default') {
 
     if (value && provider){
+      
       if (customToken == 'default'){
         return provider.getBalance(value);
       }
