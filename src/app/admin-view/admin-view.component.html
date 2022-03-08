@@ -2425,6 +2425,35 @@
                         "
                         style="font-size: 18px"
                       >
+                        {{ "Volume Traded:" }}
+                        <b
+                          class="ms-1 text-{{
+                            storeInfo().colorStyle!.text_code
+                          }}"
+                          style="font-size: 22px"
+                        >
+                          {{ collection.volume | commaNum }}
+                        </b>
+                        <mat-icon
+                          class="ms-2"
+                          svgIcon="{{ collection.getCurrencyIcon() }}"
+                        >
+                        </mat-icon>
+                      </a>
+                      <br class="d-block d-md-hidden" />
+                      <a
+                        role="button"
+                        class="bg-{{
+                          storeInfo().colorStyle!.back_code
+                        }} side text-secondary d-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        [class.border-{{storeInfo().colorStyle!.text_code}}]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        [class.border]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        style="font-size: 18px"
+                      >
                         {{ "Floor Price:" }}
                         <b
                           class="ms-1 text-{{
@@ -2432,7 +2461,7 @@
                           }}"
                           style="font-size: 22px"
                         >
-                          {{ collection.getFloor() | price }}
+                          {{ collection.getFloor() | price | commaNum }}
                         </b>
                         <mat-icon
                           class="ms-2"
@@ -2470,6 +2499,30 @@
                         >
                           add
                         </mat-icon>
+                      </a>
+                      <br class="d-block d-md-hidden" />
+
+                      <a
+                        class="bg-{{
+                          storeInfo().colorStyle!.back_code
+                        }} side text-secondary d-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        [class.border-{{storeInfo().colorStyle!.text_code}}]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        [class.border]="
+                          storeInfo()!.colorStyle!.back_code == 'dark'
+                        "
+                        style="font-size: 18px"
+                      >
+                        {{ "Owners: " }}
+                        <b
+                          class="ms-1 text-{{
+                            storeInfo().colorStyle!.text_code
+                          }}"
+                          style="font-size: 22px"
+                        >
+                          {{ collection.owners ?? 0 }}
+                        </b>
                       </a>
                       <!-- <a
                       role="button"

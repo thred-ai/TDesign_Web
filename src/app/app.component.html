@@ -118,7 +118,7 @@
                   {{ token.name }}
                 </ng-template>
               </mat-icon>
-              <h2 class="text-center my-auto mb-2" style="font-size: xx-large">
+              <h2 class="text-center my-auto mb-2" *ngIf="(provider | networkCheck | async)?.chainId == 137" style="font-size: xx-large">
                 {{
                   provider
                     | providerAddress

@@ -23,6 +23,7 @@ export interface ICollection {
   timestamp?: Date;
   available?: boolean;
   rpcEndpoint?: string;
+  volume?: number
 
   getRarity(nft: NFT): string;
 
@@ -57,6 +58,7 @@ export class Collection implements ICollection {
   available?: boolean;
   ABI: string;
   rpcEndpoint?: string;
+  volume?: number;
 
   getRarity(nft: NFT) {
     var totalRarity = 0;
@@ -82,6 +84,22 @@ export class Collection implements ICollection {
   }
 
   getFloor() {
+    return (
+      this.NFTs.sort(function (a, b) {
+        let x = a.priceNum;
+        let y = b.priceNum;
+        if (x < y) {
+          return -1;
+        }
+        if (x > y) {
+          return 1;
+        }
+        return 0;
+      })[0]?.price ?? 0
+    );
+  }
+
+  getVolume() {
     return (
       this.NFTs.sort(function (a, b) {
         let x = a.priceNum;
@@ -124,6 +142,10 @@ export class Collection implements ICollection {
     return symbol;
   }
 
+  get owners(){
+    return this.NFTs.filter(n => !(n.forSale)).length ?? 0
+  }
+
   async loadName(token: string, provider: ethers.providers.Provider) {
     let contract = new ethers.Contract(token, abi, provider);
     let symbol = await contract.name();
@@ -163,7 +185,8 @@ export class Collection implements ICollection {
     domain: string = 'THRED-NFT',
     customToken?: string,
     available?: boolean,
-    ABI?: string
+    ABI?: string,
+    volume?: number
   ) {
     if (environment.rpc) {
       this.rpcEndpoint = environment.rpc;
@@ -184,5 +207,6 @@ export class Collection implements ICollection {
     this.timestamp = timestamp;
     this.available = available;
     this.ABI = ABI ?? ERC721_MERCHANT.abi;
+    this.volume = volume ?? 0
   }
 }

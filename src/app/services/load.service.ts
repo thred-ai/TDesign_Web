@@ -52,7 +52,7 @@ import { NftLog } from '../models/nft-log.model';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import { NetworkCheckPipe } from '../network-check.pipe';
 
 export interface Dict<T> {
   [key: string]: T;
@@ -490,7 +490,7 @@ export class LoadService {
         name: t.name,
         symbol: `${t.name ?? ''}_token`,
         contract: t.contract,
-        api_name: t.api_name
+        api_name: t.api_name,
       });
       this.matIconRegistry.addSvgIcon(
         `${t.name ?? ''}_token`,
@@ -712,14 +712,18 @@ export class LoadService {
       if (this.myCallback) this.myCallback();
 
       if (isPlatformBrowser(this.platformID)) {
-        this.getPosts((products) => {
-          Globals.storeInfo!.collections = products;
-          this.isLoading = false;
-          if (callback) {
-            callback(Globals.storeInfo);
-          }
-          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        }, undefined, Globals.provider);
+        this.getPosts(
+          (products) => {
+            Globals.storeInfo!.collections = products;
+            this.isLoading = false;
+            if (callback) {
+              callback(Globals.storeInfo);
+            }
+            if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+          },
+          undefined,
+          Globals.provider
+        );
         this.rootComponent?.getCart();
         sub.unsubscribe();
       }
@@ -885,9 +889,9 @@ export class LoadService {
   }
 
   async getCryptoRates(callback: (arr: Array<Dict<any>>) => any) {
-    var query = this.db.doc('Crypto_Rates/THRED_COINS')
+    var query = this.db.doc('Crypto_Rates/THRED_COINS');
     let sub = query.get().subscribe((doc) => {
-      let coins = (doc.data() as any).coins ?? []
+      let coins = (doc.data() as any).coins ?? [];
       callback(coins);
       if (isPlatformBrowser(this.platformID)) {
         sub.unsubscribe();
@@ -1148,7 +1152,7 @@ export class LoadService {
                 },
                 undefined,
                 Globals.provider,
-                uid,
+                uid
               );
             } else {
               if (this.myCallback) this.myCallback();
@@ -1207,6 +1211,32 @@ export class LoadService {
     });
   }
 
+  async increaseVolume(nft: NFT){
+    this.functions
+      .httpsCallable('updateVolume')({contract: nft.contractID, amount: nft.priceNum})
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
+  async checkProviderChain(provider: ethers.providers.Provider){
+    var properNetwork = false;
+    if (provider as ethers.providers.Web3Provider) {
+      const pipe = new NetworkCheckPipe();
+      properNetwork =
+        (await pipe.networkCheck(provider as ethers.providers.Web3Provider))
+          .chainId == 137;
+    }
+    return properNetwork ? provider : new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+  }
+
   async getPosts(
     callback: (products: Array<Collection>) => any,
     filterID?: string,
@@ -1215,6 +1245,8 @@ export class LoadService {
     ),
     uid = Globals.storeInfo.uid
   ) {
+    
+    let provider2 = await this.checkProviderChain(provider)
 
     var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
       ref
@@ -1324,7 +1356,7 @@ export class LoadService {
         await Promise.all(
           col.map(async (contractID: string) => {
             this.getCollection(contractID, async (collection) => {
-              let created = await this.getCreated(collection!, provider);
+              let created = await this.getCreated(collection!, provider2);
 
               if (!collection) {
                 return;
@@ -1356,21 +1388,21 @@ export class LoadService {
                     if (same.tokenID && provider) {
                       same.seller = await collection.ownerOf(
                         same.tokenID,
-                        provider
+                        provider2
                       );
                     }
                   }
-                  else if (same.url){
-                    same.format = await this.getFormat(same.url);
-                  }
+                  // else if (same.url){
+                  //   same.format = await this.getFormat(same.url);
+                  // }
 
                   // if (index == 0){
                   //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
                   // }
 
-                  if (same.token && provider) {
+                  if (same.token && provider2) {
                     await collection
-                      .loadCurrency(same.token, provider)
+                      .loadCurrency(same.token, provider2)
                       .then((i) => {
                         collection.currency = i;
                       });
@@ -1456,7 +1488,8 @@ export class LoadService {
               d.domain,
               d.customToken,
               d.available,
-              d.ABI
+              d.ABI,
+              d.volume
             )
           );
         });
@@ -1494,7 +1527,8 @@ export class LoadService {
           d.domain,
           d.customToken,
           d.available,
-          d.ABI
+          d.ABI,
+          d.volume
         );
         callback(c);
       } else {
@@ -4607,6 +4641,9 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
+
+    let provider2 = await this.checkProviderChain(provider)
+
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID).orderBy('Token_ID')
     );
@@ -4690,11 +4727,10 @@ export class LoadService {
               return;
             }
 
-            let created = await this.getCreated(co, provider);
+            let created = await this.getCreated(co, provider2);
 
             // co.name = created.name;
             // co.symbol = created.symbol;
-
 
             let c = created.tokens.find(
               (i: any) => i.tokenId == product.tokenID
@@ -4719,16 +4755,15 @@ export class LoadService {
                 ? product.lazyHash
                 : undefined;
               if (product.tokenID && provider) {
-                product.seller = await co.ownerOf(product.tokenID, provider);
+                product.seller = await co.ownerOf(product.tokenID, provider2);
               }
-            }
-            else if (product.url){
-              product.format = await this.getFormat(product.url);
+            } else {
+              product.format = await this.getFormat(product.url!);
             }
             co.currency = 'MATIC';
-            console.log(product)
-            if (product.token && provider) {
-              await co.loadCurrency(product.token, provider).then((i) => {
+            console.log(product);
+            if (product.token && provider2) {
+              await co.loadCurrency(product.token, provider2).then((i) => {
                 co.currency = i;
               });
             }

@@ -777,6 +777,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             new NftLog('transfer', seller, product.seller, 0, '', new Date(), resp.tx.hash)
           );
           this.cdr.detectChanges()
+
+          this.loadService.increaseVolume(this.productToBuy)
         }
       } else {
       }
@@ -829,9 +831,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     // })
   }
 
-  hasClass(element: HTMLVideoElement, c: string){
-    return element.src == undefined
-  }
+ 
 
   addTags(title: string, imgUrl: string, description: string, url: string) {
     this.metaService.updateTag({ property: 'og:title', content: title });

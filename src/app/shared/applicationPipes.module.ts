@@ -37,6 +37,7 @@ import { RatePipePipe } from '../rate-pipe.pipe';
 import { ProductCurrencyPipe } from '../product-currency.pipe';
 import { StrPipe } from '../str.pipe';
 import { OwnedCollectionsPipe } from '../owned-collections.pipe';
+import { CommaNumPipe } from '../comma-num.pipe';
 
 @NgModule({
   imports: [
@@ -81,6 +82,7 @@ import { OwnedCollectionsPipe } from '../owned-collections.pipe';
     ProductCurrencyPipe,
     StrPipe,
     OwnedCollectionsPipe,
+    CommaNumPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -120,7 +122,8 @@ import { OwnedCollectionsPipe } from '../owned-collections.pipe';
     RatePipePipe,
     ProductCurrencyPipe,
     StrPipe,
-    OwnedCollectionsPipe
+    OwnedCollectionsPipe,
+    CommaNumPipe
   ]
 })
 export class ApplicationPipesModule {}
