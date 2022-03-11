@@ -179,7 +179,13 @@ export class Collection implements ICollection {
     let strTokenId = String(tokenId);
     let zero = ethers.constants.HashZero;
 
-    return zero.substr(0, zero.length - strTokenId.length) + strTokenId;
+    return zero.substring(0, zero.length - strTokenId.length) + strTokenId;
+  }
+
+  get hashedAddress() {
+    let contractId = this.contract.substring(2, this.contract.length)
+    let zero = ethers.constants.HashZero;
+    return (zero.substring(0, zero.length - contractId.length) + contractId).toLowerCase();
   }
 
   constructor(

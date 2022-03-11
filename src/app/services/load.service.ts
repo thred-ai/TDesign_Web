@@ -773,12 +773,12 @@ export class LoadService {
   }
 
   getEvents(
-    contract: string,
+    collection: Collection,
     tokenId: string,
     callback: (transactions: Array<NftLog>) => any
   ) {
     const data = {
-      contract: contract,
+      contract: collection.contract,
       tokenId: tokenId,
       test: false,
     };
@@ -789,6 +789,7 @@ export class LoadService {
         async (resp) => {
           let hashes = resp.result as any[];
           console.log(hashes)
+          console.log(collection.hashedAddress)
           if (hashes) {
             var logs = new Array<NftLog>();
             await Promise.all(
@@ -808,8 +809,7 @@ export class LoadService {
                     type = 'transfer';
                   }
                 } else if (
-                  t.topics[0] ==
-                  '0x0000000000000000000000001b276d64414c0b179f94225e27b4f06986d35ee3'
+                  t.topics[0] == collection.hashedAddress
                 ) {
                   type = 'list';
                 } else if (
@@ -846,6 +846,7 @@ export class LoadService {
       );
   }
 
+
   async providerCheck() {
     let address = await Globals.provider?.getSigner().getAddress();
     return address;
@@ -861,7 +862,7 @@ export class LoadService {
     if (network?.name == 'unspecified') {
       return true;
     }
-    return network?.chainId == 80001;
+    return network?.chainId == 137;
   }
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
@@ -1236,7 +1237,7 @@ export class LoadService {
       const pipe = new NetworkCheckPipe();
       properNetwork =
         (await pipe.networkCheck(provider as ethers.providers.Web3Provider))
-          .chainId == 80001;
+          .chainId == 137;
     }
     return properNetwork ? provider : new ethers.providers.JsonRpcProvider(
       this.rpcEndpoint
@@ -1570,7 +1571,7 @@ export class LoadService {
     // const data1 = await nftContract.name();
     // const data2 = await nftContract.symbol();
     console.log(contract)
-    const data3 = await marketContract.fetchMarketItems(contract.contract);
+    const data3 = await marketContract.fetchCollectionAssets(contract.contract);
     console.log(data3)
     const items = await Promise.all(
       data3.map(async (i: any, index: number) => {

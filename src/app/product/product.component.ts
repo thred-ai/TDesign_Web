@@ -617,9 +617,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
               this.loadService.logView();
             }
 
-            if (this.productToBuy.tokenID) {
+            if (this.productToBuy.tokenID && this.collection) {
               this.loadService.getEvents(
-                this.productToBuy.contractID,
+                this.collection,
                 this.collection?.hashedTokenId(this.productToBuy.tokenID)!,
                 async (txs) => {
                   this.nftLogs = txs;
