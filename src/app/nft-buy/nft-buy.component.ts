@@ -6,10 +6,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { ethers, BigNumber } from 'ethers';
-import { BehaviorSubject, from } from 'rxjs';
-import detectEthereumProvider from '@metamask/detect-provider';
-import { LAZYLOAD_IMAGE_HOOKS } from 'ng-lazyload-image';
+import { thredMarketplace } from 'config';
 var abi = require('human-standard-token-abi');
+const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 @Component({
   selector: 'app-nft-buy',
@@ -114,15 +113,18 @@ export class NftBuyComponent implements OnInit {
           throw 'No Signer';
         }
 
+        console.log(THRED_MARKET)
+
         let contract = new ethers.Contract(
-          this.nft.contractID,
-          this.collection?.ABI,
+          thredMarketplace,
+          THRED_MARKET.abi,
           val as ethers.providers.JsonRpcSigner
         );
 
         var transaction: any = undefined;
 
         if (this.nft.lazyHash?.minPrice as BigNumber) {
+          console.log('man')
           if (this.nft.lazyHash?.token && !this.nft.lazyHash.isNative) {
             let contract3 = new ethers.Contract(
               this.nft.lazyHash?.token,
@@ -130,15 +132,14 @@ export class NftBuyComponent implements OnInit {
               val as ethers.providers.JsonRpcSigner
             );
             let transaction2 = await contract3.approve(
-              this.nft.contractID,
+              thredMarketplace,
               this.nft.lazyHash.minPrice
             );
             await transaction2.wait();
-            transaction = await contract.mintAndTransferCustom(
-              this.nft.lazyHash
-            );
-          } else {
-            transaction = await contract.mintAndTransfer(this.nft.lazyHash, {
+            transaction = await contract.mintAndTransfer(this.nft.lazyHash, this.nft.contractID);
+          }
+          else{
+            transaction = await contract.mintAndTransferCustom(this.nft.lazyHash, this.nft.contractID, {
               value: this.nft.price,
             });
           }
@@ -157,11 +158,26 @@ export class NftBuyComponent implements OnInit {
             isNative: !(this.nft.token ?? false),
             minted: true,
           };
-          if (marketItem.isNative) {
-            transaction = await contract.createSale(marketItem, {
-              value: this.nft.price,
-            });
-          } else {
+
+          console.log(this.collection)
+          console.log(marketItem)
+
+          if (!marketItem.isNative){
+            console.log('nam')
+            let contract3 = new ethers.Contract(
+              marketItem.tokenContract,
+              abi,
+              val as ethers.providers.JsonRpcSigner
+            );
+            let transaction2 = await contract3.approve(
+              thredMarketplace,
+              marketItem.price
+            );
+            await transaction2.wait();
+            transaction = await contract.createSale(marketItem);
+          }
+          else{
+            
             transaction = await contract.createSaleCustom(marketItem, {
               value: this.nft.price,
             });

@@ -47,3 +47,6 @@ Thumbs.db
 # Local Netlify folder
 .netlify
 hardhat.config.js
+contracts/ERC721Merchant/ERC721Merchant.sol
+contracts/ERC721Merchant/IERC721Merchant.sol
+contracts/ThredMarketplace/ThredMarketplace.sol

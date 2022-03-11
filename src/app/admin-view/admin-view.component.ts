@@ -3095,10 +3095,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.loadService.adminComponent = this;
     this.getMiscStats()
-    Globals.sInfo.pipe(take(2)).subscribe(s => {
+    Globals.sInfo.subscribe(s => {
       this.storeInfo = s
     })
-    Globals.uInfo.pipe(take(2)).subscribe(s => {
+    Globals.uInfo.subscribe(s => {
       this.userInfo = s
     })
     
@@ -3722,8 +3722,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         let col = resp as Collection
 
         Globals.userInfo?.collections?.push(col)
-        Globals.storeInfo?.collections?.push(col)
-
         this.toast('Collection Created!')
         this.cdr.detectChanges()
       }

@@ -4,7 +4,9 @@ import { Dict } from '../services/load.service';
 import { Globals } from '../globals';
 import { environment } from 'src/environments/environment';
 var abi = require('human-standard-token-abi');
-const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant.sol/ERC721Merchant.json');
+const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
+const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
+
 
 export interface ICollection {
   name: string;
@@ -148,8 +150,9 @@ export class Collection implements ICollection {
 
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
     let contract = new ethers.Contract(token, abi, provider);
-    let symbol = await contract.symbol();
-    return symbol;
+    // let symbol = await contract.symbol();
+    return 'weth';
+    // return symbol;
   }
 
   get owners() {

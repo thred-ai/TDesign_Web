@@ -7,8 +7,9 @@ import { Collection } from '../models/collection.model';
 import { LoadService, Dict } from '../services/load.service';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
-const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant.sol/ERC721Merchant.json');
-const ERC721_FANCY_MERCHANT = require('artifacts/contracts/ERC721FancyMerchant.sol/ERC721FancyMerchant.json');
+import { thredMarketplace } from 'config';
+const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
+const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 
 @Component({
@@ -135,31 +136,26 @@ export class CreateCollectionComponent implements OnInit {
         var abi: any = ERC721_MERCHANT.abi
         var bytecode: any = ERC721_MERCHANT.bytecode
 
-
-        let toke = token.contract != 'default' ? token.contract: undefined
-
-        if (toke){
-          abi = ERC721_FANCY_MERCHANT.abi
-          bytecode = ERC721_FANCY_MERCHANT.bytecode
-        }
-
         let factory = new ethers.ContractFactory(
           abi,
           bytecode,
           signer
         );
+        
+        let admins = [thredMarketplace] as string[]
+        let minters = [wallet, thredMarketplace] as string[]
 
         try {
           let deployed = await factory.deploy(
             name,
             symbol,
-            domain,
-            '1',
-            wallet
+            minters,
+            admins
           );
           await deployed.deployed();
 
           let address = deployed.address;
+
           let collection = new Collection(
             name,
             symbol,
@@ -177,17 +173,14 @@ export class CreateCollectionComponent implements OnInit {
             abi,
             0
           );
-
-
-
-
+          
           await this.loadService.saveCollectionInfo(
             collection,
             Globals.storeInfo?.uid
           );
-
           this.dialogRef.close(collection);
         } catch (error) {
+          console.log(error)
           let data = (error as any).data;
           if (data && data.code == -32000) {
             this.err = 'Not enough MATIC' + ' in wallet!';

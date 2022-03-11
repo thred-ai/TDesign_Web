@@ -58,14 +58,14 @@ export class Globals {
     
     // console.log(.)
 
-    // let sent = await provider?.send('wallet_switchEthereumChain', [{ chainId: `0x${Number(137).toString(16)}` }])
+    // let sent = await provider?.send('wallet_switchEthereumChain', [{ chainId: `0x${Number(80001).toString(16)}` }])
 
         // try {
          
         // } catch (error) {
         //   console.log(error)
         //   const polygon = {
-        //     chainId: `0x${Number(137).toString(16)}`,
+        //     chainId: `0x${Number(80001).toString(16)}`,
         //     chainName: 'Polygon Mainnet',
         //     nativeCurrency: {
         //       name: 'MATIC',

@@ -1,5 +1,5 @@
 import { Dict } from '../services/load.service';
-import { nftaddress, erc721Merchant, erc721FancyMerchant } from 'config';
+import { nftaddress, erc721Merchant, thredMarketplace } from 'config';
 import { ethers } from 'ethers';
 import axios from 'axios';
 

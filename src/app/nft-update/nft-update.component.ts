@@ -12,6 +12,8 @@ import { CurrencyMaskInputMode } from 'ngx-currency';
 import { AdminViewComponent } from '../admin-view/admin-view.component';
 import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 import { LazyMinter } from 'LazyMinter';
+import { thredMarketplace } from 'config';
+const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 @Component({
   selector: 'app-nft-update',
@@ -181,10 +183,19 @@ export class NftUpdateComponent implements OnInit {
           return;
         }
         let contract = new ethers.Contract(
-          this.collection.contract,
+          thredMarketplace,
+          THRED_MARKET.abi,
+          signer
+        );
+        let contract2 = new ethers.Contract(
+          this.nft.contractID,
           this.collection.ABI,
           signer
         );
+
+        let t2 = await contract2.setApprovalForAll(thredMarketplace, forSale)
+  
+        await t2.wait()
         if (this.nft?.lazyMint && this.nft.lazyHash) {
           
           const lazyMinter = new LazyMinter(

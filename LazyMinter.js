@@ -59,22 +59,13 @@ class LazyMinter {
       NFTVoucher: [
         {name: "tokenId", type: "uint256"},
         {name: "minPrice", type: "uint256"},
-        {name: "royalty", type: "uint256"},
+        {name: "royalty", type: "uint96"},
         {name: "token", type: "address"},  
         {name: "isNative", type: "bool"},  
         {name: "uri", type: "string"},  
-        // {name: "mint", type: "address"},  
       ]
     }
-/**NFTVoucher(uint256 tokenId,uint256 minPrice,string uri)*/
     const signature = await this.signer._signTypedData(domain, types, voucher)
-    // ethers.utils.solidityKeccak256
-    // const recoveredAddress = ethers.utils.verifyTypedData(domain, types, voucher, signature);
-
-
-
-    
-
     return {
       ...voucher,
       signature,

@@ -34,7 +34,7 @@
     "@nguniversal/express-engine": "^13.0.1",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "@openzeppelin/contracts": "^4.2.0",
+    "@openzeppelin/contracts": "^4.5.0",
     "@stripe/stripe-js": "^1.19.1",
     "@svgdotjs/svg.js": "^3.1.1",
     "@swimlane/ngx-charts": "^19.0.1",

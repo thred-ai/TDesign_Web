@@ -17,7 +17,7 @@
 <!-- Section -->
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
 <section
-  *ngIf="isBrowser() && info?.active"
+  *ngIf="isBrowser()"
   class="py-3"
   style="min-height: 100vh"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -926,7 +926,7 @@
     </div>
   </div>
 </section>
-<section
+<!-- <section
   *ngIf="
     isBrowser() &&
     info?.username &&
@@ -964,7 +964,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 <!-- </div> -->
 <!-- Footer-->
 

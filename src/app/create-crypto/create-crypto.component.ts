@@ -19,8 +19,8 @@ import { CurrencyMaskInputMode } from 'ngx-currency';
 import { NFT } from '../models/nft.model';
 import { Globals } from '../globals';
 import { ethers, BigNumber } from 'ethers';
-const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant.sol/ERC721Merchant.json');
-const ERC721_FANCY_MERCHANT = require('artifacts/contracts/ERC721FancyMerchant.sol/ERC721FancyMerchant.json');
+const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
+const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
 import { LazyMinter, NFTVoucher } from 'LazyMinter';
@@ -30,6 +30,7 @@ import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import axios from 'axios';
+import { thredMarketplace } from 'config';
 
 @Component({
   selector: 'app-create-crypto',
@@ -191,7 +192,7 @@ export class CreateCryptoComponent implements OnInit {
       let file = this.nftForm.controls.file.value as string;
       let format = this.nftForm.controls.format.value as string;
       let lazyMint = this.nftForm.controls.lazyMint.value as boolean;
-      let royalty = (this.nftForm.controls.royalty.value as number) ?? 0.0;
+      let royalty = ((this.nftForm.controls.royalty.value as number) ?? 0.0) * 100;
 
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       let external = (this.nftForm.controls.external_url.value as string) ?? '';
@@ -228,7 +229,6 @@ export class CreateCryptoComponent implements OnInit {
         const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
         /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
         const price = ethers.utils.parseUnits(cost.toString(), 'ether');
-        const r = ethers.utils.parseUnits(royalty.toString(), 'ether');
 
         //tokenid 0x3C68CE8504087f89c640D02d133646d98e64ddd9
 
@@ -240,36 +240,28 @@ export class CreateCryptoComponent implements OnInit {
               return;
             }
             var contract2 = new ethers.Contract(
-              contractNFT,
-              this.nftContract.ABI ?? ERC721_MERCHANT.abi,
+              thredMarketplace,
+              THRED_MARKET.abi,
               signer
             );
-
-            if (cl.customToken) {
-              contract2 = new ethers.Contract(
-                contractNFT,
-                this.nftContract.ABI ?? ERC721_FANCY_MERCHANT.abi,
-                signer
-              );
-            }
 
             const lazyMinter = new LazyMinter(
               contract2,
               signer!,
-              this.nftContract.domain ?? 'THRED-NFT'
+              'THRED-NFT'
             );
 
             let tokenId = (cl.collectionCount ?? 0) + 1;
             const voucher = await lazyMinter.createVoucher(
               tokenId,
               url2,
-              r,
+              royalty,
               price,
               cl.customToken
             );
 
             if (!lazyMint) {
-              let transaction = await contract2.mintNFT(voucher);
+              let transaction = await contract2.mintNFT(voucher, cl.contract);
               await transaction.wait();
             }
 
@@ -388,16 +380,6 @@ export class CreateCryptoComponent implements OnInit {
     return indicator;
   }
 
-  async mintNFT(
-    voucher: NFTVoucher,
-    price: ethers.BigNumber,
-    contract: ethers.Contract,
-    contract2: ethers.Contract
-  ) {
-    // router.push('/')
-
-    let gas = await contract.estimateGas;
-  }
 
   radioChange(event: any) {
     let val = event.value;

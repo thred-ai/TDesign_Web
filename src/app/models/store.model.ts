@@ -204,7 +204,7 @@ export class Store {
 
     this.loading = loading ?? {
       name: 'ball-clip-rotate-pulse',
-      color: [2.0, 137.0, 179.0, 0.8],
+      color: [2.0, 80001.0, 179.0, 0.8],
       bg_color: [24.0, 15.0, 43.0, 0.9],
     };
 
