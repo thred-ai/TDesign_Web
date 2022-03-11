@@ -31,7 +31,9 @@
     >
       <div class="col mb-1">
         <div
-          class="card bg-{{ info.colorStyle!.back_code }} mt-0"
+          class="card bg-{{ info.colorStyle!.back_code }} mt-0 border border-{{
+            info.colorStyle!.text_code
+          }} shadow"
           [class.border-secondary]="info!.colorStyle!.text_code == 'light'"
           style="border-radius: 20px; object-fit: contain; overflow: hidden"
         >
