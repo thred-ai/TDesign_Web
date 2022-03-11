@@ -656,7 +656,7 @@ export class LoadService {
           wallet
         );
 
-        Globals.sInfo.next(Globals.storeInfo);
+        Globals.sInfo.next(Globals.storeInfo)
 
         if (banners.length > 0) {
           this.rootComponent?.setInterval();
@@ -780,8 +780,7 @@ export class LoadService {
     const data = {
       contract: contract,
       tokenId: tokenId,
-      test: true,
-      thredMarketplace: thredMarketplace,
+      test: false,
     };
     this.functions
       .httpsCallable('getTransactionHistory')(data)
@@ -789,7 +788,7 @@ export class LoadService {
       .subscribe(
         async (resp) => {
           let hashes = resp.result as any[];
-          console.log(hashes);
+          console.log(hashes)
           if (hashes) {
             var logs = new Array<NftLog>();
             await Promise.all(
@@ -809,8 +808,8 @@ export class LoadService {
                     type = 'transfer';
                   }
                 } else if (
-                  t.topics[1] ==
-                  '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
+                  t.topics[0] ==
+                  '0x0000000000000000000000001b276d64414c0b179f94225e27b4f06986d35ee3'
                 ) {
                   type = 'list';
                 } else if (
@@ -862,7 +861,7 @@ export class LoadService {
     if (network?.name == 'unspecified') {
       return true;
     }
-    return network?.chainId == 137;
+    return network?.chainId == 80001;
   }
 
   async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
@@ -948,6 +947,7 @@ export class LoadService {
   }
 
   async getCustomer() {
+
     let uid = (await this.isLoggedIn())?.uid;
 
     if (uid) {
@@ -1094,7 +1094,7 @@ export class LoadService {
               wallet
             );
 
-            Globals.uInfo.next(Globals.userInfo);
+            Globals.uInfo.next(Globals.userInfo)
 
             this.registerTokens(tokens, Globals.userInfo);
 
@@ -1217,32 +1217,30 @@ export class LoadService {
     });
   }
 
-  async increaseVolume(nft: NFT) {
+  async increaseVolume(nft: NFT){
     this.functions
-      .httpsCallable('updateVolume')({
-        contract: nft.contractID,
-        amount: nft.priceNum,
-      })
+      .httpsCallable('updateVolume')({contract: nft.contractID, amount: nft.priceNum})
       .pipe(first())
       .subscribe(
-        async (resp) => {},
+        async (resp) => {
+        },
         (err) => {
           console.log(err);
         }
       );
   }
 
-  async checkProviderChain(provider: ethers.providers.Provider) {
+  async checkProviderChain(provider: ethers.providers.Provider){
     var properNetwork = false;
     if (provider as ethers.providers.Web3Provider) {
       const pipe = new NetworkCheckPipe();
       properNetwork =
         (await pipe.networkCheck(provider as ethers.providers.Web3Provider))
-          .chainId == 137;
+          .chainId == 80001;
     }
-    return properNetwork
-      ? provider
-      : new ethers.providers.JsonRpcProvider(this.rpcEndpoint);
+    return properNetwork ? provider : new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
   }
 
   async getPosts(
@@ -1253,7 +1251,8 @@ export class LoadService {
     ),
     uid = Globals.storeInfo?.uid
   ) {
-    let provider2 = await this.checkProviderChain(provider);
+    
+    let provider2 = await this.checkProviderChain(provider)
 
     var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
       ref
@@ -1364,79 +1363,75 @@ export class LoadService {
             setTimeout(() => {
               this.getCollection(contractID, async (collection) => {
                 let created = await this.getCreated(collection!);
-
+  
                 if (!collection) {
                   return;
                 }
-                await Promise.all(
-                  products
-                    .filter((x) => x.contractID == contractID)
-                    .map(async (same: NFT, index: number) => {
-                      let c = created.tokens.find(
-                        (i: any) => i?.tokenId == same?.tokenID
-                      ) as any;
-
-                      if (c) {
-                        same.tokenID = c.tokenId;
-                        same.contractID = c.contract;
-                        same.owner = c.owner;
-                        same.name = c.name;
-                        same.format = c.content;
-                        same.royalty = c.royalty;
-                        same.metadata = c.uri;
-                        same.seller = c.seller;
-                        same.token = c.isNative ? undefined : c.token;
-                        same.description = c.description;
-                        same.price = c.price;
-                        same.url = c.image;
-                        same.itemId = c.itemId;
-                        same.forSale = c.forSale;
-                        same.lazyMint = c.minted == false;
-                        same.lazyHash = same.lazyMint
-                          ? same.lazyHash
-                          : undefined;
-                        if (same.tokenID && provider) {
-                          same.seller = await collection.ownerOf(
-                            same.tokenID,
-                            provider2
-                          );
-                        }
+                await Promise.all(products
+                  .filter((x) => x.contractID == contractID)
+                  .map(async (same: NFT, index: number) => {
+                    let c = created.tokens.find(
+                      (i: any) => i?.tokenId == same?.tokenID
+                    ) as any;
+  
+                    if (c) {
+                      same.tokenID = c.tokenId;
+                      same.contractID = c.contract;
+                      same.owner = c.owner;
+                      same.name = c.name;
+                      same.format = c.content;
+                      same.royalty = c.royalty;
+                      same.metadata = c.uri;
+                      same.seller = c.seller;
+                      same.token = c.isNative ? undefined : c.token;
+                      same.description = c.description;
+                      same.price = c.price;
+                      same.url = c.image;
+                      same.itemId = c.itemId;
+                      same.forSale = c.forSale;
+                      same.lazyMint = c.minted == false;
+                      same.lazyHash = same.lazyMint ? same.lazyHash : undefined;
+                      if (same.tokenID && provider) {
+                        same.seller = await collection.ownerOf(
+                          same.tokenID,
+                          provider2
+                        );
                       }
-                      // else if (same.url){
-                      //   same.format = await this.getFormat(same.url);
-                      // }
-
-                      // if (index == 0){
-                      //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
-                      // }
-
-                      if (same.token && provider2) {
-                        await collection
-                          .loadCurrency(same.token, provider2)
-                          .then((i) => {
-                            collection.currency = i;
-                          });
-                      } else {
-                        collection.currency = 'MATIC';
-                      }
-                      console.log('');
-                      collection.NFTs[index] = same;
-                      console.log(collection);
-                      console.log(index);
-                      console.log('');
-                    })
-                );
-
+                    }
+                    // else if (same.url){
+                    //   same.format = await this.getFormat(same.url);
+                    // }
+  
+                    // if (index == 0){
+                    //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
+                    // }
+  
+                    if (same.token && provider2) {
+                      await collection
+                        .loadCurrency(same.token, provider2)
+                        .then((i) => {
+                          collection.currency = i;
+                        });
+                    } else {
+                      collection.currency = 'MATIC';
+                    }
+                    console.log("")
+                    collection.NFTs[index] = same;
+                    console.log(collection)
+                    console.log(index)
+                    console.log("")
+                  }));
+  
                 let sameIndex = collections.findIndex(
                   (d) => d.contract == contractID
                 );
-
+  
                 if (sameIndex != -1) {
                   collections[sameIndex] = collection;
                 } else {
                   collections.push(collection);
                 }
-
+  
                 if (collections.length == col.length) {
                   callback(collections);
                   return;
@@ -1574,13 +1569,13 @@ export class LoadService {
     // const data = await marketContract.fetchItemsCreated();
     // const data1 = await nftContract.name();
     // const data2 = await nftContract.symbol();
-    console.log(contract);
+    console.log(contract)
     const data3 = await marketContract.fetchMarketItems(contract.contract);
-    console.log(data3);
+    console.log(data3)
     const items = await Promise.all(
       data3.map(async (i: any, index: number) => {
-        if (i.seller == '0x0000000000000000000000000000000000000000') {
-          return;
+        if (i.seller == '0x0000000000000000000000000000000000000000'){
+          return
         }
         const tokenUri = await nftContract.tokenURI(
           Number(i.tokenId.toString())
@@ -4669,7 +4664,8 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-    let provider2 = await this.checkProviderChain(provider);
+
+    let provider2 = await this.checkProviderChain(provider)
 
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID).orderBy('Token_ID')

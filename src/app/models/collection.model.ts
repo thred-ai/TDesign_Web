@@ -150,9 +150,8 @@ export class Collection implements ICollection {
 
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
     let contract = new ethers.Contract(token, abi, provider);
-    // let symbol = await contract.symbol();
-    return 'weth';
-    // return symbol;
+    let symbol = await contract.symbol();
+    return symbol;
   }
 
   get owners() {
