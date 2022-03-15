@@ -920,10 +920,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     return 'CONNECT WALLET'
   }
 
-  setProvider(){
-    if (window.ethereum){
+  async setProvider(){
+    if (window.ethereum && (window.ethereum as any).selectedAddress){
       Globals.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-      console.log(Globals.provider)
+      
+      // console.log(Globals.provider)
+
     }
   }
 
@@ -936,7 +938,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.app = this;
 
     this.setOptions();
-    // this.setProvider()
+    this.setProvider()
 
     if (await this.loadService.authenticated()){
       // this.openWallet()
