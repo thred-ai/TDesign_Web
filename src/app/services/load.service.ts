@@ -790,8 +790,6 @@ export class LoadService {
       .subscribe(
         async (resp) => {
           let hashes = resp.result as any[];
-          console.log(hashes);
-          console.log(collection.hashedAddress);
           if (hashes) {
             var logs = new Array<NftLog>();
             await Promise.all(

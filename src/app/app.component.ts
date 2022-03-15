@@ -942,7 +942,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       // this.openWallet()
     }
 
-    await Globals.checkProvider()
+    // await Globals.checkProvider()
     let provider = await detectEthereumProvider() as any
     if (provider){
       provider.on('accountsChanged', (accounts: Array<string>) => console.log(accounts));
