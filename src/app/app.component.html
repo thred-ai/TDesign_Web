@@ -1,14 +1,17 @@
-<mat-sidenav-container class="example-container" style="min-height: 100vh">
+<mat-sidenav-container
+  class="example-container bg-transparent"
+  style="min-height: 100vh"
+>
   <mat-sidenav
     class="w-100 w-md-25 p-3 bg-{{
-      storeInfo()?.colorStyle!.back_code
-    }} h-100 text-{{ storeInfo()?.colorStyle!.text_code }}"
+      (storeInfo()?.colorStyle)!.back_code
+    }} h-100 text-{{ (storeInfo()?.colorStyle)!.text_code }}"
     [position]="'end'"
     #drawer
   >
     <div class="m-2 mb-4 d-flex justify-content-between align-items-center">
       <mat-icon
-        class="p-0 text-{{ storeInfo()?.colorStyle!.text_code }} fw-bolder"
+        class="p-0 text-{{ (storeInfo()?.colorStyle)!.text_code }} fw-bolder"
         style="overflow: hidden"
         role="button"
         (click)="drawer.toggle()"
@@ -19,7 +22,7 @@
         role="button"
         (click)="openWallet()"
         class="btn fw-bold btn-outline-{{
-          storeInfo()?.colorStyle!.text_code
+          (storeInfo()?.colorStyle)!.text_code
         }} rounded-pill"
         [style.font-family]="storeInfo()?.fontName!"
         *ngIf="
@@ -32,9 +35,14 @@
 
     <div
       class="w-100 text-center"
-      *ngIf="storeInfo()?.uid != undefined && storeInfo()?.uid != '' && !provider"
+      *ngIf="
+        storeInfo()?.uid != undefined && storeInfo()?.uid != '' && !provider
+      "
     >
-      <h2 class="text-center w-100" [style.font-family]="storeInfo()?.fontName!">
+      <h2
+        class="text-center w-100"
+        [style.font-family]="storeInfo()?.fontName!"
+      >
         NO WALLET
       </h2>
       <p
@@ -48,7 +56,7 @@
         role="button"
         (click)="openWallet()"
         class="btn mt-2 fw-bold btn-outline-{{
-          storeInfo()?.colorStyle!.text_code
+          (storeInfo()?.colorStyle)!.text_code
         }} rounded-pill"
         [style.font-family]="storeInfo()?.fontName!"
       >
@@ -57,7 +65,9 @@
     </div>
     <div
       class="w-100 h-100 text-center"
-      *ngIf="storeInfo()?.uid != undefined && storeInfo()?.uid != '' && provider"
+      *ngIf="
+        storeInfo()?.uid != undefined && storeInfo()?.uid != '' && provider
+      "
     >
       <h2
         class="text-center w-100 mb-0"
@@ -79,12 +89,12 @@
           <ng-template mat-tab-label>
             <mat-icon
               class="example-tab-icon text-{{
-                storeInfo()?.colorStyle!.text_code
+                (storeInfo()?.colorStyle)!.text_code
               }}"
             >
-            token</mat-icon
+              token</mat-icon
             >
-            <span class="ms-2 text-{{ storeInfo()?.colorStyle!.text_code }}">
+            <span class="ms-2 text-{{ (storeInfo()?.colorStyle)!.text_code }}">
               TOKENS
             </span>
           </ng-template>
@@ -93,75 +103,88 @@
           Tokens shown here are used by collections in this marketplace.
         </p> -->
 
-        <div style="min-height: 70vh;"> 
-<div
-            class="w-100 text-center mt-2 mb-3"
-            *ngFor="let token of storeInfo()?.allTokens ?? []"
-          >
-            <a
-              role="button"
-              style="text-decoration: none"
-              class="card bg-{{
-                storeInfo()?.colorStyle!.back_code
-              }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
-                storeInfo()?.colorStyle!.text_code
-              }} border-secondary"
+          <div style="min-height: 70vh">
+            <div
+              class="w-100 text-center mt-2 mb-3"
+              *ngFor="let token of storeInfo()?.allTokens ?? []"
             >
-              <mat-icon
-                class="mb-2 mt-2 p-0"
-                style="overflow: hidden"
-                svgIcon="{{ token.contract | currencyIcon }}"
-                [ngbTooltip]="qtipContent"
+              <a
                 role="button"
+                style="text-decoration: none"
+                class="card bg-{{
+                  (storeInfo()?.colorStyle)!.back_code
+                }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
+                  (storeInfo()?.colorStyle)!.text_code
+                }} border-secondary"
               >
-                <ng-template #qtipContent>
-                  {{ token.name }}
-                </ng-template>
-              </mat-icon>
-              <h2 class="text-center my-auto mb-2" *ngIf="(provider | networkCheck | async)?.chainId == 137" style="font-size: xx-large">
-                {{
-                  provider
-                    | providerAddress
-                    | async
-                    | walletBalance: provider:token.contract
-                    | async
-                    | big2Num
-                }}
-              </h2>
-            </a>
+                <mat-icon
+                  class="mb-2 mt-2 p-0"
+                  style="overflow: hidden"
+                  svgIcon="{{ token.contract | currencyIcon }}"
+                  [ngbTooltip]="qtipContent"
+                  role="button"
+                >
+                  <ng-template #qtipContent>
+                    {{ token.name }}
+                  </ng-template>
+                </mat-icon>
+                <h2
+                  class="text-center my-auto mb-2"
+                  *ngIf="(provider | networkCheck | async)?.chainId == 137"
+                  style="font-size: xx-large"
+                >
+                  {{
+                    provider
+                      | providerAddress
+                      | async
+                      | walletBalance: provider:token.contract
+                      | async
+                      | big2Num
+                  }}
+                </h2>
+              </a>
+            </div>
+            <p
+              [style.font-family]="storeInfo()?.fontName!"
+              class="text-center text-secondary mt-2"
+              style="font-size: small"
+            >
+              These tokens are used to buy/sell on <br />{{
+                storeInfo()?.fullName
+              }}
+            </p>
           </div>
-          <p
-            [style.font-family]="storeInfo()?.fontName!"
-            class="text-center text-secondary mt-2"
-            style="font-size: small"
-          >
-            These tokens are used to buy/sell on <br />{{
-              storeInfo()?.fullName
-            }}
-          </p>
-        </div>          
         </mat-tab>
         <mat-tab class="h-100">
           <!-- #docregion label-directive -->
           <ng-template mat-tab-label>
             <mat-icon
               class="example-tab-icon text-{{
-                storeInfo()?.colorStyle!.text_code
+                (storeInfo()?.colorStyle)!.text_code
               }}"
               >category</mat-icon
             >
-            <span class="ms-2 text-{{ storeInfo()?.colorStyle!.text_code }}">
+            <span class="ms-2 text-{{ (storeInfo()?.colorStyle)!.text_code }}">
               NFTs
             </span>
           </ng-template>
 
-          <div class="w-100 h-100 justify-content-center pt-3 pb-1" *ngIf="(ownedCollections(provider | providerAddress | async)?.length ?? 0) > 0;else empty_collections">
+          <div
+            class="w-100 h-100 justify-content-center pt-3 pb-1"
+            *ngIf="
+              (ownedCollections(provider | providerAddress | async)?.length ??
+                0) >
+                0;
+              else empty_collections
+            "
+          >
             <!-- [indexChanged]="didMove()" -->
             <div
-              class=" w-100"
+              class="w-100"
               *ngFor="
-                let collection of ownedCollections(provider | providerAddress | async)
-                  | collectionFilter: 'timestamp-asc'
+                let collection of ownedCollections(
+                  provider | providerAddress | async
+                ) | collectionFilter: 'timestamp-asc'
               "
             >
               <div
@@ -186,14 +209,14 @@
                     <a
                       role="button"
                       class="bg-{{
-                        storeInfo()?.colorStyle!.back_code
+                        (storeInfo()?.colorStyle)!.back_code
                       }} side text-secondary d-inline-flex mx-auto mx-md-3 me-md-1 p-2 px-3 mt-0 mb-3 align-items-center justify-content-start"
                       style="font-size: 18px; text-decoration: none"
                       [style.font-family]="storeInfo()?.fontName!"
                     >
                       <!-- {{ collection.symbol }} -->
                       <b
-                        class="text-{{ storeInfo()?.colorStyle!.text_code }}"
+                        class="text-{{ (storeInfo()?.colorStyle)!.text_code }}"
                         style="font-size: 18px"
                       >
                         {{ collection.name }}
@@ -223,15 +246,16 @@
                       drag-scroll-item
                       class="h-100 px-3 w-100 h-100 w-md-50"
                       *ngFor="
-                        let product of ownedProducts(provider | providerAddress | async, collection) ?? []
-                          | sortCol
-                            : 'tokenId-asc'
+                        let product of ownedProducts(
+                          provider | providerAddress | async,
+                          collection
+                        ) ?? [] | sortCol: 'tokenId-asc'
                       "
                     >
                       <div class="col h-100">
                         <div
                           class="bg-{{
-                            storeInfo()?.colorStyle!.back_code
+                            (storeInfo()?.colorStyle)!.back_code
                           }} shadow rounded border border-secondary mb-3"
                           [class.border-secondary]="
                             storeInfo()!.colorStyle!.text_code == 'light'
@@ -255,7 +279,9 @@
                                 }}"
                                 [useSrcset]="true"
                                 [defaultImage]="'/assets/default.png'"
-                                [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
+                                [lazyLoad]="
+                                  product?.linkUrl ?? '/assets/default.png'
+                                "
                                 alt="ok"
                                 style="
                                   object-fit: cover;
@@ -312,19 +338,18 @@
           </div>
           <ng-template #empty_collections class="w-100">
             <p
-            [style.font-family]="storeInfo()?.fontName!"
-            class="text-center text-secondary my-2 w-100"
-            style="font-size: medium; height: 80vh;"
-          >
-            No NFTs owned
-          </p>
+              [style.font-family]="storeInfo()?.fontName!"
+              class="text-center text-secondary my-2 w-100"
+              style="font-size: medium; height: 80vh"
+            >
+              No NFTs owned
+            </p>
           </ng-template>
-
         </mat-tab>
       </mat-tab-group>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content class="h-100">
+  <mat-sidenav-content class="h-100 bg-transparent">
     <div
       *ngIf="
         !isAdmin() &&
@@ -365,14 +390,14 @@
         style="padding-top: 0.8em; padding-bottom: 0.8em"
       >
         <mat-icon
-          class="me-2 text-{{ storeInfo()?.colorStyle!.back_code }} h-100"
+          class="me-2 text-{{ (storeInfo()?.colorStyle)!.back_code }} h-100"
           style="aspect-ratio: 1"
         ></mat-icon>
 
         <div class="d-flex justify-content-center align-items-center">
           <p
             class="text-center fw-bolder my-auto text-{{
-              storeInfo()?.colorStyle!.back_code
+              (storeInfo()?.colorStyle)!.back_code
             }}"
             style="font-size: small"
           >
@@ -383,7 +408,7 @@
         </div>
 
         <mat-icon
-          class="ms-2 text-{{ storeInfo()?.colorStyle!.back_code }} h-100"
+          class="ms-2 text-{{ (storeInfo()?.colorStyle)!.back_code }} h-100"
           role="button"
           (click)="closeBanner = true"
           style="aspect-ratio: 1"
@@ -394,10 +419,12 @@
 
     <nav
       *ngIf="isBrowser() && !isAdmin() && !isLanding()"
-      [hidden]="storeInfo()?.username == undefined || storeInfo()?.username == ''"
+      [hidden]="
+        storeInfo()?.username == undefined || storeInfo()?.username == ''
+      "
       class="navbar navbar-expand-lg navbar-{{
-        storeInfo()?.colorStyle!.nav_code
-      }} bg-{{ storeInfo()?.colorStyle!.back_code }} w-100"
+        (storeInfo()?.colorStyle)!.nav_code
+      }} bg-{{ (storeInfo()?.colorStyle)!.back_code }} w-100"
     >
       <div
         class="container-fluid d-flex justify-content-between px-2 w-100 text-start"
@@ -410,7 +437,7 @@
           <img class="set-img" [src]="storeInfo()?.profileLink" />
           <a
             class="navbar-brand px-2 text-{{
-              storeInfo()?.colorStyle!.text_code
+              (storeInfo()?.colorStyle)!.text_code
             }}"
             role="button"
             (click)="routeToHome()"
@@ -576,7 +603,7 @@
                 data-bs-toggle="collapse"
                 data-bs-target=".navbar-collapse.show"
                 class="btn btn-outline-{{
-                  storeInfo()?.colorStyle!.text_code
+                  (storeInfo()?.colorStyle)!.text_code
                 }} d-flex align-items-center justify-content-center"
                 role="button"
                 (click)="drawer.toggle()"
@@ -735,7 +762,7 @@
         !isAdmin() &&
         !isLanding()
       "
-      class="py-5 bg-{{ storeInfo()?.colorStyle!.back_code }}"
+      class="py-5 bg-{{ (storeInfo()?.colorStyle)!.back_code }}"
     >
       <div class="container-fluid px-3 w-100 d-block justify-content-center">
         <div class="d-block d-md-flex justify-content-between">
@@ -880,7 +907,9 @@
       </div>
       <div class="container">
         <p
-          class="m-0 text-center text-{{ storeInfo()?.colorStyle!.text_code }}"
+          class="m-0 text-center text-{{
+            (storeInfo()?.colorStyle)!.text_code
+          }}"
           [style.font-family]="storeInfo()?.fontName!"
         >
           &copy; {{ storeInfo()?.fullName }} 2022
@@ -888,7 +917,9 @@
       </div>
       <div class="container">
         <p
-          class="m-0 text-center text-{{ storeInfo()?.colorStyle!.text_code }}"
+          class="m-0 text-center text-{{
+            (storeInfo()?.colorStyle)!.text_code
+          }}"
           [style.font-family]="storeInfo()?.fontName!"
         >
           Powered by Thred

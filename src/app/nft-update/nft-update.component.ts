@@ -201,7 +201,7 @@ export class NftUpdateComponent implements OnInit {
           const lazyMinter = new LazyMinter(
             contract,
             signer!,
-            this.collection.domain ?? 'THRED-NFT'
+            'THRED-NFT'
           );
   
           const voucher = await lazyMinter.createVoucher(

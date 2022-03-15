@@ -923,6 +923,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   setProvider(){
     if (window.ethereum){
       Globals.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+      console.log(Globals.provider)
     }
   }
 
@@ -935,12 +936,13 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.app = this;
 
     this.setOptions();
-    this.setProvider()
+    // this.setProvider()
 
     if (await this.loadService.authenticated()){
       // this.openWallet()
     }
 
+    await Globals.checkProvider()
     let provider = await detectEthereumProvider() as any
     if (provider){
       provider.on('accountsChanged', (accounts: Array<string>) => console.log(accounts));

@@ -1,5 +1,5 @@
 
-  export const erc721Merchant = "0x1d38c7D1cC7c3c284A76D27308195e15da119715"
-  export const thredMarketplace = "0xd4Bc90353972d37c0BB6b00A2Df317CEfF98651e"
-  export const nftaddress = "0x1d38c7D1cC7c3c284A76D27308195e15da119715"
+  export const erc721Merchant = "0xc08B0348734b66eE0091dED519fF763f4dCb2069"
+  export const thredMarketplace = "0x0369747e1236B54F8bF1Ee64734A0aeb2fA044cc"
+  export const nftaddress = "0xc08B0348734b66eE0091dED519fF763f4dCb2069"
   

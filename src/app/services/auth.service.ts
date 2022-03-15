@@ -56,7 +56,8 @@ export class AuthService {
           }
           try {
 
-            let s = await provider.getSigner().signMessage(`0x${this.toHex(`${response.nonce}`)}`)
+            
+            let s = await provider?.getSigner().signMessage(`0x${this.toHex(`${response.nonce}`)}`)
 
             this.functions
               .httpsCallable('verifySignedMessage')({

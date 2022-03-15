@@ -50,6 +50,7 @@ export class Globals {
 
   public static set provider(provider: ethers.providers.Web3Provider | undefined){
     this.prov = provider
+    console.log(provider)
     this.checkNetwork(true,  provider);
   }
 
@@ -117,6 +118,7 @@ export class Globals {
             ],
           },
         },
+        
         display: {
           description: 'Scan with a wallet to connect',
         },
@@ -129,9 +131,14 @@ export class Globals {
       providerOptions, // required
     });
 
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
+    var provider: ethers.providers.Web3Provider | undefined = undefined
 
+    try {
+        const connection = await web3Modal.connect();
+        provider = new ethers.providers.Web3Provider(connection);
+      } catch (error) {
+        provider = undefined
+      }
     return provider;
   }
 

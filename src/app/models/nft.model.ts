@@ -1,7 +1,6 @@
 import { Dict } from '../services/load.service';
-import { nftaddress, erc721Merchant, thredMarketplace } from 'config';
+import { erc721Merchant } from 'config';
 import { ethers } from 'ethers';
-import axios from 'axios';
 
 export class NFT {
   tokenID?: number;

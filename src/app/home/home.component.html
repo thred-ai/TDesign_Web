@@ -20,9 +20,9 @@
 <!-- Section-->
 <section
   *ngIf="isBrowser() && storeInfo && storeInfo?.active && !isLoading"
-  class="py-5 pt-0 w-100 h-100"
+  class="py-5 pt-0 w-100"
   [class.fixed-top]="page?.fullscreen ?? false"
-  style="overflow-y: scroll"
+  style="overflow-y: scroll; min-height: 60vh;"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
   <div class="w-100 h-100">

@@ -352,12 +352,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.loadService.logView()
         this.rootComponent.setOptions()
       }
-      else if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
-        this.loadService.getCountries()
-      }
-      else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
-        this.loadService.getTemplates()
-      }
+      // else if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
+      //   this.loadService.getCountries()
+      // }
+      // else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
+      //   this.loadService.getTemplates()
+      // }
       else{
         this.rootComponent.cdr.detectChanges()
       }

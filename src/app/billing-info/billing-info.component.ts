@@ -385,9 +385,9 @@ export class BillingInfoComponent implements OnInit, AfterViewInit {
         else if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
           this.loadService.getCountries()
         }
-        else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
-          this.loadService.getTemplates()
-        }
+        // else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
+        //   this.loadService.getTemplates()
+        // }
         else{
           this.setForm()
           this.cdr.detectChanges()

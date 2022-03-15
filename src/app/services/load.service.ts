@@ -53,6 +53,8 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NetworkCheckPipe } from '../network-check.pipe';
+import { LazyMinter } from 'LazyMinter';
+import { create } from 'ipfs-http-client';
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
@@ -656,7 +658,7 @@ export class LoadService {
           wallet
         );
 
-        Globals.sInfo.next(Globals.storeInfo)
+        Globals.sInfo.next(Globals.storeInfo);
 
         if (banners.length > 0) {
           this.rootComponent?.setInterval();
@@ -788,8 +790,8 @@ export class LoadService {
       .subscribe(
         async (resp) => {
           let hashes = resp.result as any[];
-          console.log(hashes)
-          console.log(collection.hashedAddress)
+          console.log(hashes);
+          console.log(collection.hashedAddress);
           if (hashes) {
             var logs = new Array<NftLog>();
             await Promise.all(
@@ -808,9 +810,7 @@ export class LoadService {
                   } else {
                     type = 'transfer';
                   }
-                } else if (
-                  t.topics[0] == collection.hashedAddress
-                ) {
+                } else if (t.topics[0] == collection.hashedAddress) {
                   type = 'list';
                 } else if (
                   t.topics[0] !=
@@ -845,7 +845,6 @@ export class LoadService {
         }
       );
   }
-
 
   async providerCheck() {
     let address = await Globals.provider?.getSigner().getAddress();
@@ -948,7 +947,6 @@ export class LoadService {
   }
 
   async getCustomer() {
-
     let uid = (await this.isLoggedIn())?.uid;
 
     if (uid) {
@@ -1095,7 +1093,7 @@ export class LoadService {
               wallet
             );
 
-            Globals.uInfo.next(Globals.userInfo)
+            Globals.uInfo.next(Globals.userInfo);
 
             this.registerTokens(tokens, Globals.userInfo);
 
@@ -1218,20 +1216,22 @@ export class LoadService {
     });
   }
 
-  async increaseVolume(nft: NFT){
+  async increaseVolume(nft: NFT) {
     this.functions
-      .httpsCallable('updateVolume')({contract: nft.contractID, amount: nft.priceNum})
+      .httpsCallable('updateVolume')({
+        contract: nft.contractID,
+        amount: nft.priceNum,
+      })
       .pipe(first())
       .subscribe(
-        async (resp) => {
-        },
+        async (resp) => {},
         (err) => {
           console.log(err);
         }
       );
   }
 
-  async checkProviderChain(provider: ethers.providers.Provider){
+  async checkProviderChain(provider: ethers.providers.Provider) {
     var properNetwork = false;
     if (provider as ethers.providers.Web3Provider) {
       const pipe = new NetworkCheckPipe();
@@ -1239,9 +1239,9 @@ export class LoadService {
         (await pipe.networkCheck(provider as ethers.providers.Web3Provider))
           .chainId == 137;
     }
-    return properNetwork ? provider : new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
-    )
+    return properNetwork
+      ? provider
+      : new ethers.providers.JsonRpcProvider(this.rpcEndpoint);
   }
 
   async getPosts(
@@ -1252,205 +1252,191 @@ export class LoadService {
     ),
     uid = Globals.storeInfo?.uid
   ) {
-    
-    let provider2 = await this.checkProviderChain(provider)
+    let provider2 = await this.checkProviderChain(provider);
 
-    var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-      ref
-        .where('Available', '==', true)
-        .where('Public', '==', true)
-        .orderBy('Token_ID')
-    );
+    var col = new Array<Collection>();
 
-    if (filterID) {
-      query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-        ref
-          .where('Available', '==', true)
-          .where('Public', '==', true)
-          .orderBy('Token_ID')
-      );
-    }
+    // products = products.filter((p) => p.contractID != nftaddress);
 
-    // if (this.provider){
-    var products = new Array<NFT>();
-    var collections = new Array<Collection>();
-
-    // this.soldNFTs = this.storeProducts?.filter((i: any) => i.sold) ?? []
-    // }
-
-    let sub = query.get().subscribe(async (docDatas) => {
+    var counter = 0
+    this.getCollections(uid, async (c) => {
+      if (c) {
+        col = col?.concat(c);
+        // col = col.filter((v) => c.find((g) => g.contract == v) == undefined);
+      }
       await Promise.all(
-        docDatas.docs.map(async (doc, index) => {
-          let docData = doc.data() as DocumentData;
+        col.map(async (collection: Collection) => {
+          // setTimeout(() => {
+          //   this.getCollection(contractID, async (collection) => {
+          // let created = await this.getCreated(collection!);
 
-          if (docData) {
-            let tokenID = docData['Token_ID'] as number;
-            let contractID = docData['Contract_Address'] as string;
-            let ownerAddress =
-              (docData['Owner_Address'] as string) ??
-              Globals.storeInfo?.walletAddress ??
-              '';
-            let sold = (docData['Sold'] as boolean) ?? false;
-            let lazyMint = (docData['Lazy'] as boolean) ?? true;
-            let royalty = (docData['Royalty'] as number) ?? 0;
-            let lazyHash = docData['Lazy_Hash'] as Dict<any>;
-            let metadata = docData['Metadata'] as string;
-            let forSale = docData['forSale'] as boolean;
+          // console.log(created)
 
-            var cost = ethers.utils.parseUnits('0.02', 'ether');
-            if (lazyHash) {
-              cost = lazyHash['minPrice'] as ethers.BigNumber;
-            }
+          var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
+            ref
+              .where('Available', '==', true)
+              .where('Contract_Address', '==', collection.contract)
+              .orderBy('Token_ID')
+          );
 
-            let token = docData['Token'] as string;
-
-            let product = new NFT(
-              tokenID,
-              contractID,
-              ownerAddress,
-              sold,
-              lazyMint,
-              undefined,
-              royalty,
-              lazyHash,
-              metadata
+          if (filterID) {
+            query = this.db.collection('Users/' + uid + '/Products', (ref) =>
+              ref
+                .where('Available', '==', true)
+                .where('Contract_Address', '==', collection.contract)
+                .orderBy('Token_ID')
             );
-
-            product.price = cost ?? 0.02;
-            product.seller = ownerAddress;
-            product.docID = doc.id;
-            product.isAvailable = true;
-            product.forSale = forSale;
-            product.linkUrl = this.getURL(doc.id);
-
-            if (metadata) {
-              const meta = await axios.get(metadata);
-              product.name = meta.data.name;
-              product.url = meta.data.image;
-              product.traits = meta.data.traits;
-              product.description = meta.data.description;
-              // if (isPlatformBrowser(this.platformID)){
-              //   product.format = await this.getFormat(meta.data.image);
-              // }
-            } else {
-              product.name = docData['Name'] as string;
-              product.description = docData['Description'] as string;
-              let productID = docData['Product_ID'];
-              product.url = this.getURL(productID);
-            }
-            products.push(product);
           }
+
+          // if (this.provider){
+          var products = new Array<NFT>();
+
+          // this.soldNFTs = this.storeProducts?.filter((i: any) => i.sold) ?? []
+          // }
+
+
+
+          let sub = query.get().subscribe(async (docDatas) => {
+            sub.unsubscribe()
+            await Promise.all(
+              docDatas.docs.map(async (doc, index) => {
+                let docData = doc.data() as DocumentData;
+
+                if (docData) {
+                  let tokenID = docData['Token_ID'] as number;
+                  let contractID = docData['Contract_Address'] as string;
+                  let ownerAddress =
+                    (docData['Owner_Address'] as string) ??
+                    Globals.storeInfo?.walletAddress ??
+                    '';
+                  let sold = (docData['Sold'] as boolean) ?? false;
+                  let lazyMint = (docData['Lazy'] as boolean) ?? true;
+                  let royalty = (docData['Royalty'] as number) ?? 0;
+                  let lazyHash = docData['Lazy_Hash'] as Dict<any>;
+                  let metadata = docData['Metadata'] as string;
+                  let forSale = docData['forSale'] as boolean;
+
+                  var cost = ethers.utils.parseUnits('0.02', 'ether');
+                  if (lazyHash) {
+                    cost = lazyHash['minPrice'] as ethers.BigNumber;
+                  }
+
+                  let product = new NFT(
+                    tokenID,
+                    contractID,
+                    ownerAddress,
+                    sold,
+                    lazyMint,
+                    undefined,
+                    royalty,
+                    lazyHash,
+                    metadata
+                  );
+
+                  product.price = cost ?? 0.02;
+                  product.seller = ownerAddress;
+                  product.docID = doc.id;
+                  product.isAvailable = true;
+                  product.forSale = forSale;
+                  product.linkUrl = this.getURL(doc.id);
+                  product.name = docData['Name'] as string;
+                  product.description = docData['Description'] as string;
+                  product.traits = docData['Traits'] as Array<any>;
+                  let productID = docData['Product_ID'];
+                  product.url = this.getURL(productID);
+
+                  
+                  // if (metadata) {
+                  // axios.get(metadata).then((meta) => {
+                  //   product.name = meta.data.name;
+                  //   product.url = meta.data.image;
+                  //   product.traits = meta.data.traits;
+                  //   product.description = meta.data.description;
+                  // });
+                  // // if (isPlatformBrowser(this.platformID)){
+                  // //   product.format = await this.getFormat(meta.data.image);
+                  // // }
+                  // } else {
+                  // }
+
+
+                  // let c = created.tokens.find(
+                  //   (i: any) => i?.tokenId == product?.tokenID
+                  // ) as any;
+  
+                  // if (c) {
+                  //   product.tokenID = c.tokenId;
+                  //   product.contractID = c.contract;
+                  //   product.owner = c.owner;
+                  //   product.name = c.name;
+                  //   product.format = c.content;
+                  //   product.royalty = c.royalty;
+                  //   product.metadata = c.uri;
+                  //   product.seller = c.seller;
+                  //   product.token = c.isNative ? undefined : c.token;
+                  //   product.description = c.description;
+                  //   product.price = c.price;
+                  //   product.url = c.image;
+                  //   product.itemId = c.itemId;
+                  //   product.forSale = c.forSale;
+                  //   product.lazyMint = c.minted == false;
+                  //   product.lazyHash = product.lazyMint ? product.lazyHash : undefined;
+                    if (product.tokenID && provider && !product.lazyMint) {
+                      product.seller = await collection.ownerOf(
+                        product.tokenID,
+                        provider2
+                      );
+                    }
+                  // } else {
+                    
+                  // }
+
+                  if ((product.name ?? '') == '') {
+                    product.name = `${collection.name} #${index + 1}`;
+                  }
+
+                  products.push(product);
+  
+                  // else if (same.url){
+                  //   same.format = await this.getFormat(same.url);
+                  // }
+  
+                  // if (index == 0){
+                  //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
+                  // }                  
+                }
+              })
+            );
+            counter += 1
+            if (collection.customToken && provider2) {
+              await collection
+                .loadCurrency(collection.customToken, provider2)
+                .then((i) => {
+                  collection.currency = i;
+                });
+            } else {
+              collection.currency = 'MATIC';
+            }
+            console.log('');
+            collection.NFTs = products
+            console.log(collection);
+            console.log(counter);
+            console.log(col.length);
+
+            if (counter == col.length){
+              if (col) {
+                callback(col);
+                return;
+              }
+            }
+          });
         })
       );
 
-      var col = new Array<string>();
-
-      products = products.filter((p) => p.contractID != nftaddress);
-
-      // products.forEach(p => {
-      //   console.log(p.contractID)
-      //   if (!(col.find(x => x == p.contractID))){
-      //     col.push(p.contractID)
-      //   }
-      // })
-
-      this.getCollections(uid, async (c) => {
-        if (c) {
-          col = col?.concat(c.map((v) => v.contract));
-          // col = col.filter((v) => c.find((g) => g.contract == v) == undefined);
-        }
-        await Promise.all(
-          col.map(async (contractID: string) => {
-            setTimeout(() => {
-              this.getCollection(contractID, async (collection) => {
-                let created = await this.getCreated(collection!);
-  
-                if (!collection) {
-                  return;
-                }
-                await Promise.all(products
-                  .filter((x) => x.contractID == contractID)
-                  .map(async (same: NFT, index: number) => {
-                    let c = created.tokens.find(
-                      (i: any) => i?.tokenId == same?.tokenID
-                    ) as any;
-  
-                    if (c) {
-                      same.tokenID = c.tokenId;
-                      same.contractID = c.contract;
-                      same.owner = c.owner;
-                      same.name = c.name;
-                      same.format = c.content;
-                      same.royalty = c.royalty;
-                      same.metadata = c.uri;
-                      same.seller = c.seller;
-                      same.token = c.isNative ? undefined : c.token;
-                      same.description = c.description;
-                      same.price = c.price;
-                      same.url = c.image;
-                      same.itemId = c.itemId;
-                      same.forSale = c.forSale;
-                      same.lazyMint = c.minted == false;
-                      same.lazyHash = same.lazyMint ? same.lazyHash : undefined;
-                      if (same.tokenID && provider) {
-                        same.seller = await collection.ownerOf(
-                          same.tokenID,
-                          provider2
-                        );
-                      }
-                    }
-                    // else if (same.url){
-                    //   same.format = await this.getFormat(same.url);
-                    // }
-  
-                    // if (index == 0){
-                    //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
-                    // }
-  
-                    if (same.token && provider2) {
-                      await collection
-                        .loadCurrency(same.token, provider2)
-                        .then((i) => {
-                          collection.currency = i;
-                        });
-                    } else {
-                      collection.currency = 'MATIC';
-                    }
-                    console.log("")
-                    collection.NFTs[index] = same;
-                    console.log(collection)
-                    console.log(index)
-                    console.log("")
-                  }));
-  
-                let sameIndex = collections.findIndex(
-                  (d) => d.contract == contractID
-                );
-  
-                if (sameIndex != -1) {
-                  collections[sameIndex] = collection;
-                } else {
-                  collections.push(collection);
-                }
-  
-                if (collections.length == col.length) {
-                  callback(collections);
-                  return;
-                }
-              });
-            }, 100);
-          })
-        );
-
-        if (col.length == 0) {
-          callback(collections);
-          return;
-        }
-
-        if (isPlatformBrowser(this.platformID)) {
-          sub.unsubscribe();
-        }
-      });
+      if (col.length == 0) {
+        callback([]);
+        return;
+      }
     });
   }
 
@@ -1570,13 +1556,13 @@ export class LoadService {
     // const data = await marketContract.fetchItemsCreated();
     // const data1 = await nftContract.name();
     // const data2 = await nftContract.symbol();
-    console.log(contract)
+    console.log(contract);
     const data3 = await marketContract.fetchCollectionAssets(contract.contract);
-    console.log(data3)
+    console.log(data3);
     const items = await Promise.all(
       data3.map(async (i: any, index: number) => {
-        if (i.seller == '0x0000000000000000000000000000000000000000'){
-          return
+        if (i.seller == '0x0000000000000000000000000000000000000000') {
+          return;
         }
         const tokenUri = await nftContract.tokenURI(
           Number(i.tokenId.toString())
@@ -2998,6 +2984,42 @@ export class LoadService {
     return undefined;
   }
 
+  async getBase64ImageFromUrl(imageUrl: string) {
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', imageUrl, true);
+      xhr.responseType = 'arraybuffer';
+
+      xhr.onerror = function (e) {
+        alert('error');
+      };
+
+      xhr.onload = function (e) {
+        if (this.status == 404) {
+          console.log('man');
+          resolve('none');
+          return;
+        } else if (this.status == 200) {
+          var uInt8Array = new Uint8Array(this.response);
+          var i = uInt8Array.length;
+          var biStr = new Array(i);
+          while (i--) {
+            biStr[i] = String.fromCharCode(uInt8Array[i]);
+          }
+          var data = biStr.join('');
+          var base64 = window.btoa(data);
+
+          xhr.onerror = function (e) {
+            reject(e);
+          };
+
+          resolve('data:image/jpeg;base64,' + base64);
+        }
+      };
+      xhr.send();
+    });
+  }
+
   private async uploadStoreImages(image: string, type?: string, uid?: string) {
     if (type) {
       const filePath = 'Users/' + uid + '/Store_Images/' + type + '.png';
@@ -3124,6 +3146,9 @@ export class LoadService {
         Lazy_Hash: mappedData.lazyHash,
         Content: mappedData.format,
         Timestamp: new Date(),
+        Name: mappedData.name,
+        Description: mappedData.description,
+        Traits: mappedData.traits ?? []
       } as Dict<any>)
     );
 
@@ -4665,8 +4690,7 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-
-    let provider2 = await this.checkProviderChain(provider)
+    let provider2 = await this.checkProviderChain(provider);
 
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID).orderBy('Token_ID')
@@ -4826,6 +4850,120 @@ export class LoadService {
       '.png?alt=media'
     );
   }
+
+  // async migratePhotos() {
+  //   const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
+
+  //   let signer = new ethers.Wallet(
+  //     '',
+  //     Globals.provider
+  //   );
+
+  //   let contract = new ethers.Contract(
+  //     thredMarketplace,
+  //     THRED_MARKET.abi,
+  //     signer
+  //   );
+
+  //   const lazyMinter = new LazyMinter(contract, signer!, 'THRED-NFT');
+
+  //   const price = ethers.utils.parseUnits('25', 'ether');
+  //   const royalty = ethers.utils.parseUnits('1000', 'ether');
+
+  //   let sub = this.db
+  //     .collectionGroup('Products', (ref) =>
+  //       ref
+  //         .where('Has_Picture', '==', true)
+  //     )
+  //     .get()
+  //     .subscribe(async (docDatas) => {
+  //       let index = 0;
+  //       var interval = setInterval(async () => {
+  //         let doc = docDatas.docs[index]
+  //         let docData = doc.data() as DocumentData;
+  //         let uid = docData.UID as string;
+  //         let description = docData.Description ?? '';
+  //         let traits = new Array<any>();
+  //         let name = docData.Name ?? 'MY NFT'
+  //         var url =
+  //           `https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F${uid}%2FProducts%2F` +
+  //           doc.id +
+  //           '%2F' +
+  //           doc.id +
+  //           '.png?alt=media';
+
+  //         var data1 = {
+  //           name,
+  //           description,
+  //           image: url,
+  //           traits: traits,
+  //           external_link: undefined,
+  //         };
+
+  //         const data = JSON.stringify(data1);
+
+  //         try {
+  //           const added = await client.add(data);
+  //           const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
+  //           /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
+  //           const voucher = await lazyMinter.createVoucher(
+  //             index + 1,
+  //             url2,
+  //             royalty,
+  //             price
+  //           );
+
+  //           let nft = new NFT(
+  //             index + 1,
+  //             nftaddress,
+  //             await signer?.getAddress(),
+  //             false,
+  //             true,
+  //             'image',
+  //             Number(10),
+  //             voucher,
+  //             url2
+  //           );
+
+  //           nft.format = "image";
+  //           var x = ethers.utils.parseUnits('0.02', 'ether');
+  //           if (voucher) {
+  //             x = voucher['minPrice'] as ethers.BigNumber;
+  //           }
+  //           nft.price = x;
+  //           nft.name = name;
+  //           nft.description = description;
+  //           nft.traits = traits;
+  //           nft.external_url = undefined;;
+  //           nft.token = undefined;
+  //           nft.isAvailable = true;
+
+  //           let img =
+  //             (await this.getBase64ImageFromUrl(url)) as string;
+  //           if (img){
+  //             let docID = await this.saveNFT(
+  //               nft,
+  //               uid,
+  //               undefined,
+  //               img
+  //             );
+  //             if (docID) {
+  //               nft.docID = docID;
+  //               doc.ref.update({'Available' : false})
+  //               nft.linkUrl = this.getURL(docID);
+  //               console.log('NFT ' + (index + 1) + ' uploaded!')
+  //               if (index == docDatas.docs.length - 1){
+  //                 clearInterval(interval)
+  //                 return
+  //               }
+  //               index += 1
+
+  //             }
+  //           }
+  //         } catch (error) {}
+  //       }, 7500);
+  //     });
+  // }
 
   getProfileURL(uid: string, dpID: string) {
     if (Globals.isNewUser) {

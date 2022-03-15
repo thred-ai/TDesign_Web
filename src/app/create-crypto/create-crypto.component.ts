@@ -261,8 +261,14 @@ export class CreateCryptoComponent implements OnInit {
             );
 
             if (!lazyMint) {
-              let transaction = await contract2.mintNFT(voucher, cl.contract);
-              await transaction.wait();
+              
+              try {
+                let transaction = await contract2.mintNFT(voucher, cl.contract);
+                await transaction.wait();
+              } catch (error) {
+                throw("An Error Occured")
+              }
+              
             }
 
             let nft = new NFT(

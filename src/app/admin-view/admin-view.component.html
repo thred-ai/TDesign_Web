@@ -37,10 +37,10 @@
 
 <div
   *ngIf="
-    isBrowser() &&
+    (isBrowser() &&
     userInfo &&
     (provider | providerCheck | async | lowercase) ==
-      (userInfo?.walletAddress | lowercase)
+      (userInfo?.walletAddress | lowercase)); else walletBlock
   "
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -4534,46 +4534,54 @@
     </section>
   </div>
 </div>
-<div
-  *ngIf="needsLogin && !provider"
-  class="d-flex justify-content-center align-items-center"
-  style="height: 100vh"
->
-  <div class="w-100 text-center">
-    <div
-      class="d-flex justify-content-center align-items-center mb-4"
-      style="height: 100px"
-    >
-      <img
-        src="assets/metamask.png"
-        class="h-100 mx-3"
-        style="object-fit: contain; aspect-ratio: 1"
-      />
-      <img
-        src="assets/walletconnect.png"
-        class="h-100 mx-3"
-        style="object-fit: contain; aspect-ratio: 1"
-      />
-    </div>
-    <h2
-      class="fw-bolder w-100 text-center"
-      style="font-size: 35px; line-height: 1.2em"
-    >
-      Cannot Connect to Wallet
-    </h2>
-    <p
-      class="w-100 text-center text-secondary"
-      style="font-size: 17.5px; line-height: 1.2em"
-    >
-      Please make sure a Metamask/WalletConnect compatible wallet is available
-      and try again
-    </p>
-    <a
-      class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2"
-      (click)="setProvider()"
-      style="font-size: 25px"
-    >
-      REFRESH
-    </a>
+<ng-template #walletBlock>
+  <div *ngIf="provider; else elseBlock">
+
   </div>
-</div>
+
+  <ng-template #elseBlock>
+    <div
+    class="d-flex justify-content-center align-items-center"
+    style="height: 100vh"
+  >
+    <div class="w-100 text-center">
+      <div
+        class="d-flex justify-content-center align-items-center mb-4"
+        style="height: 100px"
+      >
+        <img
+          src="assets/metamask.png"
+          class="h-100 mx-3"
+          style="object-fit: contain; aspect-ratio: 1"
+        />
+        <img
+          src="assets/walletconnect.png"
+          class="h-100 mx-3"
+          style="object-fit: contain; aspect-ratio: 1"
+        />
+      </div>
+      <h2
+        class="fw-bolder w-100 text-center text-white"
+        style="font-size: 35px; line-height: 1.2em"
+      >
+        Cannot Connect to Wallet
+      </h2>
+      <p
+        class="w-100 text-center text-secondary"
+        style="font-size: 17.5px; line-height: 1.2em"
+      >
+        Please make sure a Metamask/WalletConnect compatible wallet is available
+        and try again
+      </p>
+      <a
+        class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2"
+        (click)="setProvider()"
+        style="font-size: 25px"
+      >
+        REFRESH
+      </a>
+    </div>
+  </div>
+
+  </ng-template>
+</ng-template>

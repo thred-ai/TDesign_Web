@@ -2936,63 +2936,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   soldNFTs: Array<NFT> = []
 
-  
 
-
-  async initializeProvider(){
-    const providerOptions = {
-      walletconnect: {
-        package: WalletConnectProvider,
-        options: {
-          infuraId: '90806fec200c42fdbf783260b38f0a73',
-          rpc: {
-            1:
-              'https://mainnet.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
-            42:
-              'https://kovan.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
-            137:
-              'https://polygon-mainnet.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
-            80001: 'https://rpc-mumbai.matic.today',
-          },
-          qrcodeModalOptions: {
-            mobileLinks: [
-              'rainbow',
-              'metamask',
-              'argent',
-              'trust',
-              'imtoken',
-              'pillar',
-            ],
-          },
-        },
-        display: {
-          description: 'Scan with a wallet to connect',
-        },
-      },
-    };
-
-    const web3Modal = new Web3Modal({
-      network: 'mainnet', // optional
-      cacheProvider: true, // optional
-      providerOptions, // required
-    });
-    this.needsLogin = false
-
-    var provider: ethers.providers.Web3Provider | undefined = undefined
-    try {
-      const connection = await web3Modal.connect();
-      provider = new ethers.providers.Web3Provider(connection);
-    } catch (error) {
-      this.needsLogin = true
-    }
-    
-    return provider
-  }
-
-  needsLogin = false
 
   copyAffiliateURL() {
     this.toast('Affiliate link copied to clipboard!');
@@ -3191,6 +3135,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async callback() {
+    
     if (Globals.storeInfo?.username) {
       this.showSpinner(500);
       this.mainLoad = true
@@ -3215,16 +3160,19 @@ export class AdminViewComponent implements OnInit, OnDestroy {
             isPlatformBrowser(this.platformID)
           ) {
             this.loadService.getCustomer();
-          } else if (Globals.selectedCurrency == undefined) {
-            this.loadService.getCountries();
-          } else if (Globals.themes == undefined) {
+          } 
+          // else if (Globals.selectedCurrency == undefined) {
+          //   this.loadService.getCountries();
+          // } 
+          else if (Globals.themes == undefined) {
             this.loadService.getThemes();
-          } else if (
-            Globals.templates.length == 0 &&
-            isPlatformBrowser(this.platformID)
-          ) {
-            this.loadService.getTemplates();
           }
+          // } else if (
+          //   Globals.templates.length == 0 &&
+          //   isPlatformBrowser(this.platformID)
+          // ) {
+          //   this.loadService.getTemplates();
+          // }
           if (Globals.billingInfo == undefined) {
             this.loadService.getAllBillingInfo();
           } else {
@@ -3237,18 +3185,17 @@ export class AdminViewComponent implements OnInit, OnDestroy {
                 inv.name = name;
               }
             });
-            if (!this.provider && !this.needsLogin){
-              this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)
-              this.setProvider()
-              
+            // if (!this.provider && !this.needsLogin){
+              // this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)              
               // let signer = await this.provider?.getSigner()
               // let balance = await signer?.getBalance()
-            }
+            // }
             Globals.storeInfo = Globals.userInfo!
             this.hideSpinner();
             this.setForm();
             this.showWelcomeModal();
-            this.cdr.detectChanges();
+            // this.cdr.detectChanges();
+
           }
         } else {
           this.spinner.hide('adminSpinner');
@@ -3268,6 +3215,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async setProvider(){
+    console.log("set")
     await Globals.checkProvider()
   }
 

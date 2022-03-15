@@ -62,7 +62,7 @@
               loop
               playsinline
               controls
-              poster='{{productToBuy.linkUrl ?? ""}}'
+              poster="{{ productToBuy.linkUrl ?? '' }}"
               *ngIf="
                 productToBuy?.format == 'video' && productToBuy.url != undefined
               "
