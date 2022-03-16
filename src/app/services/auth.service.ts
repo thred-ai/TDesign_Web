@@ -136,7 +136,7 @@ export class AuthService {
               undefined,
               undefined,
               nonce,
-              address
+              address.toLowerCase()
             );
             callback(result.user.uid, this.app);
           } else {
