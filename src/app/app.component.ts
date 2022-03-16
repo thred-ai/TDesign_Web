@@ -940,6 +940,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.setOptions();
     this.setProvider()
 
+    // this.loadService.migratePhotos()
     if (await this.loadService.authenticated()){
       // this.openWallet()
     }

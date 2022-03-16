@@ -4850,116 +4850,46 @@ export class LoadService {
   }
 
   // async migratePhotos() {
-  //   const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
-
-  //   let signer = new ethers.Wallet(
-  //     '',
-  //     Globals.provider
-  //   );
-
-  //   let contract = new ethers.Contract(
-  //     thredMarketplace,
-  //     THRED_MARKET.abi,
-  //     signer
-  //   );
-
-  //   const lazyMinter = new LazyMinter(contract, signer!, 'THRED-NFT');
-
-  //   const price = ethers.utils.parseUnits('25', 'ether');
-  //   const royalty = ethers.utils.parseUnits('1000', 'ether');
 
   //   let sub = this.db
   //     .collectionGroup('Products', (ref) =>
   //       ref
-  //         .where('Has_Picture', '==', true)
+  //         .where('Available', '==', true)
   //     )
   //     .get()
   //     .subscribe(async (docDatas) => {
   //       let index = 0;
+  //       console.log(docDatas.docs.length)
   //       var interval = setInterval(async () => {
   //         let doc = docDatas.docs[index]
   //         let docData = doc.data() as DocumentData;
-  //         let uid = docData.UID as string;
-  //         let description = docData.Description ?? '';
-  //         let traits = new Array<any>();
-  //         let name = docData.Name ?? 'MY NFT'
-  //         var url =
-  //           `https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F${uid}%2FProducts%2F` +
-  //           doc.id +
-  //           '%2F' +
-  //           doc.id +
-  //           '.png?alt=media';
+  //         let pic = docData.Has_Picture as boolean;
+  //         let id = docData.Product_ID as string;
 
-  //         var data1 = {
-  //           name,
-  //           description,
-  //           image: url,
-  //           traits: traits,
-  //           external_link: undefined,
-  //         };
-
-  //         const data = JSON.stringify(data1);
+  //         let url = this.getURL(id)
+          
+  //         index += 1
 
   //         try {
-  //           const added = await client.add(data);
-  //           const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
-  //           /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-  //           const voucher = await lazyMinter.createVoucher(
-  //             index + 1,
-  //             url2,
-  //             royalty,
-  //             price
-  //           );
+  //           let img = await this.getBase64ImageFromUrl(url)
 
-  //           let nft = new NFT(
-  //             index + 1,
-  //             nftaddress,
-  //             await signer?.getAddress(),
-  //             false,
-  //             true,
-  //             'image',
-  //             Number(10),
-  //             voucher,
-  //             url2
-  //           );
-
-  //           nft.format = "image";
-  //           var x = ethers.utils.parseUnits('0.02', 'ether');
-  //           if (voucher) {
-  //             x = voucher['minPrice'] as ethers.BigNumber;
+  //           if (img == 'none' || pic == true){
+  //             console.log("-- Removing -- " + id)
+  //             throw('none')
   //           }
-  //           nft.price = x;
-  //           nft.name = name;
-  //           nft.description = description;
-  //           nft.traits = traits;
-  //           nft.external_url = undefined;;
-  //           nft.token = undefined;
-  //           nft.isAvailable = true;
-
-  //           let img =
-  //             (await this.getBase64ImageFromUrl(url)) as string;
-  //           if (img){
-  //             let docID = await this.saveNFT(
-  //               nft,
-  //               uid,
-  //               undefined,
-  //               img
-  //             );
-  //             if (docID) {
-  //               nft.docID = docID;
-  //               doc.ref.update({'Available' : false})
-  //               nft.linkUrl = this.getURL(docID);
-  //               console.log('NFT ' + (index + 1) + ' uploaded!')
-  //               if (index == docDatas.docs.length - 1){
-  //                 clearInterval(interval)
-  //                 return
-  //               }
-  //               index += 1
-
-  //             }
+  //           else{
+  //             console.log("Passed " + id)
+  //             return
   //           }
-  //         } catch (error) {}
-  //       }, 7500);
+  //         } catch (error) {
+  //           console.log("Removed " + id)
+  //           doc.ref.update({'Available' : false})
+  //         }
+          
+          
+          
+          
+  //       }, 100);
   //     });
   // }
 

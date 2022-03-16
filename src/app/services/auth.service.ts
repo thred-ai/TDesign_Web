@@ -110,14 +110,18 @@ export class AuthService {
       let ethereum: any;
       var nonce = this.randomString(10);
       let password = this.randomHash();
-      let provider = await from(detectEthereumProvider()).toPromise();
+
+      
+      let provider = await Globals.initializeProvider()
 
       if (!provider) {
         callback(undefined, this.app, 'Please install MetaMask');
         return;
       }
 
-      ethereum = provider;
+      let address = await provider.getSigner().getAddress()
+
+      
 
       return this.auth
         .createUserWithEmailAndPassword(email, password)
@@ -132,7 +136,7 @@ export class AuthService {
               undefined,
               undefined,
               nonce,
-              ethereum.selectedAddress.toLowercase()
+              address
             );
             callback(result.user.uid, this.app);
           } else {
