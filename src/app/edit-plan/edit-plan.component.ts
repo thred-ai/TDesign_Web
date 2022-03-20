@@ -77,7 +77,7 @@ export class EditPlanComponent implements OnInit {
     if (this.subInfo?.plan.id == "price_1JmgQyIdY1nzc70NXgzC1vCN"){
       return "Thred Core Plan"
     }
-    else if (this.subInfo.plan.id == 'price_1KXUw3IdY1nzc70N22t0gNoN'){
+    else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
       return 'Thred Store Builder Plan';
     }
     return ""
