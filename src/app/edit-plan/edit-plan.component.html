@@ -30,7 +30,7 @@
                     <div class="card bg-{{storeInfo()?.colorStyle!.back_code}} p-3 shadow" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
                         <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
                             <label style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Price: </label>
-                            <mat-hint *ngIf="subInfo.status != 'trialing'" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}}</a></mat-hint>
+                            <mat-hint *ngIf="subInfo.status != 'trialing'" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">${{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}}</a></mat-hint>
                             <mat-hint *ngIf="subInfo.status == 'trialing'" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">FREE <b style="color: #6c757d;">({{formatPrice((subInfo?.plan.amount ?? 0) / 100)}}/{{subInfo?.plan.interval ?? 'month'}} after trial)</b></a></mat-hint>
                         </div>
                         <div *ngIf="!subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">

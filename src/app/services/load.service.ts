@@ -3310,6 +3310,9 @@ export class LoadService {
       // Globals.userInfo!.banners = mappedData.banners
 
       Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
+
+      Globals.sInfo.next(Globals.storeInfo)
+      Globals.uInfo.next(Globals.userInfo!)
     }
     if (this.myCallback) this.myCallback();
   }

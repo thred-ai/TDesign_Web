@@ -3051,6 +3051,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   showWelcomeModal() {
     if (Globals.isNewUser) {
+      Globals.isNewUser = false
       this.loadService.startSubscription((id: any, err?: string) => {
         if (err && err != '') {
           return;
