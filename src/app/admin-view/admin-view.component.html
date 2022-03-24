@@ -2394,7 +2394,7 @@
                         role="button"
                         class="bg-{{
                           storeInfo?.colorStyle!.back_code
-                        }} side text-secondary d-inline-flex mx-auto mx-md-3 me-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        }} side text-secondary d-inline-flex mx-auto mx-md-1 me-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                         
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
@@ -2409,12 +2409,11 @@
                           {{ collection.name }}
                         </b>
                       </a>
-                      <br class="d-block d-md-hidden" />
                       <a
                         role="button"
                         class="bg-{{
                           storeInfo?.colorStyle!.back_code
-                        }} side text-secondary d-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        }} side text-secondary d-none d-md-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
                         "
@@ -2435,7 +2434,6 @@
                         >
                         </mat-icon>
                       </a>
-                      <br class="d-block d-md-hidden" />
                       <a
                         role="button"
                         class="bg-{{
@@ -2461,12 +2459,10 @@
                         >
                         </mat-icon>
                       </a>
-                      <br class="d-block d-md-hidden" />
-
                       <a
                         class="bg-{{
                           storeInfo?.colorStyle!.back_code
-                        }} side text-secondary d-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        }} side text-secondary d-none d-md-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
 
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
@@ -2490,12 +2486,10 @@
                           add
                         </mat-icon>
                       </a>
-                      <br class="d-block d-md-hidden" />
-
                       <a
                         class="bg-{{
                           storeInfo?.colorStyle!.back_code
-                        }} side text-secondary d-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
+                        }} side text-secondary d-none d-md-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                         [class.border-{{storeInfo?.colorStyle!.text_code}}]="
                           storeInfo!.colorStyle!.back_code == 'dark'
                         "
@@ -2529,16 +2523,12 @@
 
                     <!-- collection.getCurrencyIcon() -->
 
-                    <drag-scroll
-                      #carousel
-                      class="mb-2 w-100 h-100"
-                      [scrollbar-hidden]="true"
-                      [scroll-x-wheel-enabled]="false"
+                    <div
+                      class="mb-2 h-100 row gx-0 row-cols-2 justify-content-center w-100"
                       *ngIf="collection.NFTs.length > 0"
                     >
-                      <div
-                        drag-scroll-item
-                        class="h-100 px-3 w-100 h-100 w-md-25"
+                    <div
+                        class="px-2 w-50 w-md-25 col"
                         *ngFor="
                           let product of collection.NFTs ?? []
                             | sortCol: 'tokenId-asc'
@@ -2577,7 +2567,7 @@
                                   "
                                 />
                               </a>
-                              <div class="card-body text-center w-100">
+                              <div class="card-body text-center w-100 d-none d-md-block">
                                 <p
                                   class="fw-bolder w-100"
                                   style="
@@ -2620,7 +2610,7 @@
                               </div>
                             </div>
                             <div
-                              class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent"
+                              class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent d-none d-md-block"
                             >
                               <div class="text-center">
                                 <a
@@ -2642,7 +2632,7 @@
                           </div>
                         </div>
                       </div>
-                    </drag-scroll>
+                    </div>
                     <div
                       *ngIf="collection.NFTs.length == 0"
                       class="mb-2 mx-3 card bg-{{
@@ -3597,7 +3587,7 @@
                         role="button"
                         style="text-decoration: none"
                         style.color="{{ selectedTheme()!.color }}"
-                        >{{ formatPrice((subInfo?.plan.amount ?? 0) / 100) }}/{{
+                        >{{ ((subInfo?.plan.amount ?? 0) / 100) | currency }}/{{
                           subInfo?.plan.interval ?? "month"
                         }}</a
                       ></mat-hint
@@ -3611,7 +3601,7 @@
                         >FREE
                         <b style="color: #6c757d"
                           >({{
-                            formatPrice((subInfo?.plan.amount ?? 0) / 100)
+                            ((subInfo?.plan.amount ?? 0) / 100)  | currency
                           }}/{{ subInfo?.plan.interval ?? "month" }} after
                           trial)</b
                         ></a

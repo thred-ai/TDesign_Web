@@ -91,29 +91,7 @@ export class EditPlanComponent implements OnInit {
     return new Date(this.subInfo.cancel_at * 1000).toDateString();
   }
 
-  formatPrice(price: number, short = false){
-    var priceAsString = new String(Number((price * Globals.selectedCurrency!.rate).toFixed(2)).toLocaleString('en'))
-    if (!short){
-      priceAsString = new String(Number((price * Globals.selectedCurrency!.rate).toFixed(2)))
-    }
-    let index = priceAsString.indexOf(".")
-    
-    switch (index){
-      case priceAsString.length - 1:
-          priceAsString += "00"
-          break
-      case -1:
-          priceAsString += ".00"
-          break
-      case priceAsString.length - 2:
-          priceAsString += "0"
-          break
-      default:
   
-          break
-    }
-    return this.getCurrencyForCountry(Globals.selectedCurrency!, Globals.selectedCurrency!.name != "US") + priceAsString
-}
 
 cancelSubscription(){
   this.spinner.show('subSpinner')
@@ -166,13 +144,6 @@ done(){
   this.activeModal.dismiss(this.subInfo)
 }
   
-getCurrencyForCountry(country: Country, shouldShowName: boolean){
-
-  var returnItem = country.currency_symbol
-  if (shouldShowName) returnItem = country?.name + " " + returnItem
-
-  return returnItem
-}
 
   constructor(
     private activeModal: NgbActiveModal,
