@@ -37,10 +37,11 @@
 
 <div
   *ngIf="
-    (isBrowser() &&
-    userInfo &&
-    (provider | providerCheck | async | lowercase) ==
-      (userInfo?.walletAddress | lowercase)); else walletBlock
+    isBrowser() &&
+      userInfo &&
+      (provider | providerCheck | async | lowercase) ==
+        (userInfo?.walletAddress | lowercase);
+    else walletBlock
   "
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -49,17 +50,17 @@
   <nav
     id="sidebar"
     [class.active]="classApplied"
-    class="bg-{{ storeInfo?.colorStyle!.back_code }}"
+    class="bg-{{ (storeInfo?.colorStyle)!.back_code }}"
   >
     <div
       style="position: fixed; width: 250px; height: 100vh"
-      class="shadow card bg-{{ storeInfo?.colorStyle!.back_code }}"
+      class="shadow card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
     >
       <div class="w-100 d-flex my-2 justify-content-center align-items-center">
         <img class="set-img" [src]="storeInfo?.profileLink" />
         <a
           class="navbar-brand px-2 text-{{
-            storeInfo?.colorStyle!.text_code
+            (storeInfo?.colorStyle)!.text_code
           }} adminTitle"
           role="button"
           (click)="routeToHome()"
@@ -68,14 +69,15 @@
         >
       </div>
       <ul class="navbar-nav mt-3 w-100 p-0">
-          
-
-        <li class="d-flex justify-content-center align-items-center w-100 text-center px-2" style="flex-shrink: 0">
+        <li
+          class="d-flex justify-content-center align-items-center w-100 text-center px-2"
+          style="flex-shrink: 0"
+        >
           <a
             data-bs-toggle="collapse"
             data-bs-target=".navbar-collapse.show"
             class="btn btn-outline-{{
-              storeInfo?.colorStyle!.text_code
+              (storeInfo?.colorStyle)!.text_code
             }} d-flex align-items-center justify-content-center w-100"
             role="button"
             [style.font-family]="storeInfo?.fontName!"
@@ -89,7 +91,7 @@
         <div class="w-100" *ngFor="let panel of panels; index as s">
           <div
             class="sidebar-header bg-{{
-              storeInfo?.colorStyle!.back_code
+              (storeInfo?.colorStyle)!.back_code
             }} w-100"
             style="height: 50px; color: #6c757d"
           >
@@ -106,7 +108,7 @@
                 role="button"
                 (click)="selectSetting(i, s)"
                 class="side d-flex text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }} align-items-center justify-content-start"
                 style="font-size: 20px"
               >
@@ -159,8 +161,8 @@
         <div class="d-flex justify-content-start w-100">
           <a
             class="btn rounded-pill shadow mx-2 mb-0 card side bg-{{
-              storeInfo?.colorStyle!.back_code
-            }} text-{{ storeInfo?.colorStyle!.text_code }}"
+              (storeInfo?.colorStyle)!.back_code
+            }} text-{{ (storeInfo?.colorStyle)!.text_code }}"
             role="button"
             (click)="toggleSidebar()"
             style="text-shadow: 2px 2px 4px #42424281"
@@ -213,7 +215,7 @@
             <div class="progress w-100 ms-0">
               <div
                 class="progress-bar progress-bar-striped progress-bar-animated bg-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }}"
                 role="progressbar"
                 aria-valuenow="intValue"
@@ -312,7 +314,7 @@
                       [attr.disabled]="true"
                       type="text"
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       id="inputUsername"
                       placeholder="ex: 'brianstees'"
@@ -332,7 +334,7 @@
                     <input
                       type="text"
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       id="inputUsername"
                       placeholder="ex: '{{ getUsername() }}'"
@@ -352,7 +354,7 @@
                     <textarea
                       rows="5"
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       id="inputBio"
                       placeholder="Describe your store..."
@@ -485,7 +487,7 @@
                       [attr.disabled]="true"
                       type="text "
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       placeholder="shopmythred.com (default)"
                       formControlName="custom_url"
@@ -518,7 +520,7 @@
         >
           <h2
             class="w-100 text-start fw-bolder text-{{
-              storeInfo?.colorStyle!.text_code
+              (storeInfo?.colorStyle)!.text_code
             }}"
           >
             Email Subscribers
@@ -526,8 +528,8 @@
           <div class="w-100">
             <table
               class="w-100 h-100 table table-hover bg-{{
-                storeInfo?.colorStyle!.back_code
-              }} text-{{ storeInfo?.colorStyle!.text_code }}"
+                (storeInfo?.colorStyle)!.back_code
+              }} text-{{ (storeInfo?.colorStyle)!.text_code }}"
             >
               <thead class="w-100">
                 <tr>
@@ -566,7 +568,7 @@
             </table>
             <mat-paginator
               class="bg-transparent text-{{
-                storeInfo?.colorStyle!.text_code
+                (storeInfo?.colorStyle)!.text_code
               }}"
               #paginator
               [length]="emailLengthTotal()"
@@ -582,7 +584,7 @@
         >
           <h2
             class="w-100 text-start fw-bolder text-{{
-              storeInfo?.colorStyle!.text_code
+              (storeInfo?.colorStyle)!.text_code
             }}"
           >
             SMS Subscribers
@@ -590,8 +592,8 @@
           <div class="w-100">
             <table
               class="w-100 h-100 table table-hover bg-{{
-                storeInfo?.colorStyle!.back_code
-              }} text-{{ storeInfo?.colorStyle!.text_code }}"
+                (storeInfo?.colorStyle)!.back_code
+              }} text-{{ (storeInfo?.colorStyle)!.text_code }}"
             >
               <thead>
                 <tr>
@@ -624,7 +626,7 @@
             </table>
             <mat-paginator
               class="bg-transparent text-{{
-                storeInfo?.colorStyle!.text_code
+                (storeInfo?.colorStyle)!.text_code
               }}"
               #paginator
               [length]="phoneLengthTotal()"
@@ -645,18 +647,20 @@
               <ng-template mat-tab-label>
                 <mat-icon
                   class="example-tab-icon text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }}"
                   >window</mat-icon
                 >
-                <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+                <span
+                  class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}"
+                >
                   EXPLORE THEMES
                 </span>
               </ng-template>
               <div *ngFor="let sTheme of themes()">
                 <h1
                   class="text-start mx-3 mx-md-4 mx-lg-4 fw-bolder text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }} pt-4 pb-2"
                   style="font-size: xx-large; font-style: italic"
                   style.color="{{ selectedTheme()!.color }}"
@@ -669,7 +673,7 @@
                 >
                   <div class="col" *ngFor="let cTheme of sTheme.themes">
                     <div
-                      class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                      class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                       [class.border-secondary]="
                         storeInfo!.colorStyle!.text_code == 'light'
                       "
@@ -746,11 +750,13 @@
               <ng-template mat-tab-label>
                 <mat-icon
                   class="example-tab-icon text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }}"
                   >tune</mat-icon
                 >
-                <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+                <span
+                  class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}"
+                >
                   MY THEME
                 </span>
               </ng-template>
@@ -778,15 +784,15 @@
                     <mat-form-field class="w-100">
                       <mat-select formControlName="font">
                         <mat-select-trigger
-                          class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                           [style.font-family]="themeForm.controls['font'].value"
                         >
                           {{ themeForm.controls["font"].value }}
                         </mat-select-trigger>
                         <mat-option
                           class="not-empty-select text-{{
-                            storeInfo?.colorStyle!.text_code
-                          }} bg-{{ storeInfo?.colorStyle!.back_code }}"
+                            (storeInfo?.colorStyle)!.text_code
+                          }} bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                           [style.font-family]="font"
                           [selected]="font == userInfo!.fontName"
                           *ngFor="let font of fonts()"
@@ -820,7 +826,7 @@
 
                   <div
                     class="card h-auto bg-{{
-                      storeInfo?.colorStyle!.back_code
+                      (storeInfo?.colorStyle)!.back_code
                     }}"
                   >
                     <!-- Product image-->
@@ -874,7 +880,7 @@
 
                   <div
                     class="card h-auto bg-{{
-                      storeInfo?.colorStyle!.back_code
+                      (storeInfo?.colorStyle)!.back_code
                     }}"
                   >
                     <!-- Product image-->
@@ -918,7 +924,7 @@
                     <select
                       formControlName="loadingIndicator"
                       class="form-select bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       style.color="{{ selectedTheme()!.color }}"
                       required="required"
@@ -1022,9 +1028,9 @@
             role="button"
             (click)="createNewProduct()"
             class="btn rounded-pill bg-{{
-              storeInfo?.colorStyle!.text_code
+              (storeInfo?.colorStyle)!.text_code
             }} d-inline-flex px-3 my-4 text-{{
-              storeInfo?.colorStyle!.back_code
+              (storeInfo?.colorStyle)!.back_code
             }}"
           >
             <mat-icon class="me-2"
@@ -1040,11 +1046,11 @@
             <ng-template mat-tab-label>
               <mat-icon
                 class="example-tab-icon text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }}"
                 >window</mat-icon
               >
-              <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+              <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
                 CREATOR DASHBOARD
               </span>
             </ng-template>
@@ -1061,11 +1067,11 @@
             <ng-template mat-tab-label>
               <mat-icon
                 class="example-tab-icon text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }}"
                 >window</mat-icon
               >
-              <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+              <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
                 SOLD ASSETS
               </span>
             </ng-template>
@@ -1094,9 +1100,9 @@
             role="button"
             (click)="showLayoutModal()"
             class="btn rounded-pill bg-{{
-              storeInfo?.colorStyle!.text_code
+              (storeInfo?.colorStyle)!.text_code
             }} d-inline-flex px-3 my-4 text-{{
-              storeInfo?.colorStyle!.back_code
+              (storeInfo?.colorStyle)!.back_code
             }}"
           >
             <mat-icon class="me-2"
@@ -1139,7 +1145,7 @@
                     >
                       <p
                         class="text-center text-{{
-                          storeInfo?.colorStyle!.text_code
+                          (storeInfo?.colorStyle)!.text_code
                         }}"
                         style="line-height: 1.2em"
                         [style.font-family]="storeInfo?.fontName!"
@@ -1171,7 +1177,7 @@
                         >
                           <div
                             class="card h-100 bg-{{
-                              storeInfo?.colorStyle!.back_code
+                              (storeInfo?.colorStyle)!.back_code
                             }}"
                             [class.border-secondary]="
                               storeInfo!.colorStyle!.text_code == 'light'
@@ -1192,7 +1198,9 @@
                                   }}"
                                   [useSrcset]="true"
                                   [defaultImage]="'/assets/default.png'"
-                                  [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
+                                  [lazyLoad]="
+                                    product?.linkUrl ?? '/assets/default.png'
+                                  "
                                   alt="ok"
                                   style="
                                     object-fit: cover;
@@ -1213,7 +1221,7 @@
                                 <a
                                   [style.font-family]="storeInfo?.fontName!"
                                   class="btn w-100 my-2 text-center btn-outline-{{
-                                    storeInfo?.colorStyle!.text_code
+                                    (storeInfo?.colorStyle)!.text_code
                                   }}"
                                   style="
                                     font-weight: bold;
@@ -1302,8 +1310,8 @@
                     <div
                       *ngIf="row.type == 5 || row.type == 6"
                       class="w-100 w-md-50 mt-3 card text-{{
-                        storeInfo?.colorStyle!.text_code
-                      }} bg-{{ storeInfo?.colorStyle!.back_code }} mx-auto"
+                        (storeInfo?.colorStyle)!.text_code
+                      }} bg-{{ (storeInfo?.colorStyle)!.back_code }} mx-auto"
                     >
                       <mat-form-field
                         *ngIf="row.type == 6"
@@ -1315,7 +1323,7 @@
                         <input
                           type="text"
                           matInput
-                          class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                           style.color="{{ selectedTheme()!.color }}"
                         />
                       </mat-form-field>
@@ -1329,7 +1337,7 @@
                         <input
                           type="email"
                           matInput
-                          class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                           style.color="{{ selectedTheme()!.color }}"
                         />
                       </mat-form-field>
@@ -1436,7 +1444,7 @@
                     role="button"
                     (click)="showLayoutModal(page)"
                     class="btn btn-{{
-                      storeInfo?.colorStyle!.text_code
+                      (storeInfo?.colorStyle)!.text_code
                     }} rounded-pill fw-bolder ms-2"
                   >
                     EDIT
@@ -1446,7 +1454,7 @@
                     role="button"
                     (click)="deletePage(page)"
                     class="ms-2 btn btn btn-{{
-                      storeInfo?.colorStyle!.text_code
+                      (storeInfo?.colorStyle)!.text_code
                     }} rounded-circle p-2 d-flex align-items-center justify-content-center"
                     style="aspect-ratio: 1"
                   >
@@ -1470,9 +1478,9 @@
         <form [formGroup]="headerForm" novalidate>
           <nav
             class="navbar navbar-expand-lg navbar-{{
-              storeInfo?.colorStyle!.nav_code
+              (storeInfo?.colorStyle)!.nav_code
             }} bg-{{
-              storeInfo?.colorStyle!.back_code
+              (storeInfo?.colorStyle)!.back_code
             }} mx-3 mb-5 rounded shadow"
           >
             <div
@@ -1483,7 +1491,7 @@
                 <img class="set-img" [src]="storeInfo?.profileLink" />
                 <a
                   class="navbar-brand px-2 text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }}"
                   role="button"
                   style="font-size: small"
@@ -1567,7 +1575,7 @@
                       data-bs-toggle="collapse"
                       data-bs-target=".navbar-collapse.show"
                       class="btn btn-outline-{{
-                        storeInfo?.colorStyle!.text_code
+                        (storeInfo?.colorStyle)!.text_code
                       }} d-flex align-items-center justify-content-center"
                       role="button"
                       [style.font-family]="storeInfo?.fontName!"
@@ -1591,7 +1599,7 @@
 
         <footer
           class="py-5 mx-3 bg-{{
-            storeInfo?.colorStyle!.back_code
+            (storeInfo?.colorStyle)!.back_code
           }} rounded shadow"
         >
           <div
@@ -1601,15 +1609,15 @@
               <div
                 class="w-100 row row-cols-1 row-cols-md-7 row-cols-xl-7 justify-content-center justify-content-md-start mb-5"
               >
-              <div class="col mb-2 mx-2" [style.width.px]="50">
-                <a role="button">
-                  <img
-                    [style.width.px]="50"
-                    alt="ok"
-                    src="assets/polygon_logo.svg"
-                  />
-                </a>
-              </div>
+                <div class="col mb-2 mx-2" [style.width.px]="50">
+                  <a role="button">
+                    <img
+                      [style.width.px]="50"
+                      alt="ok"
+                      src="assets/polygon_logo.svg"
+                    />
+                  </a>
+                </div>
                 <!-- <div class="col mb-2 mx-2" [style.width.px]="50">
                   <a role="button">
                     <img
@@ -1753,7 +1761,7 @@
           <div class="container">
             <p
               class="m-0 text-center text-{{
-                storeInfo?.colorStyle!.text_code
+                (storeInfo?.colorStyle)!.text_code
               }}"
               [style.font-family]="storeInfo?.fontName!"
             >
@@ -1763,7 +1771,7 @@
           <div class="container">
             <p
               class="m-0 text-center text-{{
-                storeInfo?.colorStyle!.text_code
+                (storeInfo?.colorStyle)!.text_code
               }}"
               [style.font-family]="storeInfo?.fontName!"
             >
@@ -1867,7 +1875,7 @@
                 <mat-form-field class="w-100 mt-3">
                   <mat-select formControlName="style">
                     <mat-select-trigger
-                      class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                      class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                       *ngIf="matchingStyle(bannerForm.controls.style.value)"
                     >
                       {{ matchingStyle(bannerForm.controls.style.value)!.name }}
@@ -1875,8 +1883,8 @@
                     <mat-option
                       *ngFor="let style of styles"
                       class="not-empty-select text-{{
-                        storeInfo?.colorStyle!.text_code
-                      }} bg-{{ storeInfo?.colorStyle!.back_code }}"
+                        (storeInfo?.colorStyle)!.text_code
+                      }} bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                       [value]="style.code"
                     >
                       {{ style.name }}
@@ -1925,7 +1933,7 @@
                         <input
                           type="text "
                           class="form-control mt-1 bg-{{
-                            storeInfo?.colorStyle!.back_code
+                            (storeInfo?.colorStyle)!.back_code
                           }}"
                           placeholder="ex: '642345685432123'"
                           style.color="{{ selectedTheme()!.color }}"
@@ -1966,7 +1974,7 @@
                 >Shop Page Top Image</label
               >
               <div
-                class="card h-auto bg-{{ storeInfo?.colorStyle!.back_code }}"
+                class="card h-auto bg-{{ (storeInfo?.colorStyle)!.back_code }}"
               >
                 <!-- Product image-->
 
@@ -2035,9 +2043,9 @@
                 role="button"
                 (click)="showPopupModal()"
                 class="btn rounded-pill bg-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }} d-inline-flex px-3 my-2 mb-4 text-{{
-                  storeInfo?.colorStyle!.back_code
+                  (storeInfo?.colorStyle)!.back_code
                 }}"
               >
                 <mat-icon class="mx-2"
@@ -2054,7 +2062,7 @@
                 *ngFor="let popup of storeInfo?.popups ?? []; index as i"
               >
                 <div
-                  class="card h-100 bg-{{ storeInfo?.colorStyle!.back_code }}"
+                  class="card h-100 bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                   [class.border-secondary]="
                     storeInfo!.colorStyle!.text_code == 'light'
                   "
@@ -2066,7 +2074,7 @@
                       <!-- Product name-->
                       <mat-icon
                         class="mx-auto p-4 d-flex justify-content-center align-items-center rounded-circle border shadow mt-3 mb-4 text-{{
-                          storeInfo?.colorStyle!.text_code
+                          (storeInfo?.colorStyle)!.text_code
                         }}"
                         style="
                           font-size: xx-large;
@@ -2344,9 +2352,9 @@
               role="button"
               (click)="createNewProduct()"
               class="btn rounded-pill bg-{{
-                storeInfo?.colorStyle!.text_code
+                (storeInfo?.colorStyle)!.text_code
               }} d-inline-flex px-3 my-4 text-{{
-                storeInfo?.colorStyle!.back_code
+                (storeInfo?.colorStyle)!.back_code
               }}"
             >
               <mat-icon class="me-2"
@@ -2356,9 +2364,7 @@
             </a>
           </div>
           <div
-            *ngIf="
-            userInfo!.collections && userInfo!.collections?.length != 0
-            "
+            *ngIf="userInfo!.collections && userInfo!.collections?.length != 0"
             class="container px-2 px-md-4 px-lg-5 mt-0 pt-0 w-100"
           >
             <div class="w-100 h-100 justify-content-center">
@@ -2393,9 +2399,8 @@
                       <a
                         role="button"
                         class="bg-{{
-                          storeInfo?.colorStyle!.back_code
+                          (storeInfo?.colorStyle)!.back_code
                         }} side text-secondary d-inline-flex mx-auto mx-md-1 me-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
-                        
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
                         "
@@ -2403,7 +2408,7 @@
                       >
                         <!-- {{ collection.symbol }} -->
                         <b
-                          class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                           style="font-size: 18px"
                         >
                           {{ collection.name }}
@@ -2412,7 +2417,7 @@
                       <a
                         role="button"
                         class="bg-{{
-                          storeInfo?.colorStyle!.back_code
+                          (storeInfo?.colorStyle)!.back_code
                         }} side text-secondary d-none d-md-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
@@ -2422,7 +2427,7 @@
                         {{ "Volume Traded:" }}
                         <b
                           class="ms-1 text-{{
-                            storeInfo?.colorStyle!.text_code
+                            (storeInfo?.colorStyle)!.text_code
                           }}"
                           style="font-size: 22px"
                         >
@@ -2437,7 +2442,7 @@
                       <a
                         role="button"
                         class="bg-{{
-                          storeInfo?.colorStyle!.back_code
+                          (storeInfo?.colorStyle)!.back_code
                         }} side text-secondary d-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
@@ -2447,7 +2452,7 @@
                         {{ "Floor Price:" }}
                         <b
                           class="ms-1 text-{{
-                            storeInfo?.colorStyle!.text_code
+                            (storeInfo?.colorStyle)!.text_code
                           }}"
                           style="font-size: 22px"
                         >
@@ -2461,9 +2466,8 @@
                       </a>
                       <a
                         class="bg-{{
-                          storeInfo?.colorStyle!.back_code
+                          (storeInfo?.colorStyle)!.back_code
                         }} side text-secondary d-none d-md-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
-
                         [class.border]="
                           storeInfo!.colorStyle!.back_code == 'dark'
                         "
@@ -2472,7 +2476,7 @@
                         {{ "Items: " }}
                         <b
                           class="ms-1 text-{{
-                            storeInfo?.colorStyle!.text_code
+                            (storeInfo?.colorStyle)!.text_code
                           }}"
                           style="font-size: 22px"
                         >
@@ -2488,7 +2492,7 @@
                       </a>
                       <a
                         class="bg-{{
-                          storeInfo?.colorStyle!.back_code
+                          (storeInfo?.colorStyle)!.back_code
                         }} side text-secondary d-none d-md-inline-flex mx-auto mx-md-1 p-2 px-3 rounded-pill shadow mt-0 mb-3 align-items-center justify-content-start"
                         [class.border-{{storeInfo?.colorStyle!.text_code}}]="
                           storeInfo!.colorStyle!.back_code == 'dark'
@@ -2501,7 +2505,7 @@
                         {{ "Owners: " }}
                         <b
                           class="ms-1 text-{{
-                            storeInfo?.colorStyle!.text_code
+                            (storeInfo?.colorStyle)!.text_code
                           }}"
                           style="font-size: 22px"
                         >
@@ -2527,7 +2531,7 @@
                       class="mb-2 h-100 row gx-0 row-cols-2 justify-content-center w-100"
                       *ngIf="collection.NFTs.length > 0"
                     >
-                    <div
+                      <div
                         class="px-2 w-50 w-md-25 col"
                         *ngFor="
                           let product of collection.NFTs ?? []
@@ -2537,7 +2541,7 @@
                         <div class="col h-100">
                           <div
                             class="bg-{{
-                              storeInfo?.colorStyle!.back_code
+                              (storeInfo?.colorStyle)!.back_code
                             }} shadow rounded border border-secondary mb-3"
                             [class.border-secondary]="
                               storeInfo!.colorStyle!.text_code == 'light'
@@ -2558,7 +2562,9 @@
                                   }}"
                                   [useSrcset]="true"
                                   [defaultImage]="'/assets/default.png'"
-                                  [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
+                                  [lazyLoad]="
+                                    product?.linkUrl ?? '/assets/default.png'
+                                  "
                                   alt="ok"
                                   style="
                                     object-fit: cover;
@@ -2567,7 +2573,9 @@
                                   "
                                 />
                               </a>
-                              <div class="card-body text-center w-100 d-none d-md-block">
+                              <div
+                                class="card-body text-center w-100 d-none d-md-block"
+                              >
                                 <p
                                   class="fw-bolder w-100"
                                   style="
@@ -2615,7 +2623,7 @@
                               <div class="text-center">
                                 <a
                                   class="btn btn-outline-{{
-                                    storeInfo?.colorStyle!.text_code
+                                    (storeInfo?.colorStyle)!.text_code
                                   }} mt-auto d-flex justify-content-center text-center"
                                   style="font-weight: bold"
                                   role="button"
@@ -2636,7 +2644,7 @@
                     <div
                       *ngIf="collection.NFTs.length == 0"
                       class="mb-2 mx-3 card bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }} shadow rounded d-flex justify-content-center align-items-center"
                       [class.border-secondary]="
                         storeInfo!.colorStyle!.text_code == 'light'
@@ -2646,7 +2654,7 @@
                       <h2>No items in this collection</h2>
                       <a
                         class="btn btn-{{
-                          storeInfo?.colorStyle!.text_code
+                          (storeInfo?.colorStyle)!.text_code
                         }} px-3 rounded-pill"
                         role="button"
                         style="font-size: medium"
@@ -2673,7 +2681,9 @@
             </div>
           </div>
           <div
-            *ngIf="storeInfo?.collections && storeInfo?.collections!.length == 0"
+            *ngIf="
+              storeInfo?.collections && (storeInfo?.collections)!.length == 0
+            "
             class="container px-4 px-lg-5 mt-0 pt-0"
           >
             <div
@@ -2687,7 +2697,7 @@
                 role="button"
                 (click)="createNewProduct()"
                 class="side d-flex text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }} m-3 align-items-center justify-content-center fw-bold"
                 style="font-size: 20px"
               >
@@ -2698,8 +2708,16 @@
                   </span>
                 </mat-icon>
               </a>
-              <a role="button" (click)="createNewProduct()" class="side mx-auto mt-2 w-100 w-md-25">
-                <img class="rounded w-100" style="object-fit: contain;" src="/assets/nft_default.png" />
+              <a
+                role="button"
+                (click)="createNewProduct()"
+                class="side mx-auto mt-2 w-100 w-md-25"
+              >
+                <img
+                  class="rounded w-100"
+                  style="object-fit: contain"
+                  src="/assets/nft_default.png"
+                />
               </a>
             </div>
           </div>
@@ -2719,11 +2737,11 @@
             <ng-template mat-tab-label>
               <mat-icon
                 class="example-tab-icon text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }}"
                 >add_box</mat-icon
               >
-              <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+              <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
                 EXPLORE INVENTORY
               </span>
             </ng-template>
@@ -2734,7 +2752,7 @@
             >
               <h1
                 class="text-center fw-bolder text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }} py-4"
                 style="font-size: xx-large; line-height: 1.2em"
                 style.color="{{ selectedTheme()!.color }}"
@@ -2749,7 +2767,7 @@
                   *ngFor="let template of availableToBuyTemplates()"
                 >
                   <div
-                    class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                     [class.border-secondary]="
                       storeInfo!.colorStyle!.text_code == 'light'
                     "
@@ -2837,7 +2855,7 @@
             >
               <h1
                 class="text-center fw-bolder text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }} py-4"
                 style="font-size: xx-large"
                 style.color="{{ selectedTheme()!.color }}"
@@ -2854,11 +2872,11 @@
             <ng-template mat-tab-label>
               <mat-icon
                 class="example-tab-icon text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }}"
                 >inventory_2</mat-icon
               >
-              <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+              <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
                 MY INVENTORY
               </span>
             </ng-template>
@@ -2870,9 +2888,9 @@
                   role="button"
                   (click)="newInventory()"
                   class="btn rounded-pill bg-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }} d-inline-flex px-3 my-3 mb-4 text-{{
-                    storeInfo?.colorStyle!.back_code
+                    (storeInfo?.colorStyle)!.back_code
                   }}"
                 >
                   <mat-icon class="me-2"
@@ -2894,7 +2912,7 @@
                 >
                   <div class="col" *ngFor="let inv of customInv()">
                     <div
-                      class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                      class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                       [class.border-secondary]="
                         storeInfo!.colorStyle!.text_code == 'light'
                       "
@@ -2987,7 +3005,7 @@
                 >
                   <div class="col" *ngFor="let inv of thredInv()">
                     <div
-                      class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                      class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                       [class.border-secondary]="
                         storeInfo!.colorStyle!.text_code == 'light'
                       "
@@ -3088,7 +3106,7 @@
             >
               <h1
                 class="text-center fw-bolder text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }} py-4"
                 style="font-size: xx-large"
                 style.color="{{ selectedTheme()!.color }}"
@@ -3107,9 +3125,7 @@
         <div
           class="card ms-4 me-4 py-3"
           style.background-color="{{ selectedTheme()!.bg_color }}"
-          [class.border-secondary]="
-            storeInfo!.colorStyle!.text_code == 'light'
-          "
+          [class.border-secondary]="storeInfo!.colorStyle!.text_code == 'light'"
         >
           <h2
             class="text-center fw-bolder m-2 mb-4"
@@ -3135,7 +3151,7 @@
                     <input
                       type="text "
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       type="email"
                       placeholder="ex: 'johnapple@gmail.com'"
@@ -3162,7 +3178,7 @@
                     <input
                       type="text "
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       [type]="show ? 'text' : 'password'"
                       placeholder="Confirm Password"
@@ -3188,9 +3204,7 @@
         <div
           class="card ms-4 me-4 py-3"
           style.background-color="{{ selectedTheme()!.bg_color }}"
-          [class.border-secondary]="
-            storeInfo!.colorStyle!.text_code == 'light'
-          "
+          [class.border-secondary]="storeInfo!.colorStyle!.text_code == 'light'"
         >
           <h2
             class="text-center fw-bolder m-2 mb-4"
@@ -3216,7 +3230,7 @@
                     <input
                       type="text "
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       [type]="show ? 'text' : 'password'"
                       placeholder="Confirm Old Password"
@@ -3243,7 +3257,7 @@
                     <input
                       type="text "
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       [type]="show ? 'text' : 'password'"
                       placeholder="Enter New Password"
@@ -3270,7 +3284,7 @@
                     <input
                       type="text "
                       class="form-control mt-1 bg-{{
-                        storeInfo?.colorStyle!.back_code
+                        (storeInfo?.colorStyle)!.back_code
                       }}"
                       [type]="show ? 'text' : 'password'"
                       placeholder="Confirm New Password"
@@ -3306,7 +3320,7 @@
           >
             <div class="col mb-2">
               <div
-                class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                 [class.border-secondary]="
                   storeInfo!.colorStyle!.text_code == 'light'
                 "
@@ -3314,7 +3328,7 @@
                 <a
                   role="button"
                   class="side d-flex text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }} m-3 align-items-center justify-content-center fw-bold"
                   style="font-size: 20px"
                 >
@@ -3330,7 +3344,7 @@
                 </a>
                 <p
                   class="px-2 text-center text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }}"
                 >
                   This card will be billed after your trial ends.
@@ -3364,7 +3378,7 @@
           >
             <div class="col mb-2">
               <div
-                class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                 [class.border-secondary]="
                   storeInfo!.colorStyle!.text_code == 'light'
                 "
@@ -3449,238 +3463,131 @@
         </div>
       </div>
       <div *ngIf="getSelectedPanel()?.Title == 'PLAN'">
-        <div *ngIf="subInfo == ''" class="w-100 h-100">
-          <div
-            class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"
-          >
-            <div class="col mb-2">
-              <div
-                class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
-                [class.border-secondary]="
-                  storeInfo!.colorStyle!.text_code == 'light'
-                "
+        <div class="w-100 h-100">
+          <div class="h-100 w-100 my-5">
+            <div class="my-5 w-100">
+              <h2
+                class="text-center mx-0 text-{{
+                  (storeInfo?.colorStyle)!.text_code
+                }}"
               >
-                <a
-                  role="button"
-                  class="side d-flex text-{{
-                    storeInfo?.colorStyle!.text_code
-                  }} m-3 align-items-center justify-content-center fw-bold"
-                  style="font-size: 20px"
-                >
-                  Merchant Plan
-                  <mat-icon class="ms-2 text-danger">
-                    <span
-                      class="material-icons-outlined"
-                      style="font-size: 25px"
-                    >
-                      new_releases
-                    </span>
-                  </mat-icon>
-                </a>
-                <p
-                  class="px-2 text-center text-{{
-                    storeInfo?.colorStyle!.text_code
-                  }}"
-                >
-                  Set up your merchant plan to activate your online store.
-                </p>
-                <div class="card-body mt-4">
-                  <div
-                    class="d-flex align-items-center justify-content-center mt-3 mb-2"
-                    style="font-size: 15px"
-                  >
-                    <button
-                      *ngIf="canTrial!"
-                      (click)="startSubscription()"
-                      class="btn d-flex"
-                      style.background-color="{{ selectedTheme()!.color }}"
-                      style.color="{{ selectedTheme()!.bg_color }}"
-                    >
-                      Start 14 day Free Trial
-                    </button>
-                    <button
-                      *ngIf="!canTrial!"
-                      (click)="startSubscription()"
-                      class="btn d-flex"
-                      style.background-color="{{ selectedTheme()!.color }}"
-                      style.color="{{ selectedTheme()!.bg_color }}"
-                    >
-                      Start Subscription
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          *ngIf="subInfo != '' && (subInfo?.plan.active ?? false)"
-          class="w-100 h-100"
-        >
-          <div
-            class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center m-2 m-md-3 m-lg-3"
-          >
-            <div class="col mb-2">
+                Select a Thred plan to activate your Marketplace.
+              </h2>
               <div
-                class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
-                [class.border-secondary]="
-                  storeInfo!.colorStyle!.text_code == 'light'
-                "
+                class="row gx-0 row-cols-1 row-cols-md-2 justify-content-center px-3 px-md-5 w-100"
               >
-                <h2
-                  *ngIf="!subInfo!.cancel_at_period_end"
-                  class="text-center fw-bolder m-2"
-                  style="font-size: x-large"
-                  style.color="{{ selectedTheme()!.color }}"
+                <div
+                  class="col mb-2 w-100 w-md-50 p-2 px-md-2"
+                  *ngFor="let plan of plans"
                 >
-                  Merchant Plan
-                </h2>
-                <a
-                  *ngIf="subInfo!.cancel_at_period_end"
-                  role="button"
-                  class="side d-flex text-danger m-3 align-items-center justify-content-center fw-bold"
-                  style="font-size: 20px"
-                >
-                  Renew Merchant Plan
-                  <mat-icon class="ms-2 text-danger">
-                    <span
-                      class="material-icons-outlined"
-                      style="font-size: 25px"
-                    >
-                      new_releases
-                    </span>
-                  </mat-icon>
-                </a>
-                <div class="card-body mt-2">
                   <div
-                    class="d-block align-items-center justify-content-start my-2"
-                    style="font-size: 15px"
+                    class="card {{ plan.css }} w-100 h-100"
+                    [class.border-secondary]="
+                      storeInfo!.colorStyle!.text_code == 'light'
+                    "
                   >
-                    <label style="color: #6c757d" class="mb-1 me-1"
-                      >Plan:
-                    </label>
-                    <mat-hint align="start"
-                      ><a
-                        class="fw-bold"
-                        role="button"
-                        style="text-decoration: none"
-                        style.color="{{ selectedTheme()!.color }}"
-                        >{{ planStatus() }}
-                        <b
-                          *ngIf="subInfo.status == 'trialing'"
-                          style="color: #6c757d"
-                          >(Trial)</b
-                        ></a
-                      ></mat-hint
-                    >
-                  </div>
-                  <div
-                    class="d-block align-items-center justify-content-start my-2"
-                    style="font-size: 15px"
-                  >
-                    <label style="color: #6c757d" class="mb-1 me-1"
-                      >Price:
-                    </label>
-                    <mat-hint *ngIf="subInfo.status != 'trialing'" align="start"
-                      ><a
-                        class="fw-bold"
-                        role="button"
-                        style="text-decoration: none"
-                        style.color="{{ selectedTheme()!.color }}"
-                        >{{ ((subInfo?.plan.amount ?? 0) / 100) | currency }}/{{
-                          subInfo?.plan.interval ?? "month"
-                        }}</a
-                      ></mat-hint
-                    >
-                    <mat-hint *ngIf="subInfo.status == 'trialing'" align="start"
-                      ><a
-                        class="fw-bold"
-                        role="button"
-                        style="text-decoration: none"
-                        style.color="{{ selectedTheme()!.color }}"
-                        >FREE
-                        <b style="color: #6c757d"
-                          >({{
-                            ((subInfo?.plan.amount ?? 0) / 100)  | currency
-                          }}/{{ subInfo?.plan.interval ?? "month" }} after
-                          trial)</b
-                        ></a
-                      ></mat-hint
-                    >
-                  </div>
-                  <div
-                    *ngIf="!subInfo!.cancel_at_period_end"
-                    class="d-block align-items-center justify-content-start my-2 mb-5"
-                    style="font-size: 15px"
-                  >
-                    <label
-                      *ngIf="subInfo.status != 'trialing'"
-                      style="color: #6c757d"
-                      class="mb-1 me-1"
-                      >Renews:
-                    </label>
-                    <label
-                      *ngIf="subInfo.status == 'trialing'"
-                      style="color: #6c757d"
-                      class="mb-1 me-1"
-                      >Trial End:
-                    </label>
-                    <mat-hint align="start"
-                      ><a
-                        class="fw-bold"
-                        role="button"
-                        style="text-decoration: none"
-                        style.color="{{ selectedTheme()!.color }}"
-                        >{{ planRenewalDate() }}</a
-                      ></mat-hint
-                    >
-                  </div>
-                  <div
-                    *ngIf="subInfo!.cancel_at_period_end"
-                    class="d-block align-items-center justify-content-start my-2 mb-5"
-                    style="font-size: 15px"
-                  >
-                    <label style="color: #6c757d" class="mb-1 me-1"
-                      >Plan Ends:
-                    </label>
-                    <mat-hint align="start"
-                      ><a
-                        class="fw-bold"
-                        role="button"
-                        style="text-decoration: none"
-                        style.color="{{ selectedTheme()!.color }}"
-                        >{{ planEndDate() }}</a
-                      ></mat-hint
-                    >
-                  </div>
+                    <div class="w-100" style="opacity: 0.8">
+                      <img
+                        class="w-100"
+                        style="object-fit: contain; aspect-ratio: 1"
+                        src="assets/{{ plan.code }}.png"
+                      />
+                    </div>
+                    <div class="w-100 h-100">
+                      <p
+                        class="px-2 pb-3 fw-bolder text-center text-{{
+                          plan.text
+                        }}"
+                        style="font-size: large"
+                      >
+                        {{ plan.name }}
+                      </p>
+                      <p
+                        class="px-2 mt-0 mb-2 text-center fw-bolder text-white"
+                        style="font-size: 45px; line-height: 0.75em"
+                      >
+                        {{ plan.price / 100 | currency }}
+                        <br />
+                        <b style="font-size: 20px"> Per. month </b>
+                      </p>
+                      <div class="card-body mt-3">
+                        <h2
+                          *ngIf="
+                            subInfo != '' &&
+                            subInfo.plan.id == plan.id &&
+                            !subInfo!.cancel_at_period_end
+                          "
+                          class="text-white text-center"
+                        >
+                          Renews: {{ planRenewalDate() }}
+                        </h2>
+                        <h2
+                          *ngIf="
+                            subInfo != '' &&
+                            subInfo.plan.id == plan.id &&
+                            subInfo!.cancel_at_period_end
+                          "
+                          class="text-white text-center"
+                        >
+                          Cancels: {{ planEndDate() }}
+                        </h2>
+                        <h2
+                          *ngIf="
+                            subInfo != '' &&
+                            subInfo.plan.id != plan.id
+                          "
+                          class="text-white text-center"
+                        >
+                          Plan not Active
+                        </h2>
+                        <h2
+                          *ngIf="subInfo == '' && canTrial"
+                          class="text-white text-center"
+                        >
+                          14 Day Free Trial
+                        </h2>
+                        <div
+                          class="d-flex align-items-center justify-content-center mt-3 mb-2"
+                          style="font-size: 15px"
+                        >
+                          <button
+                            (click)="startSubscription(plan)"
+                            *ngIf="subInfo == '' && plan.available"
+                            class="btn d-flex fw-bolder bg-light text-dark"
+                          >
+                            SELECT PLAN
+                          </button>
+                          <button
+                            *ngIf="subInfo == '' && !plan.available"
+                            class="btn d-flex fw-bolder bg-light text-dark"
+                          >
+                            UNAVAILABLE
+                          </button>
 
-                  <div
-                    *ngIf="!subInfo!.cancel_at_period_end"
-                    class="d-flex align-items-center justify-content-center mt-3 mb-2"
-                    style="font-size: 15px"
-                  >
-                    <button
-                      (click)="editSubscription(subInfo!)"
-                      class="btn d-flex"
-                      style.background-color="{{ selectedTheme()!.color }}"
-                      style.color="{{ selectedTheme()!.bg_color }}"
-                    >
-                      Edit Thred Plan
-                    </button>
-                  </div>
-                  <div
-                    *ngIf="subInfo!.cancel_at_period_end"
-                    class="d-flex align-items-center justify-content-center mt-3 mb-2"
-                    style="font-size: 15px"
-                  >
-                    <button
-                      (click)="editSubscription(subInfo!)"
-                      class="btn d-flex"
-                      style.background-color="{{ selectedTheme()!.color }}"
-                      style.color="{{ selectedTheme()!.bg_color }}"
-                    >
-                      Renew Merchant Plan
-                    </button>
+                          <button
+                            (click)="cancelSubscription(plan)"
+                            *ngIf="subInfo != '' && !subInfo!.cancel_at_period_end && subInfo.plan.id == plan.id"
+                            class="btn d-flex fw-bolder bg-light text-dark"
+                          >
+                            CANCEL PLAN
+                          </button>
+                          <button
+                            (click)="renewSubscription(plan)"
+                            *ngIf="subInfo != '' && subInfo!.cancel_at_period_end && subInfo.plan.id == plan.id"
+                            class="btn d-flex fw-bolder bg-light text-dark"
+                          >
+                            RENEW PLAN
+                          </button>
+                          <button
+                          (click)="switchToSubscription(plan)"
+                          *ngIf="subInfo != '' && subInfo.plan.id != plan.id"
+                          class="btn d-flex fw-bolder bg-light text-dark"
+                        >
+                          SWITCH TO PLAN
+                        </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -3696,7 +3603,7 @@
           >
             <div class="col mb-2">
               <div
-                class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                 [class.border-secondary]="
                   storeInfo!.colorStyle!.text_code == 'light'
                 "
@@ -3704,7 +3611,7 @@
                 <a
                   role="button"
                   class="side d-flex text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }} m-3 align-items-center justify-content-center fw-bold"
                   style="font-size: 20px"
                 >
@@ -3720,7 +3627,7 @@
                 </a>
                 <p
                   class="px-2 text-center text-{{
-                    storeInfo?.colorStyle!.text_code
+                    (storeInfo?.colorStyle)!.text_code
                   }}"
                 >
                   Set up your bank account to receive payments.
@@ -3756,7 +3663,7 @@
           >
             <div class="col mb-2">
               <div
-                class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                 [class.border-secondary]="
                   storeInfo!.colorStyle!.text_code == 'light'
                 "
@@ -4049,11 +3956,11 @@
             <ng-template mat-tab-label>
               <mat-icon
                 class="example-tab-icon text-{{
-                  storeInfo?.colorStyle!.text_code
+                  (storeInfo?.colorStyle)!.text_code
                 }}"
                 >ballot</mat-icon
               >
-              <span class="ms-2 text-{{ storeInfo?.colorStyle!.text_code }}">
+              <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
                 MY STORE
               </span>
             </ng-template>
@@ -4276,14 +4183,14 @@
                 </div> -->
                 <div class="col mb-2" *ngIf="emails() && numbers()">
                   <div
-                    class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                     [class.border-secondary]="
                       storeInfo!.colorStyle!.text_code == 'light'
                     "
                   >
                     <p
                       class="text-center text-{{
-                        storeInfo?.colorStyle!.text_code
+                        (storeInfo?.colorStyle)!.text_code
                       }} px-2 mx-2 my-2"
                       style="font-weight: bolder"
                     >
@@ -4324,7 +4231,7 @@
                         role="button"
                         (click)="selectSetting(1, 0)"
                         class="w-100 h-auto text-center h1 text-{{
-                          storeInfo?.colorStyle!.text_code
+                          (storeInfo?.colorStyle)!.text_code
                         }}"
                         *ngIf="
                           pieInfo &&
@@ -4369,14 +4276,14 @@
               >
                 <div class="col mb-2" *ngFor="let item of miscItems">
                   <div
-                    class="card bg-{{ storeInfo?.colorStyle!.back_code }}"
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                     [class.border-secondary]="
                       storeInfo!.colorStyle!.text_code == 'light'
                     "
                   >
                     <p
                       class="text-center text-{{
-                        storeInfo?.colorStyle!.text_code
+                        (storeInfo?.colorStyle)!.text_code
                       }} px-2 mx-2 my-2"
                       style="font-weight: bolder"
                     >
@@ -4525,53 +4432,50 @@
   </div>
 </div>
 <ng-template #walletBlock>
-  <div *ngIf="provider; else elseBlock">
-
-  </div>
+  <div *ngIf="provider; else elseBlock"></div>
 
   <ng-template #elseBlock>
     <div
-    class="d-flex justify-content-center align-items-center"
-    style="height: 100vh"
-  >
-    <div class="w-100 text-center">
-      <div
-        class="d-flex justify-content-center align-items-center mb-4"
-        style="height: 100px"
-      >
-        <img
-          src="assets/metamask.png"
-          class="h-100 mx-3"
-          style="object-fit: contain; aspect-ratio: 1"
-        />
-        <img
-          src="assets/walletconnect.png"
-          class="h-100 mx-3"
-          style="object-fit: contain; aspect-ratio: 1"
-        />
+      class="d-flex justify-content-center align-items-center"
+      style="height: 100vh"
+    >
+      <div class="w-100 text-center">
+        <div
+          class="d-flex justify-content-center align-items-center mb-4"
+          style="height: 100px"
+        >
+          <img
+            src="assets/metamask.png"
+            class="h-100 mx-3"
+            style="object-fit: contain; aspect-ratio: 1"
+          />
+          <img
+            src="assets/walletconnect.png"
+            class="h-100 mx-3"
+            style="object-fit: contain; aspect-ratio: 1"
+          />
+        </div>
+        <h2
+          class="fw-bolder w-100 text-center text-white"
+          style="font-size: 35px; line-height: 1.2em"
+        >
+          Cannot Connect to Wallet
+        </h2>
+        <p
+          class="w-100 text-center text-secondary"
+          style="font-size: 17.5px; line-height: 1.2em"
+        >
+          Please make sure a Metamask/WalletConnect compatible wallet is
+          available and try again
+        </p>
+        <a
+          class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2"
+          (click)="setProvider()"
+          style="font-size: 25px"
+        >
+          REFRESH
+        </a>
       </div>
-      <h2
-        class="fw-bolder w-100 text-center text-white"
-        style="font-size: 35px; line-height: 1.2em"
-      >
-        Cannot Connect to Wallet
-      </h2>
-      <p
-        class="w-100 text-center text-secondary"
-        style="font-size: 17.5px; line-height: 1.2em"
-      >
-        Please make sure a Metamask/WalletConnect compatible wallet is available
-        and try again
-      </p>
-      <a
-        class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2"
-        (click)="setProvider()"
-        style="font-size: 25px"
-      >
-        REFRESH
-      </a>
     </div>
-  </div>
-
   </ng-template>
 </ng-template>

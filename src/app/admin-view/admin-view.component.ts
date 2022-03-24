@@ -59,6 +59,8 @@ import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-ord
 import { Row } from '../models/row.model';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 import { Page } from '../models/page.model';
+import { Plan } from '../models/plan.model';
+
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -3052,7 +3054,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   showWelcomeModal() {
     if (Globals.isNewUser) {
       Globals.isNewUser = false
-      this.loadService.startSubscription((id: any, err?: string) => {
+      this.loadService.startSubscription(this.plans[0], (id: any, err?: string) => {
         if (err && err != '') {
           return;
         } else {
@@ -3080,7 +3082,36 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     this.rootComponent.routeToProduct(product.docID ?? '');
   }
 
-  startSubscription() {
+  switchToSubscription(plan: Plan) {
+    this.renewSubscription(plan)
+  }
+
+  cancelSubscription(plan: Plan) {
+    this.spinner.show('adminSpinner')
+    this.loadService.stopSubscription(plan, (id: any) => {
+      this.subInfo = id
+      this.spinner.hide('adminSpinner')
+      this.toast('Plan Cancelled!')
+    })
+  }
+
+  renewSubscription(plan: Plan) {
+    this.spinner.show('adminSpinner')
+    this.loadService.reactivateSubscription(plan, (id: any, err?: string) => {
+      this.subInfo = id
+      this.spinner.hide('adminSpinner')
+      this.toast('Plan Updated!')
+      // if (err && err != ''){
+      //   this.err = err!
+      // }
+      // else{
+      //   this.subInfo = id
+      //   this.done()
+      // }
+    })
+  }
+
+  startSubscription(plan: Plan) {
     // if (Globals.billingInfo?.number && Globals.billingInfo?.number != ""){
     var sec = 0;
     var ind = 0;
@@ -3097,15 +3128,25 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       this.selectSetting(ind, sec);
     }
 
-    const modalRef = this.modalService.open(EditPlanComponent, { size: 'lg' });
-    modalRef.componentInstance.canTrial = this.canTrial;
+    this.spinner.show('adminSpinner')
 
-    let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
-      sub.unsubscribe();
-      if (subInfo) {
-        this.subInfo = subInfo ?? '';
-      }
-    });
+    this.loadService.startSubscription(plan, (id: any, err?: string) => {
+      this.subInfo = id ?? ''
+      this.toast('Plan Started!')
+      this.spinner.hide('adminSpinner')
+    })
+
+    // const modalRef = this.modalService.open(EditPlanComponent, { size: 'lg' });
+    // modalRef.componentInstance.canTrial = this.canTrial;
+
+    // let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
+    //   sub.unsubscribe();
+    //   if (subInfo) {
+    //     this.subInfo = subInfo ?? '';
+    //   }
+    // });
+
+
     // }
     // else{
     //   var sec = 0
@@ -3362,6 +3403,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       text: 'SHIPPED',
     };
   }
+
+  plans: Plan[] = [
+    new Plan('THRED CORE PLAN', 'core', 'price_1KXUw3IdY1nzc70N22t0gNoN', 9700, 'gradient', 'info', true),
+    new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
+  ]
 
   async init() {
     if (isPlatformBrowser(this.platformID)) {

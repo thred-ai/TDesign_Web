@@ -55,6 +55,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NetworkCheckPipe } from '../network-check.pipe';
 import { LazyMinter } from 'LazyMinter';
 import { create } from 'ipfs-http-client';
+import { Plan } from '../models/plan.model';
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
@@ -1945,9 +1946,9 @@ export class LoadService {
       );
   }
 
-  async stopSubscription(callback: (id: any) => any) {
+  async stopSubscription(plan: Plan, callback: (id: any) => any) {
     this.functions
-      .httpsCallable('removeSubIntent')({})
+      .httpsCallable('removeSubIntent')({plan: JSON.parse(JSON.stringify(plan))})
       .pipe(first())
       .subscribe(
         async (resp) => {
@@ -1959,12 +1960,13 @@ export class LoadService {
       );
   }
 
-  async reactivateSubscription(callback: (id: any, err?: string) => any) {
+  async reactivateSubscription(plan: Plan, callback: (id: any, err?: string) => any) {
     this.functions
-      .httpsCallable('reactivateSubIntent')({})
+      .httpsCallable('reactivateSubIntent')({plan: JSON.parse(JSON.stringify(plan))})
       .pipe(first())
       .subscribe(
         async (resp) => {
+          console.log(resp)
           callback(resp);
         },
         (err) => {
@@ -1974,9 +1976,9 @@ export class LoadService {
       );
   }
 
-  async startSubscription(callback: (id: any, err?: string) => any) {
+  async startSubscription(plan: Plan, callback: (id: any, err?: string) => any) {
     this.functions
-      .httpsCallable('createSubIntent')({})
+      .httpsCallable('createSubIntent')({plan: JSON.parse(JSON.stringify(plan))})
       .pipe(first())
       .subscribe(
         async (resp) => {

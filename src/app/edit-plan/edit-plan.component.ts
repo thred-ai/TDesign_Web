@@ -4,6 +4,7 @@ import { Dict, LoadService } from '../services/load.service';
 import { Country } from '../models/shipping-country.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Plan } from '../models/plan.model';
 
 @Component({
   selector: 'app-edit-plan',
@@ -59,22 +60,22 @@ export class EditPlanComponent implements OnInit {
 
   storeInfo(){return Globals.storeInfo}
 
-  startSubscription(){
-    this.spinner.show('subSpinner')
-    this.loadService.startSubscription((id: any, err?: string) => {
-      this.spinner.hide('subSpinner')
-      if (err && err != ''){
-        this.err = err!
-      }
-      else{
-        this.subInfo = id
-        this.done()
-      }
-    })
+  startSubscription(plan: Plan){
+    // this.spinner.show('subSpinner')
+    // this.loadService.startSubscription(plan, (id: any, err?: string) => {
+    //   this.spinner.hide('subSpinner')
+    //   if (err && err != ''){
+    //     this.err = err!
+    //   }
+    //   else{
+    //     this.subInfo = id
+    //     this.done()
+    //   }
+    // })
   }
 
   planStatus(){
-    if (this.subInfo?.plan.id == "price_1JmgQyIdY1nzc70NXgzC1vCN"){
+    if (this.subInfo?.plan.id == "price_1KXUw3IdY1nzc70N22t0gNoN"){
       return "Thred Core Plan"
     }
     else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
@@ -94,11 +95,11 @@ export class EditPlanComponent implements OnInit {
   
 
 cancelSubscription(){
-  this.spinner.show('subSpinner')
-  this.loadService.stopSubscription((id: any) => {
-    this.subInfo = id
-    this.done()
-  })
+  // this.spinner.show('subSpinner')
+  // this.loadService.stopSubscription((id: any) => {
+  //   this.subInfo = id
+  //   this.done()
+  // })
 }
 
 selectedIndicator(){
@@ -127,16 +128,16 @@ selectedIndicator(){
 
 
 reactivateSubscription(){
-  this.spinner.show('subSpinner')
-  this.loadService.reactivateSubscription((id: any, err?: string) => {
-    if (err && err != ''){
-      this.err = err!
-    }
-    else{
-      this.subInfo = id
-      this.done()
-    }
-  })
+  // this.spinner.show('subSpinner')
+  // this.loadService.reactivateSubscription((id: any, err?: string) => {
+  //   if (err && err != ''){
+  //     this.err = err!
+  //   }
+  //   else{
+  //     this.subInfo = id
+  //     this.done()
+  //   }
+  // })
 }
 
 done(){

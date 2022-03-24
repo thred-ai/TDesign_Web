@@ -87,8 +87,8 @@
                         <mat-hint [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planEndDate()}}</a></mat-hint>
                     </div> -->
                     <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                        <button *ngIf="canTrial!" [style.font-family]="storeInfo()?.fontName!" (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Free Trial</button>
-                        <button *ngIf="!canTrial!" [style.font-family]="storeInfo()?.fontName!" (click)="startSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Subscription</button>
+                        <!-- <button *ngIf="canTrial!" [style.font-family]="storeInfo()?.fontName!" (click)="startSubscription(plan)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Free Trial</button>
+                        <button *ngIf="!canTrial!" [style.font-family]="storeInfo()?.fontName!" (click)="startSubscription(plan)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Subscription</button> -->
                     </div>
                 </div>
         </div>

@@ -17,6 +17,14 @@
     transition: all 0.05s;
 }
 
+.gradient {
+	background: linear-gradient(to left, rgb(26, 20, 82), #0F0824);
+}
+
+.gradient2 {
+	background: linear-gradient(to top, rgb(0, 204, 255), #009765);
+}
+
 #sidebar .sidebar-header {
     padding: 20px;
     background: #1b1b1b;
