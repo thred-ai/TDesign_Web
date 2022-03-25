@@ -2,7 +2,7 @@
 <router-outlet></router-outlet>
 
 <ngx-spinner
-  *ngIf="isBrowser()"
+  *ngIf="isBrowser() && storeInfo"
   bdColor="{{ selectedIndicator().bg_color }}"
   size="large"
   color="{{ selectedIndicator().color }}"
@@ -10,14 +10,14 @@
   [fullScreen]="true"
   style.color="{{ selectedIndicator()!.color }}"
 >
-  <h3 [style.font-family]="info.fontName!" class="text-center mt-5">
-    {{ info?.fullName }}
+  <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
+    {{ storeInfo?.fullName }}
   </h3>
 </ngx-spinner>
 <!-- Section -->
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
 <section
-  *ngIf="isBrowser()"
+  *ngIf="isBrowser() && storeInfo"
   class="py-3"
   style="min-height: 100vh"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -31,10 +31,10 @@
     >
       <div class="col mb-1">
         <div
-          class="card bg-{{ info.colorStyle!.back_code }} mt-0 border border-{{
-            info.colorStyle!.text_code
+          class="card bg-{{ storeInfo?.colorStyle!.back_code }} mt-0 border border-{{
+            storeInfo?.colorStyle!.text_code
           }} shadow"
-          [class.border-secondary]="info!.colorStyle!.text_code == 'light'"
+          [class.border-secondary]="storeInfo?.colorStyle!.text_code == 'light'"
           style="border-radius: 20px; object-fit: contain; overflow: hidden"
         >
           <a
@@ -109,7 +109,7 @@
                         </drag-scroll> -->
           <!-- <div class="p-4 py-2 border-top-0">
                             <div class="mx-auto d-flex justify-content-center align-items-center">
-                                <a *ngIf="has3D();" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="info.fontName!" class="d-inline-flex btn btn-outline-{{info.colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
+                                <a *ngIf="has3D();" [hidden]="selectedTemplate() == undefined" (click)="open()"  role="button" [style.font-family]="storeInfo?.fontName!" class="d-inline-flex btn btn-outline-{{info.colorStyle!.text_code}} rounded-pill  align-items-center justify-content-center fw-bold" style="font-size: 15px;">
                                     <mat-icon class="me-2" style.color="{{selectedTheme()!.color}}">
                                         <span class="material-icons-outlined" style="font-size: 25px;">
                                             view_in_ar
@@ -133,8 +133,8 @@
               id="el-{{ i }}"
               style="object-fit: contain; overflow: hidden"
               style.color="{{ selectedTheme()!.color }}"
-              class="bg-{{ info.colorStyle!.back_code }} border border-{{
-                info.colorStyle!.text_code
+              class="bg-{{ storeInfo?.colorStyle!.back_code }} border border-{{
+                storeInfo?.colorStyle!.text_code
               }}"
               [class.rounded-10]="panel.isExpanded"
               [class.rounded-10-top]="
@@ -168,8 +168,8 @@
               *ngFor="let panel of accordionList; index as i"
               #mapanel="matExpansionPanel"
             >
-              <mat-expansion-panel-header [style.font-family]="info.fontName!">
-                <mat-panel-title class="text-{{ info.colorStyle!.text_code }}">
+              <mat-expansion-panel-header [style.font-family]="storeInfo?.fontName!">
+                <mat-panel-title class="text-{{ storeInfo?.colorStyle!.text_code }}">
                   <b>{{ panel.title }}</b>
                 </mat-panel-title>
                 <mat-panel-description>
@@ -181,13 +181,13 @@
               </mat-expansion-panel-header>
 
               <ng-template matExpansionPanelContent>
-                <p [style.font-family]="info.fontName!" *ngIf="panel.type == 1">
+                <p [style.font-family]="storeInfo?.fontName!" *ngIf="panel.type == 1">
                   {{ panel.description }}
                 </p>
                 <div
                   *ngIf="panel.type == 0"
                   class="row gx-4 row-cols-1 row-cols-md-3 align-items-top justify-content-start h-100"
-                  [style.font-family]="info.fontName!"
+                  [style.font-family]="storeInfo?.fontName!"
                 >
                   <div
                     class="col p-2 m-0"
@@ -196,7 +196,7 @@
                   >
                     <div
                       class="card border border-{{
-                        info.colorStyle!.text_code
+                        storeInfo?.colorStyle!.text_code
                       }} text-center rounded-panel-2 h-100"
                       style="overflow-y: hidden"
                       style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -206,7 +206,7 @@
                       <div class="card-body h-100">
                         <p
                           class="text-{{
-                            info.colorStyle!.text_code
+                            storeInfo?.colorStyle!.text_code
                           }} fw-bolder"
                         >
                           {{ p.trait_type.toUpperCase() }}
@@ -237,32 +237,32 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3 [style.font-family]="info.fontName!">
+                    <h3 [style.font-family]="storeInfo?.fontName!">
                       Contract Address
                     </h3>
-                    <h3 [style.font-family]="info.fontName!">
+                    <h3 [style.font-family]="storeInfo?.fontName!">
                       {{ collections?.contract ?? "" | address }}
                     </h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3 [style.font-family]="info.fontName!">Token ID</h3>
-                    <h3 [style.font-family]="info.fontName!">
+                    <h3 [style.font-family]="storeInfo?.fontName!">Token ID</h3>
+                    <h3 [style.font-family]="storeInfo?.fontName!">
                       {{ productToBuy?.tokenID ?? "Not Minted" }}
                     </h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3 [style.font-family]="info.fontName!">Token Standard</h3>
-                    <h3 [style.font-family]="info.fontName!">ERC-721</h3>
+                    <h3 [style.font-family]="storeInfo?.fontName!">Token Standard</h3>
+                    <h3 [style.font-family]="storeInfo?.fontName!">ERC-721</h3>
                   </div>
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h3 [style.font-family]="info.fontName!">Blockchain</h3>
-                    <h3 [style.font-family]="info.fontName!">Polygon</h3>
+                    <h3 [style.font-family]="storeInfo?.fontName!">Blockchain</h3>
+                    <h3 [style.font-family]="storeInfo?.fontName!">Polygon</h3>
                   </div>
                 </div>
               </ng-template>
@@ -281,7 +281,7 @@
             <div class="card-body p-md-4 pb-0 order-3 order-sm-1 w-100">
               <div class="text-start w-100">
                 <h5
-                  [style.font-family]="info.fontName!"
+                  [style.font-family]="storeInfo?.fontName!"
                   style.color="{{ selectedTheme()!.color }}"
                   class="fw-bolder w-100 single-line text-center text-md-start"
                   style="
@@ -303,7 +303,7 @@
                 <div class="text-start mt-1 mb-0" style="color: rgb(190, 6, 6)">
                   <div class="text-left">
                     <h5
-                      [style.font-family]="info.fontName!"
+                      [style.font-family]="storeInfo?.fontName!"
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-bolder text-center text-md-start"
                       style="font-size: 14px; line-height: 1.4em"
@@ -312,7 +312,7 @@
                       {{ "Owner: " + (productToBuy?.seller | address: false) }}
                     </h5>
                     <h5
-                      [style.font-family]="info.fontName!"
+                      [style.font-family]="storeInfo?.fontName!"
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-bolder mt-0"
                       style="font-size: 12px; line-height: 1.4em"
@@ -321,7 +321,7 @@
                       {{ "Not Available" }}
                     </h5>
                     <!-- <p
-                      [style.font-family]="info.fontName!"
+                      [style.font-family]="storeInfo?.fontName!"
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-normal"
                       style="
@@ -334,18 +334,18 @@
                     Sale ends January 4, 2023
                   </p> -->
 
-                    <!-- <p [style.font-family]="info.fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:11px" [innerHTML]="formattedInfo()"></p> -->
+                    <!-- <p [style.font-family]="storeInfo?.fontName!" style.color="{{selectedTheme()!.color}}" class="fw-normal" style="font-size:11px" [innerHTML]="formattedInfo()"></p> -->
                   </div>
 
                   <div
-                    class="bg-{{ info.colorStyle!.back_code }} border border-{{
-                      info.colorStyle!.text_code
+                    class="bg-{{ storeInfo?.colorStyle!.back_code }} border border-{{
+                      storeInfo?.colorStyle!.text_code
                     }} rounded-10 p-4"
                   >
                     <p
                       class="mt-2 ms-0 d-flex text-secondary justify-content-start align-items-center"
                       style="font-size: 16px"
-                      [style.font-family]="info.fontName!"
+                      [style.font-family]="storeInfo?.fontName!"
                     >
                       Current Price
                     </p>
@@ -353,7 +353,7 @@
                       <a
                         role="button"
                         class=" side ms-0 text-secondary text-{{
-                          info.colorStyle!.text_code
+                          storeInfo?.colorStyle!.text_code
                         }} d-inline-flex mx-0 mt-0 mb-3 align-items-center justify-content-start"
                         style="font-size: 18px; text-decoration: none"
                       >
@@ -377,7 +377,7 @@
                           role="button"
                           style="font-size: 18px; width: fit-content"
                           style.color="{{ selectedTheme()!.color }}"
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                           [ngbTooltip]="priceConvertTooltip"
                           *ngIf="rates.length > 0"
                         >
@@ -397,18 +397,18 @@
                                             <div class="text-center">
                                                 <div class="card-body p-0 pb-0">
                                                     <div class="text-left">
-                                                        <h5 style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Your Size'" [style.font-family]="info.fontName!"></h5>
+                                                        <h5 style.color="{{selectedTheme()!.color}}" class="fw-bolder" style="font-size:17px" [innerHTML]="'Choose Your Size'" [style.font-family]="storeInfo?.fontName!"></h5>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="row gx-4 gx-lg-1 row-cols-4 row-cols-md-5 row-cols-xl-5 justify-content-center" >
-                                                <button [style.font-family]="info.fontName!"  class="btn btn-outline-{{info.colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
-                                                <button [style.font-family]="info.fontName!"  class="btn btn-outline-{{info.colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
+                                                <button [style.font-family]="storeInfo?.fontName!"  class="btn btn-outline-{{info.colorStyle!.text_code}} active my-1 mx-1" (click)="selectSize(sizes(false)[0], $event)" style="font-weight:bold; font-size:12px;" id="size">{{sizes(false)[0]}}</button>
+                                                <button [style.font-family]="storeInfo?.fontName!"  class="btn btn-outline-{{info.colorStyle!.text_code}} my-1 mx-1" *ngFor="let size of sizes(true)" (click)="selectSize(size, $event)" style="font-weight:bold; font-size:12px;" id="size">{{size}}</button>
                                             </div>
                                         </div> -->
                       <div
                         class="card-footer p-4 px-md-0 pt-sm-5 pb-3 border-top-0 order-2 order-sm-4 d-block d-md-inline-flex align-items-center justify-content-start bg-{{
-                          info.colorStyle!.back_code
+                          storeInfo?.colorStyle!.back_code
                         }} "
                         [class.bg-transparent]="!isMobile()"
                       >
@@ -420,9 +420,9 @@
                           "
                           (click)="addToCart()"
                           role="button"
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                           class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
-                            info.colorStyle!.text_code
+                            storeInfo?.colorStyle!.text_code
                           }} mx-auto"
                           [class.anim]="adding"
                           [class.shake]="shake"
@@ -445,9 +445,9 @@
                         <a
                           *ngIf="!productToBuy.forSale"
                           role="button"
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                           class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
-                            info.colorStyle!.text_code
+                            storeInfo?.colorStyle!.text_code
                           }} mx-auto"
                           [class.anim]="adding"
                           [class.shake]="shake"
@@ -474,9 +474,9 @@
                           "
                           (click)="updateNFT()"
                           role="button"
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                           class="d-flex d-md-inline-flex btn mb-2 mx-2 px-3 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-{{
-                            info.colorStyle!.text_code
+                            storeInfo?.colorStyle!.text_code
                           }} mx-auto"
                           [class.anim]="adding"
                           [class.shake]="shake"
@@ -500,9 +500,9 @@
                         <!-- <a
                           (click)="addToCart()"
                           role="button"
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                           class="d-flex d-md-inline-flex btn mb-2 mx-2 mx-md-0 me-md-2 px-4 align-items-center rounded-panel-2 justify-content-center fw-bold shadow btn-outline-{{
-                            info.colorStyle!.text_code
+                            storeInfo?.colorStyle!.text_code
                           }} mx-auto"
                           [class.anim]="adding"
                           [class.shake]="shake"
@@ -522,8 +522,8 @@
                             </span>
                           </mat-icon>
                         </a> -->
-                        <!-- <div class="text-center"><a [style.font-family]="info.fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div> -->
-                        <!-- <div class="text-center"><a [style.font-family]="info.fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div> -->
+                        <!-- <div class="text-center"><a [style.font-family]="storeInfo?.fontName!" class="btn mt-auto d-flex flex-wrap rounded-pill" style="font-weight:bold; font-size:25px; justify-content: center;" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}" (click)="addToCart()" [innerHTML]="'ADD TO BAG'"></a></div> -->
+                        <!-- <div class="text-center"><a [style.font-family]="storeInfo?.fontName!" class="btn mt-auto d-flex flex-wrap" style.color="{{selectedTheme()!.color}}" style="font-weight:bold; font-size:13px; justify-content: center;">🚀 Order now and get it before {{nextweek()}}</a></div> -->
                       </div>
                     </div>
                   </div>
@@ -540,9 +540,9 @@
                         style="object-fit: contain; overflow: hidden"
                         style.color="{{ selectedTheme()!.color }}"
                         class="bg-{{
-                          info.colorStyle!.back_code
+                          storeInfo?.colorStyle!.back_code
                         }} border border-{{
-                          info.colorStyle!.text_code
+                          storeInfo?.colorStyle!.text_code
                         }} rounded-10"
                         (opened)="beforePanelOpened(panel)"
                         (closed)="beforePanelClosed(panel)"
@@ -553,7 +553,7 @@
                       >
                         <mat-expansion-panel-header>
                           <mat-panel-title
-                            class="text-{{ info.colorStyle!.text_code }}"
+                            class="text-{{ storeInfo?.colorStyle!.text_code }}"
                           >
                             <b>{{ panel.title }}</b>
                           </mat-panel-title>
@@ -573,14 +573,14 @@
                             mat-table
                             [dataSource]="dataSource"
                             class="w-100 text-{{
-                              info.colorStyle!.text_code
-                            }} bg-{{ info.colorStyle!.back_code }}"
+                              storeInfo?.colorStyle!.text_code
+                            }} bg-{{ storeInfo?.colorStyle!.back_code }}"
                           >
                             <ng-container matColumnDef="symbol">
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }}"
+                                class="text-{{ storeInfo?.colorStyle!.text_code }}"
                               ></th>
                               <td
                                 mat-cell
@@ -604,7 +604,7 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }}"
+                                class="text-{{ storeInfo?.colorStyle!.text_code }}"
                               >
                                 Price
                               </th>
@@ -620,7 +620,7 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }}"
+                                class="text-{{ storeInfo?.colorStyle!.text_code }}"
                               >
                                 From
                               </th>
@@ -670,9 +670,9 @@
                         style="object-fit: contain; overflow: hidden"
                         style.color="{{ selectedTheme()!.color }}"
                         class="bg-{{
-                          info.colorStyle!.back_code
+                          storeInfo?.colorStyle!.back_code
                         }} border border-{{
-                          info.colorStyle!.text_code
+                          storeInfo?.colorStyle!.text_code
                         }} rounded-10"
                         (opened)="beforePanelOpened(panel)"
                         (closed)="beforePanelClosed(panel)"
@@ -682,10 +682,10 @@
                         #mapanel="matExpansionPanel"
                       >
                         <mat-expansion-panel-header
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                         >
                           <mat-panel-title
-                            class="text-{{ info.colorStyle!.text_code }}"
+                            class="text-{{ storeInfo?.colorStyle!.text_code }}"
                           >
                             <b>{{ panel.title }}</b>
                           </mat-panel-title>
@@ -702,15 +702,15 @@
                         <div
                           *ngIf="panel.type == 1"
                           style="overflow: scroll; max-height: 345px"
-                          [style.font-family]="info.fontName!"
+                          [style.font-family]="storeInfo?.fontName!"
                         >
                           <table
                             *ngIf="(nftLogs.length ?? 0) > 0"
                             mat-table
                             [dataSource]="nftLogs"
                             class="w-md-100 text-{{
-                              info.colorStyle!.text_code
-                            }} bg-{{ info.colorStyle!.back_code }}"
+                              storeInfo?.colorStyle!.text_code
+                            }} bg-{{ storeInfo?.colorStyle!.back_code }}"
                           >
                             <!--- Note that these columns can be defined in any order.
                                   The actual rendered columns are set as a property on the row definition" -->
@@ -720,8 +720,8 @@
                               <th
                                 mat-header-cell
                                 *matHeaderCellDef
-                                class="text-{{ info.colorStyle!.text_code }}"
-                                [style.font-family]="info.fontName!"
+                                class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 Event
                               </th>
@@ -760,9 +760,9 @@
                                 mat-header-cell
                                 *matHeaderCellDef
                                 class="text-{{
-                                  info.colorStyle!.text_code
+                                  storeInfo?.colorStyle!.text_code
                                 }} padding"
-                                [style.font-family]="info.fontName!"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 From
                               </th>
@@ -770,7 +770,7 @@
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
-                                [style.font-family]="info.fontName!"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 {{ element.from | address }}
                               </td>
@@ -781,9 +781,9 @@
                                 mat-header-cell
                                 *matHeaderCellDef
                                 class="text-{{
-                                  info.colorStyle!.text_code
+                                  storeInfo?.colorStyle!.text_code
                                 }} padding"
-                                [style.font-family]="info.fontName!"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 To
                               </th>
@@ -791,7 +791,7 @@
                                 mat-cell
                                 *matCellDef="let element"
                                 style.color="{{ selectedTheme()!.color }}"
-                                [style.font-family]="info.fontName!"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 {{ element.to | address }}
                               </td>
@@ -802,9 +802,9 @@
                                 mat-header-cell
                                 *matHeaderCellDef
                                 class="text-{{
-                                  info.colorStyle!.text_code
+                                  storeInfo?.colorStyle!.text_code
                                 }} padding"
-                                [style.font-family]="info.fontName!"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 Price
                               </th>
@@ -821,7 +821,7 @@
                                     *ngIf="element.price != ''"
                                     class="p-0 m-0"
                                     svgIcon="{{
-                                      info
+                                      storeInfo!
                                         | collectionPipe: collection?.contract
                                         | matIcon
                                     }}"
@@ -830,7 +830,7 @@
                                     <ng-template #ptipContent>
                                       {{
                                         (
-                                          info
+                                          storeInfo!
                                           | collectionPipe: collection?.contract
                                         )?.currency ?? "MATIC"
                                       }}
@@ -839,7 +839,7 @@
                                   <p
                                     class="m-0 ms-1 h-100 fw-bolder"
                                     style="font-size: large"
-                                    [style.font-family]="info.fontName!"
+                                    [style.font-family]="storeInfo?.fontName!"
                                   >
                                     {{ element.price | price }}
                                   </p>
@@ -852,9 +852,9 @@
                                 mat-header-cell
                                 *matHeaderCellDef
                                 class="text-{{
-                                  info.colorStyle!.text_code
+                                  storeInfo?.colorStyle!.text_code
                                 }} padding"
-                                [style.font-family]="info.fontName!"
+                                [style.font-family]="storeInfo?.fontName!"
                               >
                                 Date
                               </th>
@@ -865,7 +865,7 @@
                               >
                                 <div
                                   class="d-flex justify-content-center align-items-center"
-                                  [style.font-family]="info.fontName!"
+                                  [style.font-family]="storeInfo?.fontName!"
                                 >
                                   {{
                                     (element | eventTimestamp: provider | async)
@@ -876,7 +876,7 @@
                                   <mat-icon
                                     style="overflow: hidden"
                                     class="p-0 ms-1 text-{{
-                                      info.colorStyle!.text_code
+                                      storeInfo?.colorStyle!.text_code
                                     }}"
                                     (click)="viewTxPolygonScan(element)"
                                     [inline]="true"
@@ -945,9 +945,9 @@
       style.color="{{ selectedTheme()!.color }}"
     >
       <p
-        class="text-center text-{{ info.colorStyle!.text_code }}"
+        class="text-center text-{{ storeInfo?.colorStyle!.text_code }}"
         style="line-height: 1.2em"
-        [style.font-family]="info.fontName!"
+        [style.font-family]="storeInfo?.fontName!"
       >
         COMING SOON
       </p>

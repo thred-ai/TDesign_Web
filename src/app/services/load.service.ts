@@ -658,8 +658,7 @@ export class LoadService {
           footer,
           wallet
         );
-
-        Globals.sInfo.next(Globals.storeInfo);
+        
 
         if (banners.length > 0) {
           this.rootComponent?.setInterval();
@@ -715,6 +714,8 @@ export class LoadService {
       } else {
         Globals.storeInfo.uid = '';
       }
+
+      Globals.sInfo.next(Globals.storeInfo);
 
       if (this.myCallback) this.myCallback();
 

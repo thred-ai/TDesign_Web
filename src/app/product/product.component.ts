@@ -38,7 +38,7 @@ import { NftUpdateComponent } from '../nft-update/nft-update.component';
 import { from, Subscription } from 'rxjs';
 import detectEthereumProvider from '@metamask/detect-provider';
 import axios from 'axios';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, skip, takeLast } from 'rxjs/operators';
 import { Store } from '../models/store.model';
 @Component({
   selector: 'app-product',
@@ -288,11 +288,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   nftLogs: Array<NftLog> = [];
 
 
-
-  get info() {
-    return Globals.storeInfo;
-  }
-
   mainPrice(product: Product) {
     
     return (product.price ?? 0) / 100;
@@ -371,8 +366,13 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   async ngOnInit() {
     const data = this.getProductID();
 
-    Globals.sInfo.subscribe(s => {
+    Globals.sInfo.pipe(skip(1)).subscribe(s => {
       this.storeInfo = s
+      console.log(s)
+      this.showSpinner();
+      this.rootComponent.setFavIcon(
+          s?.profileLink?.toString() ?? ''
+      );
     })
 
     this.loadService.myCallback = () => this.checkLoad();
@@ -504,9 +504,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         this.spinner.show();
       }
 
-      setTimeout(() => {
-        this.spinner.hide();
-      }, 1000);
+      
     }
   }
 
@@ -576,7 +574,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       );
 
       if (isPlatformBrowser(this.platformID)) {
-        if (Globals.storeInfo?.uid == undefined) {
+        if (this.storeInfo?.uid == undefined) {
           const storeInfo = this.getStoreName();
           this.loadService.getUser(
             storeInfo?.link,
@@ -584,10 +582,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             storeInfo?.isCustom
           );
         } else {
-          this.showSpinner();
-          this.rootComponent.setFavIcon(
-            Globals.storeInfo?.profileLink?.toString() ?? ''
-          );
+          
 
           if (
             Globals.storeInfo?.walletAddress?.toLowerCase() !=
@@ -627,6 +622,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
               );
             }
 
+            setTimeout(() => {
+              this.spinner.hide();
+            }, 1500);
+            
             this.cdr.detectChanges();
           }
         }
