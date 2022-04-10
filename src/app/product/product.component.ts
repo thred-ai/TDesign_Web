@@ -368,7 +368,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Globals.sInfo.pipe(skip(1)).subscribe(s => {
       this.storeInfo = s
-      console.log(s)
       this.showSpinner();
       this.rootComponent.setFavIcon(
           s?.profileLink?.toString() ?? ''
@@ -382,7 +381,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       (nft?: NFT, collection?: Collection) => {
         this.selectedIndex = 0;
         if (nft) {
-          console.log(nft)
           this.productToBuy = nft;
           this.accordionList[1].description = this.productToBuy.description;
           this.cdr.detectChanges();

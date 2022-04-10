@@ -181,6 +181,7 @@ export class CreateCollectionComponent implements OnInit {
           this.dialogRef.close(collection);
         } catch (error) {
           console.log(error)
+          this.spinner.hide('loader');
           let data = (error as any).data;
           if (data && data.code == -32000) {
             this.err = 'Not enough MATIC' + ' in wallet!';
@@ -192,7 +193,7 @@ export class CreateCollectionComponent implements OnInit {
       }
     } else {
     }
-    this.spinner.hide();
+    this.spinner.hide('loader');
   }
 
   closeDialog() {

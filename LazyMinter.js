@@ -51,8 +51,11 @@ class LazyMinter {
   async createVoucher(tokenId, uri, royalty = 0, minPrice = 0, token = '0x0000000000000000000000000000000000000000') {
     // let mint = await this.signer.getAddress()
 
+
     let isNative = (token == '0x0000000000000000000000000000000000000000')
-    const voucher = { tokenId, minPrice, royalty, uri, token, isNative} //mint }
+    const amount = 1
+    const fungible = false
+    const voucher = { tokenId, minPrice, royalty, uri, token, isNative, amount, fungible} //mint }
 
     const domain = await this._signingDomain()
     const types = {
@@ -62,6 +65,8 @@ class LazyMinter {
         {name: "royalty", type: "uint96"},
         {name: "token", type: "address"},  
         {name: "isNative", type: "bool"},  
+        {name: "amount", type: "uint256"},
+        {name: "fungible", type: "bool"},
         {name: "uri", type: "string"},  
       ]
     }

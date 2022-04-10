@@ -658,7 +658,6 @@ export class LoadService {
           footer,
           wallet
         );
-        
 
         if (banners.length > 0) {
           this.rootComponent?.setInterval();
@@ -1256,21 +1255,13 @@ export class LoadService {
 
     var col = new Array<Collection>();
 
-    // products = products.filter((p) => p.contractID != nftaddress);
-
-    var counter = 0
+    var counter = 0;
     this.getCollections(uid, async (c) => {
       if (c) {
         col = col?.concat(c);
-        // col = col.filter((v) => c.find((g) => g.contract == v) == undefined);
       }
       await Promise.all(
         col.map(async (collection: Collection) => {
-          // setTimeout(() => {
-          //   this.getCollection(contractID, async (collection) => {
-          // let created = await this.getCreated(collection!);
-
-          // console.log(created)
 
           var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
             ref
@@ -1288,16 +1279,10 @@ export class LoadService {
             );
           }
 
-          // if (this.provider){
           var products = new Array<NFT>();
 
-          // this.soldNFTs = this.storeProducts?.filter((i: any) => i.sold) ?? []
-          // }
-
-
-
           let sub = query.get().subscribe(async (docDatas) => {
-            sub.unsubscribe()
+            sub.unsubscribe();
             await Promise.all(
               docDatas.docs.map(async (doc, index) => {
                 let docData = doc.data() as DocumentData;
@@ -1315,6 +1300,7 @@ export class LoadService {
                   let lazyHash = docData['Lazy_Hash'] as Dict<any>;
                   let metadata = docData['Metadata'] as string;
                   let forSale = docData['forSale'] as boolean;
+                  let marketAddress = docData['marketAddress'] as string;
 
                   var cost = ethers.utils.parseUnits('0.02', 'ether');
                   if (lazyHash) {
@@ -1330,7 +1316,9 @@ export class LoadService {
                     undefined,
                     royalty,
                     lazyHash,
-                    metadata
+                    metadata,
+                    undefined,
+                    marketAddress
                   );
 
                   product.price = cost ?? 0.02;
@@ -1345,69 +1333,21 @@ export class LoadService {
                   let productID = docData['Product_ID'];
                   product.url = this.getURL(productID);
 
-                  
-                  // if (metadata) {
-                  // axios.get(metadata).then((meta) => {
-                  //   product.name = meta.data.name;
-                  //   product.url = meta.data.image;
-                  //   product.traits = meta.data.traits;
-                  //   product.description = meta.data.description;
-                  // });
-                  // // if (isPlatformBrowser(this.platformID)){
-                  // //   product.format = await this.getFormat(meta.data.image);
-                  // // }
-                  // } else {
-                  // }
-
-
-                  // let c = created.tokens.find(
-                  //   (i: any) => i?.tokenId == product?.tokenID
-                  // ) as any;
-  
-                  // if (c) {
-                  //   product.tokenID = c.tokenId;
-                  //   product.contractID = c.contract;
-                  //   product.owner = c.owner;
-                  //   product.name = c.name;
-                  //   product.format = c.content;
-                  //   product.royalty = c.royalty;
-                  //   product.metadata = c.uri;
-                  //   product.seller = c.seller;
-                  //   product.token = c.isNative ? undefined : c.token;
-                  //   product.description = c.description;
-                  //   product.price = c.price;
-                  //   product.url = c.image;
-                  //   product.itemId = c.itemId;
-                  //   product.forSale = c.forSale;
-                  //   product.lazyMint = c.minted == false;
-                  //   product.lazyHash = product.lazyMint ? product.lazyHash : undefined;
-                    if (product.tokenID && provider && !product.lazyMint) {
-                      product.seller = await collection.ownerOf(
-                        product.tokenID,
-                        provider2
-                      );
-                    }
-                  // } else {
-                    
-                  // }
-
+                  if (product.tokenID && provider && !product.lazyMint) {
+                    product.seller = await collection.ownerOf(
+                      product.tokenID,
+                      provider2
+                    );
+                  }
                   if ((product.name ?? '') == '') {
                     product.name = `${collection.name} #${index + 1}`;
                   }
 
                   products.push(product);
-  
-                  // else if (same.url){
-                  //   same.format = await this.getFormat(same.url);
-                  // }
-  
-                  // if (index == 0){
-                  //   same.token = '0x6a422a69ae59bfdd41406d746ecd33a8ba48f4fe'
-                  // }                  
                 }
               })
             );
-            counter += 1
+            counter += 1;
             if (collection.customToken && provider2) {
               await collection
                 .loadCurrency(collection.customToken, provider2)
@@ -1417,13 +1357,8 @@ export class LoadService {
             } else {
               collection.currency = 'MATIC';
             }
-            console.log('');
-            collection.NFTs = products
-            console.log(collection);
-            console.log(counter);
-            console.log(col.length);
-
-            if (counter == col.length){
+            collection.NFTs = products;
+            if (counter == col.length) {
               if (col) {
                 callback(col);
                 return;
@@ -1556,45 +1491,42 @@ export class LoadService {
     // const data = await marketContract.fetchItemsCreated();
     // const data1 = await nftContract.name();
     // const data2 = await nftContract.symbol();
-    console.log(contract);
-    const data3 = await marketContract.fetchCollectionAssets(contract.contract);
+    const data3 = await marketContract.fetchCollectionAsset(contract.contract, 1);
     console.log(data3);
-    const items = await Promise.all(
-      data3.map(async (i: any, index: number) => {
-        if (i.seller == '0x0000000000000000000000000000000000000000') {
-          return;
-        }
-        const tokenUri = await nftContract.tokenURI(
-          Number(i.tokenId.toString())
-        );
+    const i = data3[0]
 
-        const meta = await axios.get(tokenUri);
-        let item = {
-          price: i.price,
-          tokenId: i.tokenId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
-          forSale: i.forSale,
-          royalty: i.royalty,
-          image: meta.data.image,
-          content: await this.getFormat(meta.data.image),
-          name: meta.data.name,
-          description: meta.data.description,
-          contract: i.nftContract,
-          token: i.tokenContract,
-          isNative: i.isNative,
-          uri: tokenUri,
-          itemId: i.itemId,
-          minted: i.minted,
-        };
-
-        return item;
-      })
+    if (i.seller == '0x0000000000000000000000000000000000000000' || i.minted == false) {
+      return;
+    }
+    const tokenUri = await nftContract.tokenURI(
+      Number(i.tokenId.toString())
     );
+
+
+    const meta = await axios.get(tokenUri);
+    let variations = i.variations ?? []
+    let item = {
+      price: variations[0].price,
+      tokenId: i.tokenId.toNumber(),
+      seller: variations[0].seller,
+      owner: i.owner,
+      forSale: variations[0].forSale,
+      royalty: i.royalty,
+      image: meta.data.image,
+      content: await this.getFormat(meta.data.image),
+      name: meta.data.name,
+      description: meta.data.description,
+      contract: i.nftContract,
+      token: i.tokenContract,
+      isNative: i.isNative,
+      uri: tokenUri,
+      itemId: i.itemId,
+      minted: i.minted,
+    };
     return {
       // name: data1,
       // symbol: data2,
-      tokens: items,
+      tokens: item,
     };
   }
 
@@ -1949,7 +1881,9 @@ export class LoadService {
 
   async stopSubscription(plan: Plan, callback: (id: any) => any) {
     this.functions
-      .httpsCallable('removeSubIntent')({plan: JSON.parse(JSON.stringify(plan))})
+      .httpsCallable('removeSubIntent')({
+        plan: JSON.parse(JSON.stringify(plan)),
+      })
       .pipe(first())
       .subscribe(
         async (resp) => {
@@ -1961,13 +1895,18 @@ export class LoadService {
       );
   }
 
-  async reactivateSubscription(plan: Plan, callback: (id: any, err?: string) => any) {
+  async reactivateSubscription(
+    plan: Plan,
+    callback: (id: any, err?: string) => any
+  ) {
     this.functions
-      .httpsCallable('reactivateSubIntent')({plan: JSON.parse(JSON.stringify(plan))})
+      .httpsCallable('reactivateSubIntent')({
+        plan: JSON.parse(JSON.stringify(plan)),
+      })
       .pipe(first())
       .subscribe(
         async (resp) => {
-          console.log(resp)
+          console.log(resp);
           callback(resp);
         },
         (err) => {
@@ -1977,9 +1916,14 @@ export class LoadService {
       );
   }
 
-  async startSubscription(plan: Plan, callback: (id: any, err?: string) => any) {
+  async startSubscription(
+    plan: Plan,
+    callback: (id: any, err?: string) => any
+  ) {
     this.functions
-      .httpsCallable('createSubIntent')({plan: JSON.parse(JSON.stringify(plan))})
+      .httpsCallable('createSubIntent')({
+        plan: JSON.parse(JSON.stringify(plan)),
+      })
       .pipe(first())
       .subscribe(
         async (resp) => {
@@ -3149,7 +3093,8 @@ export class LoadService {
         Timestamp: new Date(),
         Name: mappedData.name,
         Description: mappedData.description,
-        Traits: mappedData.traits ?? []
+        Traits: mappedData.traits ?? [],
+        marketAddress: thredMarketplace
       } as Dict<any>)
     );
 
@@ -3162,24 +3107,35 @@ export class LoadService {
         .set(data, { merge: true });
 
       return id;
-
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
-
-      // if (matchingTheme){
-      //   Globals.userInfo!.colorStyle = matchingTheme
-      // }
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // Globals.userInfo!.fontName = mappedData.font
-
-      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-      //   if (matchingTheme){
-      //     Globals.storeInfo!.colorStyle = matchingTheme
-      //     Globals.storeInfo!.fontName = mappedData.font
-      //   }
-      // }
     }
     return undefined;
+  }
+
+  async syncNFT(nft: NFT, callback: (success: boolean) => (any)){
+    let data = {
+      uid: Globals.storeInfo.uid,
+      docID: nft.docID,
+      currentMarketAddress: nft.marketAddress,
+      newMarketAddress: thredMarketplace,
+    };
+    this.functions
+      .httpsCallable('syncAsset')(data)
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          if ((resp as boolean) && resp == true) {
+            callback(true);
+          } else {
+            callback(false);
+          }
+        },
+        (err) => {
+          var errorCode = err.code;
+          var errorMessage = err.message;
+          callback(false);
+          console.log(errorCode);
+        }
+      );
   }
 
   async saveProductInfo(
@@ -3314,8 +3270,8 @@ export class LoadService {
 
       Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
 
-      Globals.sInfo.next(Globals.storeInfo)
-      Globals.uInfo.next(Globals.userInfo!)
+      Globals.sInfo.next(Globals.storeInfo);
+      Globals.uInfo.next(Globals.userInfo!);
     }
     if (this.myCallback) this.myCallback();
   }
@@ -4722,6 +4678,8 @@ export class LoadService {
           if (lazyHash) {
             cost = lazyHash['minPrice'] as ethers.BigNumber;
           }
+          let marketAddress = docData['marketAddress'] as string;
+
 
           let product = new NFT(
             tokenID,
@@ -4732,7 +4690,9 @@ export class LoadService {
             undefined,
             royalty,
             lazyHash,
-            metadata
+            metadata,
+            undefined,
+            marketAddress
           );
 
           product.price = cost;
@@ -4749,9 +4709,6 @@ export class LoadService {
             product.url = meta.data.image;
             product.description = meta.data.description;
             product.traits = meta.data.traits;
-            // if (isPlatformBrowser(this.platformID)) {
-            //   product.format = await this.getFormat(meta.data.image);
-            // }
           } else {
             product.name = docData['Name'] as string;
             product.description = docData['Description'] as string;
@@ -4784,10 +4741,10 @@ export class LoadService {
             // co.name = created.name;
             // co.symbol = created.symbol;
 
-            let c = created.tokens.find(
-              (i: any) => i?.tokenId == product?.tokenID
-            ) as any;
-            if (c) {
+            let c = created?.tokens
+
+
+            if (c){
               product.tokenID = c.tokenId;
               product.contractID = c.contract;
               product.owner = c.owner;
@@ -4809,9 +4766,11 @@ export class LoadService {
               if (product.tokenID && provider) {
                 product.seller = await co.ownerOf(product.tokenID, provider2);
               }
-            } else {
-              product.format = await this.getFormat(product.url!);
             }
+            else {
+              product.format = await this.getFormat(product.url!);
+            }   
+
             co.currency = 'MATIC';
             console.log(product);
             if (product.token && provider2) {
@@ -4873,7 +4832,7 @@ export class LoadService {
   //         let id = docData.Product_ID as string;
 
   //         let url = this.getURL(id)
-          
+
   //         index += 1
 
   //         try {
@@ -4891,10 +4850,7 @@ export class LoadService {
   //           console.log("Removed " + id)
   //           doc.ref.update({'Available' : false})
   //         }
-          
-          
-          
-          
+
   //       }, 100);
   //     });
   // }

@@ -234,8 +234,7 @@ export class NftUpdateComponent implements OnInit {
             isNative: !(this.nft.token ?? false),
             minted: true
           };
-          let t = await contract.updateItem(marketItem, forSale, price)
-  
+          let t = await contract.updateItem(this.nft.itemId, 0, forSale, price)
           await t.wait()
   
         }

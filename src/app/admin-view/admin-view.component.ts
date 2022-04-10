@@ -84,6 +84,7 @@ import { Collection } from '../models/collection.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Store } from '../models/store.model';
 import { take } from 'rxjs/operators';
+import { thredMarketplace } from 'config';
 
 // artifacts/contracts/Market.sol/NFTMarket
 export type ChartOptions = {
@@ -3061,16 +3062,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           this.subInfo = id;
         }
       });
-      // Globals.isNewUser = false;
-      // const modalRef = this.modalService.open(StoreSetupComponent, {
-      //   size: 'lg',
-      // });
-      // // modalRef.componentInstance.canTrial = this.canTrial
-      // let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
-      //   sub.unsubscribe();
-      //   this.showSpinner();
-        
-      // });
     }
   }
 
@@ -3174,6 +3165,20 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         this.subInfo = subInfo ?? '';
       }
     });
+  }
+
+  get thredMarketplace(){
+    return thredMarketplace
+  }
+
+  syncProduct(nft: NFT){
+    // if (nft.marketAddress == 'loading'){
+    //   return
+    // }
+    // nft.marketAddress = 'loading'
+    // this.loadService.syncNFT(success => {
+    //   nft.marketAddress = thredMarketplace
+    // })
   }
 
   async callback() {

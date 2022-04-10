@@ -136,10 +136,10 @@ export class NftBuyComponent implements OnInit {
               this.nft.lazyHash.minPrice
             );
             await transaction2.wait();
-            transaction = await contract.mintAndTransfer(this.nft.lazyHash, this.nft.contractID);
+            transaction = await contract.mintAndTransferCustom(this.nft.lazyHash, this.nft.contractID);
           }
           else{
-            transaction = await contract.mintAndTransferCustom(this.nft.lazyHash, this.nft.contractID, {
+            transaction = await contract.mintAndTransfer(this.nft.lazyHash, this.nft.contractID, {
               value: this.nft.price,
             });
           }
@@ -159,7 +159,6 @@ export class NftBuyComponent implements OnInit {
             minted: true,
           };
 
-          console.log(this.collection)
           console.log(marketItem)
 
           if (!marketItem.isNative){
@@ -174,18 +173,18 @@ export class NftBuyComponent implements OnInit {
               marketItem.price
             );
             await transaction2.wait();
-            transaction = await contract.createSale(marketItem);
+            transaction = await contract.createSaleCustom(marketItem.itemId, 1);
           }
           else{
-            
-            transaction = await contract.createSaleCustom(marketItem, {
+            console.log('mom')
+            transaction = await contract.createSale(marketItem.itemId, 1, {
               value: this.nft.price,
             });
           }
         }
-        // if (transaction) {
-        //   await transaction.wait();
-        // }
+        if (transaction) {
+          await transaction.wait();
+        }
         
         this.shake = false;
         this.spinner.hide('purchase');

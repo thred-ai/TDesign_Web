@@ -1,5 +1,5 @@
 import { Dict } from '../services/load.service';
-import { erc721Merchant } from 'config';
+import { erc721Merchant, thredMarketplace } from 'config';
 import { ethers } from 'ethers';
 
 export class NFT {
@@ -16,7 +16,7 @@ export class NFT {
   url?: string;
   linkUrl?: string = ''
   price: ethers.BigNumber = ethers.utils.parseUnits('0', 'ether');
-
+  marketAddress?: string
   storeImg?: string = '';
 
   get priceNum() {
@@ -47,7 +47,8 @@ export class NFT {
     royalty: number = 0,
     lazyHash?: Dict<any>,
     metadata?: string,
-    seller?: string
+    seller?: string,
+    marketAddress?: string
   ) {
     this.tokenID = tokenID;
     this.contractID = contractID ?? erc721Merchant;
@@ -68,5 +69,6 @@ export class NFT {
           ? lazyHash.token
           : undefined;
     }
+    this.marketAddress = marketAddress ?? thredMarketplace
   }
 }
