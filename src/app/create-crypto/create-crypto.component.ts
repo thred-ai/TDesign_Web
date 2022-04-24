@@ -154,36 +154,6 @@ export class CreateCryptoComponent implements OnInit {
 
   async save() {
     if (this.nftForm.valid) {
-      if (window.ethereum && typeof window.ethereum == 'object') {
-        this.provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          'any'
-        );
-        Globals.provider = this.provider;
-      }
-      if (!this.provider?.getSigner()) {
-        try {
-          await Globals.checkProvider();
-          this.provider = Globals.provider;
-        } catch (error) {
-          this.err = 'No Wallet Connected. Please try again';
-          return;
-        }
-      }
-      if (!(await (this.laodService.networkCheck() ?? false))) {
-        this.err = 'Please switch your Network to the Polygon Mainnet';
-        return;
-      }
-
-      let signer = this.provider?.getSigner();
-
-      let address = (await signer?.getAddress()) ?? '';
-      if (
-        address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
-      ) {
-        this.err = 'Wrong Wallet';
-        return;
-      }
 
       let name = this.nftForm.controls.title.value as string;
       let description = this.nftForm.controls.description.value as string;
@@ -196,7 +166,6 @@ export class CreateCryptoComponent implements OnInit {
 
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       let external = (this.nftForm.controls.external_url.value as string) ?? '';
-
       this.isLoading = true;
       try {
         if (file) {
@@ -231,98 +200,107 @@ export class CreateCryptoComponent implements OnInit {
         const price = ethers.utils.parseUnits(cost.toString(), 'ether');
 
         //tokenid 0x3C68CE8504087f89c640D02d133646d98e64ddd9
+        this.laodService.getWalletInfo((signer?: ethers.Wallet) => {
 
-        this.laodService.getCollection(
-          this.nftContract.contract,
-          async (cl) => {
-            if (!cl) {
-              throw 'ERROR';
-              return;
-            }
-            var contract2 = new ethers.Contract(
-              thredMarketplace,
-              THRED_MARKET.abi,
-              signer
-            );
-
-            const lazyMinter = new LazyMinter(
-              contract2,
-              signer!,
-              'THRED-NFT'
-            );
-
-            let tokenId = (cl.collectionCount ?? 0) + 1;
-            const voucher = await lazyMinter.createVoucher(
-              tokenId,
-              url2,
-              royalty,
-              price,
-              cl.customToken
-            );
-
-            if (!lazyMint) {
-              
-              try {
-                let transaction = await contract2.mintNFT(voucher, cl.contract);
-                await transaction.wait();
-              } catch (error) {
-                throw("An Error Occured")
+          this.laodService.getCollection(
+            this.nftContract.contract,
+            async (cl) => {
+              if (!cl) {
+                throw 'ERROR';
+                return;
               }
+              var contract2 = new ethers.Contract(
+                thredMarketplace,
+                THRED_MARKET.abi,
+                signer
+              );
+  
+              const lazyMinter = new LazyMinter(
+                contract2,
+                signer!,
+                'THRED-NFT'
+              );
+              console.log(signer)
+  
+              let tokenId = (cl.collectionCount ?? 0) + 1;
+              const voucher = await lazyMinter.createVoucher(
+                tokenId,
+                url2,
+                royalty,
+                price,
+                cl.customTokenCheck() == undefined
+              );
+
               
+  
+              console.log("loo")
+
+              if (!lazyMint) {
+
+                try {
+                  let transaction = await contract2.mintNFT(voucher, cl.contract);
+                  await transaction.wait();
+                } catch (error) {
+                  throw("An Error Occured")
+                }
+                
+              }
+  
+              console.log(voucher)
+
+              let nft = new NFT(
+                tokenId,
+                contractNFT,
+                await signer?.getAddress(),
+                false,
+                lazyMint,
+                format,
+                royalty,
+                voucher,
+                url2
+              );
+  
+              nft.format = format;
+              var x = ethers.utils.parseUnits('0.02', 'ether');
+              if (voucher) {
+                x = voucher['minPrice'] as ethers.BigNumber;
+              }
+              nft.price = x;
+              nft.name = name;
+              nft.description = description;
+              nft.traits = traits;
+              nft.external_url = external;
+              nft.isAvailable = true;
+  
+              // if (!lazyMint) {
+              //   await this.mintNFT(voucher, price, contract2, contract3);
+              // }
+              // else{
+              // console.log(voucher)
+              // const transaction = await contract2.mintAndTransfer(voucher, { value: x });
+              // await transaction.wait()
+  
+              let img =
+                this.saveVideoThumbail() ?? (await this.getImgBase64(file));
+  
+              let docID = await this.laodService.saveNFT(
+                nft,
+                Globals.storeInfo?.uid,
+                undefined,
+                img
+              );
+              if (docID) {
+                nft.docID = docID;
+                nft.linkUrl = this.laodService.getURL(docID);
+              }
+              const meta = await axios.get(url2);
+              nft.url = meta.data.image;
+              this.dialogRef.close(nft);
+              this.isLoading = false;
             }
+          );
+        })
 
-            let nft = new NFT(
-              tokenId,
-              contractNFT,
-              await signer?.getAddress(),
-              false,
-              lazyMint,
-              format,
-              royalty,
-              voucher,
-              url2
-            );
-
-            nft.format = format;
-            var x = ethers.utils.parseUnits('0.02', 'ether');
-            if (voucher) {
-              x = voucher['minPrice'] as ethers.BigNumber;
-            }
-            nft.price = x;
-            nft.name = name;
-            nft.description = description;
-            nft.traits = traits;
-            nft.external_url = external;
-            nft.token = cl.customToken;
-            nft.isAvailable = true;
-
-            // if (!lazyMint) {
-            //   await this.mintNFT(voucher, price, contract2, contract3);
-            // }
-            // else{
-            // console.log(voucher)
-            // const transaction = await contract2.mintAndTransfer(voucher, { value: x });
-            // await transaction.wait()
-
-            let img =
-              this.saveVideoThumbail() ?? (await this.getImgBase64(file));
-
-            let docID = await this.laodService.saveNFT(
-              nft,
-              Globals.storeInfo?.uid,
-              undefined,
-              img
-            );
-            if (docID) {
-              nft.docID = docID;
-              nft.linkUrl = this.laodService.getURL(docID);
-            }
-            const meta = await axios.get(url2);
-            nft.url = meta.data.image;
-            this.dialogRef.close(nft);
-            this.isLoading = false;
-          }
-        );
         // }
       } catch (error) {
         this.isLoading = false;

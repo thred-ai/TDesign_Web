@@ -3,6 +3,10 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 interface IERC1155Merchant {
+
+    function customToken(
+    ) external view returns (address);
+
     function mint(
         address minter,
         uint256 tokenId,

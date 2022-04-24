@@ -1,7 +1,6 @@
-const ethers = require('ethers')
+const ethers = require("ethers");
 
 // These constants must match the ones used in the smart contract.
-const SIGNING_DOMAIN_VERSION = "1"
 
 /**NFTVoucher(uint256 tokenId,uint256 minPrice,string uri)
  * JSDoc typedefs.
@@ -12,7 +11,6 @@ const SIGNING_DOMAIN_VERSION = "1"
  * @property {string} uri the metadata URI to associate with this NFT
  * @property {ethers.BytesLike} signature an EIP-712 signature of all fields in the NFTVoucher, apart from signature itself.
  * @property {ethers.BigNumber | number} royalty the metadata URI to associate with this NFT
- * @property {string} token the metadata URI to associate with this NFT
  * @property {boolean} isNative the metadata URI to associate with this NFT
 
  */
@@ -21,20 +19,18 @@ const SIGNING_DOMAIN_VERSION = "1"
  * LazyMinter is a helper class that creates NFTVoucher objects and signs them, to be redeemed later by the LazyNFT contract.
  */
 class LazyMinter {
-
   /**
    * Create a new LazyMinter targeting a deployed instance of the LazyNFT contract.
-   * 
+   *
    * @param {Object} options
    * @param {ethers.Contract} contract an ethers Contract that's wired up to the deployed contract
-   * @param {ethers.Signer} signer a Signer whose account is authorized to mint NFTs on the deployed contract
+   * @param {ethers.Signer | ethers.Wallet} signer a Signer whose account is authorized to mint NFTs on the deployed contract
    * @param {String} domain a Signer whose account is authorized to mint NFTs on the deployed contract
-
    */
   constructor(contract, signer, domain) {
-    this.contract = contract
-    this.signer = signer
-    this.domain = domain
+    this.contract = contract;
+    this.signer = signer;
+    this.domain = domain;
   }
 
   /**
@@ -48,33 +44,47 @@ class LazyMinter {
    * 
    * @returns {NFTVoucher}
    */
-  async createVoucher(tokenId, uri, royalty = 0, minPrice = 0, token = '0x0000000000000000000000000000000000000000') {
+  async createVoucher(
+    tokenId,
+    uri,
+    royalty = 0,
+    minPrice = 0,
+    isNative = true
+  ) {
     // let mint = await this.signer.getAddress()
+    const amount = 1;
+    const fungible = false;
 
+    const voucher = {
+      tokenId,
+      minPrice,
+      royalty,
+      isNative,
+      amount,
+      fungible,
+      uri,
+    }; //mint }
 
-    let isNative = (token == '0x0000000000000000000000000000000000000000')
-    const amount = 1
-    const fungible = false
-    const voucher = { tokenId, minPrice, royalty, uri, token, isNative, amount, fungible} //mint }
-
-    const domain = await this._signingDomain()
+    const domain = await this._signingDomain();
     const types = {
       NFTVoucher: [
-        {name: "tokenId", type: "uint256"},
-        {name: "minPrice", type: "uint256"},
-        {name: "royalty", type: "uint96"},
-        {name: "token", type: "address"},  
-        {name: "isNative", type: "bool"},  
-        {name: "amount", type: "uint256"},
-        {name: "fungible", type: "bool"},
-        {name: "uri", type: "string"},  
-      ]
-    }
-    const signature = await this.signer._signTypedData(domain, types, voucher)
+        { name: "tokenId", type: "uint256" },
+        { name: "minPrice", type: "uint256" },
+        { name: "royalty", type: "uint96" },
+        { name: "isNative", type: "bool" },
+        { name: "amount", type: "uint256" },
+        { name: "fungible", type: "bool" },
+        { name: "uri", type: "string"},
+      ],
+    };
+    const signature = await this.signer._signTypedData(domain, types, voucher);
+
+    console.log(await ethers.utils.verifyTypedData(domain, types, voucher, signature))
+
     return {
       ...voucher,
       signature,
-    }
+    };
   }
 
   /**
@@ -83,19 +93,20 @@ class LazyMinter {
    */
   async _signingDomain() {
     if (this._domain != null) {
-      return this._domain
+      return this._domain;
     }
     const chainId = (await this.signer.provider.getNetwork()).chainId
+    console.log(chainId)
     this._domain = {
       name: this.domain,
-      version: SIGNING_DOMAIN_VERSION,
+      version: "1",
       verifyingContract: this.contract.address,
-      chainId,
-    }
-    return this._domain
+      chainId: chainId,
+    };
+    return this._domain;
   }
 }
 
 module.exports = {
-  LazyMinter
-}
+  LazyMinter,
+};

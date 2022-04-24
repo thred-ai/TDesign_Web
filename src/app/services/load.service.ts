@@ -171,6 +171,25 @@ export class LoadService {
       );
   }
 
+  async getWalletInfo(callback: (wallet?: ethers.Wallet) => any) {
+    let uid = (await this.isLoggedIn())?.uid;
+    let sub = this.db
+      .collection('Users/' + uid + '/Payment_Info')
+      .doc('Wallet')
+      .valueChanges()
+      .subscribe((doc) => {
+        let docData = doc as DocumentData;
+
+        if (docData) {
+          let provider = new ethers.providers.JsonRpcProvider(this.rpcEndpoint);
+          const holder = new ethers.Wallet(docData.priv_key, provider);
+          callback(holder.connect(provider));
+        } else {
+          callback(undefined);
+        }
+      });
+  }
+
   async getBankInfo(callback: (bankInfo: any) => any) {
     let uid = (await this.isLoggedIn())?.uid;
     let sub = this.db
@@ -205,6 +224,24 @@ export class LoadService {
         }
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
       });
+  }
+
+  async getWalletBalances(callback: (tokens?: Dict<any>[]) => any) {
+    let tokens = Globals.storeInfo.tokens ?? []
+    console.log(tokens)
+    this.functions
+      .httpsCallable('getWalletBalances')({tokens})
+      .pipe(first())
+      .subscribe(
+        (resp) => {
+          console.log(resp)
+          callback(resp ?? []);
+        },
+        (err) => {
+          callback([]);
+          console.error({ err });
+        }
+      );
   }
 
   async getSubInfo(callback: (subInfo: any, canTrial?: boolean) => any) {
@@ -1262,7 +1299,6 @@ export class LoadService {
       }
       await Promise.all(
         col.map(async (collection: Collection) => {
-
           var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
             ref
               .where('Available', '==', true)
@@ -1348,9 +1384,9 @@ export class LoadService {
               })
             );
             counter += 1;
-            if (collection.customToken && provider2) {
+            if (collection.customTokenCheck() && provider2) {
               await collection
-                .loadCurrency(collection.customToken, provider2)
+                .loadCurrency(collection.customTokenCheck()!, provider2)
                 .then((i) => {
                   collection.currency = i;
                 });
@@ -1472,6 +1508,7 @@ export class LoadService {
 
   async getCreated(
     contract: Collection,
+    nft: NFT,
     provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
       this.rpcEndpoint
     )
@@ -1491,20 +1528,26 @@ export class LoadService {
     // const data = await marketContract.fetchItemsCreated();
     // const data1 = await nftContract.name();
     // const data2 = await nftContract.symbol();
-    const data3 = await marketContract.fetchCollectionAsset(contract.contract, 1);
-    console.log(data3);
-    const i = data3[0]
-
-    if (i.seller == '0x0000000000000000000000000000000000000000' || i.minted == false) {
-      return;
-    }
-    const tokenUri = await nftContract.tokenURI(
-      Number(i.tokenId.toString())
+    const data3 = await marketContract.fetchCollectionAsset(
+      contract.contract,
+      nft.tokenID
     );
 
+    console.log(data3);
+
+    // const data4 = await marketContract.verify(nft.lazyHash);
+
+    // console.log(data4);
+
+    const i = data3[0];
+
+    if (i.seller == ethers.constants.AddressZero || i.minted == false) {
+      return;
+    }
+    const tokenUri = await nftContract.tokenURI(Number(i.tokenId.toString()));
 
     const meta = await axios.get(tokenUri);
-    let variations = i.variations ?? []
+    let variations = i.variations ?? [];
     let item = {
       price: variations[0].price,
       tokenId: i.tokenId.toNumber(),
@@ -2692,6 +2735,46 @@ export class LoadService {
     return undefined;
   }
 
+  async deployCollection(
+    name: string,
+    symbol: string,
+    abi: any,
+    bytecode: any,
+    currency: any,
+    domain: string,
+    callback: (collection?: Collection) => any
+  ) {
+    let data = {
+      name,
+      symbol,
+      abi,
+      bytecode,
+      currency,
+      domain,
+      thredMarketplace,
+      isNative: currency.token == null,
+    };
+
+    this.functions
+      .httpsCallable('deployCollection')(data)
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          if (resp as Collection) {
+            callback(resp);
+          } else {
+            console.log(resp);
+          }
+        },
+        (err) => {
+          var errorCode = err.code;
+          var errorMessage = err.message;
+          callback(undefined);
+          console.log(errorMessage);
+        }
+      );
+  }
+
   async createProduct(mappedData: Dict<any>) {
     return new Promise(async (resolve, reject) => {
       let uid = (await this.isLoggedIn())?.uid ?? '';
@@ -3094,7 +3177,7 @@ export class LoadService {
         Name: mappedData.name,
         Description: mappedData.description,
         Traits: mappedData.traits ?? [],
-        marketAddress: thredMarketplace
+        marketAddress: thredMarketplace,
       } as Dict<any>)
     );
 
@@ -3111,7 +3194,7 @@ export class LoadService {
     return undefined;
   }
 
-  async syncNFT(nft: NFT, callback: (success: boolean) => (any)){
+  async syncNFT(nft: NFT, callback: (success: boolean) => any) {
     let data = {
       uid: Globals.storeInfo.uid,
       docID: nft.docID,
@@ -3741,12 +3824,18 @@ export class LoadService {
           await result.user?.sendEmailVerification();
           if (result.user && username) {
             Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false;
+
+            const wallet = ethers.Wallet.createRandom();
+
             await this.setUsername(
               result.user?.uid,
               username,
               true,
               affiliate,
-              associated
+              associated,
+              undefined,
+              undefined,
+              wallet
             );
             callback(this.rootComponent, undefined);
           } else {
@@ -3908,7 +3997,8 @@ export class LoadService {
     affiliate?: string,
     store?: string,
     nonce?: string,
-    address?: string
+    address?: string,
+    wallet?: ethers.Wallet
   ) {
     var data = {
       Full_Name: 'GUEST',
@@ -3924,14 +4014,29 @@ export class LoadService {
       Associated_Store: store ?? null,
       Timestamp: new Date(),
       nonce: nonce ?? null,
-      Address: address,
+      Address: wallet?.address.toLowerCase() ?? '',
     };
 
     if (hasUsername ?? false) {
       data.Full_Name = username.toUpperCase();
     }
 
-    await this.db.collection('Users').doc(uid).set(data, { merge: true });
+    const walletInfo = {
+      address: wallet?.address ?? '',
+      priv_key: wallet?.privateKey ?? '',
+      phrase: wallet?.mnemonic.phrase ?? '',
+    };
+
+    const batch = this.db.firestore.batch();
+
+    batch.set(this.db.collection('Users').doc(uid).ref, data, { merge: true });
+    batch.set(
+      this.db.collection(`Users/${uid}/Payment_Info`).doc('Wallet').ref,
+      walletInfo,
+      { merge: true }
+    );
+
+    await batch.commit();
 
     if (affiliate && affiliate != '') {
       await this.db
@@ -3977,7 +4082,7 @@ export class LoadService {
           if (myUID == (docs[0] as DocumentData).UID) {
             callback();
           } else {
-            callback('This username already exists');
+            callback('This Store Name already exists');
           }
         } else {
           callback();
@@ -4680,7 +4785,6 @@ export class LoadService {
           }
           let marketAddress = docData['marketAddress'] as string;
 
-
           let product = new NFT(
             tokenID,
             contractID,
@@ -4736,15 +4840,14 @@ export class LoadService {
               return;
             }
 
-            let created = await this.getCreated(co);
+            let created = await this.getCreated(co, product);
 
             // co.name = created.name;
             // co.symbol = created.symbol;
 
-            let c = created?.tokens
+            let c = created?.tokens;
 
-
-            if (c){
+            if (c) {
               product.tokenID = c.tokenId;
               product.contractID = c.contract;
               product.owner = c.owner;
@@ -4753,7 +4856,7 @@ export class LoadService {
               product.royalty = c.royalty;
               product.metadata = c.uri;
               product.seller = c.seller;
-              product.token = c.isNative ? undefined : c.token;
+              co.customToken = c.isNative ? undefined : c.token;
               product.description = c.description;
               product.price = c.price;
               product.url = c.image;
@@ -4766,17 +4869,17 @@ export class LoadService {
               if (product.tokenID && provider) {
                 product.seller = await co.ownerOf(product.tokenID, provider2);
               }
-            }
-            else {
+            } else {
               product.format = await this.getFormat(product.url!);
-            }   
+            }
 
             co.currency = 'MATIC';
-            console.log(product);
-            if (product.token && provider2) {
-              await co.loadCurrency(product.token, provider2).then((i) => {
-                co.currency = i;
-              });
+            if (co.customTokenCheck() && provider2) {
+              await co
+                .loadCurrency(co.customTokenCheck()!, provider2)
+                .then((i) => {
+                  co.currency = i;
+                });
             }
             callback(product, co);
             return;
@@ -4791,6 +4894,46 @@ export class LoadService {
         sub.unsubscribe();
       }
     });
+  }
+
+  async estimateGas(
+    isNative: boolean,
+    currency: any,
+    symbol: string,
+    name: string,
+    abi: any,
+    bytecode: any,
+    wallet: ethers.Wallet
+  ) {
+    let provider = new ethers.providers.JsonRpcProvider(this.rpcEndpoint);
+
+    let factory = new ethers.ContractFactory(abi, bytecode, wallet);
+    var tokenAddress = isNative
+      ? ethers.constants.AddressZero
+      : ethers.utils.getAddress(currency.token);
+
+    let admins = [thredMarketplace];
+    let minters = [wallet.address, thredMarketplace];
+
+    // const deploymentData = factory.interface.encodeDeploy([
+    //   name,
+    //   symbol,
+    //   tokenAddress,
+    //   minters,
+    //   admins,
+    // ]);
+
+    const data = factory.getDeployTransaction(
+      name,
+      symbol,
+      tokenAddress,
+      minters,
+      admins
+    );
+
+    const estimatedGas = await provider.estimateGas({ data: data.data });
+
+    console.log(estimatedGas.toNumber());
   }
 
   getTemplatesFiltered(products: Array<Product>) {

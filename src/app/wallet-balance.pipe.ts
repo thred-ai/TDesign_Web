@@ -7,7 +7,7 @@ var abi = require('human-standard-token-abi');
 })
 export class WalletBalancePipe implements PipeTransform {
 
-  transform(value: string | null | undefined, provider: ethers.providers.Web3Provider | undefined, customToken: string = 'default') {
+  transform(value: string | null | undefined, provider: ethers.providers.Provider | undefined, customToken: string = 'default') {
 
     if (value && provider){
       
@@ -23,7 +23,7 @@ export class WalletBalancePipe implements PipeTransform {
   balanceOf(
     contract: string,
     wallet: string,
-    provider: ethers.providers.Web3Provider
+    provider: ethers.providers.Provider
   ) {
     let c = new ethers.Contract(contract, abi, provider);
     let owner = c.balanceOf(wallet);

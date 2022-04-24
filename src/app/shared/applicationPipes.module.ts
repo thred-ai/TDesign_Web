@@ -38,6 +38,7 @@ import { ProductCurrencyPipe } from '../product-currency.pipe';
 import { StrPipe } from '../str.pipe';
 import { OwnedCollectionsPipe } from '../owned-collections.pipe';
 import { CommaNumPipe } from '../comma-num.pipe';
+import { WalletProviderPipe } from '../wallet-provider.pipe';
 
 @NgModule({
   imports: [
@@ -83,6 +84,7 @@ import { CommaNumPipe } from '../comma-num.pipe';
     StrPipe,
     OwnedCollectionsPipe,
     CommaNumPipe,
+    WalletProviderPipe,
   ],
   exports: [
     SafeTextRowsPipe,

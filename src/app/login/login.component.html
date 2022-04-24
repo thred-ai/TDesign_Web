@@ -63,36 +63,70 @@
             {{ loadingAction }}
           </h3>
         </ngx-spinner>
-        <div
-          class="d-flex justify-content-center align-items-center mb-3"
-          style="height: 100px"
-        >
-          <img
-            src="assets/metamask.png"
-            class="h-100 mx-3"
-            style="object-fit: contain; aspect-ratio: 1"
-          />
-          <img
-            src="assets/walletconnect.png"
-            class="h-100 mx-3"
-            style="object-fit: contain; aspect-ratio: 1"
-          />
-        </div>
+
         <h2
-          class="fw-bolder w-100 text-center"
-          style="font-size: 35px; line-height: 1.2em"
+          class="w-100 p-0 m-0 text-center"
         >
-          LAUNCH YOUR STORE
+          Store Login
         </h2>
-        <p
-          class="w-100 text-center text-light"
-          style="font-size: 17.5px; line-height: 1.2em"
+        <form class="mt-4" [formGroup]="loginForm">
+          <!-- <input
+            [style.font-family]="storeInfo()?.fontName!"
+            class="fadeIn second bg-{{ backCode() }} text-{{ textCode() }}"
+            placeholder="Email Address"
+            [email]="true"
+            type="text"
+            name="email"
+            formControlName="email"
+          /> -->
+
+          <!-- <input [style.font-family]="storeInfo()?.fontName!" type="password" id="password" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="password" placeholder="Password" formControlName="password">
+            <input [style.font-family]="storeInfo()?.fontName!" type="password" id="confirmpass" class="fadeIn third bg-{{backCode()}} text-{{textCode()}}" name="confirmpass" placeholder="Confirm Password" formControlName="confirmpassword"> -->
+
+          <input
+            [style.font-family]="storeInfo()?.fontName!"
+            type="text"
+            id="username"
+            class="fadeIn second mt-2 bg-{{ backCode() }} text-{{ textCode() }}"
+            name="username"
+            placeholder="Store Name/Email"
+            formControlName="username"
+          />
+
+          <input
+            [style.font-family]="storeInfo()?.fontName!"
+            id="password"
+            class="fadeIn second mt-2 bg-{{ backCode() }} text-{{ textCode() }}"
+            name="password"
+            placeholder="Password"
+            formControlName="password"
+            type="password"
+          />
+          <!-- 
+            <div class="w-100">
+              <h2 *ngIf='isLanding && storeVal() != ""' class="w-100 m-0 p-0 text-center text-secondary">shopmythred.com/{{storeVal()}}</h2>
+              <h2 *ngIf='isLanding && storeVal() == ""' class="w-100 p-0 m-0 text-center">14 day free trial included</h2>
+                <div class="col">
+                  <button  [style.font-family]="storeInfo()?.fontName!" type="submit" role='button' (click)="useEmail()" class="btn btn-lg btn-block btn-dark mt-5 mb-5 pt-3 pb-3 ps-5 pe-5 fadeIn fourth rounded-pill" style.background-color="{{textColor()}}" style.color="{{backColor()}}" style="font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: small;">CONTINUE</button>
+                </div>
+            </div> -->
+        </form>
+        <!-- <h2 class="fw-bolder w-100 text-center" style="font-size: 35px; line-height: 1.2em;">
+          SETUP YOUR STORE
+          </h2> -->
+        
+          <a
+          class="text-light fw-bolder px-3 text-center mt-2 mb-4"
+          (click)="authMode = 2;"
+          style="font-size: 15px"
+          role="button"
         >
-          Compatible with MetaMask & WalletConnect wallets.
-          <!-- Please make sure a Metamask/WalletConnect compatible wallet is available and try again -->
-        </p>
+          Don't have an account? Register
+        </a>
+
+        <br>
         <a
-          class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-2 mb-4"
+          class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-4 mb-4"
           (click)="connect()"
           style="font-size: 25px"
         >
@@ -123,13 +157,24 @@
             {{ loadingAction }}
           </h3>
         </ngx-spinner>
-        <p
+        <!-- <p
           class="w-100 text-center text-light"
           style="font-size: 17.5px; line-height: 1.2em"
         >
           Enter your email address and store name.
-          <!-- Please make sure a Metamask/WalletConnect compatible wallet is available and try again -->
-        </p>
+        </p> -->
+        <h2
+          *ngIf="isLanding && storeVal() != ''"
+          class="w-100 m-0 p-0 text-center"
+        >
+          shopmythred.com/{{ storeVal() }}
+        </h2>
+        <h2
+          *ngIf="isLanding && storeVal() == ''"
+          class="w-100 p-0 m-0 text-center"
+        >
+          14 day free trial included
+        </h2>
         <form class="mt-4" [formGroup]="authForm">
           <input
             [style.font-family]="storeInfo()?.fontName!"
@@ -153,6 +198,16 @@
             placeholder="{{ username }}"
             formControlName="username"
           />
+          <input
+            [style.font-family]="storeInfo()?.fontName!"
+            type="text"
+            id="password"
+            class="fadeIn second mt-2 bg-{{ backCode() }} text-{{ textCode() }}"
+            name="password"
+            type="password"
+            placeholder="Password"
+            formControlName="password"
+          />
           <!-- 
             <div class="w-100">
               <h2 *ngIf='isLanding && storeVal() != ""' class="w-100 m-0 p-0 text-center text-secondary">shopmythred.com/{{storeVal()}}</h2>
@@ -165,25 +220,23 @@
         <!-- <h2 class="fw-bolder w-100 text-center" style="font-size: 35px; line-height: 1.2em;">
           SETUP YOUR STORE
           </h2> -->
+        
+          <a
+          class="text-light fw-bolder px-3 text-center mt-2 mb-4"
+          (click)="authMode = 1;"
+          style="font-size: 15px"
+          role="button"
+        >
+          Already have an account? Sign In
+        </a>
 
-        <h2
-          *ngIf="isLanding && storeVal() != ''"
-          class="w-100 m-0 p-0 text-center"
-        >
-          shopmythred.com/{{ storeVal() }}
-        </h2>
-        <h2
-          *ngIf="isLanding && storeVal() == ''"
-          class="w-100 p-0 m-0 text-center"
-        >
-          14 day free trial included
-        </h2>
+        <br>
         <a
           class="btn btn-dark rounded-pill fw-bolder px-3 text-center mt-4 mb-4"
           (click)="connect()"
           style="font-size: 25px"
         >
-          FINISH
+          CONNECT
         </a>
       </div>
     </div>

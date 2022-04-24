@@ -62,6 +62,10 @@ export class Collection implements ICollection {
   rpcEndpoint?: string;
   volume?: number;
 
+  customTokenCheck(){
+    return this.customToken && this.customToken != ethers.constants.AddressZero ? this.customToken : undefined
+  }
+
   getRarity(nft: NFT) {
     var totalRarity = 0;
 

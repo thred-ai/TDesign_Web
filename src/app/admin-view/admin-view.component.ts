@@ -125,7 +125,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   signedIn = false;
   bankInfo?: any = undefined;
   subInfo?: any = undefined;
-  canTrial?: boolean = true;
+  tokens?: Dict<any>[] = undefined
+  canTrial?: boolean = false;
 
   invTitle = 'FULFILLED BY THRED';
 
@@ -1521,6 +1522,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           Active: false,
         },
         {
+          Title: 'WALLET',
+          Icon: 'account_balance_wallet',
+          Active: false,
+        },
+        {
           Title: 'LIVE VIEW',
           Icon: 'public',
           Active: false,
@@ -1817,7 +1823,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   storeLive() {
     return (
-      this.subInfo != ''
+      this.subInfo != '' && (this.billingInfo()?.name ?? '') != ''
     );
   }
 
@@ -1862,9 +1868,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   missingInfo() {
     var array = Array<string>();
 
-    // if (Globals.billingInfo?.name == '') {
-    //   array.push('Add your billing method');
-    // }
+    if (Globals.billingInfo?.name == '') {
+      array.push('Add your billing method');
+    }
     if (this.subInfo == '') {
       array.push('Start your Thred Merchant plan');
     }
@@ -3272,7 +3278,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
 
   planStatus() {
-    if (this.subInfo?.plan.id == 'price_1JmgQyIdY1nzc70NXgzC1vCN') {
+    if (this.subInfo?.plan.id == 'price_1KrbIjIdY1nzc70NYFEfX1OV') {
       return 'Thred Core Plan';
     }
     else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
@@ -3410,8 +3416,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   plans: Plan[] = [
-    new Plan('THRED CORE PLAN', 'core', 'price_1KXUw3IdY1nzc70N22t0gNoN', 9700, 'gradient', 'info', true),
-    new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
+    new Plan('THRED CORE PLAN', 'core', 'price_1KrbIjIdY1nzc70NYFEfX1OV', 4900, 'gradient', 'info', true),
+    // new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
   ]
 
   async init() {
@@ -3435,10 +3441,17 @@ export class AdminViewComponent implements OnInit, OnDestroy {
             if (!this.subInfo) {
               this.subInfo = subInfo ?? '';
             }
-            this.canTrial = canTrial;
+            this.canTrial = false;
             this.cdr.detectChanges();
           }
         );
+      }
+      if (!this.tokens){
+        this.loadService.getWalletBalances((tokens?: Dict<any>[]) => {
+          if (!this.tokens){
+            this.tokens = tokens ?? []
+          }
+        })
       }
       if (!this.orders) {
         this.loadService.getAllOrders(async (arr: Array<Order>) => {

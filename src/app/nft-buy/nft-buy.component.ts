@@ -125,9 +125,11 @@ export class NftBuyComponent implements OnInit {
 
         if (this.nft.lazyHash?.minPrice as BigNumber) {
           console.log('man')
-          if (this.nft.lazyHash?.token && !this.nft.lazyHash.isNative) {
+
+          if (this.nft?.lazyHash && this.collection.customTokenCheck() && !this.nft.lazyHash.isNative) {
+            console.log("approving")
             let contract3 = new ethers.Contract(
-              this.nft.lazyHash?.token,
+              this.collection.customTokenCheck()!,
               abi,
               val as ethers.providers.JsonRpcSigner
             );
@@ -136,9 +138,11 @@ export class NftBuyComponent implements OnInit {
               this.nft.lazyHash.minPrice
             );
             await transaction2.wait();
+            console.log("custom")
             transaction = await contract.mintAndTransferCustom(this.nft.lazyHash, this.nft.contractID);
           }
           else{
+            console.log("transfer")
             transaction = await contract.mintAndTransfer(this.nft.lazyHash, this.nft.contractID, {
               value: this.nft.price,
             });
@@ -154,8 +158,8 @@ export class NftBuyComponent implements OnInit {
             forSale: this.nft.isAvailable,
             royalty: this.nft.royalty,
             tokenContract:
-              this.nft.token ?? '0x0000000000000000000000000000000000000000',
-            isNative: !(this.nft.token ?? false),
+            this.collection.customTokenCheck() ?? ethers.constants.AddressZero,
+            isNative: !(this.collection.customTokenCheck() ?? false),
             minted: true,
           };
 

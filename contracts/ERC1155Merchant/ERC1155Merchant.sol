@@ -25,6 +25,7 @@ contract ERC1155Merchant is
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bool isPublic = false;
+    address token;
     mapping (uint256 => string) private _tokenURIs;
 
     event Sale(
@@ -42,8 +43,10 @@ contract ERC1155Merchant is
     ) anonymous;
 
 
-    constructor(address[] memory minters,
+    constructor(address tokenAddress, address[] memory minters,
         address[] memory admins) ERC1155("") {
+
+        token = tokenAddress;
         if (minters.length == 0) {
             isPublic = true;
         } else {
@@ -56,6 +59,9 @@ contract ERC1155Merchant is
         }
     }
 
+    function customToken() external override view returns (address){
+        return token;
+    }
 
     function _beforeTokenTransfer(address operator, address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
         internal

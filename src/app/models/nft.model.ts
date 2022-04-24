@@ -30,7 +30,6 @@ export class NFT {
   forSale?: boolean = true;
 
   external_url?: string;
-  token?: string;
   isAvailable?: boolean;
   docID?: string;
   isNFT?: boolean;
@@ -63,12 +62,6 @@ export class NFT {
 
     this.isNFT = metadata != undefined;
 
-    if (lazyHash) {
-      this.token =
-        lazyHash.token != '0x0000000000000000000000000000000000000000'
-          ? lazyHash.token
-          : undefined;
-    }
     this.marketAddress = marketAddress ?? thredMarketplace
   }
 }

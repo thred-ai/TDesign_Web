@@ -204,11 +204,13 @@ export class NftUpdateComponent implements OnInit {
             'THRED-NFT'
           );
   
+
           const voucher = await lazyMinter.createVoucher(
             this.nft.tokenID,
             this.nft.metadata,
             this.nft.royalty,
-            price
+            price,
+            this.collection.customTokenCheck() == undefined
           );
           this.nft.lazyHash = voucher;
           this.nft.forSale = forSale
@@ -230,8 +232,8 @@ export class NftUpdateComponent implements OnInit {
             forSale: this.nft.isAvailable,
             royalty: this.nft.royalty,
             tokenContract:
-              this.nft.token ?? '0x0000000000000000000000000000000000000000',
-            isNative: !(this.nft.token ?? false),
+            this.collection.customTokenCheck() ?? ethers.constants.AddressZero,
+            isNative: !(this.collection.customTokenCheck() ?? false),
             minted: true
           };
           let t = await contract.updateItem(this.nft.itemId, 0, forSale, price)

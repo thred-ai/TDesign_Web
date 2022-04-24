@@ -31,26 +31,26 @@ async function main() {
   console.log("nft deploy starting");
 
   const NFT2 = await hre.ethers.getContractFactory("ThredMarketplace");
-  const nft2 = await NFT2.deploy('THRED-NFT', '1');
+  const nft2 = await NFT2.deploy('THRED-NFT', '1', '0xd31c54eFD3A4B5E6a993AaA4618D3700a12ff752');
   await nft2.deployed();
 
   const NFT = await hre.ethers.getContractFactory("ERC1155Merchant");
-  const nft = await NFT.deploy([],[nft2.address]);
+  const nft = await NFT.deploy(hre.ethers.constants.AddressZero, [],[nft2.address]);
   await nft.deployed();
-  console.log("ERC1155Merchant deployed to:", nft.address);
-  console.log("ThredMarketplace deployed to:", nft2.address);
 
-  // const NFT = await hre.ethers.getContractFactory("ERC721Merchant");
-  // const nft = await NFT.deploy("THRED","THRD",[],[nft2.address]);
-  // await nft.deployed();
-  // console.log("ERC721Merchant deployed to:", nft.address);
-  // console.log("ThredMarketplace deployed to:", nft2.address);
+  const NFT3 = await hre.ethers.getContractFactory("ERC721Merchant");
+  const nft3 = await NFT3.deploy("Thred", "THRD", hre.ethers.constants.AddressZero, [],[nft2.address]);
+  await nft3.deployed();
+
+  console.log("ERC1155Merchant deployed to:", nft.address);
+  console.log("ERC721Merchant deployed to:", nft3.address);
+  console.log("ThredMarketplace deployed to:", nft2.address);
   
   let config = `
-  // export const erc721Merchant = "${nft.address}"
+  export const erc721Merchant = "${nft3.address}"
   export const erc1155Merchant = "${nft.address}"
   export const thredMarketplace = "${nft2.address}"
-  // export const nftaddress = "${nft.address}"
+  export const nftaddress = "${nft3.address}"
   `
 
 

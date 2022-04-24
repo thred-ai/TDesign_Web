@@ -36,13 +36,7 @@
 </ngx-spinner>
 
 <div
-  *ngIf="
-    isBrowser() &&
-      userInfo &&
-      (provider | providerCheck | async | lowercase) ==
-        (userInfo?.walletAddress | lowercase);
-    else walletBlock
-  "
+  *ngIf="isBrowser() && userInfo"
   class="wrapper"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
@@ -68,7 +62,7 @@
           >{{ storeInfo?.fullName }}</a
         >
       </div>
-      <ul class="navbar-nav mt-3 w-100 p-0">
+      <!-- <ul class="navbar-nav mt-3 w-100 p-0">
         <li
           class="d-flex justify-content-center align-items-center w-100 text-center px-2"
           style="flex-shrink: 0"
@@ -86,7 +80,7 @@
             <mat-icon class="ms-2"> account_balance_wallet </mat-icon>
           </a>
         </li>
-      </ul>
+      </ul> -->
       <div class="w-100" style="overflow-y: auto">
         <div class="w-100" *ngFor="let panel of panels; index as s">
           <div
@@ -2535,7 +2529,8 @@
                         class="px-2 w-50 w-md-25 col"
                         *ngFor="
                           let product of collection.NFTs ?? []
-                            | sortCol: 'tokenId-asc'; index as j
+                            | sortCol: 'tokenId-asc';
+                          index as j
                         "
                       >
                         <div class="col h-100">
@@ -2659,8 +2654,8 @@
                                         </mat-icon>
                                         <p class="text-start">
                                           Press 'Convert' to make your NFT
-                                          available on the new Thred Marketplace
-                                          Contract
+                                          available on the updated Thred
+                                          Marketplace Contract
                                         </p>
                                       </div>
                                     </ng-template>
@@ -2670,9 +2665,20 @@
                               </div>
                             </div>
                           </div>
-                          <div *ngIf="product.marketAddress == 'loading'" class="position-absolute w-100 m-0 d-flex justify-content-center align-items-center" style="aspect-ratio: 1; background-color: rgba(0, 0, 0, 0.774);">
+                          <div
+                            *ngIf="product.marketAddress == 'loading'"
+                            class="position-absolute w-100 m-0 d-flex justify-content-center align-items-center"
+                            style="
+                              aspect-ratio: 1;
+                              background-color: rgba(0, 0, 0, 0.774);
+                            "
+                          >
                             <div class="text-center">
-                              <div class="lds-facebook"><div class="shadow"></div><div></div><div></div></div>
+                              <div class="lds-facebook">
+                                <div class="shadow"></div>
+                                <div></div>
+                                <div></div>
+                              </div>
                               <h2 class="text-center text-light fw-bold">
                                 UPLOADING
                               </h2>
@@ -2721,9 +2727,7 @@
             </div>
           </div>
           <div
-            *ngIf="
-              storeInfo?.collections && (storeInfo?.collections)!.length == 0
-            "
+            *ngIf="userInfo!.collections && userInfo!.collections?.length == 0"
             class="container px-4 px-lg-5 mt-0 pt-0"
           >
             <div
@@ -2741,7 +2745,7 @@
                 }} m-3 align-items-center justify-content-center fw-bold"
                 style="font-size: 20px"
               >
-                Create your first collection
+                Create your first NFT collection
                 <mat-icon class="ms-2 text-danger">
                   <span class="material-icons-outlined" style="font-size: 25px">
                     new_releases
@@ -2768,6 +2772,258 @@
             (finished)="finish($event)"
           ></app-product-details>
         </div>
+      </div>
+
+      <div *ngIf="getSelectedPanel()?.Title == 'WALLET'" class="w-100">
+        <mat-tab-group mat-stretch-tabs>
+          <mat-tab>
+            <!-- #docregion label-directive -->
+            <ng-template mat-tab-label>
+              <mat-icon
+                class="example-tab-icon text-{{
+                  (storeInfo?.colorStyle)!.text_code
+                }}"
+                >ballot</mat-icon
+              >
+              <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
+                WALLET
+              </span>
+            </ng-template>
+            <ng-template matTabContent>
+              <div
+                class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3 mb-0"
+              >
+                <div class="col">
+                  <div
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
+                    [class.border-secondary]="
+                      storeInfo!.colorStyle!.text_code == 'light'
+                    "
+                  >
+                    <p
+                      class="text-center text-{{
+                        (storeInfo?.colorStyle)!.text_code
+                      }} px-2 mx-2 my-2 mb-3"
+                      style="font-weight: bolder"
+                      *ngIf="tokens != undefined"
+                    >
+                      BALANCE
+                    </p>
+
+                    <div
+                      class="w-100 text-center"
+                      *ngFor="let token of tokens ?? []"
+                    >
+                      <a
+                        role="button"
+                        style="text-decoration: none"
+                        class="card bg-{{
+                          (storeInfo?.colorStyle)!.back_code
+                        }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center border-secondary m-4 mt-0 mx-3"
+                        style.color="{{ selectedTheme()!.color }}"
+                      >
+                        <mat-icon
+                          class="mb-2 mt-2 p-0"
+                          style="overflow: hidden"
+                          svgIcon="{{ token.contract | currencyIcon }}"
+                          [ngbTooltip]="qtipContent"
+                          role="button"
+                        >
+                          <ng-template #qtipContent>
+                            {{ token.name }}
+                          </ng-template>
+                        </mat-icon>
+                        <h2
+                          class="text-center my-auto mb-2"
+                          style="font-size: xx-large"
+                        >
+                          {{
+                              token.balance | big2Num
+                          }}
+                        </h2>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col h-100" *ngIf="emails() && numbers()">
+                  <div
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }} h-100"
+                    [class.border-secondary]="
+                      storeInfo!.colorStyle!.text_code == 'light'
+                    "
+                  >
+                    <p
+                      class="text-center text-{{
+                        (storeInfo?.colorStyle)!.text_code
+                      }} px-2 mx-2 my-2"
+                      style="font-weight: bolder"
+                    >
+                      TRANSACTIONS
+                    </p>
+                    <h2
+                      class="text-center fw-bolder"
+                      style="font-size: x-large"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      {{ (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) }}
+                    </h2>
+
+                    <div
+                      class="card-body d-flex justify-content-center align-items-center my-2"
+                    >
+                      <ngx-charts-pie-chart
+                        *ngIf="
+                          pieInfo &&
+                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
+                            0
+                        "
+                        [results]="pieInfo"
+                        [explodeSlices]="explodeSlices"
+                        [doughnut]="true"
+                        [customColors]="[
+                          { name: 'Email Subscribers', value: '#1ac6ff' },
+                          {
+                            name: 'SMS Subscribers',
+                            value: selectedTheme()!.color ?? ''
+                          }
+                        ]"
+                        [gradient]="true"
+                      >
+                      </ngx-charts-pie-chart>
+                      <mat-icon
+                        role="button"
+                        (click)="selectSetting(1, 0)"
+                        class="w-100 h-auto text-center h1 text-{{
+                          (storeInfo?.colorStyle)!.text_code
+                        }}"
+                        *ngIf="
+                          pieInfo &&
+                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
+                            0
+                        "
+                        style="position: absolute"
+                        >groups</mat-icon
+                      >
+                      <div
+                        *ngIf="
+                          emailSubs &&
+                          phoneSubs &&
+                          emailSubs!.length + phoneSubs!.length == 0
+                        "
+                        class="text-center"
+                      >
+                        <h4
+                          class="fw-bolder"
+                          style="font-size: x-large; line-height: 1em"
+                        >
+                          <a
+                            style="text-decoration: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            role="button"
+                            >Nothing to display here.<br /><mat-icon
+                              class="mt-2"
+                              style.color="{{ selectedTheme()!.color }}"
+                              >sentiment_dissatisfied</mat-icon
+                            ></a
+                          >
+                        </h4>
+                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col" *ngIf="emails() && numbers()">
+                  <div
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
+                    [class.border-secondary]="
+                      storeInfo!.colorStyle!.text_code == 'light'
+                    "
+                  >
+                    <p
+                      class="text-center text-{{
+                        (storeInfo?.colorStyle)!.text_code
+                      }} px-2 mx-2 my-2"
+                      style="font-weight: bolder"
+                    >
+                      ADD FUNDS
+                    </p>
+                    <h2
+                      class="text-center fw-bolder"
+                      style="font-size: x-large"
+                      style.color="{{ selectedTheme()!.color }}"
+                    >
+                      {{ (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) }}
+                    </h2>
+
+                    <div
+                      class="card-body d-flex justify-content-center align-items-center my-2"
+                      style="height: 300px; position: relative"
+                    >
+                      <ngx-charts-pie-chart
+                        *ngIf="
+                          pieInfo &&
+                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
+                            0
+                        "
+                        [results]="pieInfo"
+                        [explodeSlices]="explodeSlices"
+                        [doughnut]="true"
+                        [customColors]="[
+                          { name: 'Email Subscribers', value: '#1ac6ff' },
+                          {
+                            name: 'SMS Subscribers',
+                            value: selectedTheme()!.color ?? ''
+                          }
+                        ]"
+                        [gradient]="true"
+                      >
+                      </ngx-charts-pie-chart>
+                      <mat-icon
+                        role="button"
+                        (click)="selectSetting(1, 0)"
+                        class="w-100 h-auto text-center h1 text-{{
+                          (storeInfo?.colorStyle)!.text_code
+                        }}"
+                        *ngIf="
+                          pieInfo &&
+                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
+                            0
+                        "
+                        style="position: absolute"
+                        >groups</mat-icon
+                      >
+                      <div
+                        *ngIf="
+                          emailSubs &&
+                          phoneSubs &&
+                          emailSubs!.length + phoneSubs!.length == 0
+                        "
+                        class="text-center"
+                      >
+                        <h4
+                          class="fw-bolder"
+                          style="font-size: x-large; line-height: 1em"
+                        >
+                          <a
+                            style="text-decoration: none"
+                            style.color="{{ selectedTheme()!.color }}"
+                            role="button"
+                            >Nothing to display here.<br /><mat-icon
+                              class="mt-2"
+                              style.color="{{ selectedTheme()!.color }}"
+                              >sentiment_dissatisfied</mat-icon
+                            ></a
+                          >
+                        </h4>
+                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </mat-tab>
+        </mat-tab-group>
       </div>
 
       <div *ngIf="getSelectedPanel()?.Title == 'INVENTORY'">
@@ -3511,7 +3767,7 @@
                   (storeInfo?.colorStyle)!.text_code
                 }}"
               >
-                Select a Thred plan to activate your Marketplace.
+                Select a Thred plan to activate your Store.
               </h2>
               <div
                 class="row gx-0 row-cols-1 row-cols-md-2 justify-content-center px-3 px-md-5 w-100"
@@ -4476,7 +4732,7 @@
     </section>
   </div>
 </div>
-<ng-template #walletBlock>
+<!-- <ng-template #walletBlock>
   <div *ngIf="provider; else elseBlock"></div>
 
   <ng-template #elseBlock>
@@ -4523,4 +4779,4 @@
       </div>
     </div>
   </ng-template>
-</ng-template>
+</ng-template> -->

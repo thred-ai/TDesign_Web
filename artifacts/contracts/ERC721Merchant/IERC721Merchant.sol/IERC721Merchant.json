@@ -4,6 +4,19 @@
   "sourceName": "contracts/ERC721Merchant/IERC721Merchant.sol",
   "abi": [
     {
+      "inputs": [],
+      "name": "customToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
