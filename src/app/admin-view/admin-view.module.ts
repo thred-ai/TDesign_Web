@@ -52,7 +52,8 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CreateCryptoComponent } from '../create-crypto/create-crypto.component';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
-import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { NftAdminUpdateComponent } from '../nft-admin-update/nft-admin-update.component'; // <-- import it
 
 const routes: Routes = [
   {
@@ -82,6 +83,7 @@ const routes: Routes = [
     MapPopupComponent,
     CreateCryptoComponent,
     CreateCollectionComponent,
+    NftAdminUpdateComponent,
   ],
 
   imports: [

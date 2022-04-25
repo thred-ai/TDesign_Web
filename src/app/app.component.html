@@ -116,6 +116,7 @@
                 }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center text-{{
                   (storeInfo()?.colorStyle)!.text_code
                 }} border-secondary"
+                *ngIf="isBrowser()"
               >
                 <mat-icon
                   class="mb-2 mt-2 p-0"
@@ -346,7 +347,7 @@
       </mat-tab-group>
     </div>
   </mat-sidenav>
-  <mat-sidenav-content class="h-100 bg-transparent">
+  <mat-sidenav-content class="h-100 bg-transparent" *ngIf="isBrowser()">
     <div
       *ngIf="
         !isAdmin() &&

@@ -15,7 +15,7 @@ export class AddressPipe implements PipeTransform {
       return val.slice(0, 5) + '...' + val.slice(val.length - 4)
     }
     else if (value == ''){
-      return ''
+      return 'Blockchain'
     }
     return 'NullAddress';
   }

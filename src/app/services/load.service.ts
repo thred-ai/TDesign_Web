@@ -10,7 +10,7 @@ import { TemplateSide } from '../models/template-side.model';
 import { Color } from '../models/color.model';
 import { Country } from '../models/shipping-country.model';
 import { Globals } from '../globals';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { Blog } from '../models/blog.model';
 import { first, skip, map, switchMap } from 'rxjs/operators';
 import { ProductInCart } from '../models/product-in-cart.model';
@@ -49,6 +49,7 @@ import { ethers } from 'ethers';
 import { environment } from 'src/environments/environment';
 import { Collection } from '../models/collection.model';
 import { NftLog } from '../models/nft-log.model';
+import { WalletLog } from '../models/wallet-log.model';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -56,6 +57,7 @@ import { NetworkCheckPipe } from '../network-check.pipe';
 import { LazyMinter } from 'LazyMinter';
 import { create } from 'ipfs-http-client';
 import { Plan } from '../models/plan.model';
+import { DateConstructPipe } from '../date-construct.pipe';
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
@@ -227,14 +229,14 @@ export class LoadService {
   }
 
   async getWalletBalances(callback: (tokens?: Dict<any>[]) => any) {
-    let tokens = Globals.storeInfo.tokens ?? []
-    console.log(tokens)
+    let tokens = Globals.storeInfo.tokens ?? [];
+    console.log(tokens);
     this.functions
-      .httpsCallable('getWalletBalances')({tokens})
+      .httpsCallable('getWalletBalances')({ tokens })
       .pipe(first())
       .subscribe(
         (resp) => {
-          console.log(resp)
+          console.log(resp);
           callback(resp ?? []);
         },
         (err) => {
@@ -812,6 +814,56 @@ export class LoadService {
     }
   }
 
+  getContractEvents(callback: (transactions: Array<WalletLog>) => any) {
+    this.functions
+      .httpsCallable('getContractHistory')({})
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          let hashes = resp as any[];
+          if (hashes) {
+            console.log(hashes);
+            var logs = new Array<WalletLog>();
+            await Promise.all(
+              hashes.map(async (t) => {
+                var type = '';
+                if (
+                  (t.value != "0" && (t.from != '' && t.to != '')) &&
+                  (t.contractAddress == '' || t.tokenSymbol != undefined)
+                ) {
+                  type = 'transfer';
+                } else if (t.to == '' && t.contractAddress != '') {
+                  type = 'deploy';
+                } else {
+                  type = 'interaction';
+                }
+
+                let log = new WalletLog(
+                  type,
+                  t.from,
+                  t.to,
+                  Number(t.blockNumber),
+                  undefined,
+                  t.hash,
+                  t.contractAddress != '' ? t.contractAddress : 'default',
+                  ethers.BigNumber.from(t.gasUsed),
+                  ethers.BigNumber.from(t.gasPrice),
+                  t.value != '0' ? ethers.BigNumber.from(t.value) : undefined,
+                  Number(t.timeStamp)
+                );
+                logs.push(log);
+              })
+            );
+            console.log(logs);
+            callback(logs);
+          }
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+  }
+
   getEvents(
     collection: Collection,
     tokenId: string,
@@ -829,6 +881,7 @@ export class LoadService {
         async (resp) => {
           let hashes = resp.result as any[];
           if (hashes) {
+            // console.log(hashes)
             var logs = new Array<NftLog>();
             await Promise.all(
               hashes.map(async (t) => {
@@ -888,6 +941,9 @@ export class LoadService {
   }
 
   async networkCheck() {
+    if (isPlatformServer(this.platformID)) {
+      return false;
+    }
     var network = await Globals.provider?.getNetwork();
 
     if (network?.chainId == 0 && window.ethereum) {
@@ -1269,6 +1325,9 @@ export class LoadService {
 
   async checkProviderChain(provider: ethers.providers.Provider) {
     var properNetwork = false;
+    if (isPlatformServer(this.platformID)) {
+      return undefined;
+    }
     if (provider as ethers.providers.Web3Provider) {
       const pipe = new NetworkCheckPipe();
       properNetwork =
@@ -1384,7 +1443,11 @@ export class LoadService {
               })
             );
             counter += 1;
-            if (collection.customTokenCheck() && provider2) {
+            if (
+              collection.customTokenCheck() &&
+              provider2 &&
+              isPlatformBrowser(this.platformID)
+            ) {
               await collection
                 .loadCurrency(collection.customTokenCheck()!, provider2)
                 .then((i) => {
@@ -1513,6 +1576,10 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
+    if (isPlatformServer(this.platformID)) {
+      return undefined;
+    }
+
     const marketContract = new ethers.Contract(
       thredMarketplace,
       THRED_MARKET.abi,

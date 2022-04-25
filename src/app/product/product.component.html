@@ -17,7 +17,7 @@
 <!-- Section -->
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
 <section
-  *ngIf="isBrowser() && storeInfo"
+  *ngIf="isBrowser() && storeInfo && storeInfo?.active"
   class="py-3"
   style="min-height: 100vh"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -307,7 +307,7 @@
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-bolder text-center text-md-start"
                       style="font-size: 14px; line-height: 1.4em"
-                      *ngIf="(productToBuy?.owner ?? '') != ''"
+                      *ngIf="(productToBuy?.owner ?? '') != '' && productToBuy?.lazyHash == undefined"
                     >
                       {{ "Owner: " + (productToBuy?.seller | address: false) }}
                     </h5>
@@ -316,9 +316,9 @@
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-bolder mt-0"
                       style="font-size: 12px; line-height: 1.4em"
-                      *ngIf="(productToBuy?.owner ?? '') == ''"
+                      *ngIf="(productToBuy?.owner ?? '') == '' || productToBuy?.lazyHash != undefined"
                     >
-                      {{ "Not Available" }}
+                      Available to Mint
                     </h5>
                     <!-- <p
                       [style.font-family]="storeInfo?.fontName!"
@@ -361,7 +361,7 @@
                         <mat-icon
                           class="m-0 p-0 me-2"
                           style="overflow: hidden"
-                          svgIcon="{{ collections | matIcon }}"
+                          svgIcon="{{ collections.contract | matIcon }}"
                           [ngbTooltip]="qtipContent"
                         >
                           <ng-template #qtipContent>
@@ -821,8 +821,7 @@
                                     *ngIf="element.price != ''"
                                     class="p-0 m-0"
                                     svgIcon="{{
-                                      storeInfo!
-                                        | collectionPipe: collection?.contract
+                                      collection?.contract
                                         | matIcon
                                     }}"
                                     [ngbTooltip]="ptipContent"
@@ -928,11 +927,11 @@
     </div>
   </div>
 </section>
-<!-- <section
+<section
   *ngIf="
     isBrowser() &&
-    info?.username &&
-    !info?.active &&
+    storeInfo?.username &&
+    !storeInfo?.active &&
     productToBuy?.tokenID != undefined
   "
   class="py-5"
@@ -955,10 +954,10 @@
     <div>
       <div class="d-block align-items-center pt-0">
         <div class="d-block align-items-center text-center text-sm-start">
-          <a class="mx-auto me-sm-4" role="button" (click)="routeToAbout()"
+          <a class="mx-auto me-sm-4" role="button"
             ><img
               style="border-radius: 2.5%"
-              src="{{ info!.homeLink?.toString() ?? '' }}"
+              src="{{ storeInfo!.homeLink?.toString() ?? '' }}"
               style="max-width: 100%; height: auto"
               alt="Product"
           /></a>
@@ -966,7 +965,7 @@
       </div>
     </div>
   </div>
-</section> -->
+</section>
 <!-- </div> -->
 <!-- Footer-->
 

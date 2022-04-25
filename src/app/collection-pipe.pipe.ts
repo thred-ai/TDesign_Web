@@ -7,7 +7,8 @@ import { Store } from './models/store.model';
 export class CollectionPipePipe implements PipeTransform {
 
   transform(value: Store, contract?: string) {
-
+    console.log(value)
+    console.log(contract)
     if (contract){
       return value.collections?.find(c => c.contract == contract)
     }

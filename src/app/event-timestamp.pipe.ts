@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ethers } from 'ethers';
 import { environment } from 'src/environments/environment';
 import { NftLog } from './models/nft-log.model';
+import { WalletLog } from './models/wallet-log.model';
 
 @Pipe({
   name: 'eventTimestamp'
@@ -10,7 +11,7 @@ export class EventTimestampPipe implements PipeTransform {
   
   
 
-  transform(value: NftLog, provider?: ethers.providers.Provider) {
+  transform(value: NftLog | WalletLog, provider?: ethers.providers.Provider) {
 
     let p = provider
 

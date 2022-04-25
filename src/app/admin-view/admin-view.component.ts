@@ -75,6 +75,8 @@ import { MapPopupComponent } from '../map-popup/map-popup.component';
 import { CreateCryptoComponent } from '../create-crypto/create-crypto.component';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
 
+import { NftAdminUpdateComponent } from '../nft-admin-update/nft-admin-update.component';
+
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
@@ -85,6 +87,7 @@ import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Store } from '../models/store.model';
 import { take } from 'rxjs/operators';
 import { thredMarketplace } from 'config';
+import { WalletLog } from '../models/wallet-log.model';
 
 // artifacts/contracts/Market.sol/NFTMarket
 export type ChartOptions = {
@@ -126,7 +129,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   bankInfo?: any = undefined;
   subInfo?: any = undefined;
   tokens?: Dict<any>[] = undefined
+  walletLogs?: WalletLog[] = undefined
   canTrial?: boolean = false;
+  displayedColumns: string[] = ['symbol', 'from', 'to', 'price', 'date'];
 
   invTitle = 'FULFILLED BY THRED';
 
@@ -2946,6 +2951,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   soldNFTs: Array<NFT> = []
 
 
+  copyWalletAddress() {
+    this.toast('Wallet Address copied to clipboard!');
+    this.clipboard.copy(this.userInfo?.walletAddress ?? "");
+  }
 
   copyAffiliateURL() {
     this.toast('Affiliate link copied to clipboard!');
@@ -3391,8 +3400,38 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     });
   }
 
+  ownedCollections(address: string | null | undefined){
+    if (address){
+      return this.storeInfo?.collections?.filter(c => c.NFTs.find(n => n?.seller.toLowerCase() == address.toLowerCase())) ?? []
+    }
+    return []
+  }
+  
+  viewTxPolygonScan(log: WalletLog) {
+    if (!log.txHash) {
+      return;
+    }
+    var urlLink = `https://polygonscan.com/tx/${log.txHash}`;
+
+    const link = document.createElement('a');
+    link.target = '_blank';
+
+    let url: string = '';
+    if (!/^http[s]?:\/\//.test(urlLink)) {
+      url += 'http://';
+    }
+
+    url += urlLink;
+
+    link.href = url;
+
+    link.setAttribute('visibility', 'hidden');
+    link.click();
+    link.remove();
+  }
+
   orders?: Array<Order>;
-  displayedColumns: string[] = ['name', 'value', 'status', 'action'];
+  // displayedColumns: string[] = ['name', 'value', 'status', 'action'];
 
   matchingElem(order: Order) {
     if (order.status == 'confirmed' || order.status == 'completed') {
@@ -3435,6 +3474,15 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         });
       }
+      if (!this.walletLogs) {
+        this.loadService.getContractEvents(logs => {
+          if (!this.walletLogs){
+            this.walletLogs = logs ?? []
+            this.cdr.detectChanges()
+          }
+        })
+      }
+      
       if (!this.subInfo) {
         this.loadService.getSubInfo(
           async (subInfo: any, canTrial?: boolean) => {
@@ -3450,6 +3498,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         this.loadService.getWalletBalances((tokens?: Dict<any>[]) => {
           if (!this.tokens){
             this.tokens = tokens ?? []
+            this.cdr.detectChanges()
           }
         })
       }
@@ -3703,6 +3752,46 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       //   this.productDetails = undefined
       // }
     });
+  }
+
+  updateNFT(nft: NFT, collection: Collection) {
+    // if (!this.isSignedIn()){ return }
+    this.loadService.getPost(nft.docID!, (nft?: NFT) => {
+      if (nft?.seller.toLowerCase() != this.storeInfo?.walletAddress?.toLowerCase()) { 
+        this.toast('Permission Denied')
+        return
+      }
+      const modalRef = this.dialog.open(NftAdminUpdateComponent, {
+        width: '97.5vw',
+        height: '87.5vh',
+        maxHeight: '100vh',
+        maxWidth: '100vw',
+        panelClass: 'app-full-bleed-sm-dialog',
+  
+        data: {
+          nft,
+          collection,
+        },
+      });
+  
+      let sub = modalRef.afterClosed().subscribe(resp => {
+        sub.unsubscribe()
+        if (resp){
+          if (resp as NFT) {
+            let n = Globals.userInfo?.collections?.find(c => c.contract == collection.contract)?.NFTs.find(nf => nf.docID == resp.docID)
+            if (n){
+              n.price = resp.price;
+              n.forSale = resp.forSale ?? false;
+              this.userInfo = Globals.userInfo
+              Globals.storeInfo = this.userInfo!
+            }
+          } else {
+          }
+          this.toast('NFT Updated!')
+          this.cdr.detectChanges()
+        }
+      });
+    })
   }
 
   createNewProduct() {

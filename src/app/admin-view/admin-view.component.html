@@ -2570,51 +2570,49 @@
                               </a>
 
                               <div
-                                class="card-body text-center w-100 d-none d-md-block"
+                                class="card-body text-center w-100 d-flex justify-content-center justify-content-md-between align-items-center"
                               >
-                                <p
-                                  class="fw-bolder w-100"
-                                  style="
-                                    text-decoration: none;
-                                    text-overflow: ellipsis;
-                                    word-wrap: break-word;
-                                    word-break: break-all;
-                                    overflow-x: hidden;
-                                  "
-                                  style.color="{{ selectedTheme()!.color }}"
-                                  role="button"
-                                  (click)="routeToProduct(product)"
-                                >
-                                  {{ product?.name }}
-                                </p>
-                                <div
-                                  class="d-flex align-items-center justify-content-center w-100"
-                                >
-                                  <!-- <a
+                                <div>
+                                  <p
+                                    class="fw-bolder my-auto"
+                                    style="
+                                      text-decoration: none;
+                                      text-overflow: ellipsis;
+                                      overflow: hidden;
+                                      white-space: nowrap;
+                                    "
+                                    style.color="{{ selectedTheme()!.color }}"
                                     role="button"
-                                    class="btn"
-                                    (click)="editProduct(product)"
+                                    (click)="routeToProduct(product)"
+                                  >
+                                    {{ product?.name }}
+                                  </p>
+                                </div>
+                                <div>
+                                  <div
+                                    class="d-none d-md-flex justify-content-end align-items-center"
+                                    style.color="{{ selectedTheme()!.color }}"
                                   >
                                     <mat-icon
-                                      style.color="{{ selectedTheme()!.color }}"
-                                      >edit</mat-icon
+                                      style="overflow: hidden"
+                                      class="p-0 m-0"
+                                      svgIcon="{{
+                                        product?.contractID | matIcon
+                                      }}"
                                     >
-                                  </a> -->
-                                  <!-- <a
-                                  role="button"
-                                  class="btn"
-                                  (click)="deleteProduct(product)"
-                                >
-                                  <mat-icon
-                                    style.color="{{ selectedTheme()!.color }}"
-                                    >delete</mat-icon
-                                  >
-                                </a> -->
+                                    </mat-icon>
+                                    <p
+                                      class="m-0 ms-1 h-100 fw-bolder"
+                                      [style.font-family]="storeInfo?.fontName!"
+                                    >
+                                      {{ product.price | big2Num }}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                             <div
-                              class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent d-none d-md-block"
+                              class="card-footer p-4 pt-0 pt-0 pb-4 border-top-0 bg-transparent d-block"
                             >
                               <div class="text-center">
                                 <a
@@ -2623,17 +2621,13 @@
                                   }} mt-auto d-flex justify-content-center text-center"
                                   style="font-weight: bold"
                                   role="button"
-                                  (click)="routeToProduct(product)"
+                                  (click)="updateNFT(product, collection)"
                                   *ngIf="
                                     product.marketAddress == thredMarketplace;
                                     else elseBlock
                                   "
                                 >
-                                  {{
-                                    (product?.price | price) +
-                                      " " +
-                                      collection.currency
-                                  }}
+                                  UPDATE
                                 </a>
                                 <ng-template #elseBlock>
                                   <a
@@ -2786,10 +2780,40 @@
                 >ballot</mat-icon
               >
               <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
-                WALLET
+                MANAGE WALLET
               </span>
             </ng-template>
             <ng-template matTabContent>
+              <div class="text-center my-4 w-100">
+                <h2
+                  class="text-secondary w-100 mb-0"
+                  [style.font-family]="storeInfo?.fontName!"
+                  style="font-size: small"
+                >
+                  Wallet Address
+                </h2>
+
+                <a
+                  role="button"
+                  (click)="copyWalletAddress()"
+                  class="btn d-fle x mx-auto justify-content-center text-center w-100 mt-0 mb-3"
+                  style="font-size: medium"
+                  style.color="{{ selectedTheme()!.color }}"
+                  [style.font-family]="storeInfo?.fontName!"
+                >
+                  <p>
+                    {{ userInfo.walletAddress ?? "" }}
+                  </p>
+                  <mat-icon class="ms-2" [ngbTooltip]="wtipContent">
+                    <span style="font-size: 20px">
+                      <ng-template #wtipContent>
+                        Copy Wallet Address
+                      </ng-template>
+                      content_copy
+                    </span>
+                  </mat-icon>
+                </a>
+              </div>
               <div
                 class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-start m-2 m-md-3 m-lg-3 mb-0"
               >
@@ -2799,58 +2823,62 @@
                     [class.border-secondary]="
                       storeInfo!.colorStyle!.text_code == 'light'
                     "
+                    style="height: 400px; overflow-y: scroll"
                   >
                     <p
                       class="text-center text-{{
                         (storeInfo?.colorStyle)!.text_code
                       }} px-2 mx-2 my-2 mb-3"
                       style="font-weight: bolder"
-                      *ngIf="tokens != undefined"
                     >
                       BALANCE
                     </p>
 
                     <div
-                      class="w-100 text-center"
-                      *ngFor="let token of tokens ?? []"
+                      class="row row-cols-2 row-cols-md-3 justify-content-start align-items-center p-4"
+                      [hidden]="tokens == undefined"
                     >
-                      <a
-                        role="button"
-                        style="text-decoration: none"
-                        class="card bg-{{
-                          (storeInfo?.colorStyle)!.back_code
-                        }} px-4 py-2 shadow rounded-pill d-flex justify-content-start align-items-center border-secondary m-4 mt-0 mx-3"
-                        style.color="{{ selectedTheme()!.color }}"
+                      <div
+                        class="text-center col"
+                        *ngFor="let token of tokens ?? []"
                       >
-                        <mat-icon
-                          class="mb-2 mt-2 p-0"
-                          style="overflow: hidden"
-                          svgIcon="{{ token.contract | currencyIcon }}"
-                          [ngbTooltip]="qtipContent"
+                        <a
                           role="button"
+                          style="text-decoration: none"
+                          class="card bg-{{
+                            (storeInfo?.colorStyle)!.back_code
+                          }} py-2 shadow rounded-pill d-flex justify-content-start align-items-center border-secondary"
+                          style.color="{{ selectedTheme()!.color }}"
                         >
-                          <ng-template #qtipContent>
-                            {{ token.name }}
-                          </ng-template>
-                        </mat-icon>
-                        <h2
-                          class="text-center my-auto mb-2"
-                          style="font-size: xx-large"
-                        >
-                          {{
-                              token.balance | big2Num
-                          }}
-                        </h2>
-                      </a>
+                          <mat-icon
+                            class="mb-2 mt-2 p-0"
+                            style="overflow: hidden"
+                            svgIcon="{{ token.contract | currencyIcon }}"
+                            [ngbTooltip]="qtipContent"
+                            role="button"
+                          >
+                            <ng-template #qtipContent>
+                              {{ token.name }}
+                            </ng-template>
+                          </mat-icon>
+                          <h2
+                            class="text-center my-auto mb-2"
+                            style="font-size: xx-large"
+                          >
+                            {{ token.balance | big2Num }}
+                          </h2>
+                        </a>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="col h-100" *ngIf="emails() && numbers()">
+                <div class="col h-100">
                   <div
-                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }} h-100"
+                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                     [class.border-secondary]="
                       storeInfo!.colorStyle!.text_code == 'light'
                     "
+                    style="height: 400px"
                   >
                     <p
                       class="text-center text-{{
@@ -2860,81 +2888,228 @@
                     >
                       TRANSACTIONS
                     </p>
-                    <h2
+                    <!-- <h2
                       class="text-center fw-bolder"
                       style="font-size: x-large"
                       style.color="{{ selectedTheme()!.color }}"
                     >
                       {{ (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) }}
-                    </h2>
+                    </h2> -->
 
                     <div
-                      class="card-body d-flex justify-content-center align-items-center my-2"
+                      class="card-body d-flex justify-content-center align-items-center my-2 w-100"
                     >
-                      <ngx-charts-pie-chart
-                        *ngIf="
-                          pieInfo &&
-                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
-                            0
-                        "
-                        [results]="pieInfo"
-                        [explodeSlices]="explodeSlices"
-                        [doughnut]="true"
-                        [customColors]="[
-                          { name: 'Email Subscribers', value: '#1ac6ff' },
-                          {
-                            name: 'SMS Subscribers',
-                            value: selectedTheme()!.color ?? ''
-                          }
-                        ]"
-                        [gradient]="true"
-                      >
-                      </ngx-charts-pie-chart>
-                      <mat-icon
-                        role="button"
-                        (click)="selectSetting(1, 0)"
-                        class="w-100 h-auto text-center h1 text-{{
-                          (storeInfo?.colorStyle)!.text_code
-                        }}"
-                        *ngIf="
-                          pieInfo &&
-                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
-                            0
-                        "
-                        style="position: absolute"
-                        >groups</mat-icon
-                      >
                       <div
-                        *ngIf="
-                          emailSubs &&
-                          phoneSubs &&
-                          emailSubs!.length + phoneSubs!.length == 0
-                        "
-                        class="text-center"
+                        class="w-100"
+                        style="overflow: scroll; max-height: 300px"
+                        [style.font-family]="storeInfo?.fontName!"
                       >
-                        <h4
-                          class="fw-bolder"
-                          style="font-size: x-large; line-height: 1em"
+                        <table
+                          *ngIf="(walletLogs?.length ?? 0) > 0"
+                          mat-table
+                          [dataSource]="walletLogs ?? []"
+                          class="w-md-100 text-{{
+                            (storeInfo?.colorStyle)!.text_code
+                          }} bg-{{ (storeInfo?.colorStyle)!.back_code }}"
+                          style="width: 600px"
                         >
-                          <a
-                            style="text-decoration: none"
-                            style.color="{{ selectedTheme()!.color }}"
-                            role="button"
-                            >Nothing to display here.<br /><mat-icon
-                              class="mt-2"
+                          <!--- Note that these columns can be defined in any order.
+                            The actual rendered columns are set as a property on the row definition" -->
+
+                          <!-- Position Column -->
+                          <ng-container matColumnDef="symbol">
+                            <th
+                              mat-header-cell
+                              *matHeaderCellDef
+                              class="text-{{
+                                (storeInfo?.colorStyle)!.text_code
+                              }}"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              Event
+                            </th>
+                            <td
+                              mat-cell
+                              *matCellDef="let element"
                               style.color="{{ selectedTheme()!.color }}"
-                              >sentiment_dissatisfied</mat-icon
-                            ></a
+                            >
+                              <mat-icon
+                                class="m-0 p-0 hover-icon"
+                                style="overflow: hidden"
+                                [ngbTooltip]="etipContent"
+                              >
+                                {{ element.icon }}
+                                <ng-template #etipContent>
+                                  {{ element.logEvent }}
+                                </ng-template>
+                              </mat-icon>
+
+                              <!-- <mat-icon
+                            class="m-0 p-0"
+                            style="overflow: hidden"
+                            svgIcon="{{
+                              info
+                                | collectionPipe: collection?.contract
+                                | matIcon
+                            }}"
                           >
-                        </h4>
-                        <!-- <h4 class="fw-bold" style="font-size:medium; line-height:1.0em;" ><a style="text-decoration: none;" style.color="{{selectedTheme()!.color}}" role="button" >Check out our marketing guide below</a></h4> -->
+                          </mat-icon> -->
+                            </td>
+                          </ng-container>
+
+                          <!-- Name Column -->
+                          <ng-container matColumnDef="from">
+                            <th
+                              mat-header-cell
+                              *matHeaderCellDef
+                              class="text-{{
+                                (storeInfo?.colorStyle)!.text_code
+                              }} padding"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              From
+                            </th>
+                            <td
+                              mat-cell
+                              *matCellDef="let element"
+                              style.color="{{ selectedTheme()!.color }}"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              {{ element.from | address }}
+                            </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="to">
+                            <th
+                              mat-header-cell
+                              *matHeaderCellDef
+                              class="text-{{
+                                (storeInfo?.colorStyle)!.text_code
+                              }} padding"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              To
+                            </th>
+                            <td
+                              mat-cell
+                              *matCellDef="let element"
+                              style.color="{{ selectedTheme()!.color }}"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              {{ element.to | address }}
+                            </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="price">
+                            <th
+                              mat-header-cell
+                              *matHeaderCellDef
+                              class="text-{{
+                                (storeInfo?.colorStyle)!.text_code
+                              }} padding"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              Value
+                            </th>
+                            <td
+                              mat-cell
+                              *matCellDef="let element"
+                              style.color="{{ selectedTheme()!.color }}"
+                            >
+                              <div
+                                class="d-flex justify-content-start align-items-center w-100"
+                                *ngIf="element.value != ''"
+                              >
+                                <mat-icon
+                                  style="overflow: hidden"
+                                  class="p-0 m-0"
+                                  svgIcon="{{ element?.contract | matIcon }}"
+                                  [ngbTooltip]="ptipContent"
+                                >
+                                  <ng-template #ptipContent>
+                                    {{
+                                      (element.contract | tokenInfo)?.name ??
+                                        "Unknown Token"
+                                    }}
+                                  </ng-template>
+                                </mat-icon>
+                                <p
+                                  class="m-0 ms-1 h-100 fw-bolder"
+                                  style="font-size: large"
+                                  [style.font-family]="storeInfo?.fontName!"
+                                >
+                                  {{ element.value | big2Num }}
+                                </p>
+                              </div>
+                            </td>
+                          </ng-container>
+
+                          <ng-container matColumnDef="date">
+                            <th
+                              mat-header-cell
+                              *matHeaderCellDef
+                              class="text-{{
+                                (storeInfo?.colorStyle)!.text_code
+                              }} padding"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              Date
+                            </th>
+                            <td
+                              mat-cell
+                              *matCellDef="let element"
+                              class="text-secondary"
+                            >
+                              <div
+                                class="d-flex justify-content-center align-items-center"
+                                [style.font-family]="storeInfo?.fontName!"
+                              >
+                                {{
+                                  element.timestampNum | dateConstruct | dateAgo
+                                }}
+                                <mat-icon
+                                  style="overflow: hidden"
+                                  class="p-0 ms-1 text-{{
+                                    (storeInfo?.colorStyle)!.text_code
+                                  }}"
+                                  (click)="viewTxPolygonScan(element)"
+                                  [inline]="true"
+                                  [ngbTooltip]="gtipContent"
+                                >
+                                  launch
+                                  <ng-template #gtipContent>
+                                    View on Polygonscan
+                                  </ng-template>
+                                </mat-icon>
+                              </div>
+                            </td>
+                          </ng-container>
+                          <tr
+                            mat-header-row
+                            *matHeaderRowDef="displayedColumns"
+                          ></tr>
+                          <tr
+                            mat-row
+                            *matRowDef="let row; columns: displayedColumns"
+                          ></tr>
+                        </table>
+                        <div *ngIf="(walletLogs?.length ?? 0) == 0">
+                          <p
+                            class="text-center"
+                            style.color="{{ selectedTheme()!.color }}"
+                          >
+                            NO HISTORY
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="col" *ngIf="emails() && numbers()">
+                <div class="col w-100" *ngIf="emails() && numbers()">
                   <div
-                    class="card bg-{{ (storeInfo?.colorStyle)!.back_code }}"
+                    class="card w-100 bg-{{
+                      (storeInfo?.colorStyle)!.back_code
+                    }}"
                     [class.border-secondary]="
                       storeInfo!.colorStyle!.text_code == 'light'
                     "
@@ -2942,64 +3117,26 @@
                     <p
                       class="text-center text-{{
                         (storeInfo?.colorStyle)!.text_code
-                      }} px-2 mx-2 my-2"
+                      }} w-100 px-2 my-2"
                       style="font-weight: bolder"
                     >
-                      ADD FUNDS
+                      NFTs
                     </p>
-                    <h2
+                    <!-- <h2
                       class="text-center fw-bolder"
                       style="font-size: x-large"
                       style.color="{{ selectedTheme()!.color }}"
                     >
-                      {{ (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) }}
-                    </h2>
+                      {{
+                        ownedCollections(storeInfo?.walletAddress)?.length ?? 0
+                      }}
+                    </h2> -->
 
                     <div
                       class="card-body d-flex justify-content-center align-items-center my-2"
                       style="height: 300px; position: relative"
                     >
-                      <ngx-charts-pie-chart
-                        *ngIf="
-                          pieInfo &&
-                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
-                            0
-                        "
-                        [results]="pieInfo"
-                        [explodeSlices]="explodeSlices"
-                        [doughnut]="true"
-                        [customColors]="[
-                          { name: 'Email Subscribers', value: '#1ac6ff' },
-                          {
-                            name: 'SMS Subscribers',
-                            value: selectedTheme()!.color ?? ''
-                          }
-                        ]"
-                        [gradient]="true"
-                      >
-                      </ngx-charts-pie-chart>
-                      <mat-icon
-                        role="button"
-                        (click)="selectSetting(1, 0)"
-                        class="w-100 h-auto text-center h1 text-{{
-                          (storeInfo?.colorStyle)!.text_code
-                        }}"
-                        *ngIf="
-                          pieInfo &&
-                          (emailSubs?.length ?? 0) + (phoneSubs?.length ?? 0) >
-                            0
-                        "
-                        style="position: absolute"
-                        >groups</mat-icon
-                      >
-                      <div
-                        *ngIf="
-                          emailSubs &&
-                          phoneSubs &&
-                          emailSubs!.length + phoneSubs!.length == 0
-                        "
-                        class="text-center"
-                      >
+                      <div class="text-center">
                         <h4
                           class="fw-bolder"
                           style="font-size: x-large; line-height: 1em"
@@ -3008,7 +3145,7 @@
                             style="text-decoration: none"
                             style.color="{{ selectedTheme()!.color }}"
                             role="button"
-                            >Nothing to display here.<br /><mat-icon
+                            >Section coming soon.<br /><mat-icon
                               class="mt-2"
                               style.color="{{ selectedTheme()!.color }}"
                               >sentiment_dissatisfied</mat-icon
