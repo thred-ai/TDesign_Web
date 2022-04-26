@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
 
       this.loadingAction = 'Connecting...';
 
-      this.showSpinner();
+      this.showLogSpinner();
 
       var credentials: Dict<any> = {
         password: password
@@ -91,12 +91,13 @@ export class LoginComponent implements OnInit {
 
       if (username.includes('@')) {
         // this.showSpinner()
+        console.log(username)
         this.load.registerAccount(
           'Email_IN',
           (app, error) => {
             if (error) {
               this.err = error;
-              this.hideSpinner();
+              this.hideLogSpinner();
             } else {
               app?.setOptions();
               this.close();
@@ -111,7 +112,7 @@ export class LoginComponent implements OnInit {
           (app, error) => {
             if (error) {
               this.err = error;
-              this.hideSpinner();
+              this.hideLogSpinner();
             } else {
               app?.setOptions();
               app!.signedIn = true;
@@ -200,6 +201,7 @@ export class LoginComponent implements OnInit {
       this.load.checkUsername(username, (err) => {
         if (err) {
           this.error(err);
+          this.hideLogSpinner()
         } else {
           this.load.registerAccount(
             'Email_UP',

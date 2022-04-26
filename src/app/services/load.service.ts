@@ -3921,7 +3921,7 @@ export class LoadService {
         });
     } else if (type == 'Email_IN') {
       let password = credentials?.password!;
-      let email = credentials?.email!;
+      let email = credentials?.username!;
       this.auth
         .signInWithEmailAndPassword(email, password)
         .then(async (result) => {
