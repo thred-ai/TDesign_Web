@@ -3861,6 +3861,10 @@ export class LoadService {
     return this.auth.authState.pipe(first()).toPromise();
   }
 
+  loggedIn() {
+    return this.auth.authState
+  }
+
   registerAccount(
     type: string,
     callback: (root?: AppComponent, error?: string) => any,

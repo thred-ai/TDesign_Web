@@ -19,7 +19,7 @@
 
 <!-- Section-->
 <section
-  *ngIf="isBrowser() && storeInfo && storeInfo?.active && !isLoading"
+  *ngIf="isBrowser() && storeInfo && (storeInfo?.active || loggedIn) && !isLoading; else elseActive"
   class="py-5 pt-0 w-100"
   [class.fixed-top]="page?.fullscreen ?? false"
   style="overflow-y: scroll; min-height: 60vh;"
@@ -315,8 +315,10 @@
   class="bg-{{ (storeInfos()?.colorStyle)!.back_code }}"
   style="height: 100vh; width: 100%"
 ></section>
-<section
-  *ngIf="isBrowser() && storeInfo && storeInfo?.username && !storeInfo?.active"
+
+<ng-template #elseActive>
+  <section
+  *ngIf="isBrowser() && storeInfo"
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
@@ -349,6 +351,7 @@
     </div>
   </div>
 </section>
+</ng-template>
 <!-- Footer-->
 <!-- Bootstrap core JS-->
 

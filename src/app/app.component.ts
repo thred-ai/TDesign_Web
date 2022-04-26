@@ -49,7 +49,7 @@ import { WalletComponent } from './wallet/wallet.component';
 import { AuthService } from './services/auth.service';
 
 import * as AOS from 'aos';
-import { MatIconRegistry } from "@angular/material/icon";
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ethers } from 'ethers';
 import { from } from 'rxjs';
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   mode = 'All Products';
 
   storeInfo() {
-    return Globals.storeInfo ?? new Store()
+    return Globals.storeInfo ?? new Store();
   }
 
   userInfo() {
@@ -103,22 +103,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.ds!.moveLeft();
   }
 
-  ownedCollections(address: string | null | undefined){
-    if (address){
-      return Globals.storeInfo?.collections?.filter(c => c.NFTs.find(n => n?.seller.toLowerCase() == address.toLowerCase())) ?? []
+  ownedCollections(address: string | null | undefined) {
+    if (address) {
+      return (
+        Globals.storeInfo?.collections?.filter((c) =>
+          c.NFTs.find((n) => n?.seller.toLowerCase() == address.toLowerCase())
+        ) ?? []
+      );
     }
-    return []
+    return [];
   }
 
-  ownedProducts(address: string | null | undefined, collection: Collection){
-    if (address){
-      return collection.NFTs.filter(n => n.seller.toLowerCase() == address.toLowerCase())
+  ownedProducts(address: string | null | undefined, collection: Collection) {
+    if (address) {
+      return collection.NFTs.filter(
+        (n) => n.seller.toLowerCase() == address.toLowerCase()
+      );
     }
-    return []
+    return [];
   }
 
   moveRight() {
-
     if (this.ds?.currIndex == (this.storeInfo()?.banners?.length ?? 0) - 1) {
       this.ds?.moveTo(0);
     } else {
@@ -207,16 +212,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-
   selectedTheme(alpha?: number, bg_alpha?: number) {
     let co = Globals.storeInfo?.colorStyle?.btn_color;
     let bco = Globals.storeInfo?.colorStyle?.bg_color;
     let name = Globals.storeInfo?.colorStyle?.name;
 
-    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + alpha ?? co[3] + ')';
+    let color =
+      'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + alpha ?? co[3] + ')';
 
     let bg_color =
-      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bg_alpha ?? bco[3] + ')';
+      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bg_alpha ??
+      bco[3] + ')';
 
     var theme: Dict<string> = {
       name: name,
@@ -289,14 +295,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         if (Globals.storeInfo?.username) {
           if (this.isAdmin()) {
             this.reloadCurrentRoute();
-            return
+            return;
           } else {
             this.routingService.routeToProfile(
               Globals.userInfo?.username!,
               this.getStoreName().isCustom,
               selected
             );
-            return
+            return;
           }
         }
       }
@@ -462,9 +468,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  signInWithWallet(){
-    
-  }
+  signInWithWallet() {}
 
   settings(popFirst: boolean) {
     if (popFirst) {
@@ -672,15 +676,14 @@ export class AppComponent implements OnInit, AfterViewInit {
     private routingService: RoutingService,
     private pixelService: PixelService,
     private authService: AuthService,
-    
+
     private modalService: NgbModal,
     private _router: Router,
     private dialog: MatDialog,
     private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
+    private domSanitizer: DomSanitizer
   ) {
     this.check();
-
 
     if (isPlatformBrowser(this.platformID)) {
       (<any>window).routeToLink = this.routeToLink.bind(this);
@@ -690,7 +693,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
       this.matIconRegistry.addSvgIcon(
         `polygon_icon`,
-        this.domSanitizer.bypassSecurityTrustResourceUrl(`assets/polygon_logo.svg`)
+        this.domSanitizer.bypassSecurityTrustResourceUrl(
+          `assets/polygon_logo.svg`
+        )
       );
       this.matIconRegistry.addSvgIcon(
         `weth_icon`,
@@ -707,17 +712,15 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async openWallet(){
-
-    if (Globals.provider){
-      Globals.provider = undefined
-    }
-    else{
+  async openWallet() {
+    if (Globals.provider) {
+      Globals.provider = undefined;
+    } else {
       try {
-        let provider = await Globals.initializeProvider()
-        Globals.provider = provider
+        let provider = await Globals.initializeProvider();
+        Globals.provider = provider;
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
 
@@ -732,8 +735,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     //   console.log('wallet linked')
     // }
   }
-
-  
 
   async check() {
     if (isPlatformBrowser(this.platformID)) {
@@ -780,14 +781,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   routeToLink(h: string) {
-
-
-
-
     let link = this.storeInfo()?.pages?.find((p) => p.id == h)?.url ?? 'home';
-
-
-
 
     if (Globals.storeInfo?.username)
       this.routingService.routeToDynamicLink(
@@ -807,7 +801,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     //   event.ngOnInit()
     // }
     // console.log(event)
-
   }
 
   shake = false;
@@ -913,22 +906,31 @@ export class AppComponent implements OnInit, AfterViewInit {
     return Array(12 / this.storeInfo()?.banners.length).fill(0);
   }
 
-  providerName(){
-    if (Globals.provider){
-      return 'CONNECTED'
+  providerName() {
+    if (Globals.provider) {
+      return 'CONNECTED';
     }
-    return 'CONNECT WALLET'
+    return 'CONNECT WALLET';
   }
 
-  async setProvider(){
-    if (window.ethereum && (window.ethereum as any).selectedAddress){
-      Globals.provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-      
+  async setProvider() {
+    if (window.ethereum && (window.ethereum as any).selectedAddress) {
+      Globals.provider = new ethers.providers.Web3Provider(
+        window.ethereum,
+        'any'
+      );
+
       // console.log(Globals.provider)
-
     }
   }
 
+  get loggedIn() {
+    return (
+      this.storeInfo()?.uid != undefined &&
+      this.storeInfo()?.uid != '' &&
+      this.storeInfo()?.uid == this.signedInUid
+    );
+  }
 
   async ngOnInit() {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
@@ -938,17 +940,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.app = this;
 
     this.setOptions();
-    this.setProvider()
+    this.setProvider();
 
     // this.loadService.migratePhotos()
-    if (await this.loadService.authenticated()){
-      // this.openWallet()
-    }
+    // if (await this.loadService.authenticated()){
+    //   // this.openWallet()
+    // }
 
     // await Globals.checkProvider()
-    let provider = await detectEthereumProvider() as any
-    if (provider){
-      provider.on('accountsChanged', (accounts: Array<string>) => console.log(accounts));
+    let provider = (await detectEthereumProvider()) as any;
+    if (provider) {
+      provider.on('accountsChanged', (accounts: Array<string>) =>
+        console.log(accounts)
+      );
       provider.on('chainChanged', (_chainId: any) => window.location.reload());
     }
 
@@ -965,21 +969,17 @@ export class AppComponent implements OnInit, AfterViewInit {
     // });
 
     this.loadService.getCryptoRates((rates: Dict<any>[]) => {
-      Globals.rates = rates
-    })
-
+      Globals.rates = rates;
+    });
   }
 
-
-
-
-  get provider(){
-    return Globals.provider
-  }
-  
-  ethereum(){
-    return window.ethereum
+  get provider() {
+    return Globals.provider;
   }
 
-  closeBanner = false
+  ethereum() {
+    return window.ethereum;
+  }
+
+  closeBanner = false;
 }

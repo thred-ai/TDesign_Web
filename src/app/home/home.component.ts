@@ -37,6 +37,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   availableTemplates(){return Globals.availableTemplates}
 
 
+  get loggedIn(){
+    return this.rootComponent.loggedIn
+  }
 
   getLinkImg(name: string){
     return Globals.socials.filter(obj => { 

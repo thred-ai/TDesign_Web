@@ -227,6 +227,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     })[0].img;
   }
 
+  get loggedIn(){
+    return this.rootComponent.loggedIn
+  }
+
   async updateNFT() {
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
 

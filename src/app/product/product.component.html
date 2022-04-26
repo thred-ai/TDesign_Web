@@ -17,7 +17,7 @@
 <!-- Section -->
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
 <section
-  *ngIf="isBrowser() && storeInfo && storeInfo?.active"
+  *ngIf="isBrowser() && storeInfo && (storeInfo?.active || loggedIn); else elseActive"
   class="py-3"
   style="min-height: 100vh"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -927,13 +927,8 @@
     </div>
   </div>
 </section>
-<section
-  *ngIf="
-    isBrowser() &&
-    storeInfo?.username &&
-    !storeInfo?.active &&
-    productToBuy?.tokenID != undefined
-  "
+<ng-template #elseActive>
+  <section
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
@@ -966,6 +961,8 @@
     </div>
   </div>
 </section>
+</ng-template>
+
 <!-- </div> -->
 <!-- Footer-->
 
