@@ -31,8 +31,12 @@
       style.color="{{ selectedIndicator()!.color }}"
       [name]="'loader'"
     >
-      <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
+      <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5 pt-5 fw-bold">
         Deploying Contract
+        <br>
+        <b class="fw-normal" style="font-size: small;">
+          This may take a couple minutes
+        </b>
       </h3>
     </ngx-spinner>
     <form
