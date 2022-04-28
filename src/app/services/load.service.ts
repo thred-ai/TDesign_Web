@@ -1641,6 +1641,9 @@ export class LoadService {
   }
 
   async getFormat(image: string, noLoad = false): Promise<string> {
+
+    console.log(image)
+
     return new Promise(function (resolve, reject) {
       if (noLoad) {
         var format = 'none';
@@ -1658,6 +1661,7 @@ export class LoadService {
           if (this.readyState == this.DONE) {
             let type = this.getResponseHeader('Content-Type');
             var format = 'none';
+            console.log(type)
             if (!type) {
               reject('No content found!');
               return;

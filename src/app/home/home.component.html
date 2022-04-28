@@ -318,7 +318,7 @@
 
 <ng-template #elseActive>
   <section
-  *ngIf="isBrowser() && storeInfo"
+  *ngIf="isBrowser() && storeInfo && !isLoading"
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >

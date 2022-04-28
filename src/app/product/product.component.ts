@@ -585,6 +585,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           );
         } else {
           
+          console.log(this.storeInfo)
 
           if (
             Globals.storeInfo?.walletAddress?.toLowerCase() !=

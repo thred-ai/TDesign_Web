@@ -16,8 +16,10 @@
 </ngx-spinner>
 <!-- Section -->
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
+
+  <!-- && (storeInfo?.active || loggedIn); else elseActive -->
 <section
-  *ngIf="isBrowser() && storeInfo && (storeInfo?.active || loggedIn); else elseActive"
+  *ngIf="isBrowser() && storeInfo"
   class="py-3"
   style="min-height: 100vh"
   style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -929,6 +931,7 @@
 </section>
 <ng-template #elseActive>
   <section
+  *ngIf="isBrowser() && storeInfo"
   class="py-5"
   style.background-color="{{ selectedTheme()!.bg_color }}"
 >
