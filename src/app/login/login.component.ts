@@ -22,7 +22,7 @@ import { AppComponent } from '../app.component';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  authMode = 2;
+  authMode = 1;
   err = '';
 
   @Input() isLanding?: boolean;
@@ -49,196 +49,61 @@ export class LoginComponent implements OnInit {
 
   connect() {
     if (this.authMode == 1) {
-
-      if (!this.loginForm.valid) { return }
-
-      const username = (this.loginForm.controls.username.value ?? '') as string;
-
-      const password = ((this.loginForm.controls.password.value ?? '') as string)?.replace(/\s/g, '');
-
-      if (username == '') {
-        this.err = 'Invalid Store Name or Email';
-        return;
-      }
-
-      if (password == '') {
-        this.err = 'Invalid Password';
-        return;
-      }
-
       this.loadingAction = 'Connecting...';
 
-      this.showLogSpinner();
+      this.showSpinner();
 
-      var credentials: Dict<any> = {
-        password: password
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        username: username
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-      };
-
-      credentials.Field = 'Username'
-      credentials.Term = credentials.username
-      credentials.Code = credentials.password
-
-      if (username.includes('@')) {
-        // this.showSpinner()
-        console.log(username)
-        this.load.registerAccount(
-          'Email_IN',
-          (app, error) => {
-            if (error) {
-              this.err = error;
-              this.hideLogSpinner();
-            } else {
-              app?.setOptions();
-              this.close();
+      this.authService.signInWithMetaMask(
+        (uid?: string, app?: AppComponent, error?: string) => {
+          this.hideSpinner();
+          console.log(error);
+          if (uid) {
+            app!.signedIn = true;
+            app!.signedInUid = uid;
+            app?.setOptions();
+            this.close();
+            return;
+          } else if (error) {
+            if (error == 'login') {
+              this.authMode = 2;
             }
-          },
-          credentials
-        );
-      } else {
-        // this.showSpinner()
-        this.load.registerAccount(
-          'Email_IN_USER',
-          (app, error) => {
-            if (error) {
+            else{
               this.err = error;
-              this.hideLogSpinner();
-            } else {
-              app?.setOptions();
-              app!.signedIn = true;
-              app!.signedInUid = Globals.storeInfo?.uid;
-              this.close();
             }
-          },
-          credentials
-        );
-      }
-
-      // this.authService.signInWithMetaMask(
-      //   (uid?: string, app?: AppComponent, error?: string) => {
-      //     this.hideSpinner();
-      //     console.log(error);
-      //     if (uid) {
-      //       app!.signedIn = true;
-      //       app!.signedInUid = uid;
-      //       app?.setOptions();
-      //       this.close();
-      //       return;
-      //     } else if (error) {
-      //       if (error == 'login') {
-      //         this.authMode = 2;
-      //       }
-      //       else{
-      //         this.err = error;
-      //       }
-      //     }
-      //   }
-      // );
+          }
+        }
+      );
     } else {
-
-      if (!this.authForm.valid) { return }
-
       const email = (this.authForm.controls.email.value ?? '') as string;
 
       const username = this.storeVal();
 
-      const password = ((this.authForm.controls.password.value ?? '') as string)?.replace(/\s/g, '');
-
       if (username == '' || email == '') {
-        this.err = 'Invalid Store Name or Email';
-        return;
-      }
-
-      if (password == '') {
-        this.err = 'Invalid Password';
+        this.err = 'Invalid Username or Email';
         return;
       }
 
       // let associated = (Globals.storeInfo?.uid && Globals.storeInfo?.uid != '') ? Globals.storeInfo?.uid : undefined
 
-      this.loadingAction = 'Creating Store...';
-
+      this.loadingAction = 'Creating Account...';
 
       this.showLogSpinner();
 
-
-      // let associated =
-      //   Globals.storeInfo?.uid && Globals.storeInfo?.uid != ''
-      //     ? Globals.storeInfo?.uid
-      //     : undefined;
-
-      const credentials = {
-        email: email
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        password: password
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        username: username
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-      };
-
-      this.load.checkUsername(username, (err) => {
-        if (err) {
-          this.error(err);
-          this.hideLogSpinner()
-        } else {
-          this.load.registerAccount(
-            'Email_UP',
-            (app, error) => {
-              if (error) {
-                this.err = error;
-                this.hideSpinner();
-              } else {
-                app!.signedIn = true;
-                app!.signedInUid = Globals.storeInfo?.uid;
-                app?.setOptions();
-                this.hideSpinner();
-                this.close();
-              }
-            },
-            credentials,
-            undefined,
-            undefined
-          );
+      this.authService.signUpWithMetaMask(
+        email.replace(/\s/g, '').split(' ').join('').trim().toLowerCase(),
+        username.replace(/\s/g, '').split(' ').join('').trim().toLowerCase(),
+        (uid?: string, app?: AppComponent, error?: string) => {
+          this.hideLogSpinner();
+          if (uid) {
+            app!.signedIn = true;
+            app!.signedInUid = uid;
+            app?.setOptions();
+            this.close();
+          } else if (error) {
+            this.err = error;
+          }
         }
-      });
-
-      // this.authService.signUpWithMetaMask(
-      //   email.replace(/\s/g, '').split(' ').join('').trim().toLowerCase(),
-      //   username.replace(/\s/g, '').split(' ').join('').trim().toLowerCase(),
-      //   (uid?: string, app?: AppComponent, error?: string) => {
-      //     this.hideLogSpinner();
-      //     if (uid) {
-      //       app!.signedIn = true;
-      //       app!.signedInUid = uid;
-      //       app?.setOptions();
-      //       this.close();
-      //     } else if (error) {
-      //       this.err = error;
-      //     }
-      //   }
-      // );
+      );
     }
   }
 
@@ -322,10 +187,6 @@ export class LoginComponent implements OnInit {
       [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
     ],
     email: [null, [Validators.required, Validators.email]],
-    password: [
-      null,
-      [Validators.required, Validators.minLength(6), Validators.maxLength(50)],
-    ],
   });
 
   loginForm = this.fb.group({

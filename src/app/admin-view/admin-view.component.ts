@@ -75,8 +75,6 @@ import { MapPopupComponent } from '../map-popup/map-popup.component';
 import { CreateCryptoComponent } from '../create-crypto/create-crypto.component';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
 
-import { NftAdminUpdateComponent } from '../nft-admin-update/nft-admin-update.component';
-
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3Modal from 'web3modal';
@@ -87,7 +85,6 @@ import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Store } from '../models/store.model';
 import { take } from 'rxjs/operators';
 import { thredMarketplace } from 'config';
-import { WalletLog } from '../models/wallet-log.model';
 
 // artifacts/contracts/Market.sol/NFTMarket
 export type ChartOptions = {
@@ -128,10 +125,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   signedIn = false;
   bankInfo?: any = undefined;
   subInfo?: any = undefined;
-  tokens?: Dict<any>[] = undefined
-  walletLogs?: WalletLog[] = undefined
-  canTrial?: boolean = false;
-  displayedColumns: string[] = ['symbol', 'from', 'to', 'price', 'date'];
+  canTrial?: boolean = true;
 
   invTitle = 'FULFILLED BY THRED';
 
@@ -1527,11 +1521,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           Active: false,
         },
         {
-          Title: 'WALLET',
-          Icon: 'account_balance_wallet',
-          Active: false,
-        },
-        {
           Title: 'LIVE VIEW',
           Icon: 'public',
           Active: false,
@@ -1828,7 +1817,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   storeLive() {
     return (
-      this.subInfo != '' && (this.billingInfo()?.name ?? '') != ''
+      this.subInfo != ''
     );
   }
 
@@ -1873,9 +1862,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   missingInfo() {
     var array = Array<string>();
 
-    if (Globals.billingInfo?.name == '') {
-      array.push('Add your billing method');
-    }
+    // if (Globals.billingInfo?.name == '') {
+    //   array.push('Add your billing method');
+    // }
     if (this.subInfo == '') {
       array.push('Start your Thred Merchant plan');
     }
@@ -2951,10 +2940,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   soldNFTs: Array<NFT> = []
 
 
-  copyWalletAddress() {
-    this.toast('Wallet Address copied to clipboard!');
-    this.clipboard.copy(this.userInfo?.walletAddress ?? "");
-  }
 
   copyAffiliateURL() {
     this.toast('Affiliate link copied to clipboard!');
@@ -3287,7 +3272,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
 
   planStatus() {
-    if (this.subInfo?.plan.id == 'price_1KrbIjIdY1nzc70NYFEfX1OV') {
+    if (this.subInfo?.plan.id == 'price_1JmgQyIdY1nzc70NXgzC1vCN') {
       return 'Thred Core Plan';
     }
     else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
@@ -3400,38 +3385,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  ownedCollections(address: string | null | undefined){
-    if (address){
-      return this.storeInfo?.collections?.filter(c => c.NFTs.find(n => n?.seller.toLowerCase() == address.toLowerCase())) ?? []
-    }
-    return []
-  }
-  
-  viewTxPolygonScan(log: WalletLog) {
-    if (!log.txHash) {
-      return;
-    }
-    var urlLink = `https://polygonscan.com/tx/${log.txHash}`;
-
-    const link = document.createElement('a');
-    link.target = '_blank';
-
-    let url: string = '';
-    if (!/^http[s]?:\/\//.test(urlLink)) {
-      url += 'http://';
-    }
-
-    url += urlLink;
-
-    link.href = url;
-
-    link.setAttribute('visibility', 'hidden');
-    link.click();
-    link.remove();
-  }
-
   orders?: Array<Order>;
-  // displayedColumns: string[] = ['name', 'value', 'status', 'action'];
+  displayedColumns: string[] = ['name', 'value', 'status', 'action'];
 
   matchingElem(order: Order) {
     if (order.status == 'confirmed' || order.status == 'completed') {
@@ -3455,8 +3410,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   plans: Plan[] = [
-    new Plan('THRED CORE PLAN', 'core', 'price_1KrbIjIdY1nzc70NYFEfX1OV', 4900, 'gradient', 'info', true),
-    // new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
+    new Plan('THRED CORE PLAN', 'core', 'price_1KXUw3IdY1nzc70N22t0gNoN', 9700, 'gradient', 'info', true),
+    new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
   ]
 
   async init() {
@@ -3474,33 +3429,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           this.cdr.detectChanges();
         });
       }
-      if (!this.walletLogs) {
-        this.loadService.getContractEvents(logs => {
-          if (!this.walletLogs){
-            this.walletLogs = logs ?? []
-            this.cdr.detectChanges()
-          }
-        })
-      }
-      
       if (!this.subInfo) {
         this.loadService.getSubInfo(
           async (subInfo: any, canTrial?: boolean) => {
             if (!this.subInfo) {
               this.subInfo = subInfo ?? '';
             }
-            this.canTrial = false;
+            this.canTrial = canTrial;
             this.cdr.detectChanges();
           }
         );
-      }
-      if (!this.tokens){
-        this.loadService.getWalletBalances((tokens?: Dict<any>[]) => {
-          if (!this.tokens){
-            this.tokens = tokens ?? []
-            this.cdr.detectChanges()
-          }
-        })
       }
       if (!this.orders) {
         this.loadService.getAllOrders(async (arr: Array<Order>) => {
@@ -3752,46 +3690,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       //   this.productDetails = undefined
       // }
     });
-  }
-
-  updateNFT(nft: NFT, collection: Collection) {
-    // if (!this.isSignedIn()){ return }
-    this.loadService.getPost(nft.docID!, (nft?: NFT) => {
-      if (nft?.seller.toLowerCase() != this.storeInfo?.walletAddress?.toLowerCase()) { 
-        this.toast('Permission Denied')
-        return
-      }
-      const modalRef = this.dialog.open(NftAdminUpdateComponent, {
-        width: '97.5vw',
-        height: '87.5vh',
-        maxHeight: '100vh',
-        maxWidth: '100vw',
-        panelClass: 'app-full-bleed-sm-dialog',
-  
-        data: {
-          nft,
-          collection,
-        },
-      });
-  
-      let sub = modalRef.afterClosed().subscribe(resp => {
-        sub.unsubscribe()
-        if (resp){
-          if (resp as NFT) {
-            let n = Globals.userInfo?.collections?.find(c => c.contract == collection.contract)?.NFTs.find(nf => nf.docID == resp.docID)
-            if (n){
-              n.price = resp.price;
-              n.forSale = resp.forSale ?? false;
-              this.userInfo = Globals.userInfo
-              Globals.storeInfo = this.userInfo!
-            }
-          } else {
-          }
-          this.toast('NFT Updated!')
-          this.cdr.detectChanges()
-        }
-      });
-    })
   }
 
   createNewProduct() {

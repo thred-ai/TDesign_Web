@@ -93,67 +93,133 @@ export class CreateCollectionComponent implements OnInit {
 
       let token = this.nftForm.controls.currency.value as Dict<any>;
 
-      let customToken =
-        token.contract != 'default' ? token.contract : undefined;
-      let tokenName = token.name;
+      var signer: ethers.Signer | undefined = undefined;
 
       var domain = name.replace(/\s/g, '').toUpperCase();
 
-      var currency = {
-        name: tokenName,
-        token: customToken ?? null,
-      };
+      if (window.ethereum && typeof window.ethereum == 'object') {
+        Globals.provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          'any'
+        );
+      }
+      if (Globals.provider) {
+        signer = Globals.provider.getSigner();
+      } else {
+      }
 
-      // this.loadService.getWalletInfo((signer?: ethers.Wallet) => {
+      if (!signer) {
+        try {
+          await Globals.checkProvider();
+          signer = Globals.provider?.getSigner();
+        } catch (error) {
+          this.err = 'No Wallet Connected. Please try again';
+          return;
+        }
+      }
+      if (!(await (this.loadService.networkCheck() ?? false))) {
+        this.err = 'Please switch your Network to the Polygon Mainnet';
+        return;
+      }
 
-      //   this.loadService.estimateGas(
-      //     true,
-      //     currency,
-      //     symbol,
-      //     name,
-      //     ERC721_MERCHANT.abi,
-      //     ERC721_MERCHANT.bytecode,
-      //     signer!
-      //   );
+      if (signer) {
+        let wallet = await signer.getAddress();
 
-      //   this.spinner.hide('loader');
-      // });
+        if (
+          wallet.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+        ) {
+          this.err = 'Wrong Wallet';
+          return;
+        }
 
-      this.loadService.deployCollection(
-        name,
-        symbol,
-        ERC721_MERCHANT.abi,
-        ERC721_MERCHANT.bytecode,
-        currency,
-        domain,
-        (collection?: any) => {
-          this.spinner.hide('loader');
+        var abi: any = ERC721_MERCHANT.abi;
+        var bytecode: any = ERC721_MERCHANT.bytecode;
 
-          if (collection) {
-            let col = new Collection(
-              collection.name,
-              collection.symbol,
-              collection.NFTs,
-              collection.contract,
-              collection.currency,
-              collection.collectionCount,
-              collection.owner,
-              collection.isPublic,
-              collection.uid,
-              collection.timestamp,
-              collection.domain,
-              collection.customToken,
-              collection.available,
-              collection.ABI,
-              collection.volume
+        let factory = new ethers.ContractFactory(abi, bytecode, signer);
+
+        let admins = [thredMarketplace] as string[];
+        let minters = [wallet, thredMarketplace] as string[];
+
+        let customToken =
+          token.contract != 'default'
+            ? token.contract
+            : ethers.constants.AddressZero;
+
+        var deployedCollection: Collection | undefined = undefined;
+
+        try {
+          if (!deployedCollection) {
+            let deployed = await factory.deploy(
+              name,
+              symbol,
+              customToken,
+              minters,
+              admins
             );
-            this.dialogRef.close(col);
+            await deployed.deployed();
+
+            let address = deployed.address;
+
+            let collection = new Collection(
+              name,
+              symbol,
+              [],
+              address,
+              token.name,
+              0,
+              wallet,
+              true,
+              Globals.storeInfo?.uid!,
+              new Date(),
+              domain,
+              token.contract != 'default' ? token.contract : undefined,
+              true,
+              abi,
+              0
+            );
+
+            deployedCollection = collection;
+
+            await this.loadService.saveCollectionInfo(
+              collection,
+              Globals.storeInfo?.uid
+            );
+          }
+
+          try {
+            let contract2 = new ethers.Contract(
+              deployedCollection.contract,
+              abi,
+              signer
+            );
+            let t2 = await contract2.setApprovalForAll(thredMarketplace, true);
+            await t2.wait();
+            this.dialogRef.close(deployedCollection);
+          } catch (error) {
+            console.log(error);
+            this.spinner.hide('loader');
+            let data = (error as any).data;
+            if (data && data.code == -32000) {
+              this.err = 'Not enough MATIC' + ' in wallet!';
+            } else {
+              this.err = 'Something went wrong, please try again.';
+            }
+          }
+        } catch (error) {
+          console.log(error);
+          this.spinner.hide('loader');
+          let data = (error as any).data;
+          if (data && data.code == -32000) {
+            this.err = 'Not enough MATIC' + ' in wallet!';
           } else {
-            this.err = 'Deployment Stalled. Please Try Again';
+            this.err = 'Something went wrong, please try again.';
           }
         }
-      );
+      } else {
+      }
+    } else {
     }
+    this.spinner.hide('loader');
   }
 
   closeDialog() {

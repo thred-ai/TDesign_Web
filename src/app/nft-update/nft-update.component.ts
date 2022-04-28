@@ -65,7 +65,6 @@ export class NftUpdateComponent implements OnInit {
       );
     }
     this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
-
   }
 
   provider?: ethers.providers.Web3Provider;
@@ -127,48 +126,44 @@ export class NftUpdateComponent implements OnInit {
     return new Blob([uInt8Array], { type: imageType });
   }
 
-  err = ''
+  err = '';
 
   async save() {
-    
     if (this.nftForm.valid) {
-
-      if (window.ethereum && typeof window.ethereum == 'object'){
-        this.provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-        Globals.provider = this.provider
+      if (window.ethereum && typeof window.ethereum == 'object') {
+        this.provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          'any'
+        );
+        Globals.provider = this.provider;
       }
-      if (!Globals.provider?.getSigner()){
+      if (!Globals.provider?.getSigner()) {
         try {
-          await Globals.checkProvider()
+          await Globals.checkProvider();
         } catch (error) {
-          this.err = 'No Wallet Connected. Please try again'
-          return
+          this.err = 'No Wallet Connected. Please try again';
+          return;
         }
-        return
+        return;
       }
-      if (!(await (this.laodService.networkCheck() ?? false))) { 
-        this.err = 'Please switch your Network to the Polygon Mainnet'
-        return 
+      if (!(await (this.laodService.networkCheck() ?? false))) {
+        this.err = 'Please switch your Network to the Polygon Mainnet';
+        return;
       }
-
-
-      
-
 
       let cost = this.nftForm.controls.price.value as number;
       let forSale = this.nftForm.controls.isListed.value as boolean;
 
       this.isLoading = true;
 
-
       const price = ethers.utils.parseUnits(cost.toString(), 'ether');
 
       let signer = this.provider?.getSigner();
 
-      let address = await signer?.getAddress() ?? ''
-      if (address?.toLowerCase() != this.nft?.seller?.toLowerCase()) { 
-        this.err = 'Wrong Wallet'
-        return 
+      let address = (await signer?.getAddress()) ?? '';
+      if (address?.toLowerCase() != this.nft?.seller?.toLowerCase()) {
+        this.err = 'Wrong Wallet';
+        return;
       }
 
       try {
@@ -193,17 +188,31 @@ export class NftUpdateComponent implements OnInit {
           signer
         );
 
-        let t2 = await contract2.setApprovalForAll(thredMarketplace, forSale)
-  
-        await t2.wait()
+        let isApproved = await contract2.isApprovedForAll(
+          address,
+          thredMarketplace
+        );
+
+        if (!isApproved) {
+          try {
+            let t2 = await contract2.setApprovalForAll(
+              thredMarketplace,
+              forSale
+            );
+            await t2.wait();
+          } catch (error) {
+            let data = (error as any).data;
+            this.isLoading = false;
+            if (data && data.code == -32000) {
+              this.err = 'Not enough MATIC' + ' in wallet!';
+            } else {
+              this.err = 'Something went wrong, please try again.';
+            }
+          }
+        }
+
         if (this.nft?.lazyMint && this.nft.lazyHash) {
-          
-          const lazyMinter = new LazyMinter(
-            contract,
-            signer!,
-            'THRED-NFT'
-          );
-  
+          const lazyMinter = new LazyMinter(contract, signer!, 'THRED-NFT');
 
           const voucher = await lazyMinter.createVoucher(
             this.nft.tokenID,
@@ -213,10 +222,13 @@ export class NftUpdateComponent implements OnInit {
             this.collection.customTokenCheck() == undefined
           );
           this.nft.lazyHash = voucher;
-          this.nft.forSale = forSale
-  
-          await this.laodService.updateNFT(this.nft, Globals.storeInfo?.uid, this.nft.docID)
-  
+          this.nft.forSale = forSale;
+
+          await this.laodService.updateNFT(
+            this.nft,
+            Globals.storeInfo?.uid,
+            this.nft.docID
+          );
         } else {
           // updateItem(
           //   MarketItem memory item,
@@ -232,26 +244,24 @@ export class NftUpdateComponent implements OnInit {
             forSale: this.nft.isAvailable,
             royalty: this.nft.royalty,
             tokenContract:
-            this.collection.customTokenCheck() ?? ethers.constants.AddressZero,
+              this.collection.customTokenCheck() ??
+              ethers.constants.AddressZero,
             isNative: !(this.collection.customTokenCheck() ?? false),
-            minted: true
+            minted: true,
           };
-          let t = await contract.updateItem(this.nft.itemId, 0, forSale, price)
-          await t.wait()
-  
+          let t = await contract.updateItem(this.nft.itemId, 0, forSale, price);
+          await t.wait();
         }
-        this.nft.price = price
-        this.nft.forSale = forSale
-        this.dialogRef.close(this.nft)
+        this.nft.price = price;
+        this.nft.forSale = forSale;
+        this.dialogRef.close(this.nft);
       } catch (error) {
-        let data = (error as any).data
+        let data = (error as any).data;
+        this.isLoading = false;
         if (data && data.code == -32000) {
-          this.err =
-            ('Not enough MATIC') +
-            ' in wallet!';
-        }
-        else{
-          this.err = 'Something went wrong, please try again.'
+          this.err = 'Not enough MATIC' + ' in wallet!';
+        } else {
+          this.err = 'Something went wrong, please try again.';
         }
       }
       this.isLoading = false;
@@ -259,16 +269,18 @@ export class NftUpdateComponent implements OnInit {
     }
   }
 
-  async setProvider(){
-    this.provider = await Globals.initializeProvider()
+  async setProvider() {
+    this.provider = await Globals.initializeProvider();
   }
 
   selectedIndicator() {
-    if (!Globals.storeInfo) { return {
-      name: '',
-      color: '',
-      bg_color: '',
-    }}
+    if (!Globals.storeInfo) {
+      return {
+        name: '',
+        color: '',
+        bg_color: '',
+      };
+    }
     let co = Globals.storeInfo?.loading?.color;
     let bco = Globals.storeInfo?.loading?.bg_color;
     let name = Globals.storeInfo?.loading?.name;
@@ -294,7 +306,6 @@ export class NftUpdateComponent implements OnInit {
     // router.push('/')
 
     let gas = await contract.estimateGas;
-
   }
 
   radioChange(event: any) {
@@ -342,8 +353,6 @@ export class NftUpdateComponent implements OnInit {
           //   // Sanitized logo returned from backend
           // })
 
-          
-
           let buffer = await file.arrayBuffer();
 
           var blob = new Blob([buffer]);
@@ -371,9 +380,7 @@ export class NftUpdateComponent implements OnInit {
     }
   }
 
-  public fileOver(event: any) {
-  }
+  public fileOver(event: any) {}
 
-  public fileLeave(event: any) {
-  }
+  public fileLeave(event: any) {}
 }

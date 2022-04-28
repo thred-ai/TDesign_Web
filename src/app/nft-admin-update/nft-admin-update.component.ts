@@ -132,7 +132,42 @@ export class NftAdminUpdateComponent implements OnInit {
 
   async save() {
     if (this.nftForm.valid) {
-        this.laodService.getWalletInfo(async (signer?: ethers.Wallet) => {
+        // this.laodService.getWalletInfo(async (signer?: ethers.Wallet) => {
+
+
+          if (window.ethereum && typeof window.ethereum == 'object') {
+            this.provider = new ethers.providers.Web3Provider(
+              window.ethereum,
+              'any'
+            );
+            Globals.provider = this.provider;
+          }
+          if (!this.provider?.getSigner()) {
+            try {
+              await Globals.checkProvider();
+              this.provider = Globals.provider;
+            } catch (error) {
+              this.err = 'No Wallet Connected. Please try again';
+              return;
+            }
+          }
+          if (!(await (this.laodService.networkCheck() ?? false))) {
+            this.err = 'Please switch your Network to the Polygon Mainnet';
+            return;
+          }
+    
+          let signer = this.provider?.getSigner();
+    
+          let address = (await signer?.getAddress()) ?? '';
+          if (
+            address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+          ) {
+            this.err = 'Wrong Wallet';
+            return;
+          }
+
+
+
           let cost = this.nftForm.controls.price.value as number;
           let forSale = this.nftForm.controls.isListed.value as boolean;
 
@@ -142,10 +177,10 @@ export class NftAdminUpdateComponent implements OnInit {
 
           const gasPrice = await signer?.provider.getGasPrice();
 
-          const options = {
-            gasPrice: gasPrice,
-            gasLimit: 500000,
-          };
+          // const options = {
+          //   gasPrice: gasPrice,
+          //   gasLimit: 500000,
+          // };
 
           try {
             if (
@@ -173,7 +208,7 @@ export class NftAdminUpdateComponent implements OnInit {
                   0,
                   forSale,
                   price,
-                  options
+                  // options
                 );
                 await t.wait();
               default:
@@ -210,7 +245,7 @@ export class NftAdminUpdateComponent implements OnInit {
             }
           }
           this.isLoading = false;
-        });
+        // });
     } else {
     }
   }

@@ -155,6 +155,37 @@ export class CreateCryptoComponent implements OnInit {
   async save() {
     if (this.nftForm.valid) {
 
+      if (window.ethereum && typeof window.ethereum == 'object') {
+        this.provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+          'any'
+        );
+        Globals.provider = this.provider;
+      }
+      if (!this.provider?.getSigner()) {
+        try {
+          await Globals.checkProvider();
+          this.provider = Globals.provider;
+        } catch (error) {
+          this.err = 'No Wallet Connected. Please try again';
+          return;
+        }
+      }
+      if (!(await (this.laodService.networkCheck() ?? false))) {
+        this.err = 'Please switch your Network to the Polygon Mainnet';
+        return;
+      }
+
+      let signer = this.provider?.getSigner();
+
+      let address = (await signer?.getAddress()) ?? '';
+      if (
+        address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+      ) {
+        this.err = 'Wrong Wallet';
+        return;
+      }
+
       let name = this.nftForm.controls.title.value as string;
       let description = this.nftForm.controls.description.value as string;
       let cost = this.nftForm.controls.price.value as number;
@@ -200,7 +231,7 @@ export class CreateCryptoComponent implements OnInit {
         const price = ethers.utils.parseUnits(cost.toString(), 'ether');
 
         //tokenid 0x3C68CE8504087f89c640D02d133646d98e64ddd9
-        this.laodService.getWalletInfo((signer?: ethers.Wallet) => {
+        // this.laodService.getWalletInfo((signer?: ethers.Wallet) => {
 
           this.laodService.getCollection(
             this.nftContract.contract,
@@ -299,7 +330,7 @@ export class CreateCryptoComponent implements OnInit {
               this.isLoading = false;
             }
           );
-        })
+        // })
 
         // }
       } catch (error) {
