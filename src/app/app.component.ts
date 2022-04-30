@@ -66,9 +66,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   mode = 'All Products';
 
-  storeInfo() {
-    return Globals.storeInfo ?? new Store();
-  }
+  storeInfo?: Store = undefined
+
 
   userInfo() {
     return Globals.userInfo;
@@ -104,27 +103,27 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ownedCollections(address: string | null | undefined) {
-    if (address) {
-      return (
-        Globals.storeInfo?.collections?.filter((c) =>
-          c.NFTs.find((n) => n?.seller.toLowerCase() == address.toLowerCase())
-        ) ?? []
-      );
-    }
+    // if (address) {
+    //   return (
+    //     Globals.storeInfo?.collections?.filter((c) =>
+    //       c.NFTs.find((n) => n?.seller.toLowerCase() == address.toLowerCase())
+    //     ) ?? []
+    //   );
+    // }
     return [];
   }
 
   ownedProducts(address: string | null | undefined, collection: Collection) {
-    if (address) {
-      return collection.NFTs.filter(
-        (n) => n.seller.toLowerCase() == address.toLowerCase()
-      );
-    }
+    // if (address) {
+    //   return collection.NFTs.filter(
+    //     (n) => n.seller.toLowerCase() == address.toLowerCase()
+    //   );
+    // }
     return [];
   }
 
   moveRight() {
-    if (this.ds?.currIndex == (this.storeInfo()?.banners?.length ?? 0) - 1) {
+    if (this.ds?.currIndex == (this.storeInfo?.banners?.length ?? 0) - 1) {
       this.ds?.moveTo(0);
     } else {
       this.ds?.moveRight();
@@ -234,7 +233,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   bannerTheme(banner?: Banner) {
     if (!banner) {
-      banner = this.storeInfo()?.banners[this.ds?.currIndex ?? 0];
+      banner = this.storeInfo?.banners[this.ds?.currIndex ?? 0]!;
     }
 
     let co = banner.color;
@@ -493,7 +492,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   storeLink(link: string) {
-    return link.replace('STORE_NAME', this.storeInfo()?.username ?? '');
+    return link.replace('STORE_NAME', this.storeInfo?.username ?? '');
   }
 
   cartLength() {
@@ -760,7 +759,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         document
           .getElementById('body')
           ?.classList.add(
-            'bg-' + (color ?? this.storeInfo()?.colorStyle.back_code)
+            'bg-' + (color ?? this.storeInfo?.colorStyle.back_code)
           );
       }
     }
@@ -777,11 +776,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   headerName(h: string) {
-    return this.storeInfo()?.pages?.find((p) => p.id == h)?.title ?? '';
+    return this.storeInfo?.pages?.find((p) => p.id == h)?.title ?? '';
   }
 
   routeToLink(h: string) {
-    let link = this.storeInfo()?.pages?.find((p) => p.id == h)?.url ?? 'home';
+    let link = this.storeInfo?.pages?.find((p) => p.id == h)?.url ?? 'home';
 
     if (Globals.storeInfo?.username)
       this.routingService.routeToDynamicLink(
@@ -899,11 +898,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   arrLength() {
-    if (this.storeInfo()?.banners.length == 0) {
+    if (this.storeInfo?.banners.length == 0) {
       return [];
     }
 
-    return Array(12 / this.storeInfo()?.banners.length).fill(0);
+    return Array(12 / (this.storeInfo?.banners.length ?? 0)).fill(0);
   }
 
   providerName() {
@@ -926,9 +925,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   get loggedIn() {
     return (
-      this.storeInfo()?.uid != undefined &&
-      this.storeInfo()?.uid != '' &&
-      this.storeInfo()?.uid == this.signedInUid
+      this.storeInfo?.uid != undefined &&
+      this.storeInfo?.uid != '' &&
+      this.storeInfo?.uid == this.signedInUid
     );
   }
 
@@ -938,6 +937,10 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     this.loadService.rootComponent = this;
     this.authService.app = this;
+
+    Globals.sInfo.subscribe(s => {
+      this.storeInfo = s
+    })
 
     this.setOptions();
     this.setProvider();
@@ -971,7 +974,12 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.loadService.getCryptoRates((rates: Dict<any>[]) => {
       Globals.rates = rates;
     });
+
+    
   }
+
+
+  
 
   get provider() {
     return Globals.provider;

@@ -126,9 +126,10 @@ export class CreateCollectionComponent implements OnInit {
         let wallet = await signer.getAddress();
 
         if (
-          wallet.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+          wallet.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
         ) {
           this.err = 'Wrong Wallet';
+          this.spinner.hide('loader')
           return;
         }
 
@@ -163,7 +164,7 @@ export class CreateCollectionComponent implements OnInit {
             let collection = new Collection(
               name,
               symbol,
-              [],
+              {},
               address,
               token.name,
               0,

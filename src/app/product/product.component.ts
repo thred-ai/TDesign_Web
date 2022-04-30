@@ -65,17 +65,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   productToBuy?: NFT;
 
   collection?: Collection;
-  get collections() {
-    if (this.collection) {
-      let c = Globals.storeInfo?.collections?.find(
-        (c: Collection) => c.contract == this.collection?.contract
-      );
-      if (c as Collection){
-        return c
-      }
-    }
-    return undefined;
-  }
+
+
 
   get rates(){
     return Globals.rates
@@ -93,7 +84,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 0,
       isDisabled: false,
-      isExpanded: !this.isMobile(),
+      isExpanded: false,
     },
     {
       id: 'panel-2',
@@ -121,7 +112,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 1,
       isDisabled: false,
-      isExpanded: true,
+      isExpanded: false,
     },
     // ,{
     //   id:"panel-2",
@@ -150,7 +141,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 1,
       isDisabled: false,
-      isExpanded: true,
+      isExpanded: false,
     },
     // ,{
     //   id:"panel-2",
@@ -248,7 +239,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       panelClass: 'app-full-bleed-dialog',
       data: {
         nft: product,
-        collection: this.collections,
+        collection: this.collection,
         provider: Globals.provider,
       },
     });
@@ -367,12 +358,14 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.productToBuy?.url ?? undefined;
   }
 
+  traits: Dict<any>[] | undefined
+
   async ngOnInit() {
     const data = this.getProductID();
 
     Globals.sInfo.pipe(skip(1)).subscribe(s => {
       this.storeInfo = s
-      this.showSpinner();
+      // this.showSpinner();
       this.rootComponent.setFavIcon(
           s?.profileLink?.toString() ?? ''
       );
@@ -397,7 +390,17 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           // //   console.log('Ether price in USD: ' + price);
           // //   this.usdDisplayPrice = price * nft.price
           // // });
+
           this.collection = collection;
+
+          this.loadService.getTraitRarity(nft, collection!, traits => {
+            this.traits = traits
+            this.accordionList[0].isExpanded = !this.isMobile()
+          })
+
+          console.log(this.productToBuy)
+          console.log(this.collection)
+
           this.checkLoad();
         }
       },
@@ -581,7 +584,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           this.loadService.getUser(
             storeInfo?.link,
             undefined,
-            storeInfo?.isCustom
+            storeInfo?.isCustom, user => {
+              this.checkLoad()
+            }
           );
         } else {
           
@@ -615,12 +620,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
               this.loadService.logView();
             }
 
-            if (this.productToBuy.tokenID && this.collection) {
+            if (this.productToBuy.tokenID) {
               this.loadService.getEvents(
-                this.collection,
-                this.collection?.hashedTokenId(this.productToBuy.tokenID)!,
+                this.productToBuy,
                 async (txs) => {
                   this.nftLogs = txs;
+                  this.accordionList3[0].isExpanded = !this.isMobile()
                 }
               );
             }
@@ -732,7 +737,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       panelClass: 'app-full-bleed-dialog',
       data: {
         nft: product,
-        collection: this.collections,
+        collection: this.collection,
         signer: signer,
       },
     });
@@ -744,7 +749,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
         if (this.productToBuy?.tokenID && resp.tx) {
           await resp.tx.wait()
           this.loadService.openSnackBar('NFT Purchased!')
-          this.productToBuy.seller = await this.collections?.ownerOf(
+          this.productToBuy.seller = await this.collection?.ownerOf(
             this.productToBuy.tokenID,
             Globals.provider
           );

@@ -42,7 +42,7 @@ class LazyMinter {
    * @param {ethers.BigNumber | number} royalty the minimum price (in wei) that the creator will accept to redeem this NFT. defaults to zero
 
    * 
-   * @returns {NFTVoucher}
+   * @returns {NFTVoucher | undefined}
    */
   async createVoucher(
     tokenId,
@@ -77,14 +77,18 @@ class LazyMinter {
         { name: "uri", type: "string"},
       ],
     };
-    const signature = await this.signer._signTypedData(domain, types, voucher);
 
-    console.log(await ethers.utils.verifyTypedData(domain, types, voucher, signature))
+    try {
+      const signature = await this.signer._signTypedData(domain, types, voucher);
 
     return {
       ...voucher,
       signature,
     };
+    } catch (error) {
+      console.log(error)
+      return undefined
+    }
   }
 
   /**

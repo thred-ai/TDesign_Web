@@ -41,6 +41,7 @@ import { SEO } from '../models/seo.model';
 import { MetaTag } from '../models/meta-tag.model';
 import { NFT } from '../models/nft.model';
 import { Store } from '../models/store.model';
+import { Collection } from '../models/collection.model';
 
 @Component({
   selector: 'app-layout-builder',
@@ -56,6 +57,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   editingBlock?: number;
 
   storeInfo: Store;
+
+  items: Dict<{
+    nft: NFT;
+    collection: Collection;
+  }> = {};
 
   mode = 0;
   codeMode = false;
@@ -250,9 +256,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     } else if (id === '2') {
       return 'ALL PRODUCTS';
     }
-    return this.storeInfo?.collections?.find(col => {
-      return col.NFTs.find((product: NFT) => product.docID == id);
-    })?.NFTs.find((product: NFT) => product.docID == id)?.name ?? 'NFT';
+    return this.items[id]?.nft.name ?? 'NFT';
   }
 
   allSelected() {
@@ -281,18 +285,15 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   private _filter(value: string): NFT[] {
     const filterValue = ((value as string) ?? '').toLowerCase();
 
-
-    let collections = (this.storeInfo?.collections ?? []).filter((product) =>
-      product.NFTs.find((n) =>
-        (n.name ?? '').toLowerCase().includes(filterValue)
-      )
-    );
+    let nft = Object.values(this.items).find((n) =>
+      (n.nft.name ?? '').toLowerCase().includes(filterValue)
+    )?.nft;
 
     var returnArr = new Array<NFT>();
 
-    collections.forEach((c) => {
-      returnArr = returnArr.concat(c.NFTs);
-    });
+    if (nft) {
+      returnArr.push(nft);
+    }
     return returnArr;
   }
 
@@ -310,7 +311,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ) {
     this.admin = data.admin;
     this.rootComponent = data.rootComponent;
-    this.storeInfo = Globals.userInfo!
+    this.storeInfo = Globals.storeInfo!;
 
     this.spinner.show('loader');
     this.mode = 1;
@@ -327,13 +328,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       map((fruit: string | null) =>
         fruit
           ? this._filter(fruit)
-          : new Array<NFT>().concat
-              .apply(
-                [],
-                this.storeInfo?.collections?.map((s) => {
-                  return s.NFTs;
-                }) ?? []
-              )
+          : Object.values(this.items)
+              .map((c) => c.nft)
               .slice()
       )
     );
@@ -440,6 +436,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
 
+    let arr = this.data.page?.rows?.map((r: Row) => r.products ?? []) ?? [];
+
+    var ids = new Array<string>().concat.apply([], arr);
+
+    console.log(ids);
+
+    this.loadService.getNFTsById(ids, (collections) => {
+      console.log(collections);
+      this.items = collections;
+    });
+
     this.layoutForm.controls.rows.setValue(
       Object.assign([], this.data.page?.rows ?? [])
     );
@@ -490,9 +497,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       this.data.page?.fullscreen ?? false
     );
 
-    this.layoutForm.controls.isLoader.setValue(
-      this.data.page?.loader ?? true
-    );
+    this.layoutForm.controls.isLoader.setValue(this.data.page?.loader ?? true);
 
     setTimeout(() => {
       this.loaded = true;
@@ -990,11 +995,13 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   selectedIndicator() {
-    if (!Globals.storeInfo) { return {
-      name: '',
-      color: '',
-      bg_color: '',
-    }}
+    if (!Globals.storeInfo) {
+      return {
+        name: '',
+        color: '',
+        bg_color: '',
+      };
+    }
     let co = this.storeInfo?.loading?.color;
     let bco = this.storeInfo?.loading?.bg_color;
     let name = this.storeInfo?.loading?.name;
@@ -1044,7 +1051,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       '';
     let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
     let metaPic = this.layoutForm.controls.metaPic.value as string;
-
 
     // this.spinner.show('loader');
     // this.title = 'SAVING LAYOUT';
@@ -1182,32 +1188,32 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   //   return (939 / window.innerHeight) * window.innerHeight
   // }
 
-  products(smartProducts?: number, products?: Array<String>) {
-    if (smartProducts !== undefined) {
-      if (smartProducts == 0) {
-        return this.newArrivalProducts();
-      } else if (smartProducts == 1) {
-        return this.featuredProducts();
-      }
-    }
-    var prod = Array<NFT>();
-    products?.forEach((p) => {
-      let pro = this.storeInfo?.collections
-        ?.find((pr) => {
-          let k = pr.NFTs?.find((n) => {
-            return n.docID == p;
-          });
-          return k;
-        })
-        ?.NFTs?.find((n) => {
-          return n.docID == p;
-        });
-      if (pro) {
-        prod.push(pro);
-      }
-    });
-    return prod;
-  }
+  // products(smartProducts?: number, products?: Array<String>) {
+  //   if (smartProducts !== undefined) {
+  //     if (smartProducts == 0) {
+  //       return this.newArrivalProducts();
+  //     } else if (smartProducts == 1) {
+  //       return this.featuredProducts();
+  //     }
+  //   }
+  //   var prod = Array<NFT>();
+  //   products?.forEach((p) => {
+  //     let pro = Object.values(
+  //       this?.collections?.find((pr) => {
+  //         let k = Object.values(pr.NFTs)?.find((n) => {
+  //           return n.docID == p;
+  //         });
+  //         return k;
+  //       })?.NFTs ?? {}
+  //     )?.find((n) => {
+  //       return n.docID == p;
+  //     });
+  //     if (pro) {
+  //       prod.push(pro);
+  //     }
+  //   });
+  //   return prod;
+  // }
 
   selectedThemeFn() {
     let co = this.storeInfo?.colorStyle?.btn_color;
@@ -1295,31 +1301,35 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return Array(12 / this.storeInfo?.banners.length).fill(0);
   }
 
-  newArrivalProducts() {
-    return (this.storeInfo?.collections ?? [])[0].NFTs?.sort(function (a, b) {
-      // if (a.timestamp > b.timestamp) {
-      //   return -1;
-      // }
-      // if (a.timestamp < b.timestamp) {
-      //   return 1;
-      // }
-      return 1;
-    }).slice(0, 4);
-  }
+  // newArrivalProducts() {
+  //   return Object.values((this?.collections ?? [])[0].NFTs)
+  //     ?.sort(function (a, b) {
+  //       // if (a.timestamp > b.timestamp) {
+  //       //   return -1;
+  //       // }
+  //       // if (a.timestamp < b.timestamp) {
+  //       //   return 1;
+  //       // }
+  //       return 1;
+  //     })
+  //     .slice(0, 4);
+  // }
 
-  featuredProducts() {
-    return (this.storeInfo?.collections ?? [])[0].NFTs?.sort(function (a, b) {
-      // if (a.likes > b.likes) {
-      //   return -1;
-      // }
-      // if (a.likes < b.likes) {
-      //   return 1;
-      // }
-      return 1;
-    }).slice(0, 4);
-  }
+  // featuredProducts() {
+  //   return Object.values((this?.collections ?? [])[0].NFTs)
+  //     ?.sort(function (a, b) {
+  //       // if (a.likes > b.likes) {
+  //       //   return -1;
+  //       // }
+  //       // if (a.likes < b.likes) {
+  //       //   return 1;
+  //       // }
+  //       return 1;
+  //     })
+  //     .slice(0, 4);
+  // }
 
-  allProducts() {
-    return this.storeInfo?.collections;
-  }
+  // allProducts() {
+  //   return this.storeInfo?.collections;
+  // }
 }

@@ -12,7 +12,9 @@ export class OwnedCollectionsPipe implements PipeTransform {
     if (value && address){
       let same = new Array<Collection>()
       value.forEach(v => {
-        if (v.NFTs.findIndex(n => `${n.seller.toLowerCase()}` == `${address.toLowerCase()}`) != -1){
+        let arr = Object.values(v.NFTs);
+
+        if (arr.findIndex(n => `${n.seller.toLowerCase()}` == `${address.toLowerCase()}`) != -1){
           same.push(v)
         }
         else{

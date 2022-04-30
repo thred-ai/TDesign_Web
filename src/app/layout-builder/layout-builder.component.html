@@ -117,7 +117,7 @@
                       >
                         <p
                           class="text-center text-{{
-                            storeInfo?.colorStyle!.text_code
+                            (storeInfo?.colorStyle)!.text_code
                           }}"
                           style="line-height: 1.2em"
                           [style.font-family]="storeInfo?.fontName!"
@@ -139,22 +139,19 @@
                         <div
                           class="col mb-2"
                           *ngFor="
-                            let product of ([]
-                              | productsPipe
-                                : {
-                                    products: storeInfo?.collections ?? [],
-                                    row: aRow.index == i ? aRow?.row : row
-                                  }) ?? []
+                            let product of (aRow.index == i ? aRow?.row : row)
+                              .products ?? []
                           "
                         >
                           <div
                             class="bg-{{
-                              storeInfo?.colorStyle!.back_code
+                              (storeInfo?.colorStyle)!.back_code
                             }} shadow rounded border border-secondary"
                             [class.border-secondary]="
                               storeInfo!.colorStyle!.text_code == 'light'
                             "
                             style="overflow: hidden"
+                            *ngIf="items![product]"
                           >
                             <div class="pb-0 w-100">
                               <a role="button" class="w-100">
@@ -166,7 +163,9 @@
                                   }}"
                                   [useSrcset]="true"
                                   [defaultImage]="'/assets/default.png'"
-                                  [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
+                                  [lazyLoad]="
+                                  items![product].nft.linkUrl ?? '/assets/default.png'
+                                  "
                                   alt="ok"
                                   style="
                                     object-fit: cover;
@@ -189,7 +188,7 @@
                                   role="button"
                                   [style.font-family]="storeInfo?.fontName!"
                                 >
-                                  {{ product.name }}
+                                  {{ items![product].nft.name }}
                                 </p>
                                 <div
                                   class="d-flex align-items-center justify-content-center w-100"
@@ -387,8 +386,8 @@
                             6
                         "
                         class="w-100 w-md-75 mt-3 card text-{{
-                          storeInfo?.colorStyle!.text_code
-                        }} bg-{{ storeInfo?.colorStyle!.back_code }} mx-auto"
+                          (storeInfo?.colorStyle)!.text_code
+                        }} bg-{{ (storeInfo?.colorStyle)!.back_code }} mx-auto"
                       >
                         <mat-form-field
                           *ngIf="
@@ -404,7 +403,9 @@
                           <input
                             type="text"
                             matInput
-                            class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }}"
                             style.color="{{ selectedTheme!.color }}"
                           />
                         </mat-form-field>
@@ -422,7 +423,9 @@
                           <input
                             type="email"
                             matInput
-                            class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }}"
                             style.color="{{ selectedTheme!.color }}"
                           />
                         </mat-form-field>
@@ -894,32 +897,34 @@
                     #auto="matAutocomplete"
                     (optionSelected)="selected($event)"
                   >
-                  <cdk-virtual-scroll-viewport class="autocomplete-test-viewport" 
-              [ngStyle]="{'height': '200px'}"
-              itemSize="35" >
-              <mat-option
-              *cdkVirtualFor="let product of filteredProducts | async"
-                [value]="product.docID"
-              >
-                <div
-                  class="d-flex justify-content-start align-items-center w-100"
-                >
-                  <img
-                    id="image"
-                    class="{{
-                      (storeInfo?.colorStyle)!.back_code
-                    }} me-2 rounded"
-                    [src]='product.linkUrl ?? ""'
-                    style="
-                      object-fit: cover;
-                      width: 35px; 
-                      aspect-ratio: 1;
-                    "
-                  />
-                  {{ product.name }}
-                </div>
-              </mat-option>
-            </cdk-virtual-scroll-viewport>
+                    <cdk-virtual-scroll-viewport
+                      class="autocomplete-test-viewport"
+                      [ngStyle]="{ height: '200px' }"
+                      itemSize="35"
+                    >
+                      <mat-option
+                        *cdkVirtualFor="let product of filteredProducts | async"
+                        [value]="product.docID"
+                      >
+                        <div
+                          class="d-flex justify-content-start align-items-center w-100"
+                        >
+                          <img
+                            id="image"
+                            class="{{
+                              (storeInfo?.colorStyle)!.back_code
+                            }} me-2 rounded"
+                            [src]="product.linkUrl ?? ''"
+                            style="
+                              object-fit: cover;
+                              width: 35px;
+                              aspect-ratio: 1;
+                            "
+                          />
+                          {{ product.name }}
+                        </div>
+                      </mat-option>
+                    </cdk-virtual-scroll-viewport>
 
                     <!-- <mat-option class="fw-bolder" [value]="'0'">
                       <img
@@ -945,7 +950,6 @@
                       />
                       ALL PRODUCTS
                     </mat-option> -->
-
                   </mat-autocomplete>
                 </mat-form-field>
                 <!-- <mat-form-field class="w-100 my-3" appearance="outline">
@@ -1074,7 +1078,7 @@
                 class="w-100 h-100"
                 style.background-color="{{
                   (
-                    storeInfo?.banners![this.ds?.currIndex ?? 0]
+                    (storeInfo?.banners)![this.ds?.currIndex ?? 0]
                     | storeBanner: this.ds?.currIndex ?? 0
                   ).bg_color
                 }}"
@@ -1099,7 +1103,7 @@
                         <h2
                           style.color="{{
                             (
-                              storeInfo?.banners![this.ds?.currIndex ?? 0]
+                              (storeInfo?.banners)![this.ds?.currIndex ?? 0]
                               | storeBanner: this.ds?.currIndex ?? 0
                             ).color
                           }}"
@@ -1143,7 +1147,7 @@
                         class="ms-3 ms-md-5 mt-1"
                         style.color="{{
                           (
-                            storeInfo?.banners![this.ds?.currIndex ?? 0]
+                            (storeInfo?.banners)![this.ds?.currIndex ?? 0]
                             | storeBanner: this.ds?.currIndex ?? 0
                           ).color
                         }}"
@@ -1166,7 +1170,7 @@
                         class="me-3 me-md-5 mt-1"
                         style.color="{{
                           (
-                            storeInfo?.banners![this.ds?.currIndex ?? 0]
+                            (storeInfo?.banners)![this.ds?.currIndex ?? 0]
                             | storeBanner: this.ds?.currIndex ?? 0
                           ).color
                         }}"
@@ -1220,7 +1224,7 @@
                   >
                     <p
                       class="text-center text-{{
-                        storeInfo?.colorStyle!.text_code
+                        (storeInfo?.colorStyle)!.text_code
                       }}"
                       style="line-height: 1.2em"
                       [style.font-family]="storeInfo?.fontName!"
@@ -1241,22 +1245,19 @@
                     <div
                       class="col mb-3"
                       *ngFor="
-                        let product of ([]
-                          | productsPipe
-                            : {
-                                products: storeInfo?.collections ?? [],
-                                row: aRow.index == i ? aRow?.row : row
-                              }) ?? []
+                        let product of (aRow.index == i ? aRow?.row : row)
+                          .products ?? []
                       "
                     >
                       <div
                         class="bg-{{
-                          storeInfo?.colorStyle!.back_code
+                          (storeInfo?.colorStyle)!.back_code
                         }} shadow rounded border border-secondary"
                         [class.border-secondary]="
                           storeInfo!.colorStyle!.text_code == 'light'
                         "
-                        style="overflow: hidden;"
+                        style="overflow: hidden"
+                        *ngIf="items![product]"
                       >
                         <div class="pb-0 w-100">
                           <a role="button" class="w-100">
@@ -1268,7 +1269,10 @@
                               }}"
                               [useSrcset]="true"
                               [defaultImage]="'/assets/default.png'"
-                              [lazyLoad]="product?.linkUrl ?? '/assets/default.png'"
+                              [lazyLoad]="
+                                items![product].nft?.linkUrl ??
+                                '/assets/default.png'
+                              "
                               alt="ok"
                               style="
                                 object-fit: cover;
@@ -1294,7 +1298,7 @@
                               [style.font-family]="storeInfo?.fontName!"
                               role="button"
                             >
-                              {{ product.name }}
+                              {{ items![product].nft.name }}
                             </p>
                             <a
                               class="btn btn-outline-{{
@@ -1307,12 +1311,11 @@
                                 class="m-0 p-0 me-1"
                                 style="overflow: hidden; height: 25px"
                                 svgIcon="{{
-                                  product.contractID
-                                    | matIcon
+                                  items![product].nft.contractID | matIcon
                                 }}"
                               >
                               </mat-icon>
-                              {{ product?.price | price }}
+                              {{ items![product].nft?.price | price }}
                             </a>
                           </div>
                         </div>
@@ -1484,8 +1487,8 @@
                         6
                     "
                     class="w-100 w-md-50 mt-3 card text-{{
-                      storeInfo?.colorStyle!.text_code
-                    }} bg-{{ storeInfo?.colorStyle!.back_code }} mx-auto"
+                      (storeInfo?.colorStyle)!.text_code
+                    }} bg-{{ (storeInfo?.colorStyle)!.back_code }} mx-auto"
                   >
                     <mat-form-field
                       *ngIf="
@@ -1501,7 +1504,7 @@
                       <input
                         type="text"
                         matInput
-                        class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                        class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                         style.color="{{ selectedTheme!.color }}"
                       />
                     </mat-form-field>
@@ -1519,7 +1522,7 @@
                       <input
                         type="email"
                         matInput
-                        class="text-{{ storeInfo?.colorStyle!.text_code }}"
+                        class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
                         style.color="{{ selectedTheme!.color }}"
                       />
                     </mat-form-field>

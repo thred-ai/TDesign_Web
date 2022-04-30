@@ -38,9 +38,9 @@
 <div
   *ngIf="
     isBrowser() &&
-      userInfo &&
+      storeInfo &&
       (provider | providerCheck | async | lowercase) ==
-        (userInfo?.walletAddress | lowercase);
+        (storeInfo?.walletAddress | lowercase);
     else walletBlock
   "
   class="wrapper"
@@ -794,7 +794,7 @@
                             (storeInfo?.colorStyle)!.text_code
                           }} bg-{{ (storeInfo?.colorStyle)!.back_code }}"
                           [style.font-family]="font"
-                          [selected]="font == userInfo!.fontName"
+                          [selected]="font == storeInfo!.fontName"
                           *ngFor="let font of fonts()"
                           [value]="font"
                         >
@@ -1170,7 +1170,7 @@
                             let product of ([]
                               | productsPipe
                                 : {
-                                    products: storeInfo?.collections ?? [],
+                                    products: collections ?? [],
                                     row: row
                                   }) ?? []
                           "
@@ -2363,7 +2363,7 @@
             </a>
           </div>
           <div
-            *ngIf="userInfo!.collections && userInfo!.collections?.length != 0"
+            *ngIf="collections && collections?.length != 0"
             class="container px-2 px-md-4 px-lg-5 mt-0 pt-0 w-100"
           >
             <div class="w-100 h-100 justify-content-center">
@@ -2371,7 +2371,7 @@
               <div
                 class="mb-5 w-100"
                 *ngFor="
-                  let collection of userInfo?.collections ?? []
+                  let collection of collections ?? []
                     | collectionFilter: 'timestamp-asc'
                 "
               >
@@ -2528,13 +2528,15 @@
 
                     <div
                       class="mb-2 h-100 row gx-0 row-cols-2 justify-content-start w-100"
-                      *ngIf="collection.NFTs.length > 0"
+                      *ngIf="(collection.NFTs | nft).length > 0; else noNFTs"
                     >
                       <div
                         class="px-2 w-50 w-md-25 col"
                         *ngFor="
-                          let product of collection.NFTs ?? []
-                            | sortCol: 'tokenId-asc'; index as j
+                          let product of collection.NFTs
+                            | nft
+                            | sortCol: 'tokenId-asc';
+                          index as j
                         "
                       >
                         <div class="col h-100">
@@ -2669,9 +2671,20 @@
                               </div>
                             </div>
                           </div>
-                          <div *ngIf="product.marketAddress == 'loading'" class="position-absolute w-100 m-0 d-flex justify-content-center align-items-center" style="aspect-ratio: 1; background-color: rgba(0, 0, 0, 0.774);">
+                          <div
+                            *ngIf="product.marketAddress == 'loading'"
+                            class="position-absolute w-100 m-0 d-flex justify-content-center align-items-center"
+                            style="
+                              aspect-ratio: 1;
+                              background-color: rgba(0, 0, 0, 0.774);
+                            "
+                          >
                             <div class="text-center">
-                              <div class="lds-facebook"><div class="shadow"></div><div></div><div></div></div>
+                              <div class="lds-facebook">
+                                <div class="shadow"></div>
+                                <div></div>
+                                <div></div>
+                              </div>
                               <h2 class="text-center text-light fw-bold">
                                 UPLOADING
                               </h2>
@@ -2680,28 +2693,29 @@
                         </div>
                       </div>
                     </div>
-                    <div
-                      *ngIf="collection.NFTs.length == 0"
-                      class="mb-2 mx-3 card bg-{{
-                        (storeInfo?.colorStyle)!.back_code
-                      }} shadow rounded d-flex justify-content-center align-items-center"
-                      [class.border-secondary]="
-                        storeInfo!.colorStyle!.text_code == 'light'
-                      "
-                      style="height: 325px"
-                    >
-                      <h2>No items in this collection</h2>
-                      <a
-                        class="btn btn-{{
-                          (storeInfo?.colorStyle)!.text_code
-                        }} px-3 rounded-pill"
-                        role="button"
-                        style="font-size: medium"
-                        (click)="createNewNFT(collection)"
+                    <ng-template #noNFTs>
+                      <div
+                        class="mb-2 mx-3 card bg-{{
+                          (storeInfo?.colorStyle)!.back_code
+                        }} shadow rounded d-flex justify-content-center align-items-center"
+                        [class.border-secondary]="
+                          storeInfo!.colorStyle!.text_code == 'light'
+                        "
+                        style="height: 325px"
                       >
-                        Create NFT
-                      </a>
-                    </div>
+                        <h2>No items in this collection</h2>
+                        <a
+                          class="btn btn-{{
+                            (storeInfo?.colorStyle)!.text_code
+                          }} px-3 rounded-pill"
+                          role="button"
+                          style="font-size: medium"
+                          (click)="createNewNFT(collection)"
+                        >
+                          Create NFT
+                        </a>
+                      </div>
+                    </ng-template>
                   </div>
                   <!-- <mat-icon
                     role="button"
@@ -2720,9 +2734,7 @@
             </div>
           </div>
           <div
-            *ngIf="
-              storeInfo?.collections && (storeInfo?.collections)!.length == 0
-            "
+            *ngIf="collections && collections!.length == 0"
             class="container px-4 px-lg-5 mt-0 pt-0"
           >
             <div

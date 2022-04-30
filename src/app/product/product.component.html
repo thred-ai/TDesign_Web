@@ -26,7 +26,7 @@
 >
   <div
     class="container px-4 px-lg-5 mt-0"
-    *ngIf="collections && productToBuy && collection"
+    *ngIf="collection && productToBuy && collection"
   >
     <div
       class="row gx-4 gx-lg-1 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center h-100"
@@ -187,14 +187,14 @@
                   {{ panel.description }}
                 </p>
                 <div
-                  *ngIf="panel.type == 0"
+                  *ngIf="panel.type == 0 && traits"
                   class="row gx-4 row-cols-1 row-cols-md-3 align-items-top justify-content-start h-100"
                   [style.font-family]="storeInfo?.fontName!"
                 >
                   <div
                     class="col p-2 m-0"
                     style="height: 150px"
-                    *ngFor="let p of productToBuy?.traits ?? []"
+                    *ngFor="let p of traits ?? []"
                   >
                     <div
                       class="card border border-{{
@@ -203,7 +203,7 @@
                       style="overflow-y: hidden"
                       style.background-color="{{ selectedTheme()!.bg_color }}"
                       style.color="{{ selectedTheme()!.color }}"
-                      *ngIf="collections"
+                      *ngIf="collection"
                     >
                       <div class="card-body h-100">
                         <p
@@ -211,13 +211,13 @@
                             storeInfo?.colorStyle!.text_code
                           }} fw-bolder"
                         >
-                          {{ p.trait_type.toUpperCase() }}
+                          {{ p.name.toUpperCase() }}
                         </p>
                         <p style="font-size: medium">
                           {{ p.value }}
                         </p>
                         <p class="text-secondary">
-                          {{ collections.getTraitRarity(p) ?? "0" }}% have this
+                          {{ p.rarity ?? "0" }}% have this
                           trait
                         </p>
                       </div>
@@ -243,7 +243,7 @@
                       Contract Address
                     </h3>
                     <h3 [style.font-family]="storeInfo?.fontName!">
-                      {{ collections?.contract ?? "" | address }}
+                      {{ collection?.contract ?? "" | address }}
                     </h3>
                   </div>
                   <div
@@ -309,7 +309,7 @@
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-bolder text-center text-md-start"
                       style="font-size: 14px; line-height: 1.4em"
-                      *ngIf="(productToBuy?.owner ?? '') != '' && productToBuy?.lazyHash == undefined"
+                      *ngIf="(productToBuy?.seller ?? '') != '' && productToBuy?.lazyHash == undefined"
                     >
                       {{ "Owner: " + (productToBuy?.seller | address: false) }}
                     </h5>
@@ -318,7 +318,7 @@
                       style.color="{{ selectedTheme()!.color }}"
                       class="fw-bolder mt-0"
                       style="font-size: 12px; line-height: 1.4em"
-                      *ngIf="(productToBuy?.owner ?? '') == '' || productToBuy?.lazyHash != undefined"
+                      *ngIf="(productToBuy?.seller ?? '') == '' || productToBuy?.lazyHash != undefined"
                     >
                       Available to Mint
                     </h5>
@@ -363,11 +363,11 @@
                         <mat-icon
                           class="m-0 p-0 me-2"
                           style="overflow: hidden"
-                          svgIcon="{{ collections.contract | matIcon }}"
+                          svgIcon="{{ collection.contract | matIcon }}"
                           [ngbTooltip]="qtipContent"
                         >
                           <ng-template #qtipContent>
-                            {{ collections?.currency ?? "MATIC" }}
+                            {{ collection?.currency ?? "MATIC" }}
                           </ng-template>
                         </mat-icon>
                         <b style="font-size: 34px">
@@ -389,7 +389,7 @@
                           {{
                             productToBuy?.price
                               | price
-                              | ratePipe: (collections | productCurrency)
+                              | ratePipe: (collection | productCurrency)
                           }}
                         </h3>
                       </div>
@@ -484,10 +484,10 @@
                           [class.shake]="shake"
                           style="font-size: 15px"
                         >
+                          <!-- <span class="anim-border"></span>
                           <span class="anim-border"></span>
                           <span class="anim-border"></span>
-                          <span class="anim-border"></span>
-                          <span class="anim-border"></span>
+                          <span class="anim-border"></span> -->
                           UPDATE NFT
                           <mat-icon [inline]="true" class="ms-2">
                             <span
@@ -497,6 +497,10 @@
                               collections
                             </span>
                           </mat-icon>
+                          <!-- <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span>
+                          <span class="anim-border"></span> -->
                         </a>
 
                         <!-- <a

@@ -14,9 +14,11 @@ export class ProductsPipePipe implements PipeTransform {
 
 
     var prods = new Array<NFT>()
-
+    // `${contractID}${tokenID}`
     data.products.forEach((i: Collection) => {
-      i.NFTs.forEach((j: any) => {
+      let arr = Object.values(i.NFTs);
+
+      arr.forEach((j: any) => {
         prods = prods.concat(j)
       })
     })

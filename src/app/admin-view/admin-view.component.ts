@@ -126,6 +126,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   bankInfo?: any = undefined;
   subInfo?: any = undefined;
   canTrial?: boolean = true;
+  collections: Collection[] | undefined = undefined
 
   invTitle = 'FULFILLED BY THRED';
 
@@ -729,7 +730,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   ) {
     (<any>window).openCard = this.openCard.bind(this);
 
-    Globals.userInfo = undefined;
     Globals.selectedCurrency = undefined;
     Globals.themes = undefined;
     Globals.productsSold = undefined;
@@ -1438,9 +1438,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return Globals.loaders;
   }
 
-  storeInfo?: Store
 
-  userInfo?: Store
+  storeInfo?: Store
 
 
   availableCurrencies() {
@@ -1636,7 +1635,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
 
   // async isSignedIn(){
-  //   return Globals.userInfo?.walletAddress && Globals.userInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
+  //   return Globals.storeInfo?.walletAddress && Globals.storeInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
   // }
 
 
@@ -2180,56 +2179,56 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   setForm() {
-    this.storeForm.controls.username.setValue(Globals.userInfo?.username ?? '');
+    this.storeForm.controls.username.setValue(Globals.storeInfo?.username ?? '');
     this.storeForm.controls.full_name.setValue(
-      Globals.userInfo?.fullName ?? ''
+      Globals.storeInfo?.fullName ?? ''
     );
-    this.storeForm.controls.bio.setValue(Globals.userInfo?.bio ?? '');
+    this.storeForm.controls.bio.setValue(Globals.storeInfo?.bio ?? '');
 
     this.themeForm.controls.loadingIndicator.setValue(
-      Globals.userInfo?.loading?.name ?? ''
+      Globals.storeInfo?.loading?.name ?? ''
     );
 
     this.themeForm.controls.themeImg.setValue(
-      Globals.userInfo?.themeLink?.toString()
+      Globals.storeInfo?.themeLink?.toString()
     );
 
-    // this.homeForm.controls.homeImg.setValue(Globals.userInfo?.homeLink?.toString())
-    // this.homeForm.controls.themeImg.setValue(Globals.userInfo?.homeLinkTop?.toString())
+    // this.homeForm.controls.homeImg.setValue(Globals.storeInfo?.homeLink?.toString())
+    // this.homeForm.controls.themeImg.setValue(Globals.storeInfo?.homeLinkTop?.toString())
 
     this.shopForm.controls.themeImg.setValue(
-      Globals.userInfo?.shopLinkTop?.toString()
+      Globals.storeInfo?.shopLinkTop?.toString()
     );
 
     this.themeForm.controls.actionImg.setValue(
-      Globals.userInfo?.actionLink?.toString()
+      Globals.storeInfo?.actionLink?.toString()
     );
 
-    this.themeForm.controls.font.setValue(Globals.userInfo?.fontName);
+    this.themeForm.controls.font.setValue(Globals.storeInfo?.fontName);
 
-    this.storeForm.controls.socials.setValue(Globals.userInfo?.socials);
+    this.storeForm.controls.socials.setValue(Globals.storeInfo?.socials);
 
     this.storeForm.controls.custom_url.setValue(
-      Globals.userInfo?.customURL?.fullURL
+      Globals.storeInfo?.customURL?.fullURL
     );
 
-    this.marketingForm.controls.pixel.setValue(Globals.userInfo?.fb_pixel);
+    this.marketingForm.controls.pixel.setValue(Globals.storeInfo?.fb_pixel);
 
     this.themeForm.controls.storeTheme.setValue(
-      Globals.userInfo?.colorStyle?.name?.toString()
+      Globals.storeInfo?.colorStyle?.name?.toString()
     );
 
-    this.bannerForm.controls.banners.setValue(Globals.userInfo?.banners ?? []);
+    this.bannerForm.controls.banners.setValue(Globals.storeInfo?.banners ?? []);
 
-    this.bannerForm.controls.style.setValue(Globals.userInfo?.bannerStyle ?? 0);
+    this.bannerForm.controls.style.setValue(Globals.storeInfo?.bannerStyle ?? 0);
 
-    this.headerForm.controls.links.setValue(Globals.userInfo?.header ?? []);
-    this.footerCols = Globals.userInfo?.footer ?? [];
+    this.headerForm.controls.links.setValue(Globals.storeInfo?.header ?? []);
+    this.footerCols = Globals.storeInfo?.footer ?? [];
 
-    this.theme = Globals.userInfo?.colorStyle?.name?.toString() ?? 'Light';
+    this.theme = Globals.storeInfo?.colorStyle?.name?.toString() ?? 'Light';
 
-    let co = Globals.userInfo?.loading?.color;
-    let bco = Globals.userInfo?.loading?.bg_color;
+    let co = Globals.storeInfo?.loading?.color;
+    let bco = Globals.storeInfo?.loading?.bg_color;
 
     let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
 
@@ -2264,47 +2263,52 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
     var prod = Array<NFT>();
     products?.forEach((p) => {
-      let pro = Globals.storeInfo?.collections?.find((pr) => {
-        let k = pr.NFTs?.find((n) => {
-          return String(n.tokenID) == p;
-        });
+      let pro = this.collections?.find((pr) => {
+
+        // Object.values
+        let k = pr.NFTs![`${p}`]
         return k
-      })?.NFTs?.find((n) => {
-        return String(n.tokenID) == p;
-      });
+      })?.NFTs![`${p}`]
       if (pro) {
         prod.push(pro);
+      }
+      else{
+        prod.push(new NFT())
       }
     });
     return prod;
   }
 
   newArrivalProducts() {
-    return (Globals.storeInfo?.collections ?? [])[0].NFTs
-      ?.sort(function (a, b) {
-        // if (a.timestamp > b.timestamp) {
-        //   return -1;
-        // }
-        // if (a.timestamp < b.timestamp) {
-        //   return 1;
-        // }
-        return 1;
-      })
-      .slice(0, 4);
+    // return (Globals.storeInfo?.collections ?? [])[0].NFTs
+    //   ?.sort(function (a, b) {
+    //     // if (a.timestamp > b.timestamp) {
+    //     //   return -1;
+    //     // }
+    //     // if (a.timestamp < b.timestamp) {
+    //     //   return 1;
+    //     // }
+    //     return 1;
+    //   })
+    //   .slice(0, 4);
+
+    return []
   }
 
   featuredProducts() {
-    return (Globals.storeInfo?.collections ?? [])[0].NFTs
-      ?.sort(function (a, b) {
-        // if (a.likes > b.likes) {
-        //   return -1;
-        // }
-        // if (a.likes < b.likes) {
-        //   return 1;
-        // }
-        return 1;
-      })
-      .slice(0, 4);
+    // return (Globals.storeInfo?.collections ?? [])[0].NFTs
+    //   ?.sort(function (a, b) {
+    //     // if (a.likes > b.likes) {
+    //     //   return -1;
+    //     // }
+    //     // if (a.likes < b.likes) {
+    //     //   return 1;
+    //     // }
+    //     return 1;
+    //   })
+    //   .slice(0, 4);
+
+    return []
   }
 
   colCount(row: Row) {
@@ -2390,14 +2394,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     if (this.storeForm.controls.profile_pic.value) {
       return this.storeForm.controls.profile_pic.value;
     }
-    return this.userInfo?.profileLink;
+    return this.storeInfo?.profileLink;
   }
 
   getUsername() {
     if (this.storeForm.controls.full_name.value) {
       return this.storeForm.controls.full_name.value;
     }
-    return this.userInfo?.fullName ?? "Brian's Tees";
+    return this.storeInfo?.fullName ?? "Brian's Tees";
   }
 
   saveProfile() {
@@ -3046,7 +3050,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       this.storeInfo = s
     })
     Globals.uInfo.subscribe(s => {
-      this.userInfo = s
+      this.storeInfo = s
     })
     
     this.init();
@@ -3202,16 +3206,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
       if (isPlatformBrowser(this.platformID)) {
         if (this.signedIn) {
-          if (
-            Globals.userInfo == undefined &&
-            isPlatformBrowser(this.platformID)
-          ) {
-            this.loadService.getCustomer();
-          } 
+
           // else if (Globals.selectedCurrency == undefined) {
           //   this.loadService.getCountries();
           // } 
-          else if (Globals.themes == undefined) {
+          if (Globals.themes == undefined) {
             this.loadService.getThemes();
           }
           // } else if (
@@ -3221,9 +3220,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           //   this.loadService.getTemplates();
           // }
           if (Globals.billingInfo == undefined) {
+            console.log("manchoo")
             this.loadService.getAllBillingInfo();
-          } else {
-            Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
+          } 
+          else {
+            console.log("madness")
             this.inventory?.forEach((inv) => {
               if (!inv.isCustom) {
                 let name = Globals.templates.filter((obj) => {
@@ -3237,7 +3238,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               // let signer = await this.provider?.getSigner()
               // let balance = await signer?.getBalance()
             // }
-            Globals.storeInfo = Globals.userInfo!
             this.hideSpinner();
             this.setForm();
             this.showWelcomeModal();
@@ -3440,6 +3440,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           }
         );
       }
+      if (!this.collections) {
+        console.log("man")
+        this.loadService.getPosts(cols => {
+          console.log(cols)
+          if (!this.collections) {
+            this.collections = cols ?? [];
+          }
+          this.cdr.detectChanges();
+        }, undefined, undefined, uid)
+      }
       if (!this.orders) {
         this.loadService.getAllOrders(async (arr: Array<Order>) => {
           this.orders = arr ?? [];
@@ -3530,8 +3540,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   downloadAllStoreInfo(storeName: string, isCustom = false) {
-    this.loadService.myCallback = () => this.callback();
-    this.loadService.getUser(storeName, undefined, isCustom);
+    this.loadService.getUser(storeName, undefined, isCustom, store => {
+      this.loadService.myCallback = () => this.callback()
+      this.callback()
+    });
   }
 
   getStoreName() {
@@ -3669,11 +3681,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       if (resp){
         let col = resp as NFT
 
-        contract.NFTs.push(col)
-        contract.collectionCount = (contract.collectionCount ?? 0) + 1
+        let same = this.collections?.find(c => c.contract == contract.contract)
+        same!.NFTs[col.docID!] = col
+        same!.collectionCount! += 1
 
-        this.toast('NFT Minted!')
         this.cdr.detectChanges()
+
+        this.toast('NFT Created!')
       }
       // if (resp == 2){
       //   this.newInventory()
@@ -3720,8 +3734,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       sub.unsubscribe()
       if (resp){
         let col = resp as Collection
-
-        Globals.userInfo?.collections?.push(col)
+        this.collections?.push(col)
         this.toast('Collection Created!')
         this.cdr.detectChanges()
       }

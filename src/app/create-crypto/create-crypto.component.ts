@@ -180,7 +180,7 @@ export class CreateCryptoComponent implements OnInit {
 
       let address = (await signer?.getAddress()) ?? '';
       if (
-        address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+        address?.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
       ) {
         this.err = 'Wrong Wallet';
         return;
@@ -209,6 +209,7 @@ export class CreateCryptoComponent implements OnInit {
         }
       } catch (error) {
         console.log('Error uploading file: ', error);
+        this.isLoading = false;
         this.err = 'Something went wrong. Please try again';
       }
 
@@ -262,6 +263,11 @@ export class CreateCryptoComponent implements OnInit {
                 cl.customTokenCheck() == undefined
               );
 
+              if (!voucher){
+                this.isLoading = false;
+                this.err = "Creation Cancelled"
+                return
+              }
               
   
               console.log("loo")
@@ -272,6 +278,7 @@ export class CreateCryptoComponent implements OnInit {
                   let transaction = await contract2.mintNFT(voucher, cl.contract);
                   await transaction.wait();
                 } catch (error) {
+                  this.isLoading = false;
                   throw("An Error Occured")
                 }
                 

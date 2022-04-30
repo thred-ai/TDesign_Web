@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { Dict } from '../services/load.service';
 import { Globals } from '../globals';
 import { environment } from 'src/environments/environment';
+import { A } from '@angular/cdk/keycodes';
 var abi = require('human-standard-token-abi');
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
@@ -12,7 +13,7 @@ export interface ICollection {
   name: string;
   symbol: string;
 
-  NFTs: Array<NFT>;
+  NFTs: Dict<NFT>;
   ABI: string;
   contract: string;
   customToken?: string;
@@ -47,7 +48,7 @@ export class Collection implements ICollection {
   name: string;
   symbol: string;
 
-  NFTs: Array<NFT> = [];
+  NFTs: Dict<NFT> = {};
   contract: string;
   customToken?: string;
   currency?: string;
@@ -68,30 +69,35 @@ export class Collection implements ICollection {
 
   getRarity(nft: NFT) {
     var totalRarity = 0;
+    let arr = Object.values(this.NFTs);
 
     (nft.traits ?? []).forEach((trait: any) => {
-      let same = this.NFTs.filter((n) =>
+      let same = arr.filter((n) =>
         n.traits?.find(
           (t) => t.trait_type == trait.trait_type && t.value == trait.value
         )
       );
-      totalRarity += (same.length ?? 0) / this.NFTs.length;
+      totalRarity += (same.length ?? 0) / arr.length;
     });
     return (totalRarity * 100).toFixed(2);
   }
 
   getTraitRarity(trait: Dict<any>) {
-    let same = this.NFTs.filter((n) =>
+    let arr = Object.values(this.NFTs);
+
+    let same = arr.filter((n) =>
       n.traits?.find(
         (t) => t.trait_type == trait.trait_type && t.value == trait.value
       )
     );
-    return (((same.length ?? 0) / this.NFTs.length) * 100).toFixed(2);
+    return (((same.length ?? 0) / arr.length != 0 ? arr.length : 1) * 100).toFixed(2);
   }
 
   getFloor() {
+    let arr = Object.values(this.NFTs);
+
     return (
-      this.NFTs.sort(function (a, b) {
+      arr.sort(function (a, b) {
         let x = a.priceNum;
         let y = b.priceNum;
         if (x < y) {
@@ -106,8 +112,10 @@ export class Collection implements ICollection {
   }
 
   getVolume() {
+    let arr = Object.values(this.NFTs);
+
     return (
-      this.NFTs.sort(function (a, b) {
+      arr.sort(function (a, b) {
         let x = a.priceNum;
         let y = b.priceNum;
         if (x < y) {
@@ -155,11 +163,14 @@ export class Collection implements ICollection {
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
     let contract = new ethers.Contract(token, abi, provider);
     let symbol = await contract.symbol();
+    console.log(symbol)
     return symbol;
   }
 
   get owners() {
-    return this.NFTs.filter((n) => !n.forSale).length ?? 0;
+    let arr = Object.values(this.NFTs);
+
+    return arr.filter((n) => !n.forSale).length ?? 0;
   }
 
   async loadName(token: string, provider: ethers.providers.Provider) {
@@ -179,23 +190,13 @@ export class Collection implements ICollection {
     return owner;
   }
 
-  hashedTokenId(tokenId: number) {
-    let strTokenId = String(tokenId);
-    let zero = ethers.constants.HashZero;
+  
 
-    return zero.substring(0, zero.length - strTokenId.length) + strTokenId;
-  }
-
-  get hashedAddress() {
-    let contractId = this.contract.substring(2, this.contract.length)
-    let zero = ethers.constants.HashZero;
-    return (zero.substring(0, zero.length - contractId.length) + contractId).toLowerCase();
-  }
 
   constructor(
     name: string,
     symbol: string,
-    NFTs: Array<NFT> = [],
+    NFTs: Dict<NFT> = {},
     contract: string,
     currency: string,
     collectionCount: number,
@@ -238,9 +239,10 @@ export class Collection implements ICollection {
   }
 
   nftCount(collectionCount: number, contract: string){
-    let nfts = new Array<NFT>()
+    let nfts: Dict<NFT> = {}
+
     for (let i = 0; i < (collectionCount ?? 0); i++) {
-      nfts.push(new NFT(
+      nfts[`${contract}${i + 1}`] = new NFT(
         i + 1,
         '',
         contract,
@@ -251,7 +253,7 @@ export class Collection implements ICollection {
         undefined,
         undefined,
         ''
-      ))
+      )
     }
     return nfts
   }

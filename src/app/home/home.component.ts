@@ -36,6 +36,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   availableTemplates(){return Globals.availableTemplates}
 
+  items: Dict<{
+    nft: NFT,
+    collection: Collection
+  }> = {}
 
   get loggedIn(){
     return this.rootComponent.loggedIn
@@ -83,33 +87,29 @@ export class HomeComponent implements OnInit, OnDestroy {
     return (0.3 / (row.grid_row ?? 1)) * 100
   }
 
-  products(smartProducts?: number, products?: Array<String>) {
-    if (smartProducts !== undefined) {
-      if (smartProducts == 0) {
-        return this.newArrivalProducts();
-      } else if (smartProducts == 1) {
-        return this.featuredProducts();
-      }
-    }
-    var prod = Array<NFT>();
-    products?.forEach((p) => {
-      let pro = this.storeInfo?.collections?.find((pr) => {
-        let k = pr.NFTs?.find((n) => {
-          return n.docID == p;
-        });
-        return k
-      })?.NFTs?.find((n) => {
-        return n.docID == p;
-      });
-      if (pro) {
-        prod.push(pro);
-      }
-      else{
-        prod.push(new NFT())
-      }
-    });
-    return prod;
-  }
+  // products(smartProducts?: number, products?: Array<String>) {
+  //   if (smartProducts !== undefined) {
+  //     if (smartProducts == 0) {
+  //       return this.newArrivalProducts();
+  //     } else if (smartProducts == 1) {
+  //       return this.featuredProducts();
+  //     }
+  //   }
+  //   var prod = Array<NFT>();
+  //   if (this.items && this.items != {}){
+  //     products?.forEach((p) => {
+  //       let nft = this.items![`${p}`]
+  //       if (nft){
+  //         prod.push(nft.nft)
+  //       }
+  //       prod.push(new NFT())
+  //     });
+  //   }
+  //   else{
+  //     prod.push(new NFT())
+  //   }
+  //   return prod;
+  // }
 
 
   mainPrice(product: NFT){
@@ -150,24 +150,24 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   newArrivalProducts() {
     var prod = Array<NFT>();
-    (this.storeInfo?.collections ?? [])?.forEach((p, i) => {
-      if (i == 4){ return }
-      p.NFTs.forEach(l => {
-        prod.push(l)
-      })
-    });
+    // (this.collections ?? [])?.forEach((p, i) => {
+    //   if (i == 4){ return }
+    //   p.NFTs.forEach(l => {
+    //     prod.push(l)
+    //   })
+    // });
     return prod
   }
 
   featuredProducts() {
     var prod = Array<NFT>();
-    (this.storeInfo?.collections ?? [])?.forEach((p, i) => {
-      if (i == 4){ return }
+    // (this.collections ?? [])?.forEach((p, i) => {
+    //   if (i == 4){ return }
 
-      p.NFTs.forEach(l => {
-        prod.push(l)
-      })
-    });
+    //   p.NFTs.forEach(l => {
+    //     prod.push(l)
+    //   })
+    // });
     return prod
   }
 
@@ -321,14 +321,22 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   shouldHide(){
-    return ((this.storeInfo?.collections?.map(i => i?.NFTs).filter( j => j.length > 0))?.length ?? 0) == 0
+    return this.items == {}
   }
 
+
+  collectionCurrency(contractID: string){
+    return 'matic' // this.collections.find(c => c.contract == contractID)?.currency ?? 'MATIC'
+  }
 
   callback(){ 
     if (Globals.storeInfo?.username){
 
       this.rootComponent.setFavIcon(Globals.storeInfo?.profileLink?.toString() ?? '')
+
+      
+
+
       const routeParams = this.router.snapshot.paramMap;
       const storeID = routeParams.get('page') as string;
       let page = Globals.storeInfo?.pages?.find(p => p.url == storeID)
@@ -340,6 +348,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.homeRows = rows
         this.page = page
+
+       let arr = rows.map(r => r.products ?? []) ?? []
+
+        var ids = new Array<string>().concat.apply([], arr)
+
+        console.log(ids)
+
+        this.loadService.getNFTsById(ids, collections => {
+          console.log(collections)
+          this.items = collections
+        })
+
+
+
+
+
         if (page.loader ?? true){
           this.showSpinner()
         }
@@ -347,9 +371,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       else{
         this.routingService.routeToStore404(this.getStoreName().link, this.getStoreName().isCustom)
       }
-
-
-
 
       if (isPlatformBrowser(this.platformID)){
         this.loadService.logView()
@@ -393,9 +414,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   downloadAllStoreInfo(storeName: string, isCustom = false){
-    this.loadService.myCallback = () => this.callback()
     this.loadService.getUser(storeName, undefined, isCustom, store => {
-      
+      this.callback()
     })
   }
 

@@ -221,6 +221,14 @@ export class NftUpdateComponent implements OnInit {
             price,
             this.collection.customTokenCheck() == undefined
           );
+
+          if (!voucher){
+            this.isLoading = false;
+            this.err = "Creation Cancelled"
+            return
+          }
+
+
           this.nft.lazyHash = voucher;
           this.nft.forSale = forSale;
 
