@@ -755,24 +755,29 @@ export class LoadService {
 
       Globals.sInfo.next(Globals.storeInfo);
 
-      if (this.myCallback) this.myCallback();
+      this.isLoading = false;
 
-      if (isPlatformBrowser(this.platformID)) {
-        this.getPosts(
-          (products) => {
-            Globals.storeInfo!.collections = products;
-            this.isLoading = false;
-            if (callback) {
-              callback(Globals.storeInfo);
-            }
-            if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-          },
-          undefined,
-          Globals.provider
-        );
-        this.rootComponent?.getCart();
-        sub.unsubscribe();
+      if (callback) {
+        callback(Globals.storeInfo);
       }
+      if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+
+      // if (isPlatformBrowser(this.platformID)) {
+      //   this.getPosts(
+      //     (products) => {
+      //       Globals.storeInfo!.collections = products;
+      //       this.isLoading = false;
+      //       if (callback) {
+      //         callback(Globals.storeInfo);
+      //       }
+      //       if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+      //     },
+      //     undefined,
+      //     Globals.provider
+      //   );
+      //   this.rootComponent?.getCart();
+      //   sub.unsubscribe();
+      // }
     });
   }
 
@@ -828,7 +833,9 @@ export class LoadService {
               hashes.map(async (t) => {
                 var type = '';
                 if (
-                  (t.value != "0" && (t.from != '' && t.to != '')) &&
+                  t.value != '0' &&
+                  t.from != '' &&
+                  t.to != '' &&
                   (t.contractAddress == '' || t.tokenSymbol != undefined)
                 ) {
                   type = 'transfer';
@@ -864,14 +871,11 @@ export class LoadService {
       );
   }
 
-  getEvents(
-    collection: Collection,
-    tokenId: string,
-    callback: (transactions: Array<NftLog>) => any
-  ) {
+  getEvents(nft: NFT, callback: (transactions: Array<NftLog>) => any) {
+    console.log(nft);
     const data = {
-      contract: collection.contract,
-      tokenId: tokenId,
+      contract: nft.contractID,
+      tokenId: nft.hashedTokenId,
       test: false,
     };
     this.functions
@@ -899,7 +903,7 @@ export class LoadService {
                   } else {
                     type = 'transfer';
                   }
-                } else if (t.topics[0] == collection.hashedAddress) {
+                } else if (t.topics[0] == nft.hashedAddress) {
                   type = 'list';
                 } else if (
                   t.topics[0] !=
@@ -1374,7 +1378,7 @@ export class LoadService {
             );
           }
 
-          var products = new Array<NFT>();
+          var products: Dict<NFT> = {};
 
           let sub = query.get().subscribe(async (docDatas) => {
             sub.unsubscribe();
@@ -1437,8 +1441,7 @@ export class LoadService {
                   if ((product.name ?? '') == '') {
                     product.name = `${collection.name} #${index + 1}`;
                   }
-
-                  products.push(product);
+                  products[`${contractID}${tokenID}`] = product;
                 }
               })
             );
@@ -1641,8 +1644,7 @@ export class LoadService {
   }
 
   async getFormat(image: string, noLoad = false): Promise<string> {
-
-    console.log(image)
+    console.log(image);
 
     return new Promise(function (resolve, reject) {
       if (noLoad) {
@@ -1661,7 +1663,7 @@ export class LoadService {
           if (this.readyState == this.DONE) {
             let type = this.getResponseHeader('Content-Type');
             var format = 'none';
-            console.log(type)
+            console.log(type);
             if (!type) {
               reject('No content found!');
               return;
@@ -1688,12 +1690,11 @@ export class LoadService {
 
   addProduct(product: NFT, contract: string) {
     // if (this.shopComponent) this.shopComponent.storeProducts?.unshift(product);
-
-    if (this.adminComponent)
-      Globals.storeInfo?.collections
-        ?.find((c) => c.contract == contract)
-        ?.NFTs.unshift(product);
-
+    // `${contractID}${tokenID}`
+    // if (this.adminComponent)
+    // Globals.storeInfo?.collections
+    //   ?.find((c) => c.contract == contract)
+    //   ?.NFTs[`${contract}${product.tokenID}`] = null
     // if (this.homeComponent) this.homeComponent.storeProducts?.unshift(product);
   }
 
@@ -1764,36 +1765,30 @@ export class LoadService {
     //   let p = this.shopComponent.storeProducts?.filter((obj) => {
     //     return obj.productID == product.productID;
     //   })[0] as Product;
-
     //   let index = this.shopComponent.storeProducts?.indexOf(p);
     //   if (index) {
     //     this.shopComponent.storeProducts?.splice(index, 1);
     //   }
     // }
-
-    if (this.adminComponent) {
-      let p = Globals.storeInfo?.collections
-        ?.find((c) => c.contract == contract)
-        ?.NFTs.filter((obj) => {
-          return obj.docID == product.docID;
-        })[0] as NFT;
-
-      let index = Globals.storeInfo?.collections
-        ?.find((c) => c.contract == contract)
-        ?.NFTs.indexOf(p);
-
-      if (index != undefined) {
-        Globals.storeInfo?.collections
-          ?.find((c) => c.contract == contract)
-          ?.NFTs.splice(index, 1);
-      }
-    }
-
+    // if (this.adminComponent) {
+    //   let p = Globals.storeInfo?.collections
+    //     ?.find((c) => c.contract == contract)
+    //     ?.NFTs.filter((obj) => {
+    //       return obj.docID == product.docID;
+    //     })[0] as NFT;
+    //   let index = Globals.storeInfo?.collections
+    //     ?.find((c) => c.contract == contract)
+    //     ?.NFTs.indexOf(p);
+    //   if (index != undefined) {
+    //     Globals.storeInfo?.collections
+    //       ?.find((c) => c.contract == contract)
+    //       ?.NFTs.splice(index, 1);
+    //   }
+    // }
     // if (this.homeComponent) {
     //   let p = this.homeComponent.storeProducts?.filter((obj) => {
     //     return obj. == product.tokenID;
     //   })[0] as Product;
-
     //   let index = this.homeComponent.storeProducts?.indexOf(p);
     //   if (index != undefined) {
     //     this.homeComponent.storeProducts?.splice(index, 1);
@@ -1949,18 +1944,25 @@ export class LoadService {
     }
   }
 
-  testSite() {
-    // this.functions
-    //   .httpsCallable('getSiteInstance')({})
-    //   .pipe(first())
-    //   .subscribe(
-    //     async (resp) => {
-    //       console.log(resp)
-    //     },
-    //     (err) => {
-    //       console.log(err)
-    //     }
-    //   );
+  getTraitRarity(nft: NFT, collection: Collection, callback: (traits: Dict<any>[]) => any) {
+    console.log(collection.ABI)
+    this.functions
+      .httpsCallable('getTraitRarity')({
+        token: nft.tokenID,
+        abi: THRED_MARKET.abi,
+        thredMarketplace,
+        address: collection.contract,
+      })
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          console.log(resp);
+          callback(resp)
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
   }
 
   async createPayment(
@@ -3866,7 +3868,7 @@ export class LoadService {
   }
 
   loggedIn() {
-    return this.auth.authState
+    return this.auth.authState;
   }
 
   registerAccount(
@@ -4819,6 +4821,201 @@ export class LoadService {
       });
   }
 
+  splitToBulks(arr: Array<any>, bulkSize = 10) {
+    const bulks = [];
+    for (let i = 0; i < Math.ceil(arr.length / bulkSize); i++) {
+      bulks.push(arr.slice(i * bulkSize, (i + 1) * bulkSize));
+    }
+    return bulks;
+  }
+
+  async getNFTsById(
+    docIDs: string[],
+    callback: (
+      items: Dict<{
+        nft: NFT;
+        collection: Collection;
+      }>
+    ) => any,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+  ) {
+    let provider2 = await this.checkProviderChain(provider);
+
+    var cols: Dict<{
+      nft: NFT;
+      collection: Collection;
+    }> = {};
+
+    let ids = this.splitToBulks(docIDs);
+
+    var counter = 0;
+    await Promise.all(
+      ids.map((i) => {
+        var query = this.db.collectionGroup('Products', (ref) =>
+          ref.where('Product_ID', 'in', i).orderBy('Token_ID')
+        );
+
+        let sub = query.get().subscribe(async (docDatas) => {
+          docDatas.docs.forEach(async (doc, index) => {
+            let docData = doc.data() as DocumentData;
+
+            if (docData) {
+              let tokenID = docData['Token_ID'] as number;
+              let contractID = docData['Contract_Address'] as string;
+              let ownerAddress =
+                (docData['Owner_Address'] as string) ??
+                Globals.storeInfo?.walletAddress ??
+                '';
+              let sold = (docData['Sold'] as boolean) ?? false;
+              let lazyMint = (docData['Lazy'] as boolean) ?? true;
+              let format = docData['Format'] as string;
+              let royalty = (docData['Royalty'] as number) ?? 0;
+              let lazyHash = docData['Lazy_Hash'] as Dict<any>;
+              let metadata = docData['Metadata'] as string;
+              let forSale = docData['forSale'] as boolean;
+              var cost = ethers.utils.parseUnits('0.02', 'ether');
+              if (lazyHash) {
+                cost = lazyHash['minPrice'] as ethers.BigNumber;
+              }
+              let marketAddress = docData['marketAddress'] as string;
+
+              let product = new NFT(
+                tokenID,
+                contractID,
+                ownerAddress,
+                sold,
+                lazyMint,
+                undefined,
+                royalty,
+                lazyHash,
+                metadata,
+                undefined,
+                marketAddress
+              );
+
+              product.price = cost;
+              product.docID = doc.id;
+              product.seller = ownerAddress;
+
+              product.isAvailable = true;
+              product.forSale = forSale;
+              product.linkUrl = this.getURL(doc.id);
+
+              if (metadata) {
+                const meta = await axios.get(metadata);
+                product.name = meta.data.name;
+                product.url = meta.data.image;
+                product.description = meta.data.description;
+                product.traits = meta.data.traits;
+              } else {
+                product.name = docData['Name'] as string;
+                product.description = docData['Description'] as string;
+                let productID = docData['Product_ID'];
+                product.url = this.getURL(productID);
+              }
+
+              if (product.contractID) {
+                var co = Object.values(cols).find(
+                  (c) => c.collection.contract == product.contractID
+                )?.collection;
+
+                if (!co) {
+                  co = new Collection(
+                    '',
+                    '',
+                    {},
+                    product.contractID,
+                    'MATIC',
+                    0,
+                    Globals.storeInfo?.walletAddress ?? '',
+                    true,
+                    Globals.storeInfo?.uid ?? '',
+                    new Date()
+                  );
+
+                  co.currency = 'MATIC';
+                  if (co.customTokenCheck() && provider2) {
+                    await co
+                      .loadCurrency(co.customTokenCheck()!, provider2)
+                      .then((i) => {
+                        co!.currency = i;
+                      });
+                  }
+                }
+
+                cols[`${product.docID}`] = { nft: product, collection: co };
+
+                console.log(co);
+
+                // let co = new Collection(
+                //   '',
+                //   '',
+                //   [],
+                //   product.contractID,
+                //   'MATIC',
+                //   0,
+                //   Globals.storeInfo?.walletAddress ?? '',
+                //   true,
+                //   Globals.storeInfo?.uid ?? '',
+                //   new Date()
+                // );
+
+                // if (!isPlatformBrowser(this.platformID)) {
+                //   callback(co);
+                //   return;
+                // }
+
+                // let created = await this.getCreated(co, product);
+
+                // // co.name = created.name;
+                // // co.symbol = created.symbol;
+
+                // let c = created?.tokens;
+
+                // if (c) {
+                //   product.tokenID = c.tokenId;
+                //   product.contractID = c.contract;
+                //   product.owner = c.owner;
+                //   product.name = c.name;
+                //   product.format = c.content;
+                //   product.royalty = c.royalty;
+                //   product.metadata = c.uri;
+                //   product.seller = c.seller;
+                //   co.customToken = c.isNative ? undefined : c.token;
+                //   product.description = c.description;
+                //   product.price = c.price;
+                //   product.url = c.image;
+                //   product.itemId = c.itemId;
+                //   product.forSale = c.forSale;
+                //   product.lazyMint = c.minted == false;
+                //   product.lazyHash = product.lazyMint
+                //     ? product.lazyHash
+                //     : undefined;
+                //   if (product.tokenID && provider) {
+                //     product.seller = await co.ownerOf(
+                //       product.tokenID,
+                //       provider2
+                //     );
+                //   }
+                // } else {
+                // product.format = await this.getFormat(product.url!);
+                // }
+
+                counter += 1;
+
+                if (counter == ids.length) {
+                  callback(cols);
+                }
+              }
+            }
+          });
+        });
+      })
+    );
+  }
+
   async getPost(
     productID: string,
     callback: (product?: NFT, collection?: Collection) => any,
@@ -4900,7 +5097,7 @@ export class LoadService {
             let co = new Collection(
               '',
               '',
-              [],
+              {},
               product.contractID,
               'MATIC',
               0,
@@ -4937,16 +5134,24 @@ export class LoadService {
               product.url = c.image;
               product.itemId = c.itemId;
               product.forSale = c.forSale;
+
               product.lazyMint = c.minted == false;
-              product.lazyHash = product.lazyMint
-                ? product.lazyHash
-                : undefined;
+
+
               if (product.tokenID && provider) {
                 product.seller = await co.ownerOf(product.tokenID, provider2);
               }
             } else {
               product.format = await this.getFormat(product.url!);
             }
+
+            if (product.marketAddress != thredMarketplace){
+              product.lazyMint = false
+            }
+            
+            product.lazyHash = product.lazyMint
+            ? product.lazyHash
+            : undefined;
 
             co.currency = 'MATIC';
             if (co.customTokenCheck() && provider2) {

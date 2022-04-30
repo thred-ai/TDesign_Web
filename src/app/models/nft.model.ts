@@ -24,6 +24,19 @@ export class NFT {
     return Number(x);
   }
 
+  get hashedAddress() {
+    let contractId = this.contractID.substring(2, this.contractID.length)
+    let zero = ethers.constants.HashZero;
+    return (zero.substring(0, zero.length - contractId.length) + contractId).toLowerCase();
+  }
+
+  get hashedTokenId() {
+    let strTokenId = String(this.tokenID);
+    let zero = ethers.constants.HashZero;
+
+    return zero.substring(0, zero.length - strTokenId.length) + strTokenId;
+  }
+
   name?: string;
   description?: string;
   traits?: Array<Dict<any>> = [];
@@ -63,5 +76,7 @@ export class NFT {
     this.isNFT = metadata != undefined;
 
     this.marketAddress = marketAddress ?? thredMarketplace
+
+    
   }
 }
