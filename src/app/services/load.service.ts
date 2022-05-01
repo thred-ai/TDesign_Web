@@ -1446,13 +1446,16 @@ export class LoadService {
               })
             );
             counter += 1;
+            let token = collection.customTokenCheck() ?? products[0]?.lazyHash?.token != ethers.constants.HashZero ? products[0]?.lazyHash?.token : undefined
+            collection.customToken = token
+
             if (
-              collection.customTokenCheck() &&
+              token &&
               provider2 &&
               isPlatformBrowser(this.platformID)
             ) {
               await collection
-                .loadCurrency(collection.customTokenCheck()!, provider2)
+                .loadCurrency(token!, provider2)
                 .then((i) => {
                   collection.currency = i;
                 });
@@ -1945,7 +1948,7 @@ export class LoadService {
   }
 
   getTraitRarity(nft: NFT, collection: Collection, callback: (traits: Dict<any>[]) => any) {
-    console.log(collection.ABI)
+    console.log(collection)
     this.functions
       .httpsCallable('getTraitRarity')({
         token: nft.tokenID,
@@ -4936,10 +4939,16 @@ export class LoadService {
                   );
 
                   co.currency = 'MATIC';
-                  if (co.customTokenCheck() && provider2) {
+                  let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
+                  co.customToken = token
+
+                  console.log(co.customToken)
+                  
+                  if (token && provider2) {
                     await co
-                      .loadCurrency(co.customTokenCheck()!, provider2)
+                      .loadCurrency(token!, provider2)
                       .then((i) => {
+                        console.log(i)
                         co!.currency = i;
                       });
                   }
@@ -4947,7 +4956,7 @@ export class LoadService {
 
                 cols[`${product.docID}`] = { nft: product, collection: co };
 
-                console.log(co);
+                console.log(product.lazyHash)
 
                 // let co = new Collection(
                 //   '',
@@ -5006,6 +5015,8 @@ export class LoadService {
                 counter += 1;
 
                 if (counter == ids.length) {
+                  console.log(cols);
+
                   callback(cols);
                 }
               }
@@ -5094,79 +5105,79 @@ export class LoadService {
           }
 
           if (product.contractID) {
-            let co = new Collection(
-              '',
-              '',
-              {},
-              product.contractID,
-              'MATIC',
-              0,
-              Globals.storeInfo?.walletAddress ?? '',
-              true,
-              Globals.storeInfo?.uid ?? '',
-              new Date()
-            );
+            this.getCollection(product.contractID, async co => {
 
-            if (!isPlatformBrowser(this.platformID)) {
+              if (!co) { return }
+
+
+              let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
+              co.customToken = token
+  
+              console.log(co)
+  
+              if (!isPlatformBrowser(this.platformID)) {
+                callback(product, co);
+                return;
+              }
+  
+              let created = await this.getCreated(co, product);
+  
+              // co.name = created.name;
+              // co.symbol = created.symbol;
+  
+              let c = created?.tokens;
+  
+              if (c) {
+                product.tokenID = c.tokenId;
+                product.contractID = c.contract;
+                product.owner = c.owner;
+                product.name = c.name;
+                product.format = c.content;
+                product.royalty = c.royalty;
+                product.metadata = c.uri;
+                product.seller = c.seller;
+                co.customToken = c.isNative ? undefined : c.token;
+                product.description = c.description;
+                product.price = c.price;
+                product.url = c.image;
+                product.itemId = c.itemId;
+                product.forSale = c.forSale;
+  
+                product.lazyMint = c.minted == false;
+  
+  
+                if (product.tokenID && provider) {
+                  product.seller = await co.ownerOf(product.tokenID, provider2);
+                }
+              } else {
+                product.format = await this.getFormat(product.url!);
+              }
+  
+              if (product.marketAddress != thredMarketplace){
+                product.lazyMint = false
+              }
+  
+              product.lazyHash = product.lazyMint
+              ? product.lazyHash
+              : undefined;
+  
+              co.currency = 'MATIC';
+  
+              if (token && provider2) {
+                await co
+                  .loadCurrency(token!, provider2)
+                  .then((i) => {
+                    co.currency = i;
+                  });
+              }
               callback(product, co);
               return;
-            }
-
-            let created = await this.getCreated(co, product);
-
-            // co.name = created.name;
-            // co.symbol = created.symbol;
-
-            let c = created?.tokens;
-
-            if (c) {
-              product.tokenID = c.tokenId;
-              product.contractID = c.contract;
-              product.owner = c.owner;
-              product.name = c.name;
-              product.format = c.content;
-              product.royalty = c.royalty;
-              product.metadata = c.uri;
-              product.seller = c.seller;
-              co.customToken = c.isNative ? undefined : c.token;
-              product.description = c.description;
-              product.price = c.price;
-              product.url = c.image;
-              product.itemId = c.itemId;
-              product.forSale = c.forSale;
-
-              product.lazyMint = c.minted == false;
-
-
-              if (product.tokenID && provider) {
-                product.seller = await co.ownerOf(product.tokenID, provider2);
-              }
-            } else {
-              product.format = await this.getFormat(product.url!);
-            }
-
-            if (product.marketAddress != thredMarketplace){
-              product.lazyMint = false
-            }
-            
-            product.lazyHash = product.lazyMint
-            ? product.lazyHash
-            : undefined;
-
-            co.currency = 'MATIC';
-            if (co.customTokenCheck() && provider2) {
-              await co
-                .loadCurrency(co.customTokenCheck()!, provider2)
-                .then((i) => {
-                  co.currency = i;
-                });
-            }
-            callback(product, co);
-            return;
+            })
           }
-
-          callback(product);
-          return;
+          else{
+            callback(product);
+            return;
+          }          
         }
         callback();
       });

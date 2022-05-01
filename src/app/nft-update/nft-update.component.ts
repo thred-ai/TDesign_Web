@@ -242,21 +242,6 @@ export class NftUpdateComponent implements OnInit {
           //   MarketItem memory item,
           //   bool forSale,
           //   uint256 price
-          let marketItem = {
-            itemId: this.nft.itemId,
-            nftContract: this.nft.contractID,
-            tokenId: this.nft.tokenID,
-            seller: this.nft.seller,
-            owner: this.nft.owner,
-            price: this.nft.price,
-            forSale: this.nft.isAvailable,
-            royalty: this.nft.royalty,
-            tokenContract:
-              this.collection.customTokenCheck() ??
-              ethers.constants.AddressZero,
-            isNative: !(this.collection.customTokenCheck() ?? false),
-            minted: true,
-          };
           let t = await contract.updateItem(this.nft.itemId, 0, forSale, price);
           await t.wait();
         }
@@ -266,6 +251,7 @@ export class NftUpdateComponent implements OnInit {
       } catch (error) {
         let data = (error as any).data;
         this.isLoading = false;
+        console.log(error)
         if (data && data.code == -32000) {
           this.err = 'Not enough MATIC' + ' in wallet!';
         } else {

@@ -325,8 +325,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
 
-  collectionCurrency(contractID: string){
-    return 'matic' // this.collections.find(c => c.contract == contractID)?.currency ?? 'MATIC'
+  collectionCurrency(docID?: string){
+    return this.items[docID ?? '']?.collection.currency ?? 'MATIC'
   }
 
   callback(){ 

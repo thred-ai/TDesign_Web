@@ -2,7 +2,7 @@
 <router-outlet></router-outlet>
 
 <ngx-spinner
-  *ngIf="isBrowser() && storeInfo"
+  *ngIf="isBrowser()"
   bdColor="{{ selectedIndicator().bg_color }}"
   size="large"
   color="{{ selectedIndicator().color }}"
@@ -363,7 +363,7 @@
                         <mat-icon
                           class="m-0 p-0 me-2"
                           style="overflow: hidden"
-                          svgIcon="{{ collection.contract | matIcon }}"
+                          svgIcon="{{ collection.customToken | matIcon }}"
                           [ngbTooltip]="qtipContent"
                         >
                           <ng-template #qtipContent>

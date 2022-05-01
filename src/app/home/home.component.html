@@ -119,13 +119,13 @@
                       class="m-0 p-0 me-1"
                       style="overflow: hidden; height: 25px"
                       svgIcon="{{
-                        items![product].nft.contractID | matIcon
+                        items![product].collection.customToken | matIcon
                       }}"
                       [ngbTooltip]="qtipContent"
                     >
                       <ng-template #qtipContent>
                         {{
-                          collectionCurrency(items![product].nft.contractID)
+                          collectionCurrency(items![product].nft.docID)
                         }}
                       </ng-template>
                     </mat-icon>

@@ -103,11 +103,13 @@ export class Store {
       .forEach((t) => {
         all = all.concat(t);
       });
-    return all.filter((a) =>
-      this.collections?.find(
-        (c) => a.contract == 'default' || c.customToken == a.contract
-      )
-    );
+    return all
+    
+    // .filter((a) =>
+    //   this.collections?.find(
+    //     (c) => a.contract == 'default' || c.customToken == a.contract
+    //   )
+    // );
   }
 
   constructor(

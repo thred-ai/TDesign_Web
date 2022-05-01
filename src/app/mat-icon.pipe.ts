@@ -21,6 +21,6 @@ export class MatIconPipe implements PipeTransform {
 
       return symbol;
     }
-    return '';
+    return 'polygon_icon';
   }
 }

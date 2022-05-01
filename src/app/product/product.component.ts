@@ -391,6 +391,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           // //   this.usdDisplayPrice = price * nft.price
           // // });
 
+          console.log(collection)
+
           this.collection = collection;
 
           this.loadService.getTraitRarity(nft, collection!, traits => {
@@ -585,6 +587,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             storeInfo?.link,
             undefined,
             storeInfo?.isCustom, user => {
+              this.showSpinner()
               this.checkLoad()
             }
           );
