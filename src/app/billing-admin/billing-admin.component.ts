@@ -243,9 +243,6 @@ export class BillingAdminComponent implements OnInit, AfterViewInit {
         if (Globals.billingInfo == undefined && isPlatformBrowser(this.platformID)){
           this.loadService.getBillingAddress()
         }
-        else if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
-          this.loadService.getCustomer()
-        }
         else{
           this.setForm()
           this.cdr.detectChanges()

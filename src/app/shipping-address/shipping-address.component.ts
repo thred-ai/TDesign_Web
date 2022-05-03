@@ -353,9 +353,6 @@ export class ShippingAddressComponent implements OnInit {
         if (Globals.shippingInfo == undefined && isPlatformBrowser(this.platformID)){
           this.loadService.getShippingAddress()
         }
-        else if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
-          this.loadService.getCustomer()
-        }
         else if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
           this.loadService.getCountries()
         }

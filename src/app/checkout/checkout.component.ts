@@ -293,10 +293,8 @@ export class CheckoutComponent implements OnInit, AfterViewInit {
         this.rootComponent.setOptions()
         this.addTags(Globals.storeInfo?.fullName ?? "Thred", (Globals.storeInfo?.profileLink ?? new URL("https://shopmythred.com")).toString(), Globals.storeInfo?.bio ?? "Check out my Thred Store!", "shopmythred.com/" + Globals.storeInfo?.username)
 
-        if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
-          this.loadService.getCustomer()
-        }
-        else if (this.rootComponent.cart?.length == 0 && isPlatformBrowser(this.platformID)){
+
+        if (this.rootComponent.cart?.length == 0 && isPlatformBrowser(this.platformID)){
           this.routeToCart()
           return
         }

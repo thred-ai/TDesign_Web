@@ -69,9 +69,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   storeInfo?: Store = undefined
 
 
-  userInfo() {
-    return Globals.userInfo;
-  }
 
   availableCurrencies() {
     return Globals.availableCurrencies;
@@ -280,35 +277,35 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   routeToProfile(selected?: string) {
-    if (Globals.userInfo?.username) {
+    // if (Globals.storeInfo?.username) {
       this.loadService.myCallback = undefined;
-      if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
-        // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
-        this.routingService.routeToProfile(
-          Globals.userInfo?.username!,
-          this.getStoreName().isCustom,
-          selected,
-          'https://shopmythred.com/' + Globals.userInfo?.username
-        );
-      } else {
+      // if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
+      //   // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
+      //   this.routingService.routeToProfile(
+      //     Globals.storeInfo?.username!,
+      //     this.getStoreName().isCustom,
+      //     selected,
+      //     'https://shopmythred.com/' + Globals.storeInfo?.username
+      //   );
+      // } else {
         if (Globals.storeInfo?.username) {
           if (this.isAdmin()) {
             this.reloadCurrentRoute();
             return;
           } else {
             this.routingService.routeToProfile(
-              Globals.userInfo?.username!,
+              Globals.storeInfo?.username!,
               this.getStoreName().isCustom,
               selected
             );
             return;
           }
         }
-      }
-    } else {
-      this.loadService.myCallback = () => this.routeToProfile();
-      this.loadService.getCustomer();
-    }
+      // }
+    // } else {
+    //   this.loadService.myCallback = () => this.routeToProfile();
+    //   this.loadService.getCustomer();
+    // }
   }
 
   cart?: Array<ProductInCart> = undefined;

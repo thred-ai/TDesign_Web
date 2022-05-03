@@ -83,7 +83,7 @@ import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Store } from '../models/store.model';
-import { take } from 'rxjs/operators';
+import { skip, take, takeLast } from 'rxjs/operators';
 import { thredMarketplace } from 'config';
 
 // artifacts/contracts/Market.sol/NFTMarket
@@ -207,16 +207,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.name = 'My Domain';
     modalRef.componentInstance.isDomain = true;
 
-    if (Globals.storeInfo?.customURL) {
+    if (this.storeInfo?.customURL) {
       modalRef.componentInstance.socialForm.controls.link.setValue(
-        Globals.storeInfo?.customURL?.fullURL
+        this.storeInfo?.customURL?.fullURL
       );
     }
 
     let sub = modalRef.dismissed.subscribe((domain: string) => {
       sub.unsubscribe();
       if (domain != '0') {
-        if (domain != Globals.storeInfo?.customURL?.fullURL) {
+        if (domain != this.storeInfo?.customURL?.fullURL) {
           if (domain == undefined) {
             return;
           }
@@ -233,7 +233,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
                 this.toast('Custom Domain Saved!');
               }
             },
-            Globals.storeInfo?.uid
+            this.storeInfo?.uid
           );
         }
       }
@@ -273,7 +273,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           (success) => {
             this.toast('Page Removed!');
           },
-          Globals.storeInfo?.uid
+          this.storeInfo?.uid
         );
       }
     );
@@ -355,7 +355,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               isFinished = true;
               this.intValue = undefined;
             },
-            Globals.storeInfo?.uid
+            this.storeInfo?.uid
           );
         }
       } else if (layouts == '0') {
@@ -414,7 +414,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               this.toast('Popup Saved!');
             }
           },
-          Globals.storeInfo?.uid
+          this.storeInfo?.uid
         );
       }
     });
@@ -564,7 +564,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           (success) => {
             this.toast('Popup Removed');
           },
-          Globals.storeInfo?.uid
+          this.storeInfo?.uid
         );
       }
     );
@@ -574,7 +574,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //   const modalRef = this.dialog.open(CouponInfoComponent, {
   //     width: '800px',
   //     data: {
-  //       coupons: Globals.storeInfo?.coupons,
+  //       coupons: this.storeInfo?.coupons,
   //       editCoupon: coupon,
   //       products: this.storeProducts?.filter((product) => {
   //         return (
@@ -590,7 +590,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //     sub.unsubscribe();
   //     if (coupon != '0') {
   //       if (
-  //         !Globals.storeInfo?.coupons?.find((c) => {
+  //         !this.storeInfo?.coupons?.find((c) => {
   //           return c == coupon;
   //         })
   //       ) {
@@ -605,7 +605,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //               this.toast('Coupon Saved!');
   //             }
   //           },
-  //           Globals.storeInfo?.uid
+  //           this.storeInfo?.uid
   //         );
   //       }
   //     }
@@ -634,16 +634,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   //         (success) => {
   //           this.toast('Coupon Removed');
   //         },
-  //         Globals.storeInfo?.uid
+  //         this.storeInfo?.uid
   //       );
   //     }
   //   );
   }
 
   domainNotSetUp() {
-    if (Globals.storeInfo?.customURL?.status == 1) {
+    if (this.storeInfo?.customURL?.status == 1) {
       return true;
-    } else if (Globals.storeInfo?.customURL?.status == 2) {
+    } else if (this.storeInfo?.customURL?.status == 2) {
       return false;
     } else {
       return undefined;
@@ -1635,7 +1635,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
 
   // async isSignedIn(){
-  //   return Globals.storeInfo?.walletAddress && Globals.storeInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
+  //   return this.storeInfo?.walletAddress && this.storeInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
   // }
 
 
@@ -1716,14 +1716,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   inventory?: Array<Inventory>;
 
   selectedIndicator() {
-    if (!Globals.storeInfo) { return {
+    if (!this.storeInfo) { return {
       name: '',
       color: '',
       bg_color: '',
     }}
-    let co = Globals.storeInfo?.loading?.color;
-    let bco = Globals.storeInfo?.loading?.bg_color;
-    let name = Globals.storeInfo?.loading?.name;
+    let co = this.storeInfo?.loading?.color;
+    let bco = this.storeInfo?.loading?.bg_color;
+    let name = this.storeInfo?.loading?.name;
 
     let color =
       (this.themeForm.controls.loadingIndicatorColor.value as string) ??
@@ -2179,56 +2179,56 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   setForm() {
-    this.storeForm.controls.username.setValue(Globals.storeInfo?.username ?? '');
+    this.storeForm.controls.username.setValue(this.storeInfo?.username ?? '');
     this.storeForm.controls.full_name.setValue(
-      Globals.storeInfo?.fullName ?? ''
+      this.storeInfo?.fullName ?? ''
     );
-    this.storeForm.controls.bio.setValue(Globals.storeInfo?.bio ?? '');
+    this.storeForm.controls.bio.setValue(this.storeInfo?.bio ?? '');
 
     this.themeForm.controls.loadingIndicator.setValue(
-      Globals.storeInfo?.loading?.name ?? ''
+      this.storeInfo?.loading?.name ?? ''
     );
 
     this.themeForm.controls.themeImg.setValue(
-      Globals.storeInfo?.themeLink?.toString()
+      this.storeInfo?.themeLink?.toString()
     );
 
-    // this.homeForm.controls.homeImg.setValue(Globals.storeInfo?.homeLink?.toString())
-    // this.homeForm.controls.themeImg.setValue(Globals.storeInfo?.homeLinkTop?.toString())
+    // this.homeForm.controls.homeImg.setValue(this.storeInfo?.homeLink?.toString())
+    // this.homeForm.controls.themeImg.setValue(this.storeInfo?.homeLinkTop?.toString())
 
     this.shopForm.controls.themeImg.setValue(
-      Globals.storeInfo?.shopLinkTop?.toString()
+      this.storeInfo?.shopLinkTop?.toString()
     );
 
     this.themeForm.controls.actionImg.setValue(
-      Globals.storeInfo?.actionLink?.toString()
+      this.storeInfo?.actionLink?.toString()
     );
 
-    this.themeForm.controls.font.setValue(Globals.storeInfo?.fontName);
+    this.themeForm.controls.font.setValue(this.storeInfo?.fontName);
 
-    this.storeForm.controls.socials.setValue(Globals.storeInfo?.socials);
+    this.storeForm.controls.socials.setValue(this.storeInfo?.socials);
 
     this.storeForm.controls.custom_url.setValue(
-      Globals.storeInfo?.customURL?.fullURL
+      this.storeInfo?.customURL?.fullURL
     );
 
-    this.marketingForm.controls.pixel.setValue(Globals.storeInfo?.fb_pixel);
+    this.marketingForm.controls.pixel.setValue(this.storeInfo?.fb_pixel);
 
     this.themeForm.controls.storeTheme.setValue(
-      Globals.storeInfo?.colorStyle?.name?.toString()
+      this.storeInfo?.colorStyle?.name?.toString()
     );
 
-    this.bannerForm.controls.banners.setValue(Globals.storeInfo?.banners ?? []);
+    this.bannerForm.controls.banners.setValue(this.storeInfo?.banners ?? []);
 
-    this.bannerForm.controls.style.setValue(Globals.storeInfo?.bannerStyle ?? 0);
+    this.bannerForm.controls.style.setValue(this.storeInfo?.bannerStyle ?? 0);
 
-    this.headerForm.controls.links.setValue(Globals.storeInfo?.header ?? []);
-    this.footerCols = Globals.storeInfo?.footer ?? [];
+    this.headerForm.controls.links.setValue(this.storeInfo?.header ?? []);
+    this.footerCols = this.storeInfo?.footer ?? [];
 
-    this.theme = Globals.storeInfo?.colorStyle?.name?.toString() ?? 'Light';
+    this.theme = this.storeInfo?.colorStyle?.name?.toString() ?? 'Light';
 
-    let co = Globals.storeInfo?.loading?.color;
-    let bco = Globals.storeInfo?.loading?.bg_color;
+    let co = this.storeInfo?.loading?.color;
+    let bco = this.storeInfo?.loading?.bg_color;
 
     let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
 
@@ -2280,7 +2280,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   newArrivalProducts() {
-    // return (Globals.storeInfo?.collections ?? [])[0].NFTs
+    // return (this.storeInfo?.collections ?? [])[0].NFTs
     //   ?.sort(function (a, b) {
     //     // if (a.timestamp > b.timestamp) {
     //     //   return -1;
@@ -2296,7 +2296,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   featuredProducts() {
-    // return (Globals.storeInfo?.collections ?? [])[0].NFTs
+    // return (this.storeInfo?.collections ?? [])[0].NFTs
     //   ?.sort(function (a, b) {
     //     // if (a.likes > b.likes) {
     //     //   return -1;
@@ -2679,14 +2679,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   selectedTheme() {
-    let co = Globals.storeInfo?.colorStyle?.btn_color;
-    let bco = Globals.storeInfo?.colorStyle?.bg_color;
-    let name = Globals.storeInfo?.colorStyle?.name;
+    let co = this.storeInfo?.colorStyle?.btn_color;
+    let bco = this.storeInfo?.colorStyle?.bg_color;
+    let name = this.storeInfo?.colorStyle?.name!;
 
-    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
+    let color = 'rgba(' + co![0] + ',' + co![1] + ',' + co![2] + ',' + co![3] + ')';
 
     let bg_color =
-      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bco[3] + ')';
+      'rgba(' + bco![0] + ',' + bco![1] + ',' + bco![2] + ',' + bco![3] + ')';
 
     var theme: Dict<string> = {
       name: name,
@@ -2714,7 +2714,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           this.toast('Store Header Updated!');
         }
       },
-      Globals.storeInfo?.uid
+      this.storeInfo?.uid
     );
   }
 
@@ -3046,12 +3046,12 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.loadService.adminComponent = this;
     this.getMiscStats()
-    Globals.sInfo.subscribe(s => {
+    Globals.sInfo.pipe(skip(1)).subscribe(s => {
       this.storeInfo = s
     })
-    Globals.uInfo.subscribe(s => {
-      this.storeInfo = s
-    })
+    // Globals.uInfo.subscribe(s => {
+    //   this.storeInfo = s
+    // })
     
     this.init();
   }
@@ -3187,21 +3187,21 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   async callback() {
     
-    if (Globals.storeInfo?.username) {
+    if (this.storeInfo?.username) {
       this.showSpinner(500);
       this.mainLoad = true
       this.rootComponent.setOptions();
       this.rootComponent.setFavIcon(
-        Globals.storeInfo?.profileLink?.toString() ?? ''
+        this.storeInfo?.profileLink?.toString() ?? ''
       );
 
       this.addTags(
-        Globals.storeInfo?.fullName ?? 'Thred',
+        this.storeInfo?.fullName ?? 'Thred',
         (
-          Globals.storeInfo?.profileLink ?? new URL('https://shopmythred.com')
+          this.storeInfo?.profileLink ?? new URL('https://shopmythred.com')
         ).toString(),
-        Globals.storeInfo?.bio ?? 'Check out my Thred Store!',
-        'shopmythred.com/' + Globals.storeInfo?.username
+        this.storeInfo?.bio ?? 'Check out my Thred Store!',
+        'shopmythred.com/' + this.storeInfo?.username
       );
 
       if (isPlatformBrowser(this.platformID)) {
@@ -3380,7 +3380,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       //     if (success){
       //       this.toast("Popup Saved!")
       //     }
-      //   }, Globals.storeInfo?.uid)
+      //   }, this.storeInfo?.uid)
       // }
     });
   }

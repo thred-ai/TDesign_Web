@@ -1042,228 +1042,6 @@ export class LoadService {
     return finalArr;
   }
 
-  async getCustomer() {
-    let uid = (await this.isLoggedIn())?.uid;
-
-    if (uid) {
-      let sub = this.db
-        .collection('Users')
-        .doc(uid)
-        .valueChanges({ idField: 'UID' })
-        .subscribe((doc) => {
-          let docData = doc as DocumentData;
-
-          if (docData) {
-            let uid = docData.UID; //UID OF COMMENT IMAGE
-            let dpUID = docData['ProfilePicID'] as string; //UID OF COMMENT IMAGE
-            let username = docData['Username'] as string; //COMMENTER'S USERNAME
-            let fullName = docData['Full_Name'] as string;
-            let bio = docData['Bio'] as string;
-            let notifID = docData['Notification ID'] as string;
-            let userFollowing =
-              (docData['Following_List'] as Array<string>) ?? [];
-            let usersBlocking =
-              (docData['Users_Blocking'] as Array<string>) ?? [];
-            let followerCount = (docData['Followers_Count'] as number) ?? 0;
-            let followingCount = (docData['Following_Count'] as number) ?? 0;
-            let postCount = (docData['Posts_Count'] as number) ?? 0;
-            let verified = (docData['Verified'] as boolean) ?? false;
-            let postNotifs =
-              (docData['Post_Notifications'] as Array<string>) ?? [];
-            let isPublic = (docData['Public'] as boolean) ?? true;
-            let slogan = docData['Slogan'] as string;
-            let style = docData['store_style'] as Dict<any>;
-            let font = docData['font'] as string;
-            let socials = docData['Socials'] as Array<{
-              name: string;
-              link: string;
-            }>;
-            let custom_url = (docData['Custom_URL'] as Dict<any>) ?? {};
-            let pixelID = docData['fb_pixel'] as string;
-            let active = docData['Active'] as boolean;
-
-            let discounts = (docData['Coupons'] as Array<Dict<any>>) ?? [];
-            let bannerFields = (docData['banners'] as Array<Dict<any>>) ?? [];
-            let bannerStyle = (docData['banner_style'] as number) ?? 0;
-            let popups = (docData['Popups'] as Array<Popup>) ?? [];
-            let homeRows = docData['rows'] as Array<Row>;
-
-            var pages = docData['pages'] as Array<Page>;
-            var header = docData['header_links'] as Array<string>;
-            var footer = docData['footer_links'] as Array<Dict<string>>;
-
-            let orders = (docData['Orders'] as number) ?? 0;
-            let wallet = (docData['Address'] as string) ?? '';
-
-            let tokens = docData['Custom_Tokens'] as Dict<any>[];
-
-            var coupons = new Array<Coupon>();
-            discounts.forEach((discount) => {
-              coupons.push(
-                new Coupon(
-                  discount.code ?? 'CODE1',
-                  discount.amt ?? 0,
-                  discount.products ?? [],
-                  discount.auto,
-                  discount.type,
-                  discount.threshold,
-                  discount.style
-                )
-              );
-            });
-
-            var banners = new Array<Banner>();
-            bannerFields.forEach((banner) => {
-              banners.push(
-                new Banner(
-                  banner.text,
-                  banner.icon,
-                  this.parseColor(banner.bg_color),
-                  this.parseColor(banner.color)
-                )
-              );
-            });
-
-            if (banners.length > 0) {
-              this.rootComponent?.setInterval();
-            }
-
-            let host = custom_url.host as string;
-            let protocol = custom_url.protocol as string;
-            let status = custom_url.status as number;
-            let txt = custom_url.txt as string;
-
-            let finalURL = new StoreDomain(host, protocol, status, txt);
-
-            // this.rootComponent?.initializePixel(pixelID)
-
-            let loading = docData['indicator'] as Dict<any>;
-
-            Globals.userInfo = new Store(
-              uid,
-              dpUID,
-              username,
-              fullName,
-              bio,
-              notifID,
-              userFollowing,
-              [],
-              followerCount,
-              postCount,
-              followingCount,
-              usersBlocking,
-              this.getProfileURL(uid, dpUID),
-              verified,
-              isPublic,
-              postNotifs,
-              slogan,
-              undefined,
-              this.getDefaultURL(),
-              this.getDefaultURL(),
-              this.getDefaultURL(),
-              undefined,
-              undefined,
-              new StoreTheme(
-                style?.name,
-                style?.back_code,
-                style?.text_code,
-                style?.nav_code,
-                style?.class,
-                this.parseColor(style?.bg_color),
-                this.parseColor(style?.btn_color)
-              ),
-              font,
-              socials,
-              finalURL,
-              pixelID,
-              active,
-              coupons,
-              banners,
-              bannerStyle,
-              popups,
-              homeRows,
-              pages,
-              orders,
-              header,
-              footer,
-              wallet
-            );
-
-            Globals.uInfo.next(Globals.userInfo);
-
-            this.registerTokens(tokens, Globals.userInfo);
-
-            let list = (docData['image_list'] as Array<string>) ?? [];
-
-            list.forEach((type) => {
-              if (type == 'theme') {
-                Globals.userInfo!.themeLink = new URL(this.getThemeURL(uid));
-              } else if (type == 'home') {
-                Globals.userInfo!.homeLink = new URL(this.getHomeURL(uid));
-                if (!homeRows) {
-                  Globals.userInfo!.pages![0].rows![1]?.imgs?.push(
-                    this.getHomeURL(uid)
-                  );
-                }
-              } else if (type == 'action') {
-                Globals.userInfo!.actionLink = new URL(this.getActionURL(uid));
-              } else if (type == 'home_top') {
-                Globals.userInfo!.homeLinkTop = new URL(
-                  this.getHomeTopURL(uid)
-                );
-              } else if (type == 'shop_top') {
-                Globals.userInfo!.shopLinkTop = new URL(
-                  this.getShopTopURL(uid)
-                );
-              }
-            });
-
-            if (loading?.name) {
-              Globals.userInfo.loading!.name = loading?.name;
-            }
-            if (loading?.color) {
-              Globals.userInfo.loading!.color = this.parseColor(loading.color);
-            }
-            if (loading?.bg_color) {
-              Globals.userInfo.loading!.bg_color = this.parseColor(
-                loading.bg_color
-              );
-            }
-
-            if (style) {
-              Globals.userInfo.colorStyle = new StoreTheme(
-                style?.name,
-                style?.back_code,
-                style?.text_code,
-                style?.nav_code,
-                style?.class,
-                this.parseColor(style?.bg_color),
-                this.parseColor(style?.btn_color)
-              );
-            }
-
-            Globals.storeInfo = Globals.userInfo;
-            if (isPlatformBrowser(this.platformID) && uid) {
-              this.getPosts(
-                (products) => {
-                  Globals.userInfo!.collections = products;
-                  Globals.storeInfo!.collections = products;
-                  if (this.myCallback) this.myCallback();
-                  if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-                },
-                undefined,
-                Globals.provider,
-                uid
-              );
-            } else {
-              if (this.myCallback) this.myCallback();
-            }
-          }
-        });
-    } else {
-      if (this.myCallback) this.myCallback();
-    }
-  }
 
   getThemes() {
     Globals.themes = [];
@@ -3138,35 +2916,15 @@ export class LoadService {
       const url = new URL(await task.ref.getDownloadURL());
 
       if (type == 'theme') {
-        Globals.userInfo!.themeLink = url;
-
-        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-          Globals.storeInfo!.themeLink = url;
-        }
+        Globals.storeInfo!.themeLink = url;
       } else if (type == 'home') {
-        Globals.userInfo!.homeLink = url;
-
-        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-          Globals.storeInfo!.homeLink = url;
-        }
+        Globals.storeInfo!.homeLink = url;
       } else if (type == 'home_top') {
-        Globals.userInfo!.homeLinkTop = url;
-
-        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-          Globals.storeInfo!.homeLinkTop = url;
-        }
+        Globals.storeInfo!.homeLinkTop = url;
       } else if (type == 'shop_top') {
-        Globals.userInfo!.shopLinkTop = url;
-
-        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-          Globals.storeInfo!.shopLinkTop = url;
-        }
+        Globals.storeInfo!.shopLinkTop = url;
       } else if (type == 'action') {
-        Globals.userInfo!.actionLink = url;
-
-        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-          Globals.storeInfo!.actionLink = url;
-        }
+        Globals.storeInfo!.actionLink = url;
       }
       return url;
     }
@@ -3386,7 +3144,7 @@ export class LoadService {
       await this.db.collection('Users').doc(uid).update(data);
 
       if (mappedData.slogan) {
-        Globals.userInfo!.slogan = mappedData.slogan;
+        Globals.storeInfo!.slogan = mappedData.slogan;
       }
 
       if (mappedData.theme) {
@@ -3397,18 +3155,12 @@ export class LoadService {
           });
 
         if (matchingTheme) {
-          Globals.userInfo!.colorStyle = matchingTheme;
-        }
-        if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-          if (matchingTheme) {
-            Globals.storeInfo!.colorStyle = matchingTheme;
-            Globals.storeInfo!.fontName = mappedData.font;
-          }
+          Globals.storeInfo!.colorStyle = matchingTheme;
         }
       }
 
       if (mappedData.font) {
-        Globals.userInfo!.fontName = mappedData.font;
+        Globals.storeInfo!.fontName = mappedData.font;
       }
 
       // if (mappedData.image_list){
@@ -3416,21 +3168,18 @@ export class LoadService {
       // }
 
       if (mappedData.banners) {
-        Globals.userInfo!.banners = mappedData.banners;
+        Globals.storeInfo!.banners = mappedData.banners;
       }
 
       if (mappedData.banner_style) {
-        Globals.userInfo!.bannerStyle = mappedData.banner_style ?? 0;
+        Globals.storeInfo!.bannerStyle = mappedData.banner_style ?? 0;
       }
 
       // Globals.userInfo!.themeLink = mappedData.banners
       // Globals.userInfo!.banners = mappedData.banners
       // Globals.userInfo!.banners = mappedData.banners
 
-      Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
-
       Globals.sInfo.next(Globals.storeInfo);
-      Globals.uInfo.next(Globals.userInfo!);
     }
     if (this.myCallback) this.myCallback();
   }
@@ -3459,13 +3208,8 @@ export class LoadService {
     // const task = await this.storage.upload(filePath, byteArray);
     const task = await ref.put(byteArray);
     const url = new URL(await task.ref.getDownloadURL());
-    Globals.userInfo!.dpID = picID;
-    Globals.userInfo!.profileLink = url;
-
-    if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-      Globals.storeInfo!.dpID = picID;
-      Globals.storeInfo!.profileLink = url;
-    }
+    Globals.storeInfo!.dpID = picID;
+    Globals.storeInfo!.profileLink = url;
 
     return picID;
   }
@@ -3492,8 +3236,8 @@ export class LoadService {
       data.Custom_URL = domainData;
     } else {
       if (
-        Globals.userInfo?.customURL ||
-        Globals.userInfo?.customURL?.fullURL?.trim() != ''
+        Globals.storeInfo?.customURL ||
+        Globals.storeInfo?.customURL?.fullURL?.trim() != ''
       ) {
         data.Custom_URL = firebase.firestore.FieldValue.delete();
       }
@@ -3501,19 +3245,16 @@ export class LoadService {
 
     if (uid && data) {
       if (data.Custom_URL.host) {
-        Globals.userInfo!.customURL = new StoreDomain(
+        Globals.storeInfo!.customURL = new StoreDomain(
           data.Custom_URL.host,
           data.Custom_URL.protocol,
           data.Custom_URL.status,
           ''
         );
-
-        Globals.storeInfo = Globals.userInfo!;
       } else {
-        if (Globals.userInfo!.customURL) {
-          Globals.userInfo!.customURL = undefined;
+        if (Globals.storeInfo!.customURL) {
+          Globals.storeInfo!.customURL = undefined;
         }
-        Globals.storeInfo = Globals.userInfo!;
       }
       await this.db.collection('Users').doc(uid).update(data);
     }
@@ -3552,8 +3293,7 @@ export class LoadService {
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.Popups) {
-        Globals.userInfo!.popups = data.Popups;
-        Globals.storeInfo = Globals.userInfo!;
+        Globals.storeInfo!.popups = data.Popups;
       }
     }
     callback(true);
@@ -3564,7 +3304,7 @@ export class LoadService {
     callback: (success: boolean) => any,
     uid?: string
   ) {
-    var pages = JSON.parse(JSON.stringify(Globals.userInfo?.pages ?? []));
+    var pages = JSON.parse(JSON.stringify(Globals.storeInfo?.pages ?? []));
 
     let i = pages.findIndex((p: any) => p.id == page.id);
 
@@ -3577,8 +3317,7 @@ export class LoadService {
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.pages) {
-        Globals.userInfo!.pages = data.pages ?? [];
-        Globals.storeInfo = Globals.userInfo!;
+        Globals.storeInfo!.pages = data.pages ?? [];
       }
     }
     callback(true);
@@ -3613,7 +3352,7 @@ export class LoadService {
 
     await Promise.all(promises1);
 
-    var pages = JSON.parse(JSON.stringify(Globals.userInfo?.pages ?? []));
+    var pages = JSON.parse(JSON.stringify(Globals.storeInfo?.pages ?? []));
 
     let i = pages.findIndex((p: any) => p.id == page.id);
 
@@ -3637,8 +3376,7 @@ export class LoadService {
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.pages) {
-        Globals.userInfo!.pages = data.pages ?? [];
-        Globals.storeInfo = Globals.userInfo!;
+        Globals.storeInfo!.pages = data.pages ?? [];
       }
     }
     callback(true);
@@ -3706,8 +3444,7 @@ export class LoadService {
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.Coupons) {
-        Globals.userInfo!.coupons = data.Coupons;
-        Globals.storeInfo = Globals.userInfo!;
+        Globals.storeInfo!.coupons = data.Coupons;
       }
     }
     callback(true);
@@ -3726,9 +3463,8 @@ export class LoadService {
     if (uid && data) {
       await this.db.collection('Users').doc(uid).update(data);
       if (data.header_links) {
-        Globals.userInfo!.header = data.header_links;
-        Globals.userInfo!.footer = data.footer_links;
-        Globals.storeInfo = Globals.userInfo!;
+        Globals.storeInfo!.header = data.header_links;
+        Globals.storeInfo!.footer = data.footer_links;
       }
     }
     callback(true);
@@ -3803,13 +3539,8 @@ export class LoadService {
 
     if (uid) {
       await this.db.collection('Users').doc(uid).update(data);
-      Globals.userInfo!.username = mappedData.username;
-      Globals.userInfo!.fullName = mappedData.full_name;
-
-      if (Globals.storeInfo?.uid == Globals.userInfo?.uid) {
-        Globals.storeInfo!.username = mappedData.username;
-        Globals.storeInfo!.fullName = mappedData.full_name;
-      }
+      Globals.storeInfo!.username = mappedData.username;
+      Globals.storeInfo!.fullName = mappedData.full_name;
     }
   }
 
@@ -3851,7 +3582,6 @@ export class LoadService {
     await this.auth
       .signOut()
       .then(() => {
-        Globals.userInfo = undefined;
         this.rootComponent!.cart = [];
         this.rootComponent!.signedIn = false;
         this.rootComponent!.signedInUid = undefined;

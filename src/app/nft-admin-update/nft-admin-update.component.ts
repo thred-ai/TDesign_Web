@@ -160,7 +160,7 @@ export class NftAdminUpdateComponent implements OnInit {
     
           let address = (await signer?.getAddress()) ?? '';
           if (
-            address?.toLowerCase() != Globals.userInfo?.walletAddress?.toLowerCase()
+            address?.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
           ) {
             this.err = 'Wrong Wallet';
             return;

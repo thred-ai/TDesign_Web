@@ -178,9 +178,6 @@ export class CartComponent implements OnInit {
       if (Globals.availableCurrencies.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getCountries()
       }
-      else if (Globals.userInfo == undefined && isPlatformBrowser(this.platformID)){
-        this.loadService.getCustomer()
-      }
       else if (Globals.templates.length == 0 && isPlatformBrowser(this.platformID)){
         this.loadService.getTemplates()
       } 

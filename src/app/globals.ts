@@ -27,8 +27,6 @@ export class Globals {
 
   public static storeInfo = new Store()
 
-  public static userInfo?: Store = undefined
-
   public static availableCurrencies: Array<Country> = []
 
   public static selectedCurrency?: Country = new Country()
