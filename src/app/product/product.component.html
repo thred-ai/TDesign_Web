@@ -827,17 +827,15 @@
                                     *ngIf="element.price != ''"
                                     class="p-0 m-0"
                                     svgIcon="{{
-                                      collection?.contract
+                                      collection?.customToken
                                         | matIcon
                                     }}"
                                     [ngbTooltip]="ptipContent"
                                   >
                                     <ng-template #ptipContent>
                                       {{
-                                        (
-                                          storeInfo!
-                                          | collectionPipe: collection?.contract
-                                        )?.currency ?? "MATIC"
+                                        
+                                          (collection?.customToken | tokenInfo)?.name ?? "MATIC"
                                       }}
                                     </ng-template>
                                   </mat-icon>
