@@ -3272,7 +3272,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
 
   planStatus() {
-    if (this.subInfo?.plan.id == 'price_1JmgQyIdY1nzc70NXgzC1vCN') {
+    if (this.subInfo?.plan.id == 'price_1KrbIjIdY1nzc70NYFEfX1OV') {
       return 'Thred Core Plan';
     }
     else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
@@ -3410,8 +3410,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   plans: Plan[] = [
-    new Plan('THRED CORE PLAN', 'core', 'price_1KXUw3IdY1nzc70N22t0gNoN', 9700, 'gradient', 'info', true),
-    new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
+    new Plan('THRED CORE PLAN', 'core', 'price_1KrbIjIdY1nzc70NYFEfX1OV', 4999, 'gradient', 'info', true),
+    // new Plan('THRED CORE PLAN', 'core', 'price_1KXUw3IdY1nzc70N22t0gNoN', 9700, 'gradient', 'info', true),
+    // new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
   ]
 
   async init() {
