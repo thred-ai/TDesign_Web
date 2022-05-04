@@ -3446,6 +3446,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         this.loadService.getPosts(cols => {
           console.log(cols)
           if (!this.collections) {
+            console.log(this.collections)
             this.collections = cols ?? [];
           }
           this.cdr.detectChanges();

@@ -1138,6 +1138,7 @@ export class LoadService {
       if (c) {
         col = col?.concat(c);
       }
+
       await Promise.all(
         col.map(async (collection: Collection) => {
           var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
@@ -1224,8 +1225,9 @@ export class LoadService {
               })
             );
             counter += 1;
-            let token = collection.customTokenCheck() ?? products[0]?.lazyHash?.token != ethers.constants.HashZero ? products[0]?.lazyHash?.token : undefined
-            collection.customToken = token
+
+            let token = collection.customTokenCheck() ?? Object.values(products)[0]?.lazyHash?.token != ethers.constants.HashZero ? Object.values(products)[0]?.lazyHash?.token : undefined
+           // collection.customToken = token
 
             if (
               token &&
@@ -1288,7 +1290,9 @@ export class LoadService {
         var collections = new Array<Collection>();
 
         data.forEach((c) => {
-          let d = c.data() as Collection;
+          let d = c.data() as any;
+
+          console.log(d.customToken)
           collections.push(
             new Collection(
               d.name,
@@ -1305,10 +1309,11 @@ export class LoadService {
               d.customToken,
               d.available,
               d.ABI,
-              d.volume
+              d.volume,
             )
           );
         });
+        console.log(collections)
         callback(collections);
       } else {
         callback(undefined);
@@ -4672,7 +4677,6 @@ export class LoadService {
                   let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
                   co.customToken = token
 
-                  console.log(co.customToken)
                   
                   if (token && provider2) {
                     await co
@@ -4841,7 +4845,7 @@ export class LoadService {
 
 
               let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
-              co.customToken = token
+              //co.customToken = token
   
               console.log(co)
   

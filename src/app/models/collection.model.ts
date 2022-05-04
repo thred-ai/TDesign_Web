@@ -64,7 +64,7 @@ export class Collection implements ICollection {
   volume?: number;
 
   customTokenCheck(){
-    return this.customToken && this.customToken != ethers.constants.AddressZero ? this.customToken : undefined
+    return (this.customToken && this.customToken != ethers.constants.AddressZero) ? this.customToken : undefined
   }
 
   getRarity(nft: NFT) {
@@ -208,7 +208,7 @@ export class Collection implements ICollection {
     customToken?: string,
     available?: boolean,
     ABI?: string,
-    volume?: number
+    volume?: number,
   ) {
     if (environment.rpc) {
       this.rpcEndpoint = environment.rpc;
