@@ -26,13 +26,11 @@ export interface ICollection {
   timestamp?: Date;
   available?: boolean;
   rpcEndpoint?: string;
-  volume?: number;
+  volume?: ethers.BigNumber;
+  floor?: ethers.BigNumber;
+  holders?: ethers.BigNumber;
 
   getRarity(nft: NFT): string;
-
-  getTraitRarity(trait: Dict<any>): string;
-
-  getFloor(): ethers.BigNumber;
 
   getCurrencyIcon(): string;
 
@@ -61,7 +59,9 @@ export class Collection implements ICollection {
   available?: boolean;
   ABI: string;
   rpcEndpoint?: string;
-  volume?: number;
+  volume?: ethers.BigNumber = ethers.BigNumber.from(0);
+  floor?: ethers.BigNumber = ethers.BigNumber.from(0);
+  holders?: ethers.BigNumber = ethers.BigNumber.from(0);
 
   customTokenCheck(){
     return (this.customToken && this.customToken != ethers.constants.AddressZero) ? this.customToken : undefined
@@ -82,52 +82,8 @@ export class Collection implements ICollection {
     return (totalRarity * 100).toFixed(2);
   }
 
-  getTraitRarity(trait: Dict<any>) {
-    let arr = Object.values(this.NFTs);
 
-    let same = arr.filter((n) =>
-      n.traits?.find(
-        (t) => t.trait_type == trait.trait_type && t.value == trait.value
-      )
-    );
-    return (((same.length ?? 0) / arr.length != 0 ? arr.length : 1) * 100).toFixed(2);
-  }
 
-  getFloor() {
-    let arr = Object.values(this.NFTs);
-
-    return (
-      arr.sort(function (a, b) {
-        let x = a.priceNum;
-        let y = b.priceNum;
-        if (x < y) {
-          return -1;
-        }
-        if (x > y) {
-          return 1;
-        }
-        return 0;
-      })[0]?.price ?? 0
-    );
-  }
-
-  getVolume() {
-    let arr = Object.values(this.NFTs);
-
-    return (
-      arr.sort(function (a, b) {
-        let x = a.priceNum;
-        let y = b.priceNum;
-        if (x < y) {
-          return -1;
-        }
-        if (x > y) {
-          return 1;
-        }
-        return 0;
-      })[0]?.price ?? 0
-    );
-  }
 
   getCurrencyIcon() {
     let token = this.customToken ?? 'default';
@@ -208,7 +164,6 @@ export class Collection implements ICollection {
     customToken?: string,
     available?: boolean,
     ABI?: string,
-    volume?: number,
   ) {
     if (environment.rpc) {
       this.rpcEndpoint = environment.rpc;
@@ -233,9 +188,7 @@ export class Collection implements ICollection {
     this.uid = uid;
     this.timestamp = timestamp;
     this.available = available;
-    this.ABI = ABI ?? ERC721_MERCHANT.abi;
-    this.volume = volume ?? 0;
-    
+    this.ABI = ABI ?? ERC721_MERCHANT.abi;    
   }
 
   nftCount(collectionCount: number, contract: string){

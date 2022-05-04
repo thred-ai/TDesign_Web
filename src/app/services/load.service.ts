@@ -1141,6 +1141,19 @@ export class LoadService {
 
       await Promise.all(
         col.map(async (collection: Collection) => {
+
+
+
+          let info = await this.getCollectionInfo(collection.contract)
+
+          
+
+          collection.volume = info.volume
+          collection.floor = info.floor
+          collection.holders = info.holders
+
+          console.log(collection)
+
           var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
             ref
               .where('Available', '==', true)
@@ -1309,7 +1322,6 @@ export class LoadService {
               d.customToken,
               d.available,
               d.ABI,
-              d.volume,
             )
           );
         });
@@ -1349,7 +1361,6 @@ export class LoadService {
           d.customToken,
           d.available,
           d.ABI,
-          d.volume
         );
         callback(c);
       } else {
@@ -1357,6 +1368,33 @@ export class LoadService {
       }
     });
   }
+
+  async getCollectionInfo(
+    contract: string,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+  ) {
+    if (isPlatformServer(this.platformID)) {
+      return undefined;
+    }
+
+    const marketContract = new ethers.Contract(
+      thredMarketplace,
+      THRED_MARKET.abi,
+      provider
+    );
+
+    const data2 = await marketContract.fetchCollectionInfo(
+      contract,
+      0
+    );
+
+    return data2
+
+  }
+
+  
 
   async getCreated(
     contract: Collection,
@@ -1375,6 +1413,8 @@ export class LoadService {
       provider
     );
 
+
+
     const nftContract = new ethers.Contract(
       contract.contract,
       contract.ABI,
@@ -1389,7 +1429,10 @@ export class LoadService {
       nft.tokenID
     );
 
-    console.log(data3);
+    const data2 = await marketContract.volume(
+      "0xa486619B1D3653cdD5BF36b070dD6C3C6294831a"
+    );
+
 
     // const data4 = await marketContract.verify(nft.lazyHash);
 

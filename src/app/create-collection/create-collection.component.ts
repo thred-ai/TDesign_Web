@@ -176,7 +176,6 @@ export class CreateCollectionComponent implements OnInit {
               token.contract != 'default' ? token.contract : undefined,
               true,
               abi,
-              0
             );
 
             deployedCollection = collection;

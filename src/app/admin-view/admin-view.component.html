@@ -2430,7 +2430,7 @@
                           }}"
                           style="font-size: 22px"
                         >
-                          {{ collection.volume | commaNum }}
+                          {{ collection.volume | big2Num: 2 }}
                         </b>
                         <mat-icon
                           class="ms-2"
@@ -2455,7 +2455,7 @@
                           }}"
                           style="font-size: 22px"
                         >
-                          {{ collection.getFloor() | price | commaNum }}
+                          {{ collection.floor | big2Num: 2 }}
                         </b>
                         <mat-icon
                           class="ms-2"
@@ -2501,14 +2501,14 @@
                         "
                         style="font-size: 18px"
                       >
-                        {{ "Owners: " }}
+                        {{ "Holders: " }}
                         <b
                           class="ms-1 text-{{
                             (storeInfo?.colorStyle)!.text_code
                           }}"
                           style="font-size: 22px"
                         >
-                          {{ collection.owners ?? 0 }}
+                          {{ collection.holders | big2Num: 0 }}
                         </b>
                       </a>
                       <!-- <a
