@@ -1429,10 +1429,6 @@ export class LoadService {
       nft.tokenID
     );
 
-    const data2 = await marketContract.volume(
-      "0xa486619B1D3653cdD5BF36b070dD6C3C6294831a"
-    );
-
 
     // const data4 = await marketContract.verify(nft.lazyHash);
 
