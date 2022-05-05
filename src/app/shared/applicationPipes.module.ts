@@ -42,6 +42,7 @@ import { WalletProviderPipe } from '../wallet-provider.pipe';
 import { TokenInfoPipe } from '../token-info.pipe';
 import { LoggedInPipe } from '../logged-in.pipe';
 import { NftPipe } from '../nft.pipe';
+import { BigNumPipe } from '../big-num.pipe';
 
 @NgModule({
   imports: [
@@ -91,6 +92,7 @@ import { NftPipe } from '../nft.pipe';
     TokenInfoPipe,
     LoggedInPipe,
     NftPipe,
+    BigNumPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -134,7 +136,8 @@ import { NftPipe } from '../nft.pipe';
     CommaNumPipe,
     TokenInfoPipe,
     LoggedInPipe,
-    NftPipe
+    NftPipe,
+    BigNumPipe
   ]
 })
 export class ApplicationPipesModule {}

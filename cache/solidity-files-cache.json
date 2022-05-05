@@ -682,8 +682,8 @@
       "artifacts": []
     },
     "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ThredMarketplace/ThredMarketplace.sol": {
-      "lastModificationDate": 1651640787672,
-      "contentHash": "33b3e50fe9b50d5ba41f690c0310f366",
+      "lastModificationDate": 1651724415245,
+      "contentHash": "ba144d892bbb3f47d772360d22b28b9d",
       "sourceName": "contracts/ThredMarketplace/ThredMarketplace.sol",
       "solcConfig": {
         "version": "0.8.3",
