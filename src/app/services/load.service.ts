@@ -1394,6 +1394,64 @@ export class LoadService {
 
   }
 
+  async getAsset(
+    contract: string,
+    nft: NFT,
+    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+  ) {
+    if (isPlatformServer(this.platformID)) {
+      return undefined;
+    }
+
+    const marketContract = new ethers.Contract(
+      thredMarketplace,
+      THRED_MARKET.abi,
+      provider
+    );
+
+
+
+    // const data = await marketContract.fetchItemsCreated();
+    // const data1 = await nftContract.name();
+    // const data2 = await nftContract.symbol();
+    const data3 = await marketContract.fetchCollectionAsset(
+      contract,
+      nft.tokenID
+    );
+
+
+    // const data4 = await marketContract.verify(nft.lazyHash);
+
+    // console.log(data4);
+
+    const i = data3[0];
+
+    if (i.seller == ethers.constants.AddressZero || i.minted == false) {
+      return;
+    }
+
+    let variations = i.variations ?? [];
+    let item = {
+      price: variations[0].price,
+      tokenId: i.tokenId.toNumber(),
+      seller: variations[0].seller,
+      owner: i.owner,
+      forSale: variations[0].forSale,
+      royalty: i.royalty,
+      contract: i.nftContract,
+      token: i.tokenContract,
+      isNative: i.isNative,
+      itemId: i.itemId,
+      minted: i.minted,
+    };
+    return {
+      // name: data1,
+      // symbol: data2,
+      tokens: item,
+    };
+  }
   
 
   async getCreated(
@@ -4694,6 +4752,40 @@ export class LoadService {
               }
 
               if (product.contractID) {
+
+
+                let created = await this.getAsset(product.contractID, product);
+  
+              // co.name = created.name;
+              // co.symbol = created.symbol;
+  
+              let c = created?.tokens;
+  
+              if (c) {
+                product.tokenID = c.tokenId;
+                product.contractID = c.contract;
+                product.owner = c.owner;
+                product.royalty = c.royalty;
+                product.seller = c.seller;
+                // co.customToken = c.isNative ? undefined : c.token;
+                product.price = c.price;
+                product.itemId = c.itemId;
+                product.forSale = c.forSale;
+                product.lazyMint = c.minted == false;
+  
+                // if (product.tokenID && provider) {
+                //   product.seller = await co.ownerOf(product.tokenID, provider2);
+                // }
+              }
+  
+              if (product.marketAddress != thredMarketplace){
+                product.lazyMint = false
+              }
+  
+              // product.lazyHash = product.lazyMint
+              // ? product.lazyHash
+              // : undefined;
+                
                 var co = Object.values(cols).find(
                   (c) => c.collection.contract == product.contractID
                 )?.collection;
@@ -4715,7 +4807,6 @@ export class LoadService {
                   co.currency = 'MATIC';
                   let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
                   co.customToken = token
-
                   
                   if (token && provider2) {
                     await co
