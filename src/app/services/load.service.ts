@@ -230,13 +230,11 @@ export class LoadService {
 
   async getWalletBalances(callback: (tokens?: Dict<any>[]) => any) {
     let tokens = Globals.storeInfo.tokens ?? [];
-    console.log(tokens);
     this.functions
       .httpsCallable('getWalletBalances')({ tokens })
       .pipe(first())
       .subscribe(
         (resp) => {
-          console.log(resp);
           callback(resp ?? []);
         },
         (err) => {
@@ -827,7 +825,6 @@ export class LoadService {
         async (resp) => {
           let hashes = resp as any[];
           if (hashes) {
-            console.log(hashes);
             var logs = new Array<WalletLog>();
             await Promise.all(
               hashes.map(async (t) => {
@@ -861,7 +858,6 @@ export class LoadService {
                 logs.push(log);
               })
             );
-            console.log(logs);
             callback(logs);
           }
         },
@@ -872,7 +868,6 @@ export class LoadService {
   }
 
   getEvents(nft: NFT, callback: (transactions: Array<NftLog>) => any) {
-    console.log(nft);
     const data = {
       contract: nft.contractID,
       tokenId: nft.hashedTokenId,
@@ -1042,7 +1037,6 @@ export class LoadService {
     return finalArr;
   }
 
-
   getThemes() {
     Globals.themes = [];
 
@@ -1141,18 +1135,11 @@ export class LoadService {
 
       await Promise.all(
         col.map(async (collection: Collection) => {
+          let info = await this.getCollectionInfo(collection.contract);
 
-
-
-          let info = await this.getCollectionInfo(collection.contract)
-
-          
-
-          collection.volume = info.volume
-          collection.floor = info.floor
-          collection.holders = info.holders
-
-          console.log(collection)
+          collection.volume = info.volume;
+          collection.floor = info.floor;
+          collection.holders = info.holders;
 
           var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
             ref
@@ -1239,19 +1226,18 @@ export class LoadService {
             );
             counter += 1;
 
-            let token = collection.customTokenCheck() ?? Object.values(products)[0]?.lazyHash?.token != ethers.constants.HashZero ? Object.values(products)[0]?.lazyHash?.token : undefined
-           // collection.customToken = token
+            let token =
+              collection.customTokenCheck() ??
+              Object.values(products)[0]?.lazyHash?.token !=
+                ethers.constants.HashZero
+                ? Object.values(products)[0]?.lazyHash?.token
+                : undefined;
+            // collection.customToken = token
 
-            if (
-              token &&
-              provider2 &&
-              isPlatformBrowser(this.platformID)
-            ) {
-              await collection
-                .loadCurrency(token!, provider2)
-                .then((i) => {
-                  collection.currency = i;
-                });
+            if (token && provider2 && isPlatformBrowser(this.platformID)) {
+              await collection.loadCurrency(token!, provider2).then((i) => {
+                collection.currency = i;
+              });
             } else {
               collection.currency = 'MATIC';
             }
@@ -1305,7 +1291,6 @@ export class LoadService {
         data.forEach((c) => {
           let d = c.data() as any;
 
-          console.log(d.customToken)
           collections.push(
             new Collection(
               d.name,
@@ -1321,11 +1306,10 @@ export class LoadService {
               d.domain,
               d.customToken,
               d.available,
-              d.ABI,
+              d.ABI
             )
           );
         });
-        console.log(collections)
         callback(collections);
       } else {
         callback(undefined);
@@ -1360,7 +1344,7 @@ export class LoadService {
           d.domain,
           d.customToken,
           d.available,
-          d.ABI,
+          d.ABI
         );
         callback(c);
       } else {
@@ -1385,21 +1369,19 @@ export class LoadService {
       provider
     );
 
-    const data2 = await marketContract.fetchCollectionInfo(
-      contract,
-      0
-    );
+    const data2 = await marketContract.fetchCollectionInfo(contract, 0);
 
-    return data2
-
+    return data2;
   }
 
-  async getAsset(
-    contract: string,
-    nft: NFT,
+  async getCreatedById(
     provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
       this.rpcEndpoint
-    )
+    ),
+    assets: {
+      tokenId: number;
+      contractAddress: any;
+    }[]
   ) {
     if (isPlatformServer(this.platformID)) {
       return undefined;
@@ -1411,20 +1393,13 @@ export class LoadService {
       provider
     );
 
-
-
     // const data = await marketContract.fetchItemsCreated();
     // const data1 = await nftContract.name();
     // const data2 = await nftContract.symbol();
-    const data3 = await marketContract.fetchCollectionAsset(
-      contract,
-      nft.tokenID
-    );
 
+    const data3 = await marketContract.fetchCollectionAssetsById(assets);
 
     // const data4 = await marketContract.verify(nft.lazyHash);
-
-    // console.log(data4);
 
     const i = data3[0];
 
@@ -1452,7 +1427,6 @@ export class LoadService {
       tokens: item,
     };
   }
-  
 
   async getCreated(
     contract: Collection,
@@ -1471,8 +1445,6 @@ export class LoadService {
       provider
     );
 
-
-
     const nftContract = new ethers.Contract(
       contract.contract,
       contract.ABI,
@@ -1486,7 +1458,6 @@ export class LoadService {
       contract.contract,
       nft.tokenID
     );
-
 
     // const data4 = await marketContract.verify(nft.lazyHash);
 
@@ -1527,8 +1498,6 @@ export class LoadService {
   }
 
   async getFormat(image: string, noLoad = false): Promise<string> {
-    console.log(image);
-
     return new Promise(function (resolve, reject) {
       if (noLoad) {
         var format = 'none';
@@ -1546,7 +1515,6 @@ export class LoadService {
           if (this.readyState == this.DONE) {
             let type = this.getResponseHeader('Content-Type');
             var format = 'none';
-            console.log(type);
             if (!type) {
               reject('No content found!');
               return;
@@ -1827,8 +1795,11 @@ export class LoadService {
     }
   }
 
-  getTraitRarity(nft: NFT, collection: Collection, callback: (traits: Dict<any>[]) => any) {
-    console.log(collection)
+  getTraitRarity(
+    nft: NFT,
+    collection: Collection,
+    callback: (traits: Dict<any>[]) => any
+  ) {
     this.functions
       .httpsCallable('getTraitRarity')({
         token: nft.tokenID,
@@ -1840,7 +1811,7 @@ export class LoadService {
       .subscribe(
         async (resp) => {
           console.log(resp);
-          callback(resp)
+          callback(resp);
         },
         (err) => {
           console.log(err);
@@ -2980,7 +2951,6 @@ export class LoadService {
 
       xhr.onload = function (e) {
         if (this.status == 404) {
-          console.log('man');
           resolve('none');
           return;
         } else if (this.status == 200) {
@@ -4705,7 +4675,6 @@ export class LoadService {
                 '';
               let sold = (docData['Sold'] as boolean) ?? false;
               let lazyMint = (docData['Lazy'] as boolean) ?? true;
-              let format = docData['Format'] as string;
               let royalty = (docData['Royalty'] as number) ?? 0;
               let lazyHash = docData['Lazy_Hash'] as Dict<any>;
               let metadata = docData['Metadata'] as string;
@@ -4752,40 +4721,6 @@ export class LoadService {
               }
 
               if (product.contractID) {
-
-
-                let created = await this.getAsset(product.contractID, product);
-  
-              // co.name = created.name;
-              // co.symbol = created.symbol;
-  
-              let c = created?.tokens;
-  
-              if (c) {
-                product.tokenID = c.tokenId;
-                product.contractID = c.contract;
-                product.owner = c.owner;
-                product.royalty = c.royalty;
-                product.seller = c.seller;
-                // co.customToken = c.isNative ? undefined : c.token;
-                product.price = c.price;
-                product.itemId = c.itemId;
-                product.forSale = c.forSale;
-                product.lazyMint = c.minted == false;
-  
-                // if (product.tokenID && provider) {
-                //   product.seller = await co.ownerOf(product.tokenID, provider2);
-                // }
-              }
-  
-              if (product.marketAddress != thredMarketplace){
-                product.lazyMint = false
-              }
-  
-              // product.lazyHash = product.lazyMint
-              // ? product.lazyHash
-              // : undefined;
-                
                 var co = Object.values(cols).find(
                   (c) => c.collection.contract == product.contractID
                 )?.collection;
@@ -4805,22 +4740,22 @@ export class LoadService {
                   );
 
                   co.currency = 'MATIC';
-                  let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
-                  co.customToken = token
-                  
+                  let token =
+                    co.customTokenCheck() ??
+                    product.lazyHash?.token != ethers.constants.HashZero
+                      ? product.lazyHash?.token
+                      : undefined;
+                  co.customToken = token;
+
                   if (token && provider2) {
-                    await co
-                      .loadCurrency(token!, provider2)
-                      .then((i) => {
-                        console.log(i)
-                        co!.currency = i;
-                      });
+                    await co.loadCurrency(token!, provider2).then((i) => {
+                      co!.currency = i;
+                    });
                   }
                 }
 
                 cols[`${product.docID}`] = { nft: product, collection: co };
 
-                console.log(product.lazyHash)
 
                 // let co = new Collection(
                 //   '',
@@ -4878,8 +4813,34 @@ export class LoadService {
 
                 counter += 1;
 
-                if (counter == ids.length) {
-                  console.log(cols);
+                if (counter == docIDs.length) {
+                  let ids = Object.values(cols).map((c) => {
+                    return {
+                      tokenId: c.nft.tokenID!,
+                      contractAddress: ethers.utils.getAddress(
+                        c.nft.contractID
+                      ),
+                    };
+                  });
+                  let created = await this.getCreatedById(provider2, ids);
+
+                  let c = created?.tokens
+
+                  if (c) {
+                    product.tokenID = c.tokenId;
+                    product.contractID = c.contract;
+                    product.owner = c.owner;
+                    product.royalty = c.royalty;
+                    co.customToken = c.isNative ? undefined : c.token;
+                    product.price = c.price;
+                    product.itemId = c.itemId;
+                    product.forSale = c.forSale;
+                    product.lazyMint = c.minted == false;
+    
+                    // if (product.tokenID && provider) {
+                    //   product.seller = await co.ownerOf(product.tokenID, provider2);
+                    // }
+                  }
 
                   callback(cols);
                 }
@@ -4969,28 +4930,30 @@ export class LoadService {
           }
 
           if (product.contractID) {
-            this.getCollection(product.contractID, async co => {
+            this.getCollection(product.contractID, async (co) => {
+              if (!co) {
+                return;
+              }
 
-              if (!co) { return }
-
-
-              let token = co.customTokenCheck() ?? product.lazyHash?.token != ethers.constants.HashZero ? product.lazyHash?.token : undefined
+              let token =
+                co.customTokenCheck() ??
+                product.lazyHash?.token != ethers.constants.HashZero
+                  ? product.lazyHash?.token
+                  : undefined;
               //co.customToken = token
-  
-              console.log(co)
-  
+
               if (!isPlatformBrowser(this.platformID)) {
                 callback(product, co);
                 return;
               }
-  
+
               let created = await this.getCreated(co, product);
-  
+
               // co.name = created.name;
               // co.symbol = created.symbol;
-  
+
               let c = created?.tokens;
-  
+
               if (c) {
                 product.tokenID = c.tokenId;
                 product.contractID = c.contract;
@@ -5006,42 +4969,38 @@ export class LoadService {
                 product.url = c.image;
                 product.itemId = c.itemId;
                 product.forSale = c.forSale;
-  
+
                 product.lazyMint = c.minted == false;
-  
-  
+
                 if (product.tokenID && provider) {
                   product.seller = await co.ownerOf(product.tokenID, provider2);
                 }
               } else {
                 product.format = await this.getFormat(product.url!);
               }
-  
-              if (product.marketAddress != thredMarketplace){
-                product.lazyMint = false
+
+              if (product.marketAddress != thredMarketplace) {
+                product.lazyMint = false;
               }
-  
+
               product.lazyHash = product.lazyMint
-              ? product.lazyHash
-              : undefined;
-  
+                ? product.lazyHash
+                : undefined;
+
               co.currency = 'MATIC';
-  
+
               if (token && provider2) {
-                await co
-                  .loadCurrency(token!, provider2)
-                  .then((i) => {
-                    co.currency = i;
-                  });
+                await co.loadCurrency(token!, provider2).then((i) => {
+                  co.currency = i;
+                });
               }
               callback(product, co);
               return;
-            })
-          }
-          else{
+            });
+          } else {
             callback(product);
             return;
-          }          
+          }
         }
         callback();
       });

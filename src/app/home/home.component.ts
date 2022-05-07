@@ -353,10 +353,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         var ids = new Array<string>().concat.apply([], arr)
 
-        console.log(ids)
 
         this.loadService.getNFTsById(ids, collections => {
-          console.log(collections)
           this.items = collections
         })
 

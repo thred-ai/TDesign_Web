@@ -433,6 +433,19 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   selectedTheme: Dict<any> = {};
 
+  mapItems(arr: Collection[]){
+    let items: Dict<{
+      nft: NFT;
+      collection: Collection;
+    }> = {};
+    arr.forEach(c => {
+      Object.values(c.NFTs).forEach(n => {
+        items[`${n.docID}`] = { nft: n, collection: c}
+      })
+    })
+    return items
+  }
+
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
 
@@ -442,10 +455,12 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     console.log(ids);
 
-    this.loadService.getNFTsById(ids, (collections) => {
-      console.log(collections);
-      this.items = collections;
-    });
+    // this.loadService.getNFTsById(ids, (collections) => {
+    //   console.log(collections);
+    //   this.items = collections;
+    // });
+
+    this.items = this.mapItems(this.admin?.collections ?? [])
 
     this.layoutForm.controls.rows.setValue(
       Object.assign([], this.data.page?.rows ?? [])

@@ -48,7 +48,6 @@ export class Globals {
 
   public static set provider(provider: ethers.providers.Web3Provider | undefined){
     this.prov = provider
-    console.log(provider)
     this.checkNetwork(true,  provider);
   }
 

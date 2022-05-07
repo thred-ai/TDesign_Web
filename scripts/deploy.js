@@ -29,6 +29,8 @@ const db = getFirestore(app);
 async function main() {
 
 
+  console.log("Updating ThredMarketplace...");
+
   const thredMarketplace = await ethers.getContractFactory("ThredMarketplace");
 
   await upgrades.upgradeProxy('0xd0B2538F39dA19AE21f18626fBBc9F7498E8065E', thredMarketplace);

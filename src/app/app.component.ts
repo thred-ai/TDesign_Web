@@ -936,7 +936,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.authService.app = this;
 
     Globals.sInfo.subscribe(s => {
-      console.log(s)
       this.storeInfo = s
     })
 

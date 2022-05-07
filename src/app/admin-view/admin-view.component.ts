@@ -3220,11 +3220,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           //   this.loadService.getTemplates();
           // }
           if (Globals.billingInfo == undefined) {
-            console.log("manchoo")
             this.loadService.getAllBillingInfo();
           } 
           else {
-            console.log("madness")
             this.inventory?.forEach((inv) => {
               if (!inv.isCustom) {
                 let name = Globals.templates.filter((obj) => {
@@ -3262,7 +3260,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async setProvider(){
-    console.log("set")
     await Globals.checkProvider()
   }
 
@@ -3442,11 +3439,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         );
       }
       if (!this.collections) {
-        console.log("man")
         this.loadService.getPosts(cols => {
-          console.log(cols)
           if (!this.collections) {
-            console.log(this.collections)
             this.collections = cols ?? [];
           }
           this.cdr.detectChanges();
