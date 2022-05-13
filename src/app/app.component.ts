@@ -276,7 +276,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     );
   }
 
-  routeToProfile(selected?: string) {
+  async routeToProfile(selected?: string) {
     // if (Globals.storeInfo?.username) {
       this.loadService.myCallback = undefined;
       // if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
@@ -288,19 +288,23 @@ export class AppComponent implements OnInit, AfterViewInit {
       //     'https://shopmythred.com/' + Globals.storeInfo?.username
       //   );
       // } else {
-        if (Globals.storeInfo?.username) {
-          if (this.isAdmin()) {
-            this.reloadCurrentRoute();
-            return;
-          } else {
-            this.routingService.routeToProfile(
-              Globals.storeInfo?.username!,
-              this.getStoreName().isCustom,
-              selected
-            );
-            return;
+        console.log((await this.loadService.isLoggedIn())?.uid)
+        console.log(this.getStoreName().isCustom)
+        this.loadService.getUser("", (await this.loadService.isLoggedIn())?.uid, this.getStoreName().isCustom, user => {
+          if (user?.username) {
+            if (this.isAdmin()) {
+              this.reloadCurrentRoute();
+              return;
+            } else {
+              this.routingService.routeToProfile(
+                user?.username!,
+                this.getStoreName().isCustom,
+                selected
+              );
+              return;
+            }
           }
-        }
+        })
       // }
     // } else {
     //   this.loadService.myCallback = () => this.routeToProfile();

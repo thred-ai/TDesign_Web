@@ -551,11 +551,13 @@ export class LoadService {
     var query = this.db.collection('Users', (ref) =>
       ref.where('Username', '==', username)
     );
+    console.log("man")
 
     if (uid) {
       query = this.db.collection('Users', (ref) =>
         ref.where(firebase.firestore.FieldPath.documentId(), '==', uid)
       );
+      console.log("man1")
     }
     if (isCustom) {
       query = this.db.collection('Users', (ref) =>
@@ -563,6 +565,7 @@ export class LoadService {
           .where('Custom_URL.host', '==', username?.replace('www.', ''))
           .where('Custom_URL.status', '==', 2)
       );
+      console.log("man2")
     }
 
     let sub = query.valueChanges({ idField: 'UID' }).subscribe((doc) => {

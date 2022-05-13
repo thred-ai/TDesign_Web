@@ -35,12 +35,13 @@
   </h3>
 </ngx-spinner>
 
+<!-- (provider | providerCheck | async | lowercase) ==
+(storeInfo?.walletAddress | lowercase); -->
+
 <div
   *ngIf="
     isBrowser() &&
-      storeInfo &&
-      (provider | providerCheck | async | lowercase) ==
-        (storeInfo?.walletAddress | lowercase);
+      storeInfo
     else walletBlock
   "
   class="wrapper"

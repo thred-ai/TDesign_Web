@@ -71,6 +71,7 @@ export class LandingComponent implements OnInit {
 
   async route(signedIn: boolean){
     if (signedIn){
+      console.log("signed in")
       this.rootComponent.accountPressed()
     }
     else{
