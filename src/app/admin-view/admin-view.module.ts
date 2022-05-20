@@ -54,6 +54,7 @@ import { NgxFileDropModule } from 'ngx-file-drop';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { NftAdminUpdateComponent } from '../nft-admin-update/nft-admin-update.component'; // <-- import it
+import { NgxDropzoneModule } from 'ngx-dropzone';
 
 const routes: Routes = [
   {
@@ -120,6 +121,7 @@ const routes: Routes = [
     MatRadioModule,
     NgxFileDropModule,
     LazyLoadImageModule,
+    NgxDropzoneModule,
     MonacoEditorModule.forRoot(),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

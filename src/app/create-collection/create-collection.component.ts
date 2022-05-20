@@ -125,6 +125,9 @@ export class CreateCollectionComponent implements OnInit {
       if (signer) {
         let wallet = await signer.getAddress();
 
+        console.log(wallet)
+        console.log(Globals.storeInfo?.walletAddress?.toLowerCase())
+
         if (
           wallet.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
         ) {

@@ -1,34 +1,33 @@
 apple-pay-button {
-    --apple-pay-button-width: 140px;
-    --apple-pay-button-height: 30px;
-    --apple-pay-button-border-radius: 5px;
-    --apple-pay-button-padding: 5px 0px;
+  --apple-pay-button-width: 140px;
+  --apple-pay-button-height: 30px;
+  --apple-pay-button-border-radius: 5px;
+  --apple-pay-button-padding: 5px 0px;
 }
 
-
-  .selected{
-    opacity: 0.5;
-  }
+.selected {
+  opacity: 0.5;
+}
 
 .old-price {
-    text-decoration: line-through;
-    text-decoration-style: solid;
-    color: #808080;
+  text-decoration: line-through;
+  text-decoration-style: solid;
+  color: #808080;
 }
 
 .new-price {
   text-decoration: none;
 }
 
-.low{
+.low {
   color: rgb(165, 101, 42);
 }
 
-.mid{
+.mid {
   color: silver;
 }
 
-.high{
+.high {
   color: gold;
 }
 /* 
@@ -38,7 +37,7 @@ apple-pay-button {
   box-sizing: border-box;
 } */
 
-.shake{
+.shake {
   /* Start the shake animation and make the animation last for 0.5 seconds */
   animation: shake 0.5s;
 
@@ -47,17 +46,39 @@ apple-pay-button {
 }
 
 @keyframes shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); }
-  20% { transform: translate(-3px, 0px) rotate(1deg); }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
 }
 
 .example-headers-align .mat-expansion-panel-header-title,
@@ -74,7 +95,7 @@ apple-pay-button {
   margin-left: 8px;
 }
 
-.anim{
+.anim {
   position: relative;
   display: inline-block;
   overflow: hidden;
@@ -91,84 +112,87 @@ apple-pay-button {
    -webkit-box-reflect:below 1px linear-gradient(transparent, #0005);
 } */
 
-.anim .anim-border{
+.anim .anim-border {
   position: absolute;
   display: block;
 }
-.anim .anim-border:nth-child(1){
+.anim .anim-border:nth-child(1) {
   top: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg,transparent,#03e9f4);
+  background: linear-gradient(90deg, transparent, #03e9f4);
   animation: animate1 1s linear infinite;
 }
-@keyframes animate1{
-  0%{
-      left: -100%;
+@keyframes animate1 {
+  0% {
+    left: -100%;
   }
-  50%,100%{
-      left: 100%;
+  50%,
+  100% {
+    left: 100%;
   }
 }
-.anim .anim-border:nth-child(2){
+.anim .anim-border:nth-child(2) {
   top: -100%;
   right: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg,transparent,#03e9f4);
+  background: linear-gradient(180deg, transparent, #03e9f4);
   animation: animate2 1s linear infinite;
   animation-delay: 0.25s;
 }
-@keyframes animate2{
-  0%{
-      top: -100%;
+@keyframes animate2 {
+  0% {
+    top: -100%;
   }
-  50%,100%{
-      top: 100%;
+  50%,
+  100% {
+    top: 100%;
   }
 }
-.anim .anim-border:nth-child(3){
+.anim .anim-border:nth-child(3) {
   bottom: 0;
   right: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(270deg,transparent,#03e9f4);
+  background: linear-gradient(270deg, transparent, #03e9f4);
   animation: animate3 1s linear infinite;
-  animation-delay: 0.50s;
+  animation-delay: 0.5s;
 }
-@keyframes animate3{
-  0%{
-      right: -100%;
+@keyframes animate3 {
+  0% {
+    right: -100%;
   }
-  50%,100%{
-      right: 100%;
+  50%,
+  100% {
+    right: 100%;
   }
 }
 
-
-.anim span:nth-child(4){
+.anim span:nth-child(4) {
   bottom: -100%;
   left: 0;
   width: 3px;
   height: 100%;
-  background: linear-gradient(360deg,transparent,#03e9f4);
+  background: linear-gradient(360deg, transparent, #03e9f4);
   animation: animate4 1s linear infinite;
   animation-delay: 0.75s;
 }
-@keyframes animate4{
-  0%{
-      bottom: -100%;
+@keyframes animate4 {
+  0% {
+    bottom: -100%;
   }
-  50%,100%{
-      bottom: 100%;
+  50%,
+  100% {
+    bottom: 100%;
   }
 }
 
-.rounded-panel{
-  border-radius: 20px; 
-  object-fit: contain; 
-  overflow: hidden
+.rounded-panel {
+  border-radius: 20px;
+  object-fit: contain;
+  overflow: hidden;
 }
 
 .demo-table {
@@ -181,7 +205,7 @@ apple-pay-button {
   cursor: pointer;
 }
 
-.hover-icon:hover{
+.hover-icon:hover {
   color: rgb(1, 216, 216);
 }
 
@@ -193,13 +217,22 @@ apple-pay-button {
   font-weight: bold;
 }
 
-.rounded-panel-2{
-  border-radius: 10px; 
-  object-fit: contain; 
-  overflow: hidden
+.rounded-panel-2 {
+  border-radius: 10px;
+  object-fit: contain;
+  overflow: hidden;
 }
 
-.rounded-10{
+model-viewer {
+  z-index: 1;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+  overflow: auto;
+}
+
+.rounded-10 {
   border-radius: 20px !important;
 }
 
@@ -209,42 +242,41 @@ tr td {
   padding-right: 20px;
 }
 
-
-table{
+table {
   display: inline;
 }
 
-.padding{
-  padding-left: 20px; 
+.padding {
+  padding-left: 20px;
   padding-right: 20px;
 }
 
-.rounded-10-bottom{
+.rounded-10-bottom {
   border-bottom-left-radius: 20px !important;
   border-bottom-right-radius: 20px !important;
 }
 
-.rounded-10-top{
+.rounded-10-top {
   border-top-left-radius: 20px !important;
   border-top-right-radius: 20px !important;
 }
 
-.single-line{
+.single-line {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   display: inherit;
-  }
+}
 
-.stayFixed{
-  position: fixed; 
-  left: 0; 
-  right: 0; 
-  bottom: 0px; 
+.stayFixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0px;
   width: 100%;
   z-index: 1000;
 }
 
-.bottom{
+.bottom {
   margin-bottom: 0px;
 }

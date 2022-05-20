@@ -358,6 +358,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.productToBuy?.url ?? undefined;
   }
 
+  skyBox?: string = undefined
+
   traits: Dict<any>[] | undefined
 
   async ngOnInit() {
@@ -378,6 +380,14 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       (nft?: NFT, collection?: Collection) => {
         this.selectedIndex = 0;
         if (nft) {
+          if (nft.tokenID == 1){
+            this.skyBox = "https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/Sample-Walls/cape_hill_1k.hdr"
+          }
+          else{
+            this.skyBox = "https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/Sample-Walls/pool_1k.hdr"
+          }
+
+          console.log(this.skyBox)
           this.productToBuy = nft;
           this.accordionList[1].description = this.productToBuy.description;
           this.cdr.detectChanges();
@@ -391,7 +401,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           // //   this.usdDisplayPrice = price * nft.price
           // // });
 
-          console.log(collection)
 
           this.collection = collection;
 
@@ -399,10 +408,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             this.traits = traits
             this.accordionList[0].isExpanded = !this.isMobile()
           })
-
-          console.log(this.productToBuy)
-          console.log(this.collection)
-
           this.checkLoad();
         }
       },

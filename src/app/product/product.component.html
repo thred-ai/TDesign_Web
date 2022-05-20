@@ -73,6 +73,19 @@
               }}"
             ></video>
 
+
+            <model-viewer
+            class="p-0 border rounded w-100"
+              camera-controls
+              *ngIf="skyBox && productToBuy?.format == '3d'"
+              [attr.src]="productToBuy.url!"
+              alt="A 3D model of an astronaut"
+              [attr.skybox-image]="skyBox"
+              [attr.environment-image]="skyBox"
+            >
+            </model-viewer>
+
+
             <img
               loading="lazy"
               id="image"

@@ -1208,6 +1208,8 @@ export class LoadService {
                   product.isAvailable = true;
                   product.forSale = forSale;
                   product.linkUrl = this.getURL(doc.id);
+
+                  console.log(product.linkUrl)
                   product.name = docData['Name'] as string;
                   product.description = docData['Description'] as string;
                   product.traits = docData['Traits'] as Array<any>;
@@ -1510,6 +1512,9 @@ export class LoadService {
         } else if (image.indexOf('video') > -1) {
           format = 'video';
         }
+        else{
+          format = '3d'
+        }
         resolve(format);
       } else {
         var xhttp = new XMLHttpRequest();
@@ -1526,6 +1531,10 @@ export class LoadService {
               format = 'image';
             } else if (type.indexOf('video') > -1) {
               format = 'video';
+            }
+            else{
+              console.log(type)
+              format = '3d'
             }
             resolve(format);
           }
