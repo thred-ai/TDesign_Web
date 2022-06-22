@@ -78,7 +78,6 @@
     "jose": "^4.8.1",
     "jwt-decode": "^3.1.2",
     "monaco-editor": "^0.24.0",
-    "ng-apexcharts": "^1.6.0",
     "ng-in-viewport": "^6.1.5",
     "ng-lazyload-image": "^9.1.2",
     "ngb-modal": "^2.0.3",
