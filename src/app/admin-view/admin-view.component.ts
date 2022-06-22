@@ -407,7 +407,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
                 0
               )
             );
-          } else if (type == 'Net Profit') {//
+          } else if (type == 'Net Profit') {
             set.push(
               new ProductInCart(
                 undefined,
