@@ -29,33 +29,40 @@ const db = getFirestore(app);
 async function main() {
 
 
-  console.log("Updating ThredMarketplace...");
+  // console.log("Updating ThredMarketplace...");
 
-  const thredMarketplace = await ethers.getContractFactory("ThredMarketplace");
 
-  await upgrades.upgradeProxy('0xd0B2538F39dA19AE21f18626fBBc9F7498E8065E', thredMarketplace);
+
+  // const thredMarketplace = await ethers.getContractFactory("ThredMarketplace");
+
+  // await upgrades.upgradeProxy('0xDfad8d27f013BcC118A3C1CCcea60d0b3b88DF25', thredMarketplace);
+
+  // console.log("ThredMarketplace Updated!");
+
+
 
   // console.log("nft deploy starting");
 
   // const nft2 = await upgrades.deployProxy(thredMarketplace, ['THRED-NFT', '1', '0xd31c54eFD3A4B5E6a993AaA4618D3700a12ff752']);
 
-  // const nft2 = await upgrades.deployProxy();
-
   // await nft2.deployed();
+
+  // console.log("ThredMarketplace Created! Address: " + nft2.address);
 
   // const NFT = await ethers.getContractFactory("ERC1155Merchant");
   // const nft = await NFT.deploy(_ethers.constants.AddressZero, [],[nft2.address]);
   // await nft.deployed();
 
   // const NFT3 = await ethers.getContractFactory("ERC721Merchant");
-  // const nft3 = await NFT3.deploy("Thred", "THRD", _ethers.constants.AddressZero, [],[nft2.address]);
+  // const nft3 = await NFT3.deploy("Thred", "THRD", '0xd31c54eFD3A4B5E6a993AaA4618D3700a12ff752');
   // await nft3.deployed();
+
+  // console.log("ERC721Merchant Created! Address: " + nft3.address);
 
   // console.log("ERC1155Merchant deployed to:", nft.address);
   // console.log("ERC721Merchant deployed to:", nft3.address);
   // console.log("ThredMarketplace deployed to:", nft2.address);
   
-  console.log("ThredMarketplace Updated!");
 
 
   // export const erc721Merchant = "${nft3.address}"

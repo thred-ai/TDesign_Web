@@ -10,7 +10,6 @@ import { Dict, LoadService } from '../services/load.service';
 import * as html2canvas from 'htmlscreenshots15'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Product } from '../models/product.model';
-import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
 import { Inventory } from '../models/inventory.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
@@ -231,22 +230,22 @@ export class DesignComponent implements OnInit {
         images: images
       }
   
-      let product = await this.loadService.createProduct(mappedData)
-      this.hideCanvas = false
+      // let product = await this.loadService.createProduct(mappedData)
+      // this.hideCanvas = false
 
-      this.spinner.hide("designSpinner")
+      // this.spinner.hide("designSpinner")
       
-      var data = {
-        linkImg: this.linkImg,
-        back_linkImg: back_link_img,
-        frontImg: this.frontImg,
-        backImg: this.backImg,
-        selectedTemplate: this.selectedTemplate,
-        selectedColor: this.selectedColor,
-        suggested_price: amt,
-        product: product
-      }
-      this.activeModal.close(data)
+      // var data = {
+      //   linkImg: this.linkImg,
+      //   back_linkImg: back_link_img,
+      //   frontImg: this.frontImg,
+      //   backImg: this.backImg,
+      //   selectedTemplate: this.selectedTemplate,
+      //   selectedColor: this.selectedColor,
+      //   suggested_price: amt,
+      //   product: product
+      // }
+      // this.activeModal.close(data)
     }
     else{
 
@@ -278,16 +277,16 @@ export class DesignComponent implements OnInit {
 
 
       
-          let product = await this.loadService.createProduct(mappedData)
+          // let product = await this.loadService.createProduct(mappedData)
     
-          this.spinner.hide("iSpinner")
-          var d = {
-            linkImg: event.target.result,
-            selectedInv: inv,
-            suggested_price: 0,
-            product: product
-          }
-          this.activeModal.close(d)
+          // this.spinner.hide("iSpinner")
+          // var d = {
+          //   linkImg: event.target.result,
+          //   selectedInv: inv,
+          //   suggested_price: 0,
+          //   product: product
+          // }
+          // this.activeModal.close(d)
         };
 
         reader.onerror = (event: any) => {
@@ -405,39 +404,39 @@ export class DesignComponent implements OnInit {
     if (this.linkImg == undefined){
       let element = document.querySelector("#capture") as HTMLElement
       html2canvas.default(element).then(async (canvas) => {
-        const modalRef = this.modalService.open(PopupDialogComponent, {size : "sm", centered: true});
+        // const modalRef = this.modalService.open(PopupDialogComponent, {size : "sm", centered: true});
 
-        let img = canvas.toDataURL()
-        modalRef.componentInstance.yesBtn = "Yes"
-        modalRef.componentInstance.noBtn = "No"
-        modalRef.componentInstance.message = "You will lose your product."
-        modalRef.componentInstance.title = "ARE YOU SURE?"
-        modalRef.componentInstance.img = img
+        // let img = canvas.toDataURL()
+        // modalRef.componentInstance.yesBtn = "Yes"
+        // modalRef.componentInstance.noBtn = "No"
+        // modalRef.componentInstance.message = "You will lose your product."
+        // modalRef.componentInstance.title = "ARE YOU SURE?"
+        // modalRef.componentInstance.img = img
 
-        let sub = modalRef.dismissed.subscribe((resp: any) => {
-          sub.unsubscribe()
-          if (resp.Success){
+        // let sub = modalRef.dismissed.subscribe((resp: any) => {
+        //   sub.unsubscribe()
+        //   if (resp.Success){
         
             this.activeModal.close()
-          }
-        })
+        //   }
+        // })
       })
     }
     else{
-      const modalRef = this.modalService.open(PopupDialogComponent, {size : "sm", centered: true});
-      modalRef.componentInstance.yesBtn = "Yes"
-      modalRef.componentInstance.noBtn = "No"
-      modalRef.componentInstance.message = "You will lose your product."
-      modalRef.componentInstance.title = "ARE YOU SURE?"
-      modalRef.componentInstance.img = this.linkImg
+      // const modalRef = this.modalService.open(PopupDialogComponent, {size : "sm", centered: true});
+      // modalRef.componentInstance.yesBtn = "Yes"
+      // modalRef.componentInstance.noBtn = "No"
+      // modalRef.componentInstance.message = "You will lose your product."
+      // modalRef.componentInstance.title = "ARE YOU SURE?"
+      // modalRef.componentInstance.img = this.linkImg
 
-      let sub = modalRef.dismissed.subscribe((resp: any) => {
-        sub.unsubscribe()
-        if (resp.Success){
+      // let sub = modalRef.dismissed.subscribe((resp: any) => {
+      //   sub.unsubscribe()
+      //   if (resp.Success){
       
           this.activeModal.close()
-        }
-      })
+      //   }
+      // })
     }
   }
 

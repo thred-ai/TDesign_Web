@@ -5,7 +5,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ModelViewerPipe implements PipeTransform {
   transform(value: string): string {
-    console.log(value);
     return `
     
     <!doctype html>

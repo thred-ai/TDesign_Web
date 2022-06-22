@@ -73,7 +73,7 @@
           >
           </mat-icon>
           <b style="font-size: 34px">
-            {{ nft?.price | price | commaNum }}
+            {{ nft?.price | commaNum }}
           </b>
         </a>
         <h3
@@ -88,15 +88,13 @@
           </ng-template>
           {{
             nft?.price
-              | price
-              | ratePipe: (collection | productCurrency)
           }}
         </h3>
         </div>
 
       </div>
 
-      <video
+      <!-- <video
         class="my-3 rounded-10"
         style="object-fit: cover; aspect-ratio: 1; width: 90%; overflow: hidden"
         poster="/assets/default.png"
@@ -116,10 +114,10 @@
         style="object-fit: cover; aspect-ratio: 1; width: 90%; overflow: hidden"
         [useSrcset]="true"
         [defaultImage]="'/assets/default.png'"
-        [lazyLoad]="nft?.linkUrl ?? '/assets/default.png'"
+        [lazyLoad]="nft?.img ?? '/assets/default.png'"
         alt="ok"
         *ngIf="nft?.format == 'image'"
-      />
+      /> -->
 
       <p *ngIf="err != ''" class="text-danger text-center fw-bold">
         {{ err }}

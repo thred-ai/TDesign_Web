@@ -18,19 +18,19 @@ export class ProductFilterPipe implements PipeTransform {
 
     if (filter == 'tokenId-asc') {
       finalArr = value.sort((a, b) =>
-        collator.compare(String(a.tokenID!), String(b.tokenID!))
+        collator.compare(String(a.tokenId!), String(b.tokenId!))
       );
     } else if (filter == 'tokenId-desc') {
       finalArr = value.sort((a, b) => {
-        return b.tokenID! - a.tokenID!;
+        return b.tokenId! - a.tokenId!;
       });
     }
-    if (ownedBy) {
-      finalArr =
-        finalArr.filter(
-          (f) => f.seller.toLowerCase() == ownedBy.toLowerCase()
-        ) ?? [];
-    }
+    // if (ownedBy) {
+    //   finalArr =
+    //     finalArr.filter(
+    //       (f) => f.seller.toLowerCase() == ownedBy.toLowerCase()
+    //     ) ?? [];
+    // }
     return finalArr;
   }
 }

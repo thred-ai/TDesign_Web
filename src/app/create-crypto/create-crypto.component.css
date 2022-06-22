@@ -1,4 +1,12 @@
 model-viewer {
-    width: 100%;
-    height: 100%;
-  }
+  width: 100%;
+  height: 100%;
+}
+
+img{
+  object-fit: cover;
+}
+
+.bg-big-design{
+  background-color: #3c64f3;
+}

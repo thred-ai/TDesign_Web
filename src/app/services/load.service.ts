@@ -58,6 +58,8 @@ import { LazyMinter } from 'LazyMinter';
 import { create } from 'ipfs-http-client';
 import { Plan } from '../models/plan.model';
 import { DateConstructPipe } from '../date-construct.pipe';
+const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
+
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
@@ -93,55 +95,37 @@ export class LoadService {
 
   rootComponent?: AppComponent;
 
-  public myCallback:
-    | {
-        (): void;
-      }
-    | undefined;
-
-  public orderCallback:
-    | {
-        (orderNum: string, intent: string): void;
-      }
-    | undefined;
-
-  public saleCallback:
-    | {
-        (): void;
-      }
-    | undefined;
-
-  public miscCallback:
-    | {
-        (): void;
-      }
-    | undefined;
-
-  public errCallback:
-    | {
-        (message: string): void;
-      }
-    | undefined;
-
   isShop = false;
   hideCart = false;
   shouldShowCurrency = false;
 
-  async logView() {
+  defaultCoords = {
+    address: {
+      city: 'Los Angeles',
+      country: 'United States',
+      country_code: 'US',
+      region: 'California',
+      region_code: 'CA',
+    },
+    coords: {
+      LONGITUDE: -118.243683,
+      LATITUDE: 34.052235,
+    },
+  };
+
+  async logView(productId: string | null = null) {
     if (
       !Globals.didLog &&
       Globals.storeInfo?.uid &&
       isPlatformBrowser(this.platformID)
     ) {
       Globals.didLog = true;
-      let coords = (await this.getCoords()) ?? {
-        LONGITUDE: -118.243683,
-        LATITUDE: 34.052235,
-      };
+      let coords = (await this.getCoords()) ?? this.defaultCoords;
       this.functions
         .httpsCallable('updateView')({
           storeUID: Globals.storeInfo?.uid!,
-          coords: coords,
+          location: coords,
+          productId: productId,
         })
         .pipe(first())
         .subscribe(
@@ -279,247 +263,6 @@ export class LoadService {
       });
   }
 
-  getBanners(callback: (data: any) => any) {
-    fetch(
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ficons.txt?alt=media'
-    ).then(function (response) {
-      response
-        .json()
-        .then(function (text) {
-          var docs = text.icons as Array<Dict<any>>;
-          var data = new Array<Dict<any>>();
-          docs.forEach((t) => {
-            let same = data?.find((d) => {
-              return d.category == t.categories[0];
-            });
-            if (same) {
-              same.icons.push(t.name);
-            } else {
-              data.push({
-                category: t.categories[0],
-                icons: [t.name],
-              });
-            }
-          });
-          callback(data);
-        })
-        .catch((error: Error) => {
-          callback([]);
-        });
-    });
-  }
-
-  async getInv(code: string, callback: (inventory: Inventory) => any) {
-    let uid = Globals.storeInfo?.uid;
-    let sub = this.db
-      .collection('Users/' + uid + '/Inventory', (ref) =>
-        ref.where('id', '==', code)
-      )
-      .valueChanges({ idField: 'inventoryID' })
-      .subscribe((doc) => {
-        let docData = (doc as DocumentData)[0];
-        if (docData) {
-          let amt = docData.amount as number;
-          let code = docData.id as string;
-          let id = docData.inventoryID as string;
-          let autoReload = (docData.auto_reload as boolean) ?? false;
-          let desc = (docData.description as string) ?? '';
-          let category = (docData.category as string) ?? '';
-          let img = docData.img as string;
-          let name = (docData.name as string) ?? '';
-
-          let sizes = (docData.sizes as Array<string>) ?? [];
-          let variations = (docData.variations as Array<any>) ?? [];
-          let isCustom = (docData.is_custom as boolean) ?? false;
-
-          let timestamp = (
-            docData.timestamp as firebase.firestore.Timestamp
-          ).toDate();
-
-          if (name.trim() == '') {
-            name = Globals.templates.filter((obj) => {
-              return obj.productCode == code;
-            })[0]?.templateDisplayName;
-          }
-
-          let inventory = new Inventory(
-            code,
-            name,
-            amt,
-            timestamp,
-            id,
-            autoReload,
-            variations,
-            category,
-            desc,
-            sizes,
-            isCustom,
-            img
-          );
-          callback(inventory);
-        }
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-
-  async getInventory(callback: (inventory: Array<Inventory>) => any) {
-    let uid = (await this.isLoggedIn())?.uid;
-    let sub = this.db
-      .collection('Users/' + uid + '/Inventory')
-      .valueChanges({ idField: 'inventoryID' })
-      .subscribe((docDatas) => {
-        let totalInventory = new Array<Inventory>();
-
-        docDatas.forEach((doc) => {
-          let docData = doc as DocumentData;
-          if (docData) {
-            let amt = docData.amount as number;
-            let code = docData.id as string;
-            let id = docData.inventoryID as string;
-            let autoReload = (docData.auto_reload as boolean) ?? false;
-            let desc = (docData.description as string) ?? '';
-            let category = (docData.category as string) ?? '';
-            let img = docData.img as string;
-            let name = (docData.name as string) ?? '';
-
-            let sizes = (docData.sizes as Array<string>) ?? [];
-            let variations = (docData.variations as Array<any>) ?? [];
-            let isCustom = (docData.is_custom as boolean) ?? false;
-
-            let timestamp = (
-              docData.timestamp as firebase.firestore.Timestamp
-            ).toDate();
-
-            if (name.trim() == '') {
-              name = Globals.templates.filter((obj) => {
-                return obj.productCode == code;
-              })[0]?.templateDisplayName;
-            }
-
-            let inventory = new Inventory(
-              code,
-              name,
-              amt,
-              timestamp,
-              id,
-              autoReload,
-              variations,
-              category,
-              desc,
-              sizes,
-              isCustom,
-              img
-            );
-            totalInventory.push(inventory);
-          }
-          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        });
-        callback(totalInventory);
-      });
-  }
-
-  async setAutoReload(
-    inventory: Inventory,
-    callback: (completed: boolean) => any
-  ) {
-    let uid = (await this.isLoggedIn())?.uid;
-    await this.db
-      .collection('Users/' + uid + '/Inventory')
-      .doc(inventory.id)
-      .update({ auto_reload: true });
-    callback(true);
-  }
-
-  async removeAutoReload(
-    inventory: Inventory,
-    callback: (completed: boolean) => any
-  ) {
-    let uid = (await this.isLoggedIn())?.uid;
-    await this.db
-      .collection('Users/' + uid + '/Inventory')
-      .doc(inventory.id)
-      .update({ auto_reload: false });
-    callback(true);
-  }
-
-  getCountries() {
-    let sub = this.db
-      .collection('Print_Info')
-      .doc('Shipping_Info')
-      .valueChanges()
-      .subscribe((docData) => {
-        const data = docData as DocumentData;
-
-        const usShipping = Math.round(data.shipping_rate_us * 100);
-        const caShipping = Math.round(data.shipping_rate_canada * 100);
-        const intlShipping = Math.round(data.shipping_rate_intl * 100);
-
-        const currencies = data.supportedCurrencies as Array<Dict<any>>;
-
-        Globals.availableCurrencies = [];
-
-        currencies.forEach((currency) => {
-          const name = currency.country;
-          const flag = currency.flag;
-          const currency_name = currency.name;
-          const rate = currency.rate;
-          const is_main_currency = currency.is_main_currency;
-          const symbol = currency.symbol;
-          const name_full = currency.country_full;
-
-          const country = new Country(
-            name,
-            flag,
-            name_full,
-            currency_name,
-            symbol,
-            rate,
-            is_main_currency,
-            0
-          );
-
-          if (name == 'CA') {
-            country.shipping_rate_usd = caShipping;
-          } else if (name == 'US') {
-            country.shipping_rate_usd = usShipping;
-            Globals.selectedCurrency = country;
-          } else {
-            country.shipping_rate_usd = intlShipping;
-          }
-
-          if (!Globals.availableCurrencies?.includes(country)) {
-            Globals.availableCurrencies.push(country);
-          }
-        });
-
-        Globals.availableCurrencies.sort(function (a, b) {
-          if (a.name < b.name) {
-            return -1;
-          }
-          if (a.name > b.name) {
-            return 1;
-          }
-          return 0;
-        });
-
-        if (isPlatformBrowser(this.platformID)) {
-          let cacheCurrency = localStorage.getItem('LOCAL_CURRENCY');
-
-          if (cacheCurrency && cacheCurrency != null && cacheCurrency != '') {
-            Globals.selectedCurrency = Globals.availableCurrencies.find(
-              (currency) => currency.currency_name == cacheCurrency
-            );
-          } else {
-            Globals.selectedCurrency = Globals.availableCurrencies.find(
-              (currency) => currency.currency_name == 'USD'
-            );
-          }
-        }
-
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
 
   isLoading = true;
 
@@ -551,13 +294,11 @@ export class LoadService {
     var query = this.db.collection('Users', (ref) =>
       ref.where('Username', '==', username)
     );
-    console.log("man")
 
     if (uid) {
       query = this.db.collection('Users', (ref) =>
         ref.where(firebase.firestore.FieldPath.documentId(), '==', uid)
       );
-      console.log("man1")
     }
     if (isCustom) {
       query = this.db.collection('Users', (ref) =>
@@ -565,7 +306,6 @@ export class LoadService {
           .where('Custom_URL.host', '==', username?.replace('www.', ''))
           .where('Custom_URL.status', '==', 2)
       );
-      console.log("man2")
     }
 
     let sub = query.valueChanges({ idField: 'UID' }).subscribe((doc) => {
@@ -662,7 +402,7 @@ export class LoadService {
           postCount,
           followingCount,
           usersBlocking,
-          this.getProfileURL(uid, dpUID),
+          undefined,
           verified,
           isPublic,
           postNotifs,
@@ -706,38 +446,8 @@ export class LoadService {
         let homePopup = popups.find((popup) => {
           return popup.trigger == 0;
         });
-        if (homePopup && isPlatformBrowser(this.platformID)) {
-          this.checkPopup(homePopup, uid, () => {
-            if (!sessionStorage.getItem('home_popup')) {
-              this.rootComponent?.showPopUp(homePopup!, 5000);
-              sessionStorage.setItem('home_popup', '1');
-            }
-          });
-        }
 
         this.rootComponent?.initializePixel(pixelID);
-
-        let list = (docData['image_list'] as Array<string>) ?? [];
-
-        list.forEach((type) => {
-          if (type == 'theme') {
-            Globals.storeInfo!.themeLink = new URL(this.getThemeURL(uid));
-          } else if (type == 'home') {
-            Globals.storeInfo!.homeLink = new URL(this.getHomeURL(uid));
-
-            if (!homeRows) {
-              Globals.storeInfo!.pages![0].rows![1]?.imgs?.push(
-                this.getHomeURL(uid)
-              );
-            }
-          } else if (type == 'action') {
-            Globals.storeInfo!.actionLink = new URL(this.getActionURL(uid));
-          } else if (type == 'home_top') {
-            Globals.storeInfo!.homeLinkTop = new URL(this.getHomeTopURL(uid));
-          } else if (type == 'shop_top') {
-            Globals.storeInfo!.shopLinkTop = new URL(this.getShopTopURL(uid));
-          }
-        });
 
         if (loading?.name) {
           Globals.storeInfo.loading!.name = loading?.name;
@@ -780,44 +490,6 @@ export class LoadService {
       //   sub.unsubscribe();
       // }
     });
-  }
-
-  async checkPopup(popup: Popup, uid: string, callback: () => any) {
-    if (isPlatformBrowser(this.platformID)) {
-      let user = await this.isLoggedIn();
-      if (!user) {
-        callback();
-        return;
-      }
-
-      if (popup.type == 0 || popup.type == 2) {
-        var query = this.db.collection('Users/' + uid + '/Emails', (ref) =>
-          ref.where('uid', '==', user?.uid ?? '')
-        );
-
-        var sub = query.get().subscribe((docDatas) => {
-          if (docDatas.size == 0) {
-            callback();
-          }
-          if (isPlatformBrowser(this.platformID)) {
-            sub.unsubscribe();
-          }
-        });
-      } else if (popup.type == 1 || popup.type == 3) {
-        var query = this.db.collection('Users/' + uid + '/Numbers', (ref) =>
-          ref.where('uid', '==', user?.uid ?? '')
-        );
-
-        var sub = query.get().subscribe((docDatas) => {
-          if (docDatas.size == 0) {
-            callback();
-          }
-          if (isPlatformBrowser(this.platformID)) {
-            sub.unsubscribe();
-          }
-        });
-      }
-    }
   }
 
   getContractEvents(callback: (transactions: Array<WalletLog>) => any) {
@@ -872,7 +544,7 @@ export class LoadService {
 
   getEvents(nft: NFT, callback: (transactions: Array<NftLog>) => any) {
     const data = {
-      contract: nft.contractID,
+      contract: nft.address,
       tokenId: nft.hashedTokenId,
       test: false,
     };
@@ -958,34 +630,6 @@ export class LoadService {
     return network?.chainId == 137;
   }
 
-  async getNumSubs(uid: string = '', callback: (arr: Array<Dict<any>>) => any) {
-    var query = this.db.collection('Users/' + uid + '/Numbers', (ref) =>
-      ref.orderBy('timestamp', 'desc')
-    );
-    var arr = new Array<Dict<any>>();
-    let sub = query.get().subscribe((docDatas) => {
-      docDatas.docs.forEach((doc) => {
-        const data = doc.data() as DocumentData;
-        if (data) {
-          let phone = data.phone ?? 'N/A';
-          let name = data.name;
-          let timestamp =
-            (data.timestamp as firebase.firestore.Timestamp)?.toDate() ??
-            new Date();
-
-          arr.push({
-            phone: phone,
-            name: name,
-            timestamp: timestamp.toDateString(),
-          });
-        }
-      });
-      callback(arr);
-      if (isPlatformBrowser(this.platformID)) {
-        sub.unsubscribe();
-      }
-    });
-  }
 
   async getCryptoRates(callback: (arr: Array<Dict<any>>) => any) {
     var query = this.db.doc('Crypto_Rates/THRED_COINS');
@@ -998,38 +642,6 @@ export class LoadService {
     });
   }
 
-  async getEmailSubs(
-    uid: string = '',
-    callback: (arr: Array<Dict<any>>) => any
-  ) {
-    var query = this.db.collection('Users/' + uid + '/Emails', (ref) =>
-      ref.orderBy('timestamp', 'desc')
-    );
-    var arr = new Array<Dict<any>>();
-    let sub = query.get().subscribe((docDatas) => {
-      docDatas.docs.forEach((doc) => {
-        const data = doc.data() as DocumentData;
-
-        if (data) {
-          let email = data.email ?? 'N/A';
-          let name = data.name;
-          let timestamp = (
-            data.timestamp as firebase.firestore.Timestamp
-          ).toDate();
-
-          arr.push({
-            email: email,
-            name: name,
-            timestamp: timestamp.toDateString(),
-          });
-        }
-      });
-      callback(arr);
-      if (isPlatformBrowser(this.platformID)) {
-        sub.unsubscribe();
-      }
-    });
-  }
 
   parseColor(color?: string) {
     var finalArr = new Array<number>();
@@ -1082,22 +694,69 @@ export class LoadService {
           }
         }
       });
-      if (this.myCallback) this.myCallback();
       if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
     });
   }
 
-  async increaseVolume(nft: NFT) {
+  async signIntoAccount(
+    payload: any,
+    callback: (uid?: string, error?: string) => any
+  ) {
+    let uid = (await this.isLoggedIn())?.uid;
+
+    if (uid) {
+      callback(uid, undefined);
+      return;
+    }
+
     this.functions
-      .httpsCallable('updateVolume')({
-        contract: nft.contractID,
-        amount: nft.priceNum,
-      })
+      .httpsCallable('signInWithBigCommerce')(payload)
       .pipe(first())
       .subscribe(
-        async (resp) => {},
+        async (resp) => {
+          if (resp) {
+            let user = await this.auth.signInWithCustomToken(resp.token);
+            callback(user.user?.uid, undefined);
+          } else {
+            callback('Something went wrong. Please try again.');
+          }
+        },
         (err) => {
           console.log(err);
+          callback('Something went wrong. Please try again.');
+        }
+      );
+  }
+
+  async createAccount(
+    payload: any,
+    callback: (uid?: string, error?: string) => any
+  ) {
+    this.functions
+      .httpsCallable('signUpWithBigCommerce')(payload)
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          if (resp) {
+            if (resp as string) {
+              let uid = (await this.isLoggedIn())?.uid;
+              if (uid) {
+                callback(uid, undefined);
+                return;
+              } else {
+                let user = await this.auth.signInWithCustomToken(resp);
+                callback(user.user?.uid, undefined);
+              }
+            } else {
+              callback('Something went wrong. Please try again.');
+            }
+          } else {
+            callback('Something went wrong. Please try again.');
+          }
+        },
+        (err) => {
+          console.log(err);
+          callback('Something went wrong. Please try again.');
         }
       );
   }
@@ -1126,132 +785,51 @@ export class LoadService {
     ),
     uid = Globals.storeInfo?.uid
   ) {
+    // uid = '3APimNNdA0X7yJiEKMoH4ULgnYz1';
     let provider2 = await this.checkProviderChain(provider);
 
     var col = new Array<Collection>();
 
-    var counter = 0;
     this.getCollections(uid, async (c) => {
       if (c) {
         col = col?.concat(c);
       }
-
+      var counter = 0
       await Promise.all(
-        col.map(async (collection: Collection) => {
-          let info = await this.getCollectionInfo(collection.contract);
+        col.map((collection: Collection) => {
+          // let info = await this.getCollectionInfo(collection.contract);
 
-          collection.volume = info.volume;
-          collection.floor = info.floor;
-          collection.holders = info.holders;
+          // collection.volume = info.volume;
+          // collection.floor = info.floor;
+          // collection.holders = info.holders;
 
           var query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-            ref
-              .where('Available', '==', true)
-              .where('Contract_Address', '==', collection.contract)
-              .orderBy('Token_ID')
+            ref.where('address', '==', collection.contract).orderBy('tokenId')
           );
 
           if (filterID) {
             query = this.db.collection('Users/' + uid + '/Products', (ref) =>
-              ref
-                .where('Available', '==', true)
-                .where('Contract_Address', '==', collection.contract)
-                .orderBy('Token_ID')
+              ref.where('address', '==', collection.contract).orderBy('tokenId')
             );
           }
 
-          var products: Dict<NFT> = {};
-
           let sub = query.get().subscribe(async (docDatas) => {
             sub.unsubscribe();
-            await Promise.all(
-              docDatas.docs.map(async (doc, index) => {
-                let docData = doc.data() as DocumentData;
 
-                if (docData) {
-                  let tokenID = docData['Token_ID'] as number;
-                  let contractID = docData['Contract_Address'] as string;
-                  let ownerAddress =
-                    (docData['Owner_Address'] as string) ??
-                    Globals.storeInfo?.walletAddress ??
-                    '';
-                  let sold = (docData['Sold'] as boolean) ?? false;
-                  let lazyMint = (docData['Lazy'] as boolean) ?? true;
-                  let royalty = (docData['Royalty'] as number) ?? 0;
-                  let lazyHash = docData['Lazy_Hash'] as Dict<any>;
-                  let metadata = docData['Metadata'] as string;
-                  let forSale = docData['forSale'] as boolean;
-                  let marketAddress = docData['marketAddress'] as string;
+            let products: Dict<NFT> = {};
 
-                  var cost = ethers.utils.parseUnits('0.02', 'ether');
-                  if (lazyHash) {
-                    cost = lazyHash['minPrice'] as ethers.BigNumber;
-                  }
+            let nfts = docDatas.docs.map((doc) => doc.data()) as NFT[];
 
-                  let product = new NFT(
-                    tokenID,
-                    contractID,
-                    ownerAddress,
-                    sold,
-                    lazyMint,
-                    undefined,
-                    royalty,
-                    lazyHash,
-                    metadata,
-                    undefined,
-                    marketAddress
-                  );
+            nfts.forEach((n) => {
+              products[`${n.address}${n.tokenId}`] = n;
+            });
 
-                  product.price = cost ?? 0.02;
-                  product.seller = ownerAddress;
-                  product.docID = doc.id;
-                  product.isAvailable = true;
-                  product.forSale = forSale;
-                  product.linkUrl = this.getURL(doc.id);
-
-                  console.log(product.linkUrl)
-                  product.name = docData['Name'] as string;
-                  product.description = docData['Description'] as string;
-                  product.traits = docData['Traits'] as Array<any>;
-                  let productID = docData['Product_ID'];
-                  product.url = this.getURL(productID);
-
-                  if (product.tokenID && provider && !product.lazyMint) {
-                    product.seller = await collection.ownerOf(
-                      product.tokenID,
-                      provider2
-                    );
-                  }
-                  if ((product.name ?? '') == '') {
-                    product.name = `${collection.name} #${index + 1}`;
-                  }
-                  products[`${contractID}${tokenID}`] = product;
-                }
-              })
-            );
-            counter += 1;
-
-            let token =
-              collection.customTokenCheck() ??
-              Object.values(products)[0]?.lazyHash?.token !=
-                ethers.constants.HashZero
-                ? Object.values(products)[0]?.lazyHash?.token
-                : undefined;
-            // collection.customToken = token
-
-            if (token && provider2 && isPlatformBrowser(this.platformID)) {
-              await collection.loadCurrency(token!, provider2).then((i) => {
-                collection.currency = i;
-              });
-            } else {
-              collection.currency = 'MATIC';
-            }
             collection.NFTs = products;
+            counter += 1
+
             if (counter == col.length) {
-              if (col) {
-                callback(col);
-                return;
-              }
+              callback(col);
+              return;
             }
           });
         })
@@ -1300,16 +878,14 @@ export class LoadService {
             new Collection(
               d.name,
               d.symbol,
-              undefined,
               d.contract,
-              d.currency ?? 'MATIC',
+              d.currency ?? 'USD',
               d.collectionCount ?? 0,
-              d.owner ?? '',
               d.isPublic ?? true,
               d.uid ?? '',
               d.timestamp ?? new Date(),
               d.domain,
-              d.customToken,
+              d.royalty,
               d.available,
               d.ABI
             )
@@ -1338,16 +914,14 @@ export class LoadService {
         let c = new Collection(
           d.name,
           d.symbol,
-          d.NFTs,
           d.contract,
-          d.currency ?? 'MATIC',
+          d.currency ?? 'USD',
           d.collectionCount ?? 0,
-          d.owner ?? '',
           d.isPublic ?? true,
           d.uid ?? '',
           d.timestamp ?? new Date(),
           d.domain,
-          d.customToken,
+          d.royalty,
           d.available,
           d.ABI
         );
@@ -1398,13 +972,8 @@ export class LoadService {
       provider
     );
 
-    // const data = await marketContract.fetchItemsCreated();
-    // const data1 = await nftContract.name();
-    // const data2 = await nftContract.symbol();
 
     const data3 = await marketContract.fetchCollectionAssetsById(assets);
-
-    // const data4 = await marketContract.verify(nft.lazyHash);
 
     const i = data3[0];
 
@@ -1427,8 +996,6 @@ export class LoadService {
       minted: i.minted,
     };
     return {
-      // name: data1,
-      // symbol: data2,
       tokens: item,
     };
   }
@@ -1455,18 +1022,10 @@ export class LoadService {
       contract.ABI,
       provider
     );
-
-    // const data = await marketContract.fetchItemsCreated();
-    // const data1 = await nftContract.name();
-    // const data2 = await nftContract.symbol();
     const data3 = await marketContract.fetchCollectionAsset(
       contract.contract,
-      nft.tokenID
+      nft.tokenId
     );
-
-    // const data4 = await marketContract.verify(nft.lazyHash);
-
-    // console.log(data4);
 
     const i = data3[0];
 
@@ -1511,9 +1070,8 @@ export class LoadService {
           format = 'image';
         } else if (image.indexOf('video') > -1) {
           format = 'video';
-        }
-        else{
-          format = '3d'
+        } else {
+          format = '3d';
         }
         resolve(format);
       } else {
@@ -1531,10 +1089,8 @@ export class LoadService {
               format = 'image';
             } else if (type.indexOf('video') > -1) {
               format = 'video';
-            }
-            else{
-              console.log(type)
-              format = '3d'
+            } else {
+              format = '3d';
             }
             resolve(format);
           }
@@ -1547,168 +1103,6 @@ export class LoadService {
   adminComponent?: AdminViewComponent;
   homeComponent?: HomeComponent;
 
-  setFilterProducts(products: Array<Product>) {
-    // if (this.shopComponent) this.shopComponent.storeProducts = products;
-  }
-
-  addProduct(product: NFT, contract: string) {
-    // if (this.shopComponent) this.shopComponent.storeProducts?.unshift(product);
-    // `${contractID}${tokenID}`
-    // if (this.adminComponent)
-    // Globals.storeInfo?.collections
-    //   ?.find((c) => c.contract == contract)
-    //   ?.NFTs[`${contract}${product.tokenID}`] = null
-    // if (this.homeComponent) this.homeComponent.storeProducts?.unshift(product);
-  }
-
-  // editProduct(product: NFT) {
-  //   // if (this.shopComponent) {
-  //   //   let p = this.shopComponent.storeProducts?.find((obj) => {
-  //   //     return obj.productID == product.productID;
-  //   //   }) as Product;
-
-  //   //   if (!p) {
-  //   //     this.addProduct(product);
-  //   //     return;
-  //   //   }
-
-  //   //   p.name = product.name;
-  //   //   p.description = product.description;
-  //   //   p.price = product.price;
-  //   //   p.url = product.url;
-  //   //   p.images = product.images;
-  //   // }
-
-  //   if (this.adminComponent) {
-  //     let p = this.adminComponent.storeProducts?.find((obj) => {
-  //       return obj.productID == product.productID;
-  //     }) as Product;
-
-  //     if (!p) {
-  //       this.addProduct(product);
-  //       return;
-  //     }
-
-  //     p.name = product.name;
-  //     p.description = product.description;
-  //     p.price = product.price;
-  //     p.url = product.url;
-  //     p.images = product.images;
-  //   }
-
-  //   if (this.homeComponent) {
-  //     let p = this.homeComponent.storeProducts?.find((obj) => {
-  //       return obj.productID == product.productID;
-  //     }) as Product;
-
-  //     if (!p) {
-  //       this.addProduct(product);
-  //       return;
-  //     }
-
-  //     p.name = product.name;
-  //     p.description = product.description;
-  //     p.price = product.price;
-  //     p.url = product.url;
-  //     p.images = product.images;
-  //   }
-  // }
-
-  async removeInv(inv: Inventory) {
-    let uid = (await this.isLoggedIn())?.uid ?? '';
-
-    return this.db
-      .collection('Users/' + uid + '/Inventory')
-      .doc(inv.id)
-      .delete();
-  }
-
-  removeProduct(product: NFT, contract: string) {
-    // if (this.shopComponent) {
-    //   let p = this.shopComponent.storeProducts?.filter((obj) => {
-    //     return obj.productID == product.productID;
-    //   })[0] as Product;
-    //   let index = this.shopComponent.storeProducts?.indexOf(p);
-    //   if (index) {
-    //     this.shopComponent.storeProducts?.splice(index, 1);
-    //   }
-    // }
-    // if (this.adminComponent) {
-    //   let p = Globals.storeInfo?.collections
-    //     ?.find((c) => c.contract == contract)
-    //     ?.NFTs.filter((obj) => {
-    //       return obj.docID == product.docID;
-    //     })[0] as NFT;
-    //   let index = Globals.storeInfo?.collections
-    //     ?.find((c) => c.contract == contract)
-    //     ?.NFTs.indexOf(p);
-    //   if (index != undefined) {
-    //     Globals.storeInfo?.collections
-    //       ?.find((c) => c.contract == contract)
-    //       ?.NFTs.splice(index, 1);
-    //   }
-    // }
-    // if (this.homeComponent) {
-    //   let p = this.homeComponent.storeProducts?.filter((obj) => {
-    //     return obj. == product.tokenID;
-    //   })[0] as Product;
-    //   let index = this.homeComponent.storeProducts?.indexOf(p);
-    //   if (index != undefined) {
-    //     this.homeComponent.storeProducts?.splice(index, 1);
-    //   }
-    // }
-  }
-
-  getBlogs(filterID?: string) {
-    Globals.blogs = [];
-
-    const time = firebase.firestore.Timestamp.now();
-
-    var query = this.db.collection(
-      'Users/' + Globals.storeInfo?.uid + '/Blogs',
-      (ref) =>
-        ref
-          .where('Timestamp', '<=', time)
-          .where('isAvailable', '==', true)
-          .orderBy('Timestamp', 'desc')
-    );
-
-    let sub = query
-      .valueChanges({ idField: 'Blog_ID' })
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc) => {
-          let docData = doc as DocumentData;
-
-          if (docData) {
-            let uid = docData.UID as string;
-            let title = docData.Title as string;
-            let timestamp = (
-              docData.Timestamp as firebase.firestore.Timestamp
-            ).toDate();
-            let isAvailable = docData.isAvailable as boolean;
-            let blogID = docData.Blog_ID as string;
-            let blogItems = docData.Blog_Items as Array<Dict<any>>;
-            let coverURL = docData.Cover_URL as string;
-
-            let blog = new Blog(
-              uid,
-              timestamp,
-              '',
-              isAvailable,
-              title,
-              blogItems,
-              blogID,
-              coverURL
-            );
-
-            Globals.blogs.push(blog);
-          }
-        });
-
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
 
   hasEmptyProperties(obj: any, ignoreKeys: Array<string>) {
     for (var key in obj) {
@@ -1759,8 +1153,6 @@ export class LoadService {
                   var errorMessage = error.message;
                   console.log(errorMessage);
                   callback('An error occured, please try again.');
-                  // if (this.myCallback)
-                  // this.myCallback()
                 });
             } else {
               //error
@@ -1814,7 +1206,7 @@ export class LoadService {
   ) {
     this.functions
       .httpsCallable('getTraitRarity')({
-        token: nft.tokenID,
+        token: nft.tokenId,
         abi: THRED_MARKET.abi,
         thredMarketplace,
         address: collection.contract,
@@ -1822,7 +1214,6 @@ export class LoadService {
       .pipe(first())
       .subscribe(
         async (resp) => {
-          console.log(resp);
           callback(resp);
         },
         (err) => {
@@ -1888,7 +1279,6 @@ export class LoadService {
       .pipe(first())
       .subscribe(
         async (resp) => {
-          console.log(resp);
           callback(resp);
         },
         (err) => {
@@ -1918,26 +1308,13 @@ export class LoadService {
       );
   }
 
-  async createBulkPayment(
-    type: string,
-    callback: (id: string, err?: string) => any
-  ) {
-    this.functions
-      .httpsCallable('createBulkIntent')({ type: type })
-      .pipe(first())
-      .subscribe(
-        async (resp) => {
-          callback(resp);
-        },
-        (err) => {
-          console.error({ err });
-          callback('', err);
-        }
-      );
-  }
 
-  async linkCard(details: Dict<any>, callback: (err?: any) => any) {
-    var billing = Globals.billingInfo;
+  async linkCard(
+    billing: any,
+    details: Dict<any>,
+    callback: (err?: any) => any
+  ) {
+    // var billing = Globals.billingInfo;
 
     let uid = (await this.isLoggedIn())?.uid;
 
@@ -2035,399 +1412,95 @@ export class LoadService {
           }
         });
     } else {
-      let data = {
-        Administrative_Area: billing?.admin_area,
-        City: billing?.city,
-        Country: billing?.country,
-        First_Name: billing?.name.split(' ').slice(0, -1).join(' '),
-        Last_Name: billing?.name.split(' ').slice(-1).join(' '),
-        Postal_Code: billing?.postal,
-        Street: billing?.street,
-        Company: billing?.company ?? '',
-        Unit_Number: billing?.unit ?? '',
-      };
+      callback("Missing Fields.")
+    }
+  }
 
-      if (uid) {
-        await this.db
-          .collection('Users/' + uid + '/Payment_Info')
-          .doc('Billing_Address')
-          .set(data);
+  async getPlans(callback: (arr?: Array<Plan>) => any) {
+    var query = this.db.collection('Plans');
+    var arr = new Array<Plan>();
+    let sub = query.get().subscribe((docDatas) => {
+      docDatas.docs.forEach((d) => {
+        arr.push(d.data() as Plan);
+      });
+      callback(
+        arr.sort(function (a, b) {
+          if (a.price < b.price) {
+            return -1;
+          }
+          if (a.price > b.price) {
+            return 1;
+          }
+          return 0;
+        })
+      );
+      if (isPlatformBrowser(this.platformID)) {
+        sub.unsubscribe();
       }
-      if (this.myCallback) this.myCallback();
-    }
+    });
   }
 
-  getBlog(blogID: string) {
-    Globals.selectedBlog = new Blog();
-
-    let sub = this.db
-      .collectionGroup('Blogs', (ref) => ref.where('Blog_ID', '==', blogID))
-      .valueChanges()
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc) => {
-          const docData = doc as DocumentData;
-          if (docData) {
-            let uid = docData.UID as string;
-            let title = docData.Title as string;
-            let timestamp = (
-              docData.Timestamp as firebase.firestore.Timestamp
-            ).toDate();
-            let isAvailable = docData.isAvailable as boolean;
-            let blogID = docData.Blog_ID as string;
-            let blogItems = docData.Blog_Items as Array<Dict<any>>;
-            let coverURL = docData.Cover_URL as string;
-
-            let blog = new Blog(
-              uid,
-              timestamp,
-              '',
-              isAvailable,
-              title,
-              blogItems,
-              blogID,
-              coverURL
-            );
-
-            Globals.selectedBlog = blog;
-          }
-        });
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
+  async getUtilities(callback: (arr?: Array<any>) => any) {
+    var query = this.db.collection('Utility');
+    var arr = new Array<any>();
+    let sub = query.get().subscribe((docDatas) => {
+      docDatas.docs.forEach((d) => {
+        arr.push(d.data());
       });
-  }
-
-  async getAllBillingInfo() {
-    let uid = (await this.isLoggedIn())?.uid;
-    let sub = this.db
-      .collection('Users/' + uid + '/Payment_Info')
-      .doc('Identifiers')
-      .valueChanges()
-      .subscribe((doc) => {
-        let docData = doc as DocumentData;
-
-        if (docData) {
-          var card_type = docData.card_type as string;
-          if (card_type) {
-            card_type = card_type[0].toUpperCase() + card_type.slice(1);
+      callback(
+        arr.sort(function (a, b) {
+          if (a.id > b.id) {
+            return -1;
           }
-          let card_last_4 = docData.card_last_4 as string;
-
-          if (Globals.billingInfo) {
-            Globals.billingInfo!.brand = card_type;
-            Globals.billingInfo!.number = card_last_4;
-          } else {
-            Globals.billingInfo = new BillingInfo(
-              undefined,
-              undefined,
-              card_last_4,
-              card_type
-            );
+          if (a.id < b.id) {
+            return 1;
           }
-        } else {
-          Globals.billingInfo = new BillingInfo();
-        }
-        this.getBillingAddress();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
+          return 0;
+        })
+      );
+      if (isPlatformBrowser(this.platformID)) {
+        sub.unsubscribe();
+      }
+    });
   }
 
-  async getBillingInfo() {
-    let uid = (await this.isLoggedIn())?.uid;
-    let sub = this.db
-      .collection('Users/' + uid + '/Payment_Info')
-      .doc('Identifiers')
-      .valueChanges()
-      .subscribe((doc) => {
-        let docData = doc as DocumentData;
-
-        if (docData) {
-          let card_type = docData.card_type as string;
-          let card_last_4 = docData.card_last_4 as string;
-
-          if (Globals.billingInfo) {
-            Globals.billingInfo!.brand = card_type;
-            Globals.billingInfo!.number = card_last_4;
-          } else {
-            Globals.billingInfo = new BillingInfo(
-              undefined,
-              undefined,
-              card_last_4,
-              card_type
-            );
-          }
-        } else {
-          Globals.billingInfo = new BillingInfo();
-        }
-
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-  async getShippingAddress(oUID?: string) {
-    var uid = oUID;
-    if (!uid) {
-      uid = (await this.isLoggedIn())?.uid;
-    }
-
-    let sub = this.db
-      .collection('Users/' + uid + '/Payment_Info')
-      .doc('Delivery_Address')
-      .valueChanges()
-      .subscribe((doc) => {
-        Globals.shippingInfo = undefined;
-
-        let docData = doc as DocumentData;
-
-        if (docData) {
-          let area = docData.Administrative_Area as string;
-          let city = docData.City as string;
-          let country = docData.Country as string;
-          let firstName = docData.First_Name as string;
-          let lastName = docData.Last_Name as string;
-          let name = firstName + ' ' + lastName;
-          let phone = docData.Phone_Num as string;
-          let postal_code = docData.Postal_Code as string;
-          let street = docData.Street as string;
-          var company: string | undefined = (docData.Company as string) ?? '';
-          var email: string | undefined = (docData.Email as string) ?? '';
-          if (company == '') company = undefined;
-          if (email == '') email = undefined;
-          var unit: string | undefined = (docData.Unit_Number as string) ?? '';
-          if (unit == '') unit = undefined;
-
-          Globals.shippingInfo = new ShippingInfo(
-            name,
-            company,
-            street,
-            city,
-            country,
-            area,
-            unit,
-            postal_code,
-            phone,
-            undefined,
-            email
-          );
-        } else {
-          Globals.shippingInfo = new ShippingInfo();
-        }
-
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-
-  async getBillingAddress() {
+  async getBillingInfo(callback: (info?: any) => any) {
     let uid = (await this.isLoggedIn())?.uid;
 
-    let sub = this.db
-      .collection('Users/' + uid + '/Payment_Info')
-      .doc('Billing_Address')
-      .valueChanges()
-      .subscribe((doc) => {
-        // Globals.selectedBlog = undefined
-
-        let docData = doc as DocumentData;
-
-        if (docData) {
-          let area = docData.Administrative_Area as string;
-          let city = docData.City as string;
-          let country = docData.Country as string;
-          let firstName = docData.First_Name as string;
-          let lastName = docData.Last_Name as string;
-          let name = firstName + ' ' + lastName;
-          let postal_code = docData.Postal_Code as string;
-          let street = docData.Street as string;
-          var company: string | undefined = (docData.Company as string) ?? '';
-          if (company == '') company = undefined;
-          var unit: string | undefined = (docData.Unit_Number as string) ?? '';
-          if (unit == '') unit = undefined;
-
-          if (Globals.billingInfo) {
-            Globals.billingInfo!.admin_area = area;
-            Globals.billingInfo!.city = city;
-            Globals.billingInfo!.country = country;
-            Globals.billingInfo!.name = name;
-            Globals.billingInfo!.postal = postal_code;
-            Globals.billingInfo!.street = street;
-            Globals.billingInfo!.company = company ?? '';
-          } else {
-            Globals.billingInfo = new BillingInfo(
-              name,
-              company,
-              undefined,
-              undefined,
-              street,
-              city,
-              country,
-              area,
-              unit,
-              postal_code,
-              undefined
-            );
-          }
-        } else {
-          Globals.billingInfo = new BillingInfo();
+    this.functions
+      .httpsCallable('getCardInfo')({ uid })
+      .pipe(first())
+      .subscribe(
+        (resp) => {
+          callback(resp);
+        },
+        (err) => {
+          callback(undefined);
+          console.error({ err });
         }
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
+      );
   }
+
+  async getBigCommerceStore(callback: (info?: any) => any) {
+    this.functions
+      .httpsCallable('getBigCommerceStore')({})
+      .pipe(first())
+      .subscribe(
+        (resp) => {
+          callback(resp);
+        },
+        (err) => {
+          callback(undefined);
+          console.error({ err });
+        }
+      );
+  }
+
 
   isUndefined(element: any) {
     return element == undefined || element == null || element == '';
   }
 
-  async getTax(taxData: BillingInfo) {
-    // let uid = (await this.isLoggedIn())?.uid
-
-    const country = taxData.country;
-    const admin = taxData.admin_area;
-    const street = taxData.street;
-    const postal = taxData.postal;
-
-    var salesTax = 0.0;
-
-    if (country === 'Canada' || country === 'CA') {
-      let a = Globals.matchingProvince(admin)?.abbreviation ?? 'ON';
-      let sub = this.db
-        .collection('Canada_Tax_Docs')
-        .doc(a)
-        .get()
-        .subscribe((doc) => {
-          // Globals.selectedBlog = undefined
-
-          let taxDoc = doc.data() as DocumentData;
-
-          if (taxDoc) {
-            if (!this.isUndefined(taxDoc.HST)) {
-              salesTax += taxDoc.HST;
-            } else {
-              if (!this.isUndefined(taxDoc.GST)) {
-                salesTax += taxDoc.GST;
-              }
-              if (!this.isUndefined(taxDoc.PST)) {
-                salesTax += taxDoc.PST;
-              }
-              if (!this.isUndefined(taxDoc.QST)) {
-                salesTax += taxDoc.QST;
-              }
-            }
-          }
-          Globals.shippingTax = salesTax;
-          if (this.myCallback) this.myCallback();
-          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        });
-    } else if (
-      country === 'United States' ||
-      country === 'US' ||
-      country === 'USA'
-    ) {
-      Globals.shippingTax = salesTax;
-      if (this.myCallback) this.myCallback();
-    } else if (
-      country === 'United Kingdom' ||
-      country === 'UK' ||
-      country === 'GB'
-    ) {
-      let sub = this.db
-        .collection('Canada_Tax_Docs')
-        .doc(admin)
-        .valueChanges()
-        .subscribe((doc) => {
-          // Globals.selectedBlog = undefined
-
-          let taxDoc = doc as DocumentData;
-
-          if (taxDoc) {
-            if (!this.isUndefined(taxDoc.HST)) {
-              salesTax += taxDoc.VAT;
-            }
-          }
-          Globals.shippingTax = salesTax;
-          if (this.myCallback) this.myCallback();
-          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        });
-    } else if (
-      country === 'Australia' ||
-      country === 'AU' ||
-      country === 'AUD'
-    ) {
-      let sub = this.db
-        .collection('Canada_Tax_Docs')
-        .doc(admin)
-        .valueChanges()
-        .subscribe((doc) => {
-          // Globals.selectedBlog = undefined
-
-          let taxDoc = doc as DocumentData;
-
-          if (taxDoc) {
-            if (!this.isUndefined(taxDoc.HST)) {
-              salesTax += 0.1;
-            }
-          }
-          Globals.shippingTax = salesTax;
-          if (this.myCallback) this.myCallback();
-          if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        });
-    }
-  }
-
-  async addToCart(mappedData: Dict<any>) {
-    let uid = (await this.isLoggedIn())?.uid;
-
-    const storeUID = Globals.storeInfo?.uid;
-
-    if (!storeUID) {
-      return;
-    }
-
-    let data = {
-      Cart_List: firebase.firestore.FieldValue.arrayUnion(mappedData),
-      UID: storeUID,
-      Timestamp: mappedData.Timestamp,
-    };
-
-    if (uid) {
-      await this.db
-        .collection('Users/' + uid + '/Cart_Info')
-        .doc('Cart_List_' + storeUID)
-        .set(data, { merge: true });
-    }
-    this.rootComponent!.cart = undefined;
-    this.rootComponent?.getCart();
-
-    let homePopup = Globals.storeInfo?.popups?.find((popup) => {
-      return popup.trigger == 1;
-    });
-    if (homePopup) {
-      this.checkPopup(homePopup, uid!, () => {
-        if (!sessionStorage.getItem('product_popup')) {
-          this.rootComponent?.showPopUp(homePopup!);
-          sessionStorage.setItem('product_popup', '1');
-        }
-      });
-    }
-  }
-
-  async saveUser(mappedData: Dict<any>, callback: (success: boolean) => any) {
-    let uid = (await this.isLoggedIn())?.uid;
-
-    if (mappedData.profile_pic) {
-      let picID = await this.uploadFile(mappedData, uid);
-      mappedData.picID = picID;
-    }
-
-    await this.saveUsername(mappedData, uid);
-
-    if (Globals.storeInfo?.profileLink) {
-      this.rootComponent?.setFavIcon(
-        Globals.storeInfo?.profileLink?.toString() ?? ''
-      );
-    }
-    callback(true);
-  }
 
   isBase64(str: string) {
     try {
@@ -2437,250 +1510,15 @@ export class LoadService {
     }
   }
 
-  async saveInventory(
-    inv: Inventory,
-    callback: (inventory?: Inventory) => any,
-    uid?: string
-  ) {
-    var data: Dict<any> = {
-      amount: inv.amount,
-      name: inv.name,
-      id: '',
-      auto_reload: inv.autoReload ?? false,
-      description: inv.desc,
-      category: inv.category,
-      variations: inv.variations,
-      sizes: inv.sizes,
-      timestamp: inv.timestamp ?? new Date(),
-      is_custom: true,
-    };
-
-    if ((inv.code ?? '').trim() == '') {
-      data['id'] = uuid().replace('-', '');
-      inv.code = data.id;
-    }
-
-    if ((inv.id ?? '').trim() == '') {
-      inv.id = this.db.collection('Users/' + uid + '/Inventory').doc().ref.id;
-    }
-
-    if (
-      (inv.img ?? '').trim() != '' &&
-      this.isBase64(inv.img?.replace(/^[\w\d;:\/]+base64\,/g, ''))
-    ) {
-      var url = inv.img;
-      url = (await this.uploadInventoryImages(inv.img, inv.id, uid)) as string;
-      var split = url.split('&token=');
-      url = split[0];
-
-      if (url) {
-        data.img = url;
-      }
-    }
-
-    if (uid) {
-      await this.db
-        .collection('Users/' + uid + '/Inventory')
-        .doc(inv.id)
-        .set(data, { merge: true });
-      callback(inv);
-      return;
-    }
-    callback(undefined);
-    return;
-  }
-
-  async saveEmail(mappedData: Dict<any>, callback: (success: boolean) => any) {
-    let user = await this.isLoggedIn();
-
-    let email = user?.email!;
-    let password = mappedData.password;
-    let newEmail = mappedData.newEmail;
-
-    const credentials = firebase.auth.EmailAuthProvider.credential(
-      email,
-      password
-    );
-
-    user?.reauthenticateWithCredential(credentials).then(async (result) => {
-      if (result) {
-        user?.updateEmail(newEmail).then(async () => {
-          callback(true);
-        });
-      } else {
-        callback(false);
-      }
-    });
-  }
-
-  async savePassword(
-    mappedData: Dict<any>,
-    callback: (success: boolean) => any
-  ) {
-    let user = await this.isLoggedIn();
-
-    let email = user?.email!;
-    let password = mappedData.password;
-    let newPassword = mappedData.newPassword;
-
-    const credentials = firebase.auth.EmailAuthProvider.credential(
-      email,
-      password
-    );
-
-    user?.reauthenticateWithCredential(credentials).then(async (result) => {
-      if (result) {
-        user?.updatePassword(newPassword).then(async () => {
-          callback(true);
-        });
-      } else {
-        callback(false);
-      }
-    });
-  }
-
-  // async updateProduct(mappedData: Dict<any>, product?: NFT) {
-  //   let uid = (await this.isLoggedIn())?.uid ?? '';
-  //   let productID = mappedData.productID;
-
-  //   if (mappedData.images?.length > 0) {
-  //     var images = new Array<{
-  //       index: number;
-  //       img: string;
-  //     }>();
-
-  //     const promises = await mappedData.images.map(
-  //       async (image: Dict<string>, index: number) => {
-  //         var url = image.img;
-  //         url = (await this.uploadProductImages(
-  //           image.img,
-  //           image.type,
-  //           productID,
-  //           uid
-  //         )) as string;
-  //         var split = url.split('&token=');
-  //         url = split[0];
-
-  //         if (image.type.includes('link')) {
-  //           images.push({
-  //             img: url,
-  //             index: index,
-  //           });
-  //         }
-  //       }
-  //     );
-
-  //     await Promise.all(promises);
-
-  //     images.sort(function (a, b) {
-  //       if (a.index < b.index) {
-  //         return -1;
-  //       }
-  //       if (a.index > b.index) {
-  //         return 1;
-  //       }
-  //       return 0;
-  //     });
-
-  //     let data: Dict<any> = {
-  //       Name: mappedData.name ?? 'Post',
-  //       Search_Name: mappedData.name.toLowerCase() ?? 'post',
-  //       Description: mappedData.description ?? '',
-  //       Price_Cents: mappedData.price ?? 2000,
-  //       Available: mappedData.available ?? true,
-  //       Public: true,
-  //       SKU: mappedData.sku ?? null,
-  //       Images: images,
-  //     };
-  //     if (mappedData.color && mappedData.color?.trim() != '') {
-  //       data.Template_Color = mappedData.color;
-  //     }
-  //     await this.db
-  //       .collection('Users/' + uid + '/Products')
-  //       .doc(productID)
-  //       .update(data);
-
-  //     // this.addProduct(product)
-
-  //     let k = new NFT(
-  //       uid,
-  //       productID,
-  //       data.Description,
-  //       productID,
-  //       product?.timestamp,
-  //       undefined,
-  //       product?.blurred,
-  //       data.Price_Cents,
-  //       data.Name,
-  //       product?.templateColor,
-  //       product?.likes,
-  //       product?.liked,
-  //       product?.comments,
-  //       data.Available,
-  //       true,
-  //       product?.productType,
-  //       product?.displaySide,
-  //       product?.supportedSides,
-  //       images[0].img,
-  //       images
-  //     );
-
-  //     this.editProduct(k);
-  //   }
-  //   return console.log('Updated Product');
-  // }
-
-  async deleteProduct(mappedData: Dict<any>) {
-    // let uid = (await this.isLoggedIn())?.uid ?? '';
-    // let productID = mappedData.productID;
-    // let data = {
-    //   Available: false,
-    // };
-    // await this.db
-    //   .collection('Users/' + uid + '/Products')
-    //   .doc(productID)
-    //   .update(data);
-    // let product = new NFT(undefined, undefined, undefined, productID);
-    // this.removeProduct(product);
-  }
-
-  async saveCollectionInfo(collection: Collection, uid?: string) {
-    let data = JSON.parse(JSON.stringify(collection));
-
-    if (uid && collection.contract) {
-      await this.db
-        .collection('Collections')
-        .doc(collection.contract)
-        .set(data, { merge: true });
-
-      return data;
-
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
-
-      // if (matchingTheme){
-      //   Globals.userInfo!.colorStyle = matchingTheme
-      // }
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // Globals.userInfo!.fontName = mappedData.font
-
-      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-      //   if (matchingTheme){
-      //     Globals.storeInfo!.colorStyle = matchingTheme
-      //     Globals.storeInfo!.fontName = mappedData.font
-      //   }
-      // }
-    }
-    return undefined;
-  }
 
   async deployCollection(
     name: string,
     symbol: string,
     abi: any,
     bytecode: any,
-    currency: any,
     domain: string,
+    royaltyAddress: string,
+    generatePage: boolean,
     callback: (collection?: Collection) => any
   ) {
     let data = {
@@ -2688,10 +1526,10 @@ export class LoadService {
       symbol,
       abi,
       bytecode,
-      currency,
       domain,
       thredMarketplace,
-      isNative: currency.token == null,
+      royaltyAddress,
+      generatePage
     };
 
     this.functions
@@ -2701,8 +1539,6 @@ export class LoadService {
         async (resp) => {
           if (resp as Collection) {
             callback(resp);
-          } else {
-            console.log(resp);
           }
         },
         (err) => {
@@ -2714,92 +1550,19 @@ export class LoadService {
       );
   }
 
-  async createProduct(mappedData: Dict<any>) {
-    return new Promise(async (resolve, reject) => {
-      let uid = (await this.isLoggedIn())?.uid ?? '';
-
-      let productID = this.db.collection('Users/' + uid + '/Products').doc()
-        .ref.id;
-
-      let data = (await this.saveProductInfo(mappedData, productID, uid)) ?? {};
-
-      if (mappedData.images?.length > 0) {
-        var images = new Array<{
-          index: number;
-          img: string;
-        }>();
-
-        const promises = await mappedData.images.map(
-          async (image: Dict<string>, index: number) => {
-            var url = (await this.uploadProductImages(
-              image.img,
-              image.type,
-              productID,
-              uid
-            )) as string;
-            var split = url.split('&token=');
-            url = split[0];
-            //firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' + uid + '%2FProducts%2F' + productID + '%2Flink_' + productID + '.png?alt=media
-            if (image.type.includes('link')) {
-              images.push({
-                img: url,
-                index: index,
-              });
-            }
-          }
-        );
-        await Promise.all(promises);
-
-        await this.db
-          .collection('Users/' + uid + '/Products')
-          .doc(productID)
-          .update({ Images: images });
-
-        let url = mappedData.images.filter((obj: Dict<string>) => {
-          return obj.type == 'link_';
-        })[0].img as string;
-        let product = new Product(
-          uid,
-          productID,
-          data.Description,
-          productID,
-          data.Timestamp,
-          undefined,
-          data.Blurred,
-          data.Price_Cents,
-          data.Name,
-          data.Template_Color,
-          data.Likes,
-          false,
-          data.Comments,
-          data.Available,
-          data.Public,
-          data.Type,
-          data.Side,
-          data.sides,
-          url,
-          images,
-          data.Custom
-        );
-
-        resolve(product);
-        // Globals.products?.unshift(product)
-      }
-    });
-  }
 
   async saveStore(mappedData: Dict<any>) {
-    let uid = (await this.isLoggedIn())?.uid;
+    // let uid = (await this.isLoggedIn())?.uid;
 
-    if (mappedData.images?.length > 0) {
-      mappedData.image_list = new Array<string>();
-      await mappedData.images.forEach(async (image: Dict<string>) => {
-        mappedData.image_list.push(image.type);
-        let url = await this.uploadStoreImages(image.img, image.type, uid);
-      });
-    }
+    // if (mappedData.images?.length > 0) {
+    //   mappedData.image_list = new Array<string>();
+    //   await mappedData.images.forEach(async (image: Dict<string>) => {
+    //     mappedData.image_list.push(image.type);
+    //     let url = await this.uploadStoreImages(image.img, image.type, uid);
+    //   });
+    // }
 
-    await this.saveStoreInfo(mappedData, uid);
+    // await this.saveStoreInfo(mappedData, uid);
   }
 
   private async saveNftImage(image: string, productID: string) {
@@ -2813,86 +1576,12 @@ export class LoadService {
       'base64'
     );
 
-    // const task = await this.storage.upload(filePath, byteArray);
     await ref.put(byteArray);
     const url = this.getURL(productID);
 
-    // if (type == "theme"){
-    //   Globals.userInfo!.themeLink = url
-
-    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-    //     Globals.storeInfo!.themeLink = url
-    //   }
-    // }
-    // else if (type == "home"){
-    //   Globals.userInfo!.homeLink = url
-
-    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-    //     Globals.storeInfo!.homeLink = url
-    //   }
-    // }
-    // else if (type == "action"){
-
-    //   Globals.userInfo!.actionLink = url
-
-    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-    //     Globals.storeInfo!.actionLink = url
-    //   }
-    // }
     return url;
   }
 
-  private async uploadProductImages(
-    image: string,
-    type: string,
-    productID: string,
-    uid?: string
-  ) {
-    const filePath =
-      'Users/' +
-      uid +
-      '/Products/' +
-      productID +
-      '/' +
-      type +
-      productID +
-      '.png';
-    let ref = this.storage.ref(filePath);
-
-    const byteArray = Buffer.from(
-      image.replace(/^[\w\d;:\/]+base64\,/g, ''),
-      'base64'
-    );
-
-    // const task = await this.storage.upload(filePath, byteArray);
-    const task = await ref.put(byteArray);
-    const url = await task.ref.getDownloadURL();
-
-    // if (type == "theme"){
-    //   Globals.userInfo!.themeLink = url
-
-    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-    //     Globals.storeInfo!.themeLink = url
-    //   }
-    // }
-    // else if (type == "home"){
-    //   Globals.userInfo!.homeLink = url
-
-    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-    //     Globals.storeInfo!.homeLink = url
-    //   }
-    // }
-    // else if (type == "action"){
-
-    //   Globals.userInfo!.actionLink = url
-
-    //   if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-    //     Globals.storeInfo!.actionLink = url
-    //   }
-    // }
-    return url;
-    return undefined;
-  }
 
   private async uploadLayoutImages(image: string, type: string, uid?: string) {
     const filePath = 'Users/' + uid + '/Layouts/' + type + '.png';
@@ -3015,258 +1704,160 @@ export class LoadService {
     return undefined;
   }
 
-  async updateNFT(mappedData: NFT, uid?: string, productID?: string) {
-    //add token later
-
-    var id = productID;
-
-    if (!id) {
-      id = mappedData.contractID + mappedData.tokenID;
-    }
-
-    let data = JSON.parse(
-      JSON.stringify({
-        forSale: mappedData.forSale,
-        Lazy_Hash: mappedData.lazyHash,
-      } as Dict<any>)
-    );
-
-    data.Product_ID = id;
-
-    if (uid) {
-      await this.db
-        .collection('Users/' + uid + '/Products')
-        .doc(id)
-        .update(data);
-
-      return id;
-
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
-
-      // if (matchingTheme){
-      //   Globals.userInfo!.colorStyle = matchingTheme
-      // }
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // Globals.userInfo!.fontName = mappedData.font
-
-      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-      //   if (matchingTheme){
-      //     Globals.storeInfo!.colorStyle = matchingTheme
-      //     Globals.storeInfo!.fontName = mappedData.font
-      //   }
-      // }
-    }
-    return undefined;
-  }
-
   async saveNFT(
-    mappedData: NFT,
-    uid?: string,
-    productID?: string,
-    image?: string
+    collectionAddress: string,
+    name: string,
+    description: string,
+    model: Blob,
+    img: string,
+    traits: Dict<any>[],
+    royalty: number = 0,
+    price: number = 0,
+    skybox: string,
+    utility: any[],
+    callback: (nft?: NFT) => any
   ) {
     //add token later
 
-    var id = productID;
+    this.getCollection(collectionAddress, async (col?: Collection) => {
+      if (col){
+        const image = await this.saveNftImage(img, `${collectionAddress}${(col.collectionCount ?? 0) + 1}`)
 
-    if (!id) {
-      id = mappedData.contractID + mappedData.tokenID;
-    }
+        const added = await client.add(model, {
+          progress: (prog) => console.log(`received: ${prog}`),
+        });
 
-    if (image) {
-      await this.saveNftImage(image, id);
-    }
+        const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
+      
+        var data1 = {
+          name,
+          description,
+          image,
+          model: added,
+          skybox,
+          traits: traits && traits !== [] ? traits : undefined,
+          utility,
+        };
+      
+        const data2 = JSON.stringify(data1);
+      
+        const added2 = await client.add(data2);
+        const url = `https://ipfs.infura.io/ipfs/${added2.path}`;
 
-    let data = JSON.parse(
-      JSON.stringify({
-        Metadata: mappedData.metadata,
-        Token_ID: mappedData.tokenID,
-        Contract_Address: mappedData.contractID,
-        Owner_Address: mappedData.owner,
-        Sold: false,
-        Lazy: true,
-        Format: mappedData.format,
-        Royalty: mappedData.royalty,
-        forSale: true,
-        Lazy_Hash: mappedData.lazyHash,
-        Content: mappedData.format,
-        Timestamp: new Date(),
-        Name: mappedData.name,
-        Description: mappedData.description,
-        Traits: mappedData.traits ?? [],
-        marketAddress: thredMarketplace,
-      } as Dict<any>)
-    );
-
-    data.Product_ID = id;
-
-    if (uid) {
-      await this.db
-        .collection('Users/' + uid + '/Products')
-        .doc(id)
-        .set(data, { merge: true });
-
-      return id;
-    }
-    return undefined;
+        let data = JSON.parse(
+          JSON.stringify({
+            collectionAddress,
+            name,
+            description,
+            model: url2,
+            skybox: skybox,
+            img: image,
+            info: JSON.parse(data2),
+            infoUrl: url,
+            royalty,
+            price,
+            utility,
+          } as Dict<any>)
+        );
+    
+        this.functions
+          .httpsCallable('generateAsset')(data)
+          .pipe(first())
+          .subscribe(
+            async (resp) => {
+              if (resp as NFT) {
+                callback(resp as NFT);
+              }
+            },
+            (err) => {
+              var errorCode = err.code;
+              var errorMessage = err.message;
+              callback(undefined);
+              console.log(errorMessage);
+            }
+          );
+      }
+    })
+    
+    
   }
 
-  async syncNFT(nft: NFT, callback: (success: boolean) => any) {
-    let data = {
-      uid: Globals.storeInfo.uid,
-      docID: nft.docID,
-      currentMarketAddress: nft.marketAddress,
-      newMarketAddress: thredMarketplace,
-    };
-    this.functions
-      .httpsCallable('syncAsset')(data)
-      .pipe(first())
-      .subscribe(
-        async (resp) => {
-          if ((resp as boolean) && resp == true) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        },
-        (err) => {
-          var errorCode = err.code;
-          var errorMessage = err.message;
-          callback(false);
-          console.log(errorCode);
-        }
-      );
-  }
 
-  async saveProductInfo(
-    mappedData: Dict<any>,
-    productID: string,
-    uid?: string
-  ) {
-    let data = {
-      Name: mappedData.name ?? 'Post',
-      Search_Name: mappedData.name.toLowerCase() ?? 'post',
-      Description: mappedData.description ?? '',
-      Price_Cents: mappedData.price ?? 0,
-      UID: uid,
-      Blurred: false,
-      Timestamp: new Date(),
-      Template_Color: mappedData.templateColor ?? null,
-      Likes: 0,
-      Comments: 0,
-      Has_Picture: false,
-      Product_ID: productID,
-      Available: true,
-      Public: false,
-      Custom: mappedData.isCustom ?? false,
-      Type: mappedData.productType ?? 'ATC1000',
-      Side: mappedData.displaySide ?? null,
-      Sides: mappedData.sides ?? [],
-    } as Dict<any>;
+  // async saveStoreInfo(mappedData: Dict<any>, uid?: string) {
+  //   var data: Dict<any> = {};
 
-    if (uid) {
-      await this.db
-        .collection('Users/' + uid + '/Products')
-        .doc(productID)
-        .set(data, { merge: true });
+  //   if (mappedData.slogan) {
+  //     data['Slogan'] = mappedData.slogan ?? '';
+  //   }
 
-      return data;
+  //   if (mappedData.indicator) {
+  //     data['indicator'] = mappedData.indicator;
+  //   }
 
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // let matchingTheme = Globals.themes?.filter(theme => theme.name == mappedData.theme.name)[0]
+  //   if (mappedData.theme) {
+  //     data['store_style'] = mappedData.theme;
+  //   }
 
-      // if (matchingTheme){
-      //   Globals.userInfo!.colorStyle = matchingTheme
-      // }
-      // Globals.userInfo!.slogan = mappedData.slogan
-      // Globals.userInfo!.fontName = mappedData.font
+  //   if (mappedData.font) {
+  //     data['font'] = mappedData.font;
+  //   }
 
-      // if (Globals.storeInfo?.uid == Globals.userInfo?.uid){
-      //   if (matchingTheme){
-      //     Globals.storeInfo!.colorStyle = matchingTheme
-      //     Globals.storeInfo!.fontName = mappedData.font
-      //   }
-      // }
-    }
-    return undefined;
-  }
+  //   if (mappedData.image_list) {
+  //     data['image_list'] = firebase.firestore.FieldValue.arrayUnion(
+  //       ...mappedData.image_list
+  //     );
+  //   }
 
-  async saveStoreInfo(mappedData: Dict<any>, uid?: string) {
-    var data: Dict<any> = {};
+  //   if (mappedData.banners) {
+  //     data['banners'] = mappedData.banners;
+  //   }
+  //   if (mappedData.banner_style != undefined) {
+  //     data['banner_style'] = mappedData.banner_style ?? 0;
+  //   }
 
-    if (mappedData.slogan) {
-      data['Slogan'] = mappedData.slogan ?? '';
-    }
+  //   if (uid && Object.keys(data).length > 0) {
+  //     await this.db.collection('Users').doc(uid).update(data);
 
-    if (mappedData.indicator) {
-      data['indicator'] = mappedData.indicator;
-    }
+  //     if (mappedData.slogan) {
+  //       Globals.storeInfo!.slogan = mappedData.slogan;
+  //     }
 
-    if (mappedData.theme) {
-      data['store_style'] = mappedData.theme;
-    }
+  //     if (mappedData.theme) {
+  //       let matchingTheme = Globals.themes
+  //         ?.find((theme) => theme.name == mappedData.theme?.class)
+  //         ?.themes.find((theme) => {
+  //           return theme.name == mappedData.theme?.name;
+  //         });
 
-    if (mappedData.font) {
-      data['font'] = mappedData.font;
-    }
+  //       if (matchingTheme) {
+  //         Globals.storeInfo!.colorStyle = matchingTheme;
+  //       }
+  //     }
 
-    if (mappedData.image_list) {
-      data['image_list'] = firebase.firestore.FieldValue.arrayUnion(
-        ...mappedData.image_list
-      );
-    }
+  //     if (mappedData.font) {
+  //       Globals.storeInfo!.fontName = mappedData.font;
+  //     }
 
-    if (mappedData.banners) {
-      data['banners'] = mappedData.banners;
-    }
-    if (mappedData.banner_style != undefined) {
-      data['banner_style'] = mappedData.banner_style ?? 0;
-    }
+  //     // if (mappedData.image_list){
+  //     //   data["image_list"] = firebase.firestore.FieldValue.arrayUnion(...mappedData.image_list)
+  //     // }
 
-    if (uid && Object.keys(data).length > 0) {
-      await this.db.collection('Users').doc(uid).update(data);
+  //     if (mappedData.banners) {
+  //       Globals.storeInfo!.banners = mappedData.banners;
+  //     }
 
-      if (mappedData.slogan) {
-        Globals.storeInfo!.slogan = mappedData.slogan;
-      }
+  //     if (mappedData.banner_style) {
+  //       Globals.storeInfo!.bannerStyle = mappedData.banner_style ?? 0;
+  //     }
 
-      if (mappedData.theme) {
-        let matchingTheme = Globals.themes
-          ?.find((theme) => theme.name == mappedData.theme?.class)
-          ?.themes.find((theme) => {
-            return theme.name == mappedData.theme?.name;
-          });
+  //     // Globals.userInfo!.themeLink = mappedData.banners
+  //     // Globals.userInfo!.banners = mappedData.banners
+  //     // Globals.userInfo!.banners = mappedData.banners
 
-        if (matchingTheme) {
-          Globals.storeInfo!.colorStyle = matchingTheme;
-        }
-      }
-
-      if (mappedData.font) {
-        Globals.storeInfo!.fontName = mappedData.font;
-      }
-
-      // if (mappedData.image_list){
-      //   data["image_list"] = firebase.firestore.FieldValue.arrayUnion(...mappedData.image_list)
-      // }
-
-      if (mappedData.banners) {
-        Globals.storeInfo!.banners = mappedData.banners;
-      }
-
-      if (mappedData.banner_style) {
-        Globals.storeInfo!.bannerStyle = mappedData.banner_style ?? 0;
-      }
-
-      // Globals.userInfo!.themeLink = mappedData.banners
-      // Globals.userInfo!.banners = mappedData.banners
-      // Globals.userInfo!.banners = mappedData.banners
-
-      Globals.sInfo.next(Globals.storeInfo);
-    }
-    if (this.myCallback) this.myCallback();
-  }
+  //     Globals.sInfo.next(Globals.storeInfo);
+  //   }
+  //   if (this.myCallback) this.myCallback();
+  // }
 
   getRandomInt(max: 100, oldVal: string) {
     let k = Math.floor(Math.random() * max);
@@ -3277,111 +1868,6 @@ export class LoadService {
     return k.toString();
   }
 
-  private async uploadFile(mappedData: Dict<any>, uid?: string) {
-    let picID = this.getRandomInt(
-      100,
-      Globals.storeInfo!.dpID ?? ''
-    ).toString();
-    const filePath = 'Users/' + uid + '/profile_pic-' + picID + '.jpeg';
-    let ref = this.storage.ref(filePath);
-    const byteArray = new Buffer(
-      mappedData.profile_pic.replace(/^[\w\d;:\/]+base64\,/g, ''),
-      'base64'
-    );
-
-    // const task = await this.storage.upload(filePath, byteArray);
-    const task = await ref.put(byteArray);
-    const url = new URL(await task.ref.getDownloadURL());
-    Globals.storeInfo!.dpID = picID;
-    Globals.storeInfo!.profileLink = url;
-
-    return picID;
-  }
-
-  async saveDomain(
-    domain: string,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    var data: {
-      Custom_URL: any;
-    } = {
-      Custom_URL: '',
-    };
-
-    if (domain && domain.trim() != '') {
-      var splitURL = domain.split('://');
-
-      let domainData = {
-        host: splitURL[1],
-        protocol: splitURL[0],
-        status: 1,
-      };
-      data.Custom_URL = domainData;
-    } else {
-      if (
-        Globals.storeInfo?.customURL ||
-        Globals.storeInfo?.customURL?.fullURL?.trim() != ''
-      ) {
-        data.Custom_URL = firebase.firestore.FieldValue.delete();
-      }
-    }
-
-    if (uid && data) {
-      if (data.Custom_URL.host) {
-        Globals.storeInfo!.customURL = new StoreDomain(
-          data.Custom_URL.host,
-          data.Custom_URL.protocol,
-          data.Custom_URL.status,
-          ''
-        );
-      } else {
-        if (Globals.storeInfo!.customURL) {
-          Globals.storeInfo!.customURL = undefined;
-        }
-      }
-      await this.db.collection('Users').doc(uid).update(data);
-    }
-
-    callback(true);
-  }
-
-  async addPopup(
-    popup: Popup,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    var popups = new Array<Popup>();
-    Globals.storeInfo?.popups?.forEach((p) => {
-      popups.push(p);
-    });
-    var same = popups.find((c) => {
-      return c.trigger == popup.trigger;
-    });
-    if (same) {
-      same.ctaBtnTitle = popup.ctaBtnTitle;
-      same.description = popup.description;
-      same.exitBtnTitle = popup.exitBtnTitle;
-      same.fields = popup.fields;
-      same.title = popup.title;
-      same.trigger = popup.trigger;
-      same.type = popup.type;
-    } else {
-      popups.push(popup);
-    }
-
-    var data = {
-      Popups: JSON.parse(JSON.stringify(popups)),
-    };
-
-    if (uid && data) {
-      await this.db.collection('Users').doc(uid).update(data);
-      if (data.Popups) {
-        Globals.storeInfo!.popups = data.Popups;
-      }
-    }
-    callback(true);
-  }
 
   async deletePage(
     page: Page,
@@ -3436,6 +1922,23 @@ export class LoadService {
 
     await Promise.all(promises1);
 
+    var url = page.img;
+
+    console.log(page.img);
+
+    if (
+      page.img &&
+      this.isBase64(page.img?.replace(/^[\w\d;:\/]+base64\,/g, ''))
+    ) {
+      url = (await this.uploadLayoutImages(
+        page.img,
+        `${page.id}_main`,
+        uid
+      )) as string;
+      var split = url.split('&token=');
+      url = split[0];
+    }
+
     var pages = JSON.parse(JSON.stringify(Globals.storeInfo?.pages ?? []));
 
     let i = pages.findIndex((p: any) => p.id == page.id);
@@ -3448,8 +1951,11 @@ export class LoadService {
       pages[i].fullscreen = page.fullscreen;
       pages[i].seo = page.seo;
       pages[i].loader = page.loader;
+      pages[i].img = url;
+      pages[i].bigcId = page.bigcId
     } else {
       page.id = uuid().replace('-', '');
+      page.img = url;
       pages.push(JSON.parse(JSON.stringify(page)));
     }
 
@@ -3466,167 +1972,6 @@ export class LoadService {
     callback(true);
   }
 
-  async saveData(
-    type: number,
-    info: string,
-    callback: (success: boolean) => any,
-    name?: string,
-    uid?: string
-  ) {
-    let data = {
-      uid: uid,
-      name: name,
-      info: info,
-      type: type,
-    };
-    this.functions
-      .httpsCallable('emailOrPhone')(data)
-      .pipe(first())
-      .subscribe(
-        async (resp) => {
-          if ((resp as boolean) && resp == true) {
-            callback(true);
-          } else {
-            callback(false);
-          }
-        },
-        (err) => {
-          var errorCode = err.code;
-          var errorMessage = err.message;
-          callback(false);
-          console.log(errorCode);
-        }
-      );
-  }
-
-  async addDiscount(
-    coupon: Coupon,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    var coupons = new Array<Coupon>();
-    Globals.storeInfo?.coupons?.forEach((c) => {
-      coupons.push(c);
-    });
-    let same = coupons.find((c) => {
-      return c.code == coupon.code;
-    });
-    if (same) {
-      same.amt = coupon.amt;
-      same.code = coupon.code;
-      same.products = coupon.products;
-      same.type = coupon.type;
-      same.threshold = coupon.threshold;
-      same.auto = coupon.auto;
-      same.style = coupon.style;
-    } else {
-      coupons.push(coupon);
-    }
-    var data = {
-      Coupons: JSON.parse(JSON.stringify(coupons)),
-    };
-    if (uid && data) {
-      await this.db.collection('Users').doc(uid).update(data);
-      if (data.Coupons) {
-        Globals.storeInfo!.coupons = data.Coupons;
-      }
-    }
-    callback(true);
-  }
-
-  async saveHeader(
-    header: Array<string>,
-    footer: Array<Dict<string>>,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    var data = {
-      header_links: header,
-      footer_links: footer,
-    };
-    if (uid && data) {
-      await this.db.collection('Users').doc(uid).update(data);
-      if (data.header_links) {
-        Globals.storeInfo!.header = data.header_links;
-        Globals.storeInfo!.footer = data.footer_links;
-      }
-    }
-    callback(true);
-  }
-
-  async removeDiscount(
-    coupon: Coupon,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    var data = {
-      Coupons: firebase.firestore.FieldValue.arrayRemove(
-        JSON.parse(JSON.stringify(coupon))
-      ),
-    };
-    if (uid && data) {
-      if (data.Coupons) {
-        let p = Globals.storeInfo?.coupons?.find((obj) => {
-          return obj.code == coupon.code;
-        });
-
-        if (p) {
-          let index = Globals.storeInfo?.coupons?.indexOf(p);
-          Globals.storeInfo?.coupons?.splice(index!, 1);
-        }
-      }
-      await this.db.collection('Users').doc(uid).update(data);
-    } else {
-    }
-    callback(true);
-  }
-
-  async removePopup(
-    popup: Popup,
-    callback: (success: boolean) => any,
-    uid?: string
-  ) {
-    var data = {
-      Popups: firebase.firestore.FieldValue.arrayRemove(
-        JSON.parse(JSON.stringify(popup))
-      ),
-    };
-    if (uid && data) {
-      if (data.Popups) {
-        let p = Globals.storeInfo?.popups?.find((obj) => {
-          return obj.trigger == popup.trigger;
-        });
-        if (p) {
-          let index = Globals.storeInfo?.popups?.indexOf(p);
-          Globals.storeInfo?.popups?.splice(index!, 1);
-        }
-      }
-      await this.db.collection('Users').doc(uid).update(data);
-    } else {
-    }
-    callback(true);
-  }
-
-  async saveUsername(mappedData: Dict<any>, uid?: string) {
-    var data: Dict<any> = {
-      Username: mappedData.username,
-      Full_Name: mappedData.full_name,
-      Bio: mappedData.bio,
-    };
-
-    if (mappedData.picID) {
-      data['ProfilePicID'] = mappedData.picID;
-    }
-    if (mappedData.socials) {
-      data['Socials'] = mappedData.socials ?? [];
-    }
-
-    if (uid) {
-      await this.db.collection('Users').doc(uid).update(data);
-      Globals.storeInfo!.username = mappedData.username;
-      Globals.storeInfo!.fullName = mappedData.full_name;
-    }
-  }
 
   openSnackBar(
     message: string,
@@ -3641,44 +1986,6 @@ export class LoadService {
     });
   }
 
-  async changeCart(mappedData: Array<Dict<any>>) {
-    let uid = (await this.isLoggedIn())?.uid;
-
-    let data = {
-      Cart_List: mappedData,
-    };
-
-    const storeUID = Globals.storeInfo?.uid;
-
-    if (!storeUID) {
-      return;
-    }
-
-    if (uid) {
-      await this.db
-        .collection('Users/' + uid + '/Cart_Info')
-        .doc('Cart_List_' + storeUID)
-        .set(data);
-    }
-  }
-
-  async signOut() {
-    await this.auth
-      .signOut()
-      .then(() => {
-        this.rootComponent!.cart = [];
-        this.rootComponent!.signedIn = false;
-        this.rootComponent!.signedInUid = undefined;
-        if (this.myCallback) this.myCallback();
-      })
-      .catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-
-        if (this.errCallback) this.errCallback(errorMessage);
-      });
-    // Sign Out
-  }
 
   isLoggedIn() {
     return this.auth.authState.pipe(first()).toPromise();
@@ -3688,321 +1995,11 @@ export class LoadService {
     return this.auth.authState;
   }
 
-  registerAccount(
-    type: string,
-    callback: (root?: AppComponent, error?: string) => any,
-    credentials?: Dict<string>,
-    affiliate?: string,
-    associated?: string
-  ) {
-    if (type == 'Guest') {
-      this.auth
-        .signInAnonymously()
-        .then(() => {
-          // Signed in..
-          callback(this.rootComponent, undefined);
-        })
-        .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          callback(undefined, errorMessage);
-        });
-    } else if (type == 'Email_UP') {
-      let username = credentials?.username;
-      let password = credentials?.password!;
-      let email = credentials?.email!;
-
-      this.auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(async (result) => {
-          await result.user?.sendEmailVerification();
-          if (result.user && username) {
-            Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false;
-
-            const wallet = ethers.Wallet.createRandom();
-
-            await this.setUsername(
-              result.user?.uid,
-              username,
-              true,
-              affiliate,
-              associated,
-              undefined,
-              undefined,
-              wallet
-            );
-            callback(this.rootComponent, undefined);
-          } else {
-            await this.auth.signOut();
-            callback(
-              undefined,
-              'Unknown Error Occured. Please Try Again Later'
-            );
-          }
-        })
-        .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          callback(undefined, errorMessage);
-          console.log(error);
-        });
-    } else if (type == 'Email_IN') {
-      let password = credentials?.password!;
-      let email = credentials?.username!;
-      this.auth
-        .signInWithEmailAndPassword(email, password)
-        .then(async (result) => {
-          if (result.user) {
-            Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false;
-            callback(this.rootComponent, undefined);
-          } else {
-            await this.auth.signOut();
-            callback(
-              undefined,
-              'Unknown Error Occured. Please Try Again Later'
-            );
-          }
-        })
-        .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          if (errorCode == 'auth/wrong-password')
-            errorMessage = 'The password is incorrect.';
-          callback(undefined, errorMessage);
-          console.log(errorCode);
-        });
-    } else if (type == 'Email_IN_USER') {
-      let data = {
-        Field: credentials?.Field,
-        Term: credentials?.Term,
-      };
-      this.functions
-        .httpsCallable('auth')(data)
-        .pipe(first())
-        .subscribe(
-          async (resp) => {
-            if (resp as string) {
-              if (resp.includes('ERROR:')) {
-                let err = resp.replace('ERROR:', '');
-                callback(undefined, err);
-                console.log(err);
-              } else {
-                let email = resp as string;
-                let password = credentials?.password!;
-
-                this.auth
-                  .signInWithEmailAndPassword(email, password)
-                  .then(async (result) => {
-                    // Signed in..
-                    if (result.user) {
-                      Globals.isNewUser =
-                        result.additionalUserInfo?.isNewUser ?? false;
-                      callback(this.rootComponent, undefined);
-                    } else {
-                      await this.auth.signOut();
-                      callback(
-                        undefined,
-                        'Unknown Error Occured. Please Try Again Later'
-                      );
-                    }
-                  })
-                  .catch((error) => {
-                    var errorCode = error.code;
-                    var errorMessage = error.message;
-                    if (errorCode == 'auth/wrong-password')
-                      errorMessage = 'The password is incorrect.';
-                    callback(undefined, errorMessage);
-                    console.log(errorCode);
-                  });
-              }
-            } else {
-              callback(
-                undefined,
-                'Unknown Error Occured. Please Try Again Later'
-              );
-            }
-          },
-          (err) => {
-            var errorCode = err.code;
-            var errorMessage = err.message;
-            callback(undefined, errorMessage);
-            console.log(errorCode);
-          }
-        );
-    }
-    // else if (type == "Apple"){
-    //   var appleProvider = new firebase.auth.OAuthProvider('apple.com');
-    //   appleProvider.addScope('email');
-    //   appleProvider.addScope('name');
-
-    //   this.auth.signInWithPopup(appleProvider).then(async (result) => {
-    //     // Signed in..
-
-    //     if ((result.additionalUserInfo?.isNewUser ?? false) && result.user?.uid){
-    //       Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-    //       await result.user?.sendEmailVerification()
-    //       await this.setUsername(result.user?.uid, result?.additionalUserInfo?.username ?? 'user_' + uuid.toString(), (!(this.isUndefined(result?.additionalUserInfo?.username))), affiliate)
-    //     }
-    //     if (this.myCallback)
-    //       this.myCallback()
-
-    //     }).catch((error) => {
-    //       var errorCode = error.code;
-    //       var errorMessage = error.message;
-
-    //       if (this.errCallback)
-    //       this.errCallback(errorMessage)
-    //     });
-    // }
-    // else if (type == "Google"){
-    //   var googleProvider = new firebase.auth.GoogleAuthProvider();
-    //   googleProvider.addScope('email');
-    //   googleProvider.addScope('profile');
-
-    //   this.auth.signInWithPopup(googleProvider).then(async (result) => {
-    //     // Signed in..
-    //     if ((result.additionalUserInfo?.isNewUser ?? false) && result.user?.uid){
-    //       await result.user?.sendEmailVerification()
-    //       Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false
-    //       await this.setUsername(result.user?.uid, result?.additionalUserInfo?.username ?? 'user_' + uuid().replace('-', ''), (!(this.isUndefined(result?.additionalUserInfo?.username))), affiliate)
-    //     }
-    //     if (this.myCallback)
-    //       this.myCallback()
-
-    //     }).catch((error) => {
-    //       var errorCode = error.code;
-    //       var errorMessage = error.message;
-
-    //       console.log(error)
-    //       if (this.errCallback)
-    //       this.errCallback(errorMessage)
-    //     });
-    // }
-  }
 
   roundedFavIconLink() {
     return Globals.storeInfo?.profileLink;
   }
 
-  async setUsername(
-    uid: string,
-    username: string,
-    hasUsername?: boolean,
-    affiliate?: string,
-    store?: string,
-    nonce?: string,
-    address?: string,
-    wallet?: ethers.Wallet
-  ) {
-    var data = {
-      Full_Name: 'GUEST',
-      Username: username,
-      Bio: '',
-      ProfilePicID: null,
-      notification_tokens: [],
-      Following_List: [],
-      Following_Count: 0,
-      Followers_Count: 0,
-      Posts_Count: 0,
-      Platform: 'WEB',
-      Associated_Store: store ?? null,
-      Timestamp: new Date(),
-      nonce: nonce ?? null,
-      Address: wallet?.address.toLowerCase() ?? '',
-    };
-
-    if (hasUsername ?? false) {
-      data.Full_Name = username.toUpperCase();
-    }
-
-    const walletInfo = {
-      address: wallet?.address ?? '',
-      priv_key: wallet?.privateKey ?? '',
-      phrase: wallet?.mnemonic.phrase ?? '',
-    };
-
-    const batch = this.db.firestore.batch();
-
-    batch.set(this.db.collection('Users').doc(uid).ref, data, { merge: true });
-    batch.set(
-      this.db.collection(`Users/${uid}/Payment_Info`).doc('Wallet').ref,
-      walletInfo,
-      { merge: true }
-    );
-
-    await batch.commit();
-
-    if (affiliate && affiliate != '') {
-      await this.db
-        .collection('Users/' + uid + '/Payment_Info')
-        .doc('Identifiers')
-        .set(
-          { affiliate: { id: affiliate, timestamp: new Date() } },
-          { merge: true }
-        );
-    }
-
-    return true;
-  }
-
-  async setPixel(pixel: string = '') {
-    const uid = (await this.isLoggedIn())?.uid;
-
-    var data: Dict<any> = {
-      fb_pixel: undefined,
-    };
-
-    if (pixel != '') {
-      data.fb_pixel = pixel;
-    } else {
-      data.fb_pixel = firebase.firestore.FieldValue.delete();
-    }
-
-    await this.db.collection('Users').doc(uid).update(data);
-
-    return true;
-  }
-
-  async checkUsername(
-    username: string,
-    callback: (err?: string) => any,
-    myUID?: string
-  ) {
-    let sub = this.db
-      .collection('Users', (ref) => ref.where('Username', '==', username))
-      .valueChanges({ idField: 'UID' })
-      .subscribe((docs) => {
-        if (docs && docs?.length != 0) {
-          if (myUID == (docs[0] as DocumentData).UID) {
-            callback();
-          } else {
-            callback('This Store Name already exists');
-          }
-        } else {
-          callback();
-        }
-        sub.unsubscribe();
-      });
-  }
-
-  async checkURL(url: string = '', callback: (err?: string) => any) {
-    if (url?.replace(' ', '') == '') {
-      callback();
-      return;
-    }
-
-    let sub = this.db
-      .collection('Users', (ref) => ref.where('Custom_URL', '==', url))
-      .valueChanges()
-      .subscribe((doc) => {
-        if (doc && doc?.length != 0) {
-          callback('This domain is already linked to a store.');
-        } else {
-          callback();
-        }
-        sub.unsubscribe();
-      });
-  }
 
   async authenticated() {
     const user = await this.isLoggedIn();
@@ -4013,297 +2010,6 @@ export class LoadService {
     }
   }
 
-  async getCart(
-    shouldGetProducts = false,
-    callback: (cart: Array<ProductInCart>) => any
-  ) {
-    const uid = (await this.isLoggedIn())?.uid;
-    const storeUID = Globals.storeInfo?.uid;
-
-    if (!storeUID || !uid) {
-      callback([]);
-      return;
-    }
-
-    var cart = new Array<ProductInCart>();
-
-    let sub = this.db
-      .collection('Users/' + uid + '/Cart_Info')
-      .doc('Cart_List_' + storeUID)
-      .valueChanges()
-      .subscribe(async (doc) => {
-        const docData = doc as DocumentData;
-
-        if (docData) {
-          let cartList = docData.Cart_List as Array<Dict<any>>;
-
-          const promises = cartList.map(async (productInCart, i) => {
-            let uid = productInCart.UID as string;
-            let size = productInCart.Size as string;
-            let qty = productInCart.Qty as number;
-            let timestamp = (
-              productInCart.Timestamp as firebase.firestore.Timestamp
-            ).toDate();
-            let productID = productInCart.Post_ID as string;
-
-            let product = new Product(
-              uid,
-              productID,
-              undefined,
-              productID,
-              timestamp,
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              undefined,
-              true,
-              undefined,
-              undefined,
-              undefined,
-              [],
-              this.getURL(productID)
-            );
-
-            let productCart = new ProductInCart(
-              product,
-              size,
-              qty,
-              false,
-              timestamp,
-              '',
-              undefined
-            );
-            cart.push(productCart);
-            if (shouldGetProducts)
-              await this.getPost(productID, () => {}, productCart);
-          });
-          await Promise.all(promises);
-        }
-        callback(cart);
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-
-  async getOrder(orderID: string) {
-    Globals.selectedOrder = new Order();
-
-    let sub = this.db
-      .collectionGroup('Orders', (ref) => ref.where('order_id', '==', orderID))
-      .valueChanges()
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc) => {
-          const docData = doc as DocumentData;
-          if (docData) {
-            let status = (docData.status as string) ?? 'cancelled';
-            let intents = docData.order_intents as Array<Dict<string>>;
-
-            let timestamp = (
-              docData.timestamp as firebase.firestore.Timestamp
-            ).toDate();
-            let shippingIntent = docData.shipping_intent as string;
-            let trackingNumber = docData.tracking_id as string;
-            let shippingCost = ((docData.shipping_cost as number) ?? 0) / 100;
-            let taxPercent = docData.tax as number;
-            let taxNum = docData.sales_tax as number;
-
-            let currency = (docData.currency as string) ?? 'CAD';
-
-            let currencySymbol = docData.currency_symbol as string;
-            let orderID = docData.order_id as string;
-            let merchantID = docData.merchant_uid as string;
-
-            var subtotal = 0.0;
-
-            let address = docData.delivery_address as Dict<string>;
-            let street = address.street_address as string;
-            let city = address.city as string;
-            let country = address.country as string;
-            let postalCode = address.postal_code as string;
-            let area = address.admin_area as string;
-            let phone = address.phone_number as string;
-            let name = address.full_name as string;
-            let company = address.company as string;
-            let email = address.email as string;
-            let country_code = address.country_code as string;
-            const uid = docData.uid as string;
-            let trackingUrl = docData.tracking_url as string;
-
-            // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100
-
-            let unitNum = address.unit_number as string;
-
-            let orderAddress = new ShippingInfo(
-              name,
-              company,
-              street,
-              city,
-              country,
-              area,
-              unitNum,
-              postalCode,
-              phone,
-              country_code,
-              email
-            );
-
-            let tax = taxNum ?? (taxPercent ?? 0) * subtotal;
-            let totalCost =
-              (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0);
-
-            let order = new Order(
-              orderID,
-              timestamp,
-              [],
-              status,
-              intents,
-              totalCost,
-              tax,
-              subtotal,
-              orderAddress,
-              currency,
-              currencySymbol,
-              trackingNumber,
-              shippingIntent,
-              shippingCost,
-              uid,
-              merchantID,
-              trackingUrl
-            );
-
-            Globals.selectedOrder = order;
-
-            this.getOrderProducts(order, uid, 0, true);
-          } else {
-            Globals.selectedOrder = new Order();
-          }
-        });
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-
-  updateOrder(order: Order) {
-    let data = {
-      status: order.status,
-      tracking_url:
-        (order.trackingLink ?? '')?.trim() == '' ? null : order.trackingLink,
-    };
-
-    return this.db
-      .collection('Users/' + order.uid + '/Orders')
-      .doc(order.orderID)
-      .update(data);
-  }
-
-  async getAllOrders(callback: (orders: Array<Order>) => any) {
-    const uid = (await this.isLoggedIn())?.uid;
-
-    if (!uid) {
-      callback([]);
-      return;
-    }
-
-    var query = this.db.collectionGroup('Orders', (ref) =>
-      ref.where('merchant_uid', '==', uid).orderBy('timestamp', 'desc')
-    );
-
-    var orders = new Array<Order>();
-
-    let sub = query.valueChanges().subscribe((docDatas) => {
-      docDatas.forEach((doc, index) => {
-        const docData = doc as DocumentData;
-        if (docData) {
-          let status = (docData.status as string) ?? 'cancelled';
-          let intents = docData.order_intents as Array<Dict<string>>;
-
-          let timestamp = (
-            docData.timestamp as firebase.firestore.Timestamp
-          ).toDate();
-          let shippingIntent = docData.shipping_intent as string;
-          let trackingNumber = docData.tracking_id as string;
-          let shippingCost = ((docData.shipping_cost as number) ?? 0) / 100;
-          let taxPercent = docData.tax as number;
-          let taxNum = docData.sales_tax as number;
-
-          let currency = (docData.currency as string) ?? 'CAD';
-
-          let currencySymbol = docData.currency_symbol as string;
-          let orderID = docData.order_id as string;
-          let merchantID = docData.merchant_uid as string;
-
-          var subtotal = 0.0;
-
-          let address = docData.delivery_address as Dict<string>;
-          let street = address.street_address as string;
-          let city = address.city as string;
-          let country = address.country as string;
-          let postalCode = address.postal_code as string;
-          let area = address.admin_area as string;
-          let phone = address.phone_number as string;
-          let name = address.full_name as string;
-          let company = address.company as string;
-          let email = address.email as string;
-          let country_code = address.country_code as string;
-          const uid = docData.uid as string;
-          let trackingUrl = docData.tracking_url as string;
-          let coords = docData.coords as Dict<number>;
-
-          // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100
-
-          let unitNum = address.unit_number as string;
-
-          let orderAddress = new ShippingInfo(
-            name,
-            company,
-            street,
-            city,
-            country,
-            area,
-            unitNum,
-            postalCode,
-            phone,
-            country_code,
-            email,
-            coords
-          );
-
-          let tax = taxNum ?? (taxPercent ?? 0) * subtotal;
-          let totalCost =
-            (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0);
-
-          let order = new Order(
-            orderID,
-            timestamp,
-            [],
-            status,
-            intents,
-            totalCost,
-            tax,
-            subtotal,
-            orderAddress,
-            currency,
-            currencySymbol,
-            trackingNumber,
-            shippingIntent,
-            shippingCost,
-            uid,
-            merchantID,
-            trackingUrl
-          );
-
-          orders.push(order);
-
-          this.getOrderProducts(order, uid, index);
-        }
-      });
-      callback(orders);
-      if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-    });
-  }
 
   async getCoords() {
     let value = (await this.http
@@ -4311,199 +2017,52 @@ export class LoadService {
       .toPromise()) as Dict<any>;
 
     let url = `https://api.ipstack.com/${value.ip}?access_key=5b5f96aced42e6b1c95ab24d96f704c5`;
-    let coords = (await this.http.get(url).toPromise()) as Dict<any>;
-
-    let returnCoords = {
-      LATITUDE: coords.latitude,
-      LONGITUDE: coords.longitude,
+    let resp = (await this.http.get(url).toPromise()) as Dict<any>;
+    let address = {
+      city: resp.city,
+      country: resp.country_name,
+      country_code: resp.country_code,
+      region: resp.region_name,
+      region_code: resp.region_code,
     };
-    return returnCoords;
+    let coords = {
+      LATITUDE: resp.latitude,
+      LONGITUDE: resp.longitude,
+    };
+    return {
+      coords,
+      address,
+    };
   }
 
-  async getOrders(callback: (orders: Array<Order>) => any) {
-    const uid = (await this.isLoggedIn())?.uid;
-    const storeUID = Globals.storeInfo?.uid;
 
-    if (!storeUID || !uid) {
-      if (this.myCallback) this.myCallback();
-      return;
-    }
-
-    var query = this.db.collection('Users/' + uid + '/Orders', (ref) =>
-      ref.where('merchant_uid', '==', storeUID).orderBy('timestamp', 'desc')
+  addDays(date: Date, days: number) {
+    return new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate() + days,
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+      date.getMilliseconds()
     );
-
-    var orders = new Array<Order>();
-
-    let sub = query.valueChanges().subscribe((docDatas) => {
-      docDatas.forEach((doc, index) => {
-        const docData = doc as DocumentData;
-        if (docData) {
-          let status = (docData.status as string) ?? 'cancelled';
-          let intents = docData.order_intents as Array<Dict<string>>;
-
-          let timestamp = (
-            docData.timestamp as firebase.firestore.Timestamp
-          ).toDate();
-          let shippingIntent = docData.shipping_intent as string;
-          let trackingNumber = docData.tracking_id as string;
-          let trackingUrl = docData.tracking_url as string;
-          let shippingCost = docData.shipping_cost as number;
-          let taxPercent = docData.tax as number;
-          let taxNum = docData.sales_tax as number;
-
-          let currency = (docData.currency as string) ?? 'CAD';
-
-          let currencySymbol = docData.currency_symbol as string;
-          let orderID = docData.order_id as string;
-          let merchantID = docData.merchant_uid as string;
-
-          var subtotal = 0.0;
-
-          let address = docData.delivery_address as Dict<string>;
-          let street = address.street_address as string;
-          let city = address.city as string;
-          let country = address.country as string;
-          let postalCode = address.postal_code as string;
-          let area = address.admin_area as string;
-          let phone = address.phone_number as string;
-          let name = address.full_name as string;
-          let company = address.company as string;
-          let email = address.email as string;
-          let country_code = address.country_code as string;
-          const uid = docData.uid as string;
-
-          // let shippingCost = (doc["shipping_cost"] as? Double ?? 0.00) / 100
-
-          let unitNum = address.unit_number as string;
-
-          let orderAddress = new ShippingInfo(
-            name,
-            company,
-            street,
-            city,
-            country,
-            area,
-            unitNum,
-            postalCode,
-            phone,
-            country_code,
-            email
-          );
-
-          let tax = taxNum ?? (taxPercent ?? 0) * subtotal;
-          let totalCost =
-            (tax ?? 0.0) + (subtotal ?? 0.0) + (shippingCost ?? 0.0);
-
-          let order = new Order(
-            orderID,
-            timestamp,
-            [],
-            status,
-            intents,
-            totalCost,
-            tax,
-            subtotal,
-            orderAddress,
-            currency,
-            currencySymbol,
-            trackingNumber,
-            shippingIntent,
-            shippingCost,
-            uid,
-            merchantID,
-            trackingUrl
-          );
-
-          orders.push(order);
-
-          this.getOrderProducts(order, uid, index);
-        }
-      });
-      callback(orders);
-      if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-    });
   }
 
-  getOrderProducts(
-    order: Order,
-    uid: string,
-    orderIndex: number,
-    isSelectedOrder?: boolean
-  ) {
+  getMiscStats(uid: string, callback: (views?: Dict<any>[]) => any) {
+    var views: Dict<any>[] = [];
+    let date = this.addDays(new Date(), -2);
+
     let sub = this.db
-      .collection('Users/' + uid + '/Orders/' + order.orderID + '/Purchases')
-      .valueChanges()
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc, index) => {
-          const docData = doc as DocumentData;
-          if (docData) {
-            let productID = docData.productID as string;
-            let quantity = docData.quantity as number;
-            let size = docData.size as string;
-            let status = docData.status as string;
-            let price = (docData.amount as number) / quantity;
-            let timestamp = (
-              docData.timestamp as firebase.firestore.Timestamp
-            ).toDate();
-
-            let product = new Product(
-              uid,
-              productID,
-              undefined,
-              productID,
-              timestamp,
-              undefined,
-              undefined,
-              price,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              undefined,
-              true,
-              undefined,
-              undefined,
-              undefined,
-              [],
-              this.getURL(productID)
-            );
-
-            let orderProduct = new ProductInCart(
-              product,
-              size,
-              quantity,
-              false,
-              timestamp,
-              undefined,
-              undefined
-            );
-
-            order.products.push(orderProduct);
-
-            this.getPost(productID, () => {}, undefined, orderProduct);
-          }
-        });
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-
-  getMiscStats(uid: string) {
-    Globals.views = [];
-    Globals.dropCarts = [];
-    let sub = this.db
-      .collection('Users/' + uid + '/Daily_Info/')
+      .collection('Users/' + uid + '/Daily_Info/', (ref) =>
+        ref.where('timestamp', '>=', date)
+      )
       .valueChanges()
       .subscribe((docDatas) => {
         docDatas.forEach((doc, index) => {
           const docData = doc as DocumentData;
           if (docData) {
             let time = docData.time as Array<any>;
-            let timestamp = (
-              docData.timestamp as firebase.firestore.Timestamp
-            ).toDate();
-            let length = time.length;
-
+            let type = docData.type as string;
             time.forEach((t) => {
               let p =
                 t instanceof firebase.firestore.Timestamp
@@ -4511,132 +2070,32 @@ export class LoadService {
                   : (t.time as firebase.firestore.Timestamp).toDate();
               let v =
                 t instanceof firebase.firestore.Timestamp
-                  ? {
-                      LONGITUDE: -118.243683,
-                      LATITUDE: 34.052235,
-                    }
+                  ? this.defaultCoords.coords
                   : t.coords;
-
-              Globals.views?.push({
-                views: [{ view: 1, coords: v }],
+              let address =
+                t instanceof firebase.firestore.Timestamp
+                  ? this.defaultCoords.address
+                  : t.address;
+              let productId =
+                t instanceof firebase.firestore.Timestamp
+                  ? undefined
+                  : t.productID;
+              views?.push({
+                num: 1,
+                coords: v,
+                address,
+                productId,
+                type,
                 timestamp: p,
               });
             });
           }
         });
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-        if (this.miscCallback) this.miscCallback();
-        // let sub2 = this.db
-        //   .collectionGroup('Cart_Info', (ref) => ref.where('UID', '==', uid))
-        //   .valueChanges()
-        //   .subscribe((docDatas) => {
-        //     docDatas.forEach((doc, index) => {
-        //       const docData = doc as DocumentData;
-        //       if (docData) {
-        //         let timestamp = (
-        //           docData.Timestamp as firebase.firestore.Timestamp
-        //         )?.toDate();
-        //         Globals.dropCarts?.push({ dropCarts: 1, timestamp: timestamp });
-        //       }
-        //     });
-
-        //   });
-      });
-  }
-
-  getAffiliateStats(uid: string, callback: (stats: any) => any) {
-    let stats = new Array<any>();
-
-    let sub = this.db
-      .collectionGroup('Payment_Info', (ref) =>
-        ref.where('affiliate.id', '==', uid)
-      )
-      .valueChanges()
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc, index) => {
-          const docData = doc as DocumentData;
-          if (docData) {
-            let affiliate = docData.affiliate as Dict<any>;
-            let timestamp = (
-              affiliate.timestamp as firebase.firestore.Timestamp
-            ).toDate();
-            let id = affiliate.id as string;
-            stats.push({ affiliate: id, timestamp: timestamp });
-          }
-        });
-        callback(stats);
+        callback(views);
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
       });
   }
 
-  getSoldProducts(uid: string = '') {
-    Globals.productsSold = [];
-
-    let sub = this.db
-      .collectionGroup('Purchases', (ref) =>
-        ref.where('merchant_uid', '==', uid).where('status', '==', 'confirmed')
-      )
-      .valueChanges()
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc, index) => {
-          const docData = doc as DocumentData;
-          if (docData) {
-            let productID = docData.productID as string;
-            let quantity = docData.quantity as number;
-            let size = docData.size as string;
-            let price = (docData.amount as number) / quantity;
-            let profit = (docData.moneyToMerchant as number) / 100;
-            let timestamp = (
-              docData.timestamp as firebase.firestore.Timestamp
-            )?.toDate();
-            let currency = docData.currency as string;
-            let product = new Product(
-              uid,
-              productID,
-              undefined,
-              productID,
-              timestamp,
-              undefined,
-              undefined,
-              price / 100,
-              undefined,
-              undefined,
-              undefined,
-              false,
-              undefined,
-              true,
-              undefined,
-              undefined,
-              undefined,
-              [],
-              this.getURL(productID)
-            );
-
-            let orderProduct = new ProductInCart(
-              product,
-              size,
-              quantity,
-              false,
-              timestamp,
-              undefined,
-              undefined,
-              profit ?? 0
-            );
-
-            Globals.productsSold?.push(orderProduct);
-            this.getPost(
-              productID,
-              () => {},
-              undefined,
-              undefined,
-              orderProduct
-            );
-          }
-        });
-        if (this.saleCallback) this.saleCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
 
   splitToBulks(arr: Array<any>, bulkSize = 10) {
     const bulks = [];
@@ -4658,210 +2117,38 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-    let provider2 = await this.checkProviderChain(provider);
-
     var cols: Dict<{
       nft: NFT;
       collection: Collection;
     }> = {};
 
     let ids = this.splitToBulks(docIDs);
-
-    var counter = 0;
     await Promise.all(
       ids.map((i) => {
         var query = this.db.collectionGroup('Products', (ref) =>
-          ref.where('Product_ID', 'in', i).orderBy('Token_ID')
+          ref.where('docID', 'in', i).orderBy('tokenId')
         );
 
         let sub = query.get().subscribe(async (docDatas) => {
-          docDatas.docs.forEach(async (doc, index) => {
-            let docData = doc.data() as DocumentData;
+          let nfts = docDatas.docs.map((doc) => doc.data()) as NFT[];
 
-            if (docData) {
-              let tokenID = docData['Token_ID'] as number;
-              let contractID = docData['Contract_Address'] as string;
-              let ownerAddress =
-                (docData['Owner_Address'] as string) ??
-                Globals.storeInfo?.walletAddress ??
-                '';
-              let sold = (docData['Sold'] as boolean) ?? false;
-              let lazyMint = (docData['Lazy'] as boolean) ?? true;
-              let royalty = (docData['Royalty'] as number) ?? 0;
-              let lazyHash = docData['Lazy_Hash'] as Dict<any>;
-              let metadata = docData['Metadata'] as string;
-              let forSale = docData['forSale'] as boolean;
-              var cost = ethers.utils.parseUnits('0.02', 'ether');
-              if (lazyHash) {
-                cost = lazyHash['minPrice'] as ethers.BigNumber;
-              }
-              let marketAddress = docData['marketAddress'] as string;
-
-              let product = new NFT(
-                tokenID,
-                contractID,
-                ownerAddress,
-                sold,
-                lazyMint,
-                undefined,
-                royalty,
-                lazyHash,
-                metadata,
-                undefined,
-                marketAddress
-              );
-
-              product.price = cost;
-              product.docID = doc.id;
-              product.seller = ownerAddress;
-
-              product.isAvailable = true;
-              product.forSale = forSale;
-              product.linkUrl = this.getURL(doc.id);
-
-              if (metadata) {
-                const meta = await axios.get(metadata);
-                product.name = meta.data.name;
-                product.url = meta.data.image;
-                product.description = meta.data.description;
-                product.traits = meta.data.traits;
-              } else {
-                product.name = docData['Name'] as string;
-                product.description = docData['Description'] as string;
-                let productID = docData['Product_ID'];
-                product.url = this.getURL(productID);
-              }
-
-              if (product.contractID) {
-                var co = Object.values(cols).find(
-                  (c) => c.collection.contract == product.contractID
-                )?.collection;
-
-                if (!co) {
-                  co = new Collection(
-                    '',
-                    '',
-                    {},
-                    product.contractID,
-                    'MATIC',
-                    0,
-                    Globals.storeInfo?.walletAddress ?? '',
-                    true,
-                    Globals.storeInfo?.uid ?? '',
-                    new Date()
-                  );
-
-                  co.currency = 'MATIC';
-                  let token =
-                    co.customTokenCheck() ??
-                    product.lazyHash?.token != ethers.constants.HashZero
-                      ? product.lazyHash?.token
-                      : undefined;
-                  co.customToken = token;
-
-                  if (token && provider2) {
-                    await co.loadCurrency(token!, provider2).then((i) => {
-                      co!.currency = i;
-                    });
-                  }
-                }
-
-                cols[`${product.docID}`] = { nft: product, collection: co };
-
-
-                // let co = new Collection(
-                //   '',
-                //   '',
-                //   [],
-                //   product.contractID,
-                //   'MATIC',
-                //   0,
-                //   Globals.storeInfo?.walletAddress ?? '',
-                //   true,
-                //   Globals.storeInfo?.uid ?? '',
-                //   new Date()
-                // );
-
-                // if (!isPlatformBrowser(this.platformID)) {
-                //   callback(co);
-                //   return;
-                // }
-
-                // let created = await this.getCreated(co, product);
-
-                // // co.name = created.name;
-                // // co.symbol = created.symbol;
-
-                // let c = created?.tokens;
-
-                // if (c) {
-                //   product.tokenID = c.tokenId;
-                //   product.contractID = c.contract;
-                //   product.owner = c.owner;
-                //   product.name = c.name;
-                //   product.format = c.content;
-                //   product.royalty = c.royalty;
-                //   product.metadata = c.uri;
-                //   product.seller = c.seller;
-                //   co.customToken = c.isNative ? undefined : c.token;
-                //   product.description = c.description;
-                //   product.price = c.price;
-                //   product.url = c.image;
-                //   product.itemId = c.itemId;
-                //   product.forSale = c.forSale;
-                //   product.lazyMint = c.minted == false;
-                //   product.lazyHash = product.lazyMint
-                //     ? product.lazyHash
-                //     : undefined;
-                //   if (product.tokenID && provider) {
-                //     product.seller = await co.ownerOf(
-                //       product.tokenID,
-                //       provider2
-                //     );
-                //   }
-                // } else {
-                // product.format = await this.getFormat(product.url!);
-                // }
-
-                counter += 1;
-
-                if (counter == docIDs.length) {
-                  let ids = Object.values(cols).map((c) => {
-                    return {
-                      tokenId: c.nft.tokenID!,
-                      contractAddress: ethers.utils.getAddress(
-                        c.nft.contractID
-                      ),
-                    };
-                  });
-                  let created = await this.getCreatedById(provider2, ids);
-
-                  let c = created?.tokens
-
-                  if (c) {
-                    product.tokenID = c.tokenId;
-                    product.contractID = c.contract;
-                    product.owner = c.owner;
-                    product.royalty = c.royalty;
-                    co.customToken = c.isNative ? undefined : c.token;
-                    product.price = c.price;
-                    product.itemId = c.itemId;
-                    product.forSale = c.forSale;
-                    product.lazyMint = c.minted == false;
-    
-                    // if (product.tokenID && provider) {
-                    //   product.seller = await co.ownerOf(product.tokenID, provider2);
-                    // }
-                  }
-
-                  callback(cols);
-                }
-              }
-            }
+          nfts.forEach((n) => {
+            let co = new Collection(
+              '',
+              '',
+              n.address,
+              'USD',
+              0,
+              true,
+              Globals.storeInfo?.uid ?? '',
+              new Date()
+            );
+            cols[`${n.docID}`] = { nft: n, collection: co };
           });
         });
       })
     );
+    callback(cols);
   }
 
   async getPost(
@@ -4883,128 +2170,13 @@ export class LoadService {
 
     let sub = query.get().subscribe(async (docDatas) => {
       docDatas.docs.forEach(async (doc, index) => {
-        let docData = doc.data() as DocumentData;
+        var product = doc.data() as NFT;
 
-        if (docData) {
-          let tokenID = docData['Token_ID'] as number;
-          let contractID = docData['Contract_Address'] as string;
-          let ownerAddress =
-            (docData['Owner_Address'] as string) ??
-            Globals.storeInfo?.walletAddress ??
-            '';
-          let sold = (docData['Sold'] as boolean) ?? false;
-          let lazyMint = (docData['Lazy'] as boolean) ?? true;
-          let format = docData['Format'] as string;
-          let royalty = (docData['Royalty'] as number) ?? 0;
-          let lazyHash = docData['Lazy_Hash'] as Dict<any>;
-          let metadata = docData['Metadata'] as string;
-          let forSale = docData['forSale'] as boolean;
-          var cost = ethers.utils.parseUnits('0.02', 'ether');
-          if (lazyHash) {
-            cost = lazyHash['minPrice'] as ethers.BigNumber;
-          }
-          let marketAddress = docData['marketAddress'] as string;
-
-          let product = new NFT(
-            tokenID,
-            contractID,
-            ownerAddress,
-            sold,
-            lazyMint,
-            undefined,
-            royalty,
-            lazyHash,
-            metadata,
-            undefined,
-            marketAddress
-          );
-
-          product.price = cost;
-          product.docID = doc.id;
-          product.seller = ownerAddress;
-
-          product.isAvailable = true;
-          product.forSale = forSale;
-          product.linkUrl = this.getURL(productID);
-
-          if (metadata) {
-            const meta = await axios.get(metadata);
-            product.name = meta.data.name;
-            product.url = meta.data.image;
-            product.description = meta.data.description;
-            product.traits = meta.data.traits;
-          } else {
-            product.name = docData['Name'] as string;
-            product.description = docData['Description'] as string;
-            let uid = docData['UID'] as string;
-            let productID = docData['Product_ID'];
-            product.url = this.getURL(productID);
-          }
-
-          if (product.contractID) {
-            this.getCollection(product.contractID, async (co) => {
+        if (product) {
+          if (product.address) {
+            this.getCollection(product.address, async (co) => {
               if (!co) {
                 return;
-              }
-
-              let token =
-                co.customTokenCheck() ??
-                product.lazyHash?.token != ethers.constants.HashZero
-                  ? product.lazyHash?.token
-                  : undefined;
-              //co.customToken = token
-
-              if (!isPlatformBrowser(this.platformID)) {
-                callback(product, co);
-                return;
-              }
-
-              let created = await this.getCreated(co, product);
-
-              // co.name = created.name;
-              // co.symbol = created.symbol;
-
-              let c = created?.tokens;
-
-              if (c) {
-                product.tokenID = c.tokenId;
-                product.contractID = c.contract;
-                product.owner = c.owner;
-                product.name = c.name;
-                product.format = c.content;
-                product.royalty = c.royalty;
-                product.metadata = c.uri;
-                product.seller = c.seller;
-                co.customToken = c.isNative ? undefined : c.token;
-                product.description = c.description;
-                product.price = c.price;
-                product.url = c.image;
-                product.itemId = c.itemId;
-                product.forSale = c.forSale;
-
-                product.lazyMint = c.minted == false;
-
-                if (product.tokenID && provider) {
-                  product.seller = await co.ownerOf(product.tokenID, provider2);
-                }
-              } else {
-                product.format = await this.getFormat(product.url!);
-              }
-
-              if (product.marketAddress != thredMarketplace) {
-                product.lazyMint = false;
-              }
-
-              product.lazyHash = product.lazyMint
-                ? product.lazyHash
-                : undefined;
-
-              co.currency = 'MATIC';
-
-              if (token && provider2) {
-                await co.loadCurrency(token!, provider2).then((i) => {
-                  co.currency = i;
-                });
               }
               callback(product, co);
               return;
@@ -5041,14 +2213,6 @@ export class LoadService {
     let admins = [thredMarketplace];
     let minters = [wallet.address, thredMarketplace];
 
-    // const deploymentData = factory.interface.encodeDeploy([
-    //   name,
-    //   symbol,
-    //   tokenAddress,
-    //   minters,
-    //   admins,
-    // ]);
-
     const data = factory.getDeployTransaction(
       name,
       symbol,
@@ -5062,16 +2226,6 @@ export class LoadService {
     console.log(estimatedGas.toNumber());
   }
 
-  getTemplatesFiltered(products: Array<Product>) {
-    Globals.templates = [
-      ...new Map(
-        Globals.templates.map((item) => [item.productCode, item])
-      ).values(),
-    ];
-    return Globals.templates.filter((template, i) =>
-      products.some((product) => product.productType === template.productCode)
-    );
-  }
 
   getURL(productID: string) {
     return (
@@ -5083,46 +2237,6 @@ export class LoadService {
     );
   }
 
-  // async migratePhotos() {
-
-  //   let sub = this.db
-  //     .collectionGroup('Products', (ref) =>
-  //       ref
-  //         .where('Available', '==', true)
-  //     )
-  //     .get()
-  //     .subscribe(async (docDatas) => {
-  //       let index = 0;
-  //       console.log(docDatas.docs.length)
-  //       var interval = setInterval(async () => {
-  //         let doc = docDatas.docs[index]
-  //         let docData = doc.data() as DocumentData;
-  //         let pic = docData.Has_Picture as boolean;
-  //         let id = docData.Product_ID as string;
-
-  //         let url = this.getURL(id)
-
-  //         index += 1
-
-  //         try {
-  //           let img = await this.getBase64ImageFromUrl(url)
-
-  //           if (img == 'none' || pic == true){
-  //             console.log("-- Removing -- " + id)
-  //             throw('none')
-  //           }
-  //           else{
-  //             console.log("Passed " + id)
-  //             return
-  //           }
-  //         } catch (error) {
-  //           console.log("Removed " + id)
-  //           doc.ref.update({'Available' : false})
-  //         }
-
-  //       }, 100);
-  //     });
-  // }
 
   getProfileURL(uid: string, dpID: string) {
     if (Globals.isNewUser) {
@@ -5137,285 +2251,12 @@ export class LoadService {
     );
   }
 
-  getThemeURL(uid: string) {
-    return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FStore_Images%2F' +
-      'theme' +
-      '.png?alt=media'
-    );
-  }
-
   getDefaultURL() {
     return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2FSample-Walls%2FHome%2F1.jpg?alt=media';
-  }
-
-  getHomeURL(uid: string) {
-    return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FStore_Images%2F' +
-      'home' +
-      '.png?alt=media'
-    );
-  }
-
-  getHomeTopURL(uid: string) {
-    return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FStore_Images%2F' +
-      'home_top' +
-      '.png?alt=media'
-    );
-  }
-
-  getShopTopURL(uid: string) {
-    return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FStore_Images%2F' +
-      'shop_top' +
-      '.png?alt=media'
-    );
-  }
-
-  getActionURL(uid: string) {
-    return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FStore_Images%2F' +
-      'action' +
-      '.png?alt=media'
-    );
   }
 
   getAltURL() {
     return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';
   }
 
-  getTemplate(templateID: string) {
-    Globals.selectedTemplate = undefined;
-
-    let sub = this.db
-      .collection('Templates', (ref) =>
-        ref.where('Code', '==', templateID).orderBy('index', 'asc')
-      )
-      .valueChanges({ idField: 'TemplateID' })
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc) => {
-          var docData = doc as DocumentData;
-
-          if (docData) {
-            let type = doc.TemplateID;
-            let testingAccounts = docData['testingAccounts'] as Array<string>;
-            let isAvailable = docData['isAvailable'] as boolean;
-
-            // guard isAvailable ?? false || testingAccounts?.contains(pUserInfo.uid ?? "") ?? false else{
-
-            //     continue
-            //   }
-
-            let display = docData['Display_Name'] as string;
-            let info = docData['Info'] as string;
-            let supportedSides = docData['Supported_Sides'] as Array<Dict<any>>;
-
-            if (!supportedSides || supportedSides.length == 0) {
-              return;
-            }
-
-            let vari = docData['Colors'] as Array<Dict<any>>;
-
-            let minPrice = docData['Min_Price_USD'] as number;
-            let extra = docData['Extra_Cost_USD'] as number;
-            let code = docData['Code'] as string;
-            let sizes = docData['Sizes'] as Array<string>;
-            let category = docData['category'] as string;
-            let onlyBulk = docData['Only_Bulk'] as boolean;
-            let bulkPrice = docData['Bulk_Price_USD'] as number;
-            let bulkSuggestPrice = docData['Bulk_Suggest_Price_USD'] as number;
-            let bulkUnit = docData['Bulk_Unit'] as number;
-            let has3D = docData['has3D'] as boolean;
-            let moreInfo = docData['More_info'] as string;
-            // let discountInfo = docData["Discount"] as Dict<any>
-            // let discountedUsers = discountInfo["Artists"] as Array<string>
-            // let discountedPrice = discountInfo.Minimum_Price_USD as number
-            // let discountCodes = discountInfo.Discount_Codes as Array<Dict<any>>
-
-            const template = new Template(
-              type,
-              display,
-              info,
-              [],
-              sizes,
-              minPrice,
-              code,
-              category,
-              moreInfo,
-              false,
-              [],
-              extra,
-              bulkPrice,
-              bulkUnit,
-              bulkSuggestPrice,
-              onlyBulk,
-              has3D
-            );
-
-            supportedSides.forEach((side) => {
-              let name = side['Name'] as string;
-              let height = side['HeightCM'] as number;
-              let width = side['WidthCM'] as number;
-              let widthMultiplier = side['WidthMultiplier'] as number;
-              let centerYConst = side['CenterYConst'] as number;
-              let centerXConst = side['CenterXConst'] as number;
-              let rotation = side['Rotation'] as number;
-              let useReverseAspect =
-                (side['useReverseAspect'] as boolean) ?? false;
-
-              let supportedSide = new TemplateSide(
-                name,
-                height,
-                width,
-                widthMultiplier,
-                centerYConst,
-                centerXConst,
-                useReverseAspect,
-                rotation
-              );
-              template.supportedSides.push(supportedSide);
-            });
-
-            vari.forEach((v) => {
-              let code = v['Code'] as string;
-              let display = v['Display'] as string;
-              let img = (v['IMG'] as firebase.firestore.Blob)?.toBase64();
-              let backImg = (
-                v['IMG_BACK'] as firebase.firestore.Blob
-              )?.toBase64();
-              let rgb = v['RGB'] as Array<number>;
-              let color = new Color(code, display, rgb, img, backImg);
-              template.colors.push(color);
-            });
-            Globals.selectedTemplate = template;
-          }
-        });
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
-
-  getTemplates() {
-    Globals.templates = [];
-
-    let sub = this.db
-      .collection('Templates', (ref) => ref.orderBy('index', 'asc'))
-      .valueChanges({ idField: 'TemplateID' })
-      .subscribe((docDatas) => {
-        docDatas.forEach((doc) => {
-          var docData = doc as DocumentData;
-
-          if (docData) {
-            let type = doc.TemplateID;
-            let testingAccounts = docData['testingAccounts'] as Array<string>;
-            let isAvailable = docData['isAvailable'] as boolean;
-
-            // guard isAvailable ?? false || testingAccounts?.contains(pUserInfo.uid ?? "") ?? false else{
-
-            //     continue
-            //   }
-
-            let display = docData['Display_Name'] as string;
-            let info = docData['Info'] as string;
-            let supportedSides = docData['Supported_Sides'] as Array<Dict<any>>;
-
-            if (!supportedSides || supportedSides.length == 0) {
-              return;
-            }
-
-            let vari = docData['Colors'] as Array<Dict<any>>;
-
-            let minPrice = docData['Min_Price_USD'] as number;
-            let extra = docData['Extra_Cost_USD'] as number;
-            let code = docData['Code'] as string;
-            let sizes = docData['Sizes'] as Array<string>;
-            let category = docData['category'] as string;
-            let has3D = docData['has3D'] as boolean;
-            let onlyBulk = docData['Only_Bulk'] as boolean;
-            let bulkPrice = docData['Bulk_Price_USD'] as number;
-            let bulkSuggestPrice = docData['Bulk_Suggest_Price_USD'] as number;
-            let bulkUnit = docData['Bulk_Unit'] as number;
-            let moreInfo = docData['More_info'] as string;
-            // let discountInfo = docData["Discount"] as Dict<any>
-            // let discountedUsers = discountInfo["Artists"] as Array<string>
-            // let discountedPrice = discountInfo.Minimum_Price_USD as number
-            // let discountCodes = discountInfo.Discount_Codes as Array<Dict<any>>
-
-            const template = new Template(
-              type,
-              display,
-              info,
-              [],
-              sizes,
-              minPrice,
-              code,
-              category,
-              moreInfo,
-              false,
-              [],
-              extra,
-              bulkPrice,
-              bulkUnit,
-              bulkSuggestPrice,
-              onlyBulk,
-              has3D
-            );
-
-            supportedSides.forEach((side) => {
-              let name = side['Name'] as string;
-              let height = side['HeightCM'] as number;
-              let width = side['WidthCM'] as number;
-              let widthMultiplier = side['WidthMultiplier'] as number;
-              let centerYConst = side['CenterYConst'] as number;
-              let centerXConst = side['CenterXConst'] as number;
-              let rotation = side['Rotation'] as number;
-              let useReverseAspect =
-                (side['useReverseAspect'] as boolean) ?? false;
-
-              let supportedSide = new TemplateSide(
-                name,
-                height,
-                width,
-                widthMultiplier,
-                centerYConst,
-                centerXConst,
-                useReverseAspect,
-                rotation
-              );
-              template.supportedSides.push(supportedSide);
-            });
-
-            vari.forEach((v) => {
-              let code = v['Code'] as string;
-              let display = v['Display'] as string;
-              let img = (v['IMG'] as firebase.firestore.Blob)?.toBase64();
-              let backImg = (
-                v['IMG_BACK'] as firebase.firestore.Blob
-              )?.toBase64();
-
-              let rgb = v['RGB'] as Array<number>;
-              let color = new Color(code, display, rgb, img, backImg);
-              template.colors.push(color);
-            });
-
-            if (!Globals.templates.includes(template)) {
-              Globals.templates.push(template);
-            }
-          }
-        });
-        if (this.myCallback) this.myCallback();
-        if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
-      });
-  }
 }

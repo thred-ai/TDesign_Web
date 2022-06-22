@@ -46,6 +46,7 @@ class LazyMinter {
    */
   async createVoucher(
     tokenId,
+    address,
     uri,
     royalty = 0,
     minPrice = 0,
@@ -57,6 +58,7 @@ class LazyMinter {
 
     const voucher = {
       tokenId,
+      owner: ethers.utils.getAddress(address),
       minPrice,
       royalty,
       isNative,
@@ -69,25 +71,30 @@ class LazyMinter {
     const types = {
       NFTVoucher: [
         { name: "tokenId", type: "uint256" },
+        { name: "owner", type: "address" },
         { name: "minPrice", type: "uint256" },
         { name: "royalty", type: "uint96" },
         { name: "isNative", type: "bool" },
         { name: "amount", type: "uint256" },
         { name: "fungible", type: "bool" },
-        { name: "uri", type: "string"},
+        { name: "uri", type: "string" },
       ],
     };
 
     try {
-      const signature = await this.signer._signTypedData(domain, types, voucher);
+      const signature = await this.signer._signTypedData(
+        domain,
+        types,
+        voucher
+      );
 
-    return {
-      ...voucher,
-      signature,
-    };
+      return {
+        ...voucher,
+        signature,
+      };
     } catch (error) {
-      console.log(error)
-      return undefined
+      console.log(error);
+      return undefined;
     }
   }
 
@@ -99,8 +106,7 @@ class LazyMinter {
     if (this._domain != null) {
       return this._domain;
     }
-    const chainId = (await this.signer.provider.getNetwork()).chainId
-    console.log(chainId)
+    const chainId = (await this.signer.provider.getNetwork()).chainId;
     this._domain = {
       name: this.domain,
       version: "1",

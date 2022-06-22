@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ResizeService } from '../resize-events/resize.service';
 
 const routes: Routes = [
   {
@@ -44,7 +45,7 @@ const routes: Routes = [
     NgbModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
-  providers: [Globals],
+  providers: [Globals, ResizeService],
   bootstrap: [HomeComponent]
 })
 export class HomeModule { }

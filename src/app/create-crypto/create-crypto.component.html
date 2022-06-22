@@ -1,126 +1,180 @@
 <div mat-dialog-title class="d-flex justify-content-between align-items-center">
-  <!-- <h2 class="me-2 text-center d-none d-md-block">
-    {{
-      mode == 0
-        ? editingBlock == undefined
-          ? "Drag/Drop to Rearrange"
-          : "Edit Block"
-        : "Edit Page"
-    }}
-  </h2> -->
+  <h2 class="me-2 text-center d-none d-md-block">
+    {{ data.asset ? "View Token" : "New Token" }}
+  </h2>
 
-  <div class="d-flex justify-content-end align-items-center w-100">
-    <!-- <a
-      role="button"
-      (click)="close()"
-      class="fw-bolder btn btn-dark rounded-pill px-3 ms-2"
-    >
-      SAVE LAYOUT
-    </a> -->
+  <div class="d-flex justify-content-end align-items-center">
     <a
       role="button"
-      (click)="closeDialog()"
-      class="btn-danger p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
-      style="font-size: x-large; text-decoration: none"
+      (click)="save()"
+      class="big-design-alt-button me-1"
+      *ngIf="!data.asset"
     >
-      <mat-icon>highlight_off</mat-icon>
+      {{ saving ? "Saving" : "Save" }}
+      <div class="big-design-alt-button-spinner" [hidden]="!saving">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </a>
+    <a role="button" (click)="closeDialog()" class="big-design-button ms-1">
+      Close
     </a>
   </div>
 </div>
 <mat-dialog-content class="h-100 d-block d-md-flex pb-4">
-  <div class="w-100 h-100 w-md-50 card shadow position-relative">
-    <ngx-spinner
-      bdColor="{{ selectedIndicator().bg_color }}"
-      size="medium"
-      color="{{ selectedIndicator().color }}"
-      type="{{ selectedIndicator().name }}"
-      [fullScreen]="false"
-      style.color="{{ selectedIndicator()!.color }}"
-      [name]="'loader'"
-    >
-      <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
-        Creating Asset
-      </h3>
-    </ngx-spinner>
-    <div class="h-100 w-100 position-md-absolute" style="overflow-y: scroll">
-      <form
-        class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form"
-        [formGroup]="nftForm"
-      >
-        <h2 class="h2 my-0">NFT Metadata</h2>
-        <h5 class="mt-0">Set your NFT's Metadata</h5>
-        <div class="wrap-input1 w-100">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>Name</mat-label>
+  <div class="w-100 h-100 w-md-50 big-design-card my-2">
+    <div class="h-100 w-100 big-design-body" style="overflow-y: scroll">
+      <form class="mt-3 mt-md-0 w-100" [formGroup]="nftForm">
+        <div class="w-100">
+          <h2 class="my-0 big-design-input-title">Name</h2>
+          <h5 class="mt-0 big-design-input-subtitle">
+            Unique name for this token.
+          </h5>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+            floatLabel="never"
+            style="font-size: small"
+          >
             <input
               matInput
-              class="bg-transparent"
+              class="bg-transparent big-design-input-text"
               type="text"
               name="name"
               formControlName="title"
-              placeholder="NFT name"
+              placeholder="Token Name"
             />
             <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
           </mat-form-field>
         </div>
-        <div class="wrap-input1 w-100">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>Description</mat-label>
+        <div class="w-100">
+          <h2 class="my-0 big-design-input-title">Collection</h2>
+          <h5 class="mt-0 big-design-input-subtitle">
+            Collection the token will belong to.
+          </h5>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+            floatLabel="never"
+            style="font-size: small"
+          >
+            <input
+              matInput
+              class="bg-transparent big-design-input-text"
+              type="text"
+              name="name"
+              [ngModel]="nftContract.name"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="true"
+              placeholder="Collection"
+            />
+            <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+          </mat-form-field>
+        </div>
+        <div class="w-100">
+          <h2 class="my-0 big-design-input-title">Description</h2>
+          <h5 class="mt-0 big-design-input-subtitle">
+            Description for this token. (Optional)
+          </h5>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+            floatLabel="never"
+            style="font-size: small"
+          >
             <textarea
               matInput
-              class="bg-transparent"
+              class="bg-transparent big-design-input-text"
               formControlName="description"
-              placeholder="NFT description"
+              placeholder="Token Description"
               style="min-height: 60px"
             ></textarea>
           </mat-form-field>
         </div>
-        <div class="wrap-input1 w-100">
-          <mat-form-field class="w-100 mb-1" appearance="outline">
-            <mat-label>Price</mat-label>
+        <div class="w-100">
+          <h2 class="my-0 big-design-input-title">Price</h2>
+          <h5 class="mt-0 big-design-input-subtitle">Price for this token.</h5>
+          <mat-form-field
+            class="w-100"
+            appearance="outline"
+            floatLabel="never"
+            style="font-size: small"
+          >
             <input
               matInput
               currencyMask
               [options]="customCurrencyMaskConfig"
-              class="bg-transparent"
+              class="bg-transparent big-design-input-text"
               type="text"
               formControlName="price"
               placeholder="Price"
             />
-            <mat-hint style="font-size: 12px" align="start">
-              {{
-                nftForm.controls.price.value
-                  | ratePipe: (nftContract | productCurrency)
-              }}
-            </mat-hint>
           </mat-form-field>
         </div>
-        <div class="wrap-input1 w-100">
-          <mat-form-field class="w-100 mb-2" appearance="outline">
-            <mat-label>Royalties</mat-label>
+        <div class="w-100">
+          <h2 class="my-0 big-design-input-title">Royalties</h2>
+          <h5 class="mt-0 big-design-input-subtitle">
+            Royalty percentage of this token for secondary sales fees.
+          </h5>
+          <mat-form-field
+            class="w-100 mb-2"
+            appearance="outline"
+            floatLabel="never"
+            style="font-size: small"
+          >
             <input
               matInput
               currencyMask
               [options]="customCurrencyMaskConfig2"
-              class="bg-transparent"
+              class="bg-transparent big-design-input-text"
               type="text"
               formControlName="royalty"
-              placeholder="Royalties %"
+              placeholder="{{ royaltyPlaceholder }}"
             />
-            <mat-hint style="font-size: 12px" align="start">
+            <h4
+              matSuffix
+              *ngIf="
+                nftForm.controls.royalty.value && nftForm.controls.price.value
+              "
+              class="text-secondary big-design-input-text d-none d-md-block"
+            >
               {{
                 (nftForm.controls.royalty.value / 100) *
-                  nftForm.controls.price.value
-                  | str
-                  | ratePipe: (nftContract | productCurrency)
+                  nftForm.controls.price.value | currency: nftContract.currency
               }}
-            </mat-hint>
+            </h4>
           </mat-form-field>
         </div>
+        <div class="w-100">
+          <h2 class="my-0 big-design-input-title">Utilities</h2>
+          <h5 class="mt-0 big-design-input-subtitle">
+            The utilities the token will grant to the holder.
+          </h5>
 
-        <h2 class="h2 my-0">NFT Traits</h2>
+          <p
+            class="big-design-title"
+            style="font-size: small"
+            *ngFor="let util of utility ?? []"
+          >
+            <mat-checkbox
+              [color]="'primary'"
+              [(ngModel)]="util.active"
+              [ngModelOptions]="{ standalone: true }"
+              [disabled]="data.asset"
+              >{{ util.name }}</mat-checkbox
+            >
+
+          <ng-template *ngIf="util.active"> 
+
+          </ng-template>
+          </p>
+        </div>
+
+        <!-- <h2 class="h2 my-0">NFT Traits</h2>
         <h5 class="mt-0">Add Traits to your NFT</h5>
-        <a role="button" class="btn btn-dark rounded mb-2" (click)="addTrait()">
+        <a role="button" class="big-design-button mb-2" (click)="addTrait()">
           Add Trait
         </a>
         <div
@@ -129,49 +183,51 @@
         >
           <div
             *ngFor="let trait of traits ?? []; index as i"
-            class="shadow my-3 bg-white mx-3 my-3 px-4 rounded-md-pill"
+            class="shadow bg-white mx-3 px-1"
           >
             <div
-              class="d-md-flex align-items-center justify-content-between h-100 text-center"
+              class="d-md-flex align-items-center justify-content-between h-100 text-center py-0 bg-warning"
             >
-              <mat-form-field
-                class="w-100 my-0 h-100 p-0 mt-3"
-                appearance="outline"
+              <div
+                class="d-flex align-items-center justify-content-start h-100 py-0 bg-danger"
               >
-                <input
-                  matInput
-                  class="bg-transparent text-center fw-bolder"
-                  type="text"
-                  [(ngModel)]="trait.trait_type"
-                  [ngModelOptions]="{ standalone: true }"
-                  placeholder="Trait Name"
-                />
-              </mat-form-field>
-              <mat-form-field
-                class="w-100 ms-md-1 my-0 h-100 p-0 mt-3"
-                appearance="outline"
-              >
-                <input
-                  matInput
-                  class="bg-transparent text-center text-secondary"
-                  type="text"
-                  [(ngModel)]="trait.value"
-                  [ngModelOptions]="{ standalone: true }"
-                  placeholder="Trait Value"
-                />
-              </mat-form-field>
+                <mat-form-field appearance="outline" class="my-0">
+                  <input
+                    matInput
+                    class="text-center fw-bolder bg-success"
+                    type="text"
+                    [(ngModel)]="trait.trait_type"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Name"
+                  />
+                </mat-form-field>
+
+                <mat-form-field
+                  class="ms-md-1"
+                  appearance="outline"
+                >
+                  <input
+                    matInput
+                    class="bg-transparent text-center text-secondary"
+                    type="text"
+                    [(ngModel)]="trait.value"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="Value"
+                  />
+                </mat-form-field>
+              </div>
               <a
-                class="bg-danger rounded-circle p-1 text-light my-2 my-md-0 ms-2 d-inline-flex justify-content-center align-items-center"
-                style="aspect-ratio: 1; height: 40px; text-decoration: none"
+                class="big-design-alt-button"
                 role="button"
                 (click)="removeTrait(i)"
               >
-                <mat-icon class="m-0">highlight_off</mat-icon>
+                Remove
               </a>
             </div>
           </div>
-        </div>
-        <div class="col mt-4">
+        </div> -->
+
+        <!-- <div class="col mt-4">
           <h2 class="h2 my-0">Lazy Minting</h2>
           <h5 class="mt-0">
             Lazy minting allows you to mint your NFT at the time of purchase,
@@ -189,37 +245,139 @@
               >
             </div>
           </mat-radio-group>
-        </div>
+        </div> -->
+
+        <!-- utilityData -->
       </form>
     </div>
     <div
-      class="position-md-absolute d-flex justify-content-center my-3 my-md-0 justify-content-md-end"
+      class="position-md-absolute d-flex justify-content-center my-2 my-md-0 justify-content-md-end"
       style="z-index: 5; bottom: 10px; right: 10px"
     >
       <p *ngIf="err != ''" class="text-danger text-center fw-bold">
         {{ err }}
       </p>
-      <br />
-      <a role="button" class="btn mt-2 btn-dark rounded" (click)="save()"
-        >Publish NFT</a
-      >
     </div>
   </div>
-  <div class="w-100 h-100 w-md-50 mt-3 mt-md-0">
-    <div class="w-100 h-100 px-5 mt-3 justify-content-center align-items-top">
-      <ngx-dropzone (change)="dropped($event, 'model')">
-        <ngx-dropzone-label>
-          Drop 3D Model Here
-          <br />
-          <a role="button" class="btn mt-2 btn-dark rounded-pill"
-            >Browse Files</a
+  <div class="w-100 h-100 w-md-50 mt-3 mt-md-0 px-1 px-md-5">
+    <div
+      class="w-100 h-100 my-2 big-design-card"
+      style="display: flex; flex-direction: column"
+    >
+      <div
+        class="big-design-header justify-content-{{
+          data.asset ? 'start' : 'between'
+        }}"
+      >
+        <p class="big-design-title">
+          {{
+            data.asset ? "Edition " + data.asset.tokenId + "" : "Model Preview"
+          }}
+        </p>
+        <input
+          #fileInput
+          type="file"
+          (change)="fileChangeEvent($event, 'skybox')"
+          style="display: none"
+        />
+        <div
+          class="d-inline-flex justify-content-center align-items-center"
+          *ngIf="!data.asset; else assetStatus"
+        >
+          <a
+            class="big-design-button me-2"
+            [hidden]="!nftForm.controls.file.value"
+            (click)="fileInput.click()"
           >
-        </ngx-dropzone-label>
-        <ngx-dropzone-preview *ngIf="nftForm.controls.file.value">
-            <ngx-dropzone-label>{{ "Model: " }} ({{ fileName }})</ngx-dropzone-label>
-        </ngx-dropzone-preview>
-      </ngx-dropzone>
-
+            Add Background
+          </a>
+          <a
+            class="big-design-button"
+            [hidden]="!nftForm.controls.file.value"
+            (click)="drop?.showFileSelector()"
+          >
+            Replace
+          </a>
+        </div>
+        <ng-template #assetStatus>
+          <div class="big-design-body ms-2">
+            <app-status [status]="data.asset.status"> </app-status>
+          </div>
+        </ng-template>
+      </div>
+      <div class="big-design-body w-100 h-100 mt-3" style="flex: 1">
+        <ngx-dropzone
+          class="w-100 h-100"
+          style="border-color: #2852ea"
+          (change)="dropped($event)"
+          *ngIf="!nftForm.controls.file.value && nftForm.controls.file.value != '0'"
+          [multiple]="false"
+        >
+          <ngx-dropzone-label class="big-design-title text-dark">
+            Drop 3D Model Here
+            <br />
+            <p style="font-size: small">
+              Accepted formats: {{ acceptedModels }}
+            </p>
+            <a role="button" class="mt-0 big-design-alt-button">Browse Files</a>
+          </ngx-dropzone-label>
+          <!-- <ngx-dropzone-preview
+          class="w-100 h-100"
+          *ngIf="nftForm.controls.file.value"
+        >
+          <ngx-dropzone-label
+            >{{ "Model: " }} ({{ fileName }})</ngx-dropzone-label
+            <div class="w-100 h-100">
+          >
+            
+          </div>
+        </ngx-dropzone-preview> -->
+        </ngx-dropzone>
+        <div
+          class="w-100 h-100 position-relative"
+          style="z-index: 1000"
+          *ngIf="nftForm.controls.file.value && nftForm.controls.file.value != '0'"
+        >
+          <div class="position-absolute w-100 h-100">
+            <!-- <p class="big-design-title w-100 text-center mb-2">
+            {{ fileName }}
+          </p> -->
+            <model-viewer
+              camera-controls
+              class="w-100 h-100"
+              style="object-fit: cover;"
+              [attr.src]="nftForm.controls.file.value"
+              autoplay="true"
+              [attr.skybox-image]="
+                nftForm.controls.skybox.value ??
+                'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
+              "
+              [attr.poster]="
+                nftForm.controls.cover.value ?? '/assets/default.png'
+              "
+              [attr.environment-image]="
+                nftForm.controls.skybox.value ??
+                'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
+              "
+              alt="A 3D model of an astronaut"
+              id="viewer"
+            >
+            </model-viewer>
+          </div>
+          <ngx-dropzone
+            class="w-100 h-100 position-absolute bg-transparent border-0"
+            style="z-index: 100000; pointer-events: none"
+            (change)="dropped($event)"
+            [multiple]="false"
+            [disableClick]="true"
+            #drop
+          >
+          </ngx-dropzone>
+          <!-- <div style="bottom: 10px; right: 10px">
+          <a role="button" class="big-design-alt-button">Replace</a>
+        </div> -->
+        </div>
+      </div>
 
       <!--     
       <ngx-file-drop
@@ -325,25 +483,6 @@
             (click)="openFileSelector()"
             >Browse Files</a
           > -->
-      <div class="w-100 mt-3 text-center">
-        <div
-          class="mt-3 mx-auto w-100"
-          style="height: fit-content; width: fit-content; max-width: 100%"
-        >
-          <div style="width: 100%; height: 300px">
-            <!-- ${linkUrl != undefined ? `poster=${linkUrl}` : ''}
-            ${skybox != undefined ? `skybox-image=${skybox}` : ''}
-            ${skybox != undefined ? `environment-image=${skybox}` : ''}
-            ${value != undefined ? `src=${value}` : 'src=""'} -->
-            <model-viewer
-              camera-controls
-              [attr.src]="nftForm.controls.file.value"
-              alt="A 3D model of an astronaut"
-            >
-            </model-viewer>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </mat-dialog-content>

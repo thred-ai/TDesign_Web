@@ -184,11 +184,11 @@ export class RoutingService {
 
       window.location.href = url;
     } else {
-      if (isCustom) {
-        url = 'my-store';
-      } else {
+      // if (isCustom) {
+      //   url = 'my-store';
+      // } else {
         url = storeName + '/' + 'my-store';
-      }
+      // }
       if (selected) {
         url += '?selected=' + selected;
       }

@@ -1,159 +1,109 @@
-import { Component, OnInit } from '@angular/core';
-import { Globals } from '../globals';
-import { Dict, LoadService } from '../services/load.service';
-import { Country } from '../models/shipping-country.model';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Globals } from '../globals';
 import { Plan } from '../models/plan.model';
+import { Dict, LoadService } from '../services/load.service';
 
 @Component({
   selector: 'app-edit-plan',
   templateUrl: './edit-plan.component.html',
-  styleUrls: ['./edit-plan.component.css']
+  styleUrls: ['./edit-plan.component.css'],
 })
 export class EditPlanComponent implements OnInit {
+  plans?: Plan[] = undefined;
+  subInfo?: any = undefined;
 
-  subInfo?: any
-  canTrial?: boolean
-  mode = 'new'
-
-  selectedTheme(){
-    
-    let co = Globals.storeInfo?.colorStyle?.btn_color
-    let bco = Globals.storeInfo?.colorStyle?.bg_color
-    let name = Globals.storeInfo?.colorStyle?.name
-
-    let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
-
-    let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
-
-    var theme: Dict<string> = { 
-      "name": name,
-      "color": color,
-      "bg_color": bg_color
-    }
-    return theme
-  }
-
-  err = ''
-
-  planInfo(){
-    var urlLink = "thredapps.com"
-
-      const link = document.createElement('a');
-          link.target = '_blank';
-  
-          let url: string = '';
-          if (!/^http[s]?:\/\//.test(urlLink)) {
-            url += 'http://';
-          }
-      
-          url += urlLink
-      
-          link.href = url
-          this.spinner.hide("adminSpinner")
-  
-          link.setAttribute('visibility', 'hidden')
-          link.click()
-          link.remove()
-  }
-
-  storeInfo(){return Globals.storeInfo}
-
-  startSubscription(plan: Plan){
-    // this.spinner.show('subSpinner')
-    // this.loadService.startSubscription(plan, (id: any, err?: string) => {
-    //   this.spinner.hide('subSpinner')
-    //   if (err && err != ''){
-    //     this.err = err!
-    //   }
-    //   else{
-    //     this.subInfo = id
-    //     this.done()
-    //   }
-    // })
-  }
-
-  planStatus(){
-    if (this.subInfo?.plan.id == "price_1KXUw3IdY1nzc70N22t0gNoN"){
-      return "Thred Core Plan"
-    }
-    else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
-      return 'Thred Store Builder Plan';
-    }
-    return ""
-  }
-
-  planRenewalDate(){
+  planRenewalDate() {
     return new Date(this.subInfo.current_period_end * 1000).toDateString();
   }
 
-  planEndDate(){
+  planEndDate() {
     return new Date(this.subInfo.cancel_at * 1000).toDateString();
   }
 
-  
-
-cancelSubscription(){
-  // this.spinner.show('subSpinner')
-  // this.loadService.stopSubscription((id: any) => {
-  //   this.subInfo = id
-  //   this.done()
-  // })
-}
-
-selectedIndicator(){
-
-  if (!Globals.storeInfo) { return {
-    name: '',
-    color: '',
-    bg_color: '',
-  }}
-
-  let co = Globals.storeInfo?.loading?.color
-  let bco = Globals.storeInfo?.loading?.bg_color
-  let name = Globals.storeInfo?.loading?.name
-  
-  let color = "rgba(" + co[0] + "," + co[1] + "," + co[2] + "," + co[3] + ")"
-
-  let bg_color = "rgba(" + bco[0] + "," + bco[1] + "," + bco[2] + "," + bco[3] + ")"
-
-  let indicator: Dict<string> = {
-    "name": name,
-    "color": color,
-    "bg_color": bg_color
-  }
-  return indicator
-}
-
-
-reactivateSubscription(){
-  // this.spinner.show('subSpinner')
-  // this.loadService.reactivateSubscription((id: any, err?: string) => {
-  //   if (err && err != ''){
-  //     this.err = err!
-  //   }
-  //   else{
-  //     this.subInfo = id
-  //     this.done()
-  //   }
-  // })
-}
-
-done(){
-  this.spinner.hide('subSpinner')
-  this.activeModal.dismiss(this.subInfo)
-}
-  
-
   constructor(
-    private activeModal: NgbActiveModal,
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<EditPlanComponent>,
     private loadService: LoadService,
     private spinner: NgxSpinnerService
-  ) { }
-
-  ngOnInit(): void {
-    this.mode = this.subInfo == undefined ? 'new' : 'edit' 
+  ) {
+    this.plans = data.plans;
+    this.subInfo = data.subInfo;
   }
 
+  switchToSubscription(plan: Plan) {
+    this.renewSubscription(plan);
+  }
+
+  cancelSubscription(plan: Plan) {
+    this.saveId = plan.id;
+    this.loadService.stopSubscription(plan, (id: any) => {
+      this.subInfo = id;
+      this.dialogRef.close(this.subInfo);
+      this.saveId = 'undefined';
+      // this.toast('Plan Cancelled!');
+    });
+  }
+
+  closeDialog(){
+    this.dialogRef.close()
+  }
+
+  renewSubscription(plan: Plan) {
+    this.saveId = plan.id;
+    this.loadService.reactivateSubscription(plan, (id: any, err?: string) => {
+      this.subInfo = id;
+      this.saveId = 'undefined';
+      this.dialogRef.close(this.subInfo);
+      // this.toast('Plan Updated!');
+      // if (err && err != ''){
+      //   this.err = err!
+      // }
+      // else{
+      //   this.subInfo = id
+      //   this.undefined()
+      // }
+    });
+  }
+
+  saveId?: string;
+
+
+
+  selectedIndicator() {
+    if (!Globals.storeInfo) {
+      return {
+        name: '',
+        color: '',
+        bg_color: '',
+      };
+    }
+    let co = Globals.storeInfo?.loading?.color;
+    let bco = Globals.storeInfo?.loading?.bg_color;
+    let name = Globals.storeInfo?.loading?.name;
+
+    let color = 'rgba(' + co[0] + ',' + co[1] + ',' + co[2] + ',' + co[3] + ')';
+    let bg_color =
+      'rgba(' + bco[0] + ',' + bco[1] + ',' + bco[2] + ',' + bco[3] + ')';
+    let indicator: Dict<string> = {
+      name: name,
+      color: color,
+      bg_color: bg_color,
+    };
+    return indicator;
+  }
+
+  startSubscription(plan: Plan) {
+    this.saveId = plan.id;
+
+    this.loadService.startSubscription(plan, (id: any, err?: string) => {
+      this.subInfo = id ?? '';
+      // this.toast('Plan Started!');
+      this.saveId = 'undefined';
+      this.dialogRef.close(this.subInfo);
+    });
+  }
+
+  ngOnInit(): void {}
 }

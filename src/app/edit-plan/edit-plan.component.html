@@ -1,96 +1,128 @@
-<ngx-spinner
-    bdColor = '{{selectedIndicator().bg_color}}'
-    size = "medium"
-    color = '{{selectedIndicator().color}}'
-    type = {{selectedIndicator().name}} 
-    [fullScreen] = "false"
-    style.color = "{{selectedIndicator()!.color}}"
-    [name]="'subSpinner'"
-    [disableAnimation] = "true"
-    >
-    <!-- <h3 class="text-center mt-5" [style.font-family]="storeInfo()?.fontName!" class="mt-5">UPLOADING PRODUCT...</h3> -->
-    </ngx-spinner>
-<div class=" w-100 h-100 m-0" style.background-color="{{selectedTheme()!.bg_color!}}">
-    <div class="row gx-0 gx-md-4 gx-lg-4 row-cols-1 row-cols-md-2 row-cols-xl-2 justify-content-center mx-2 mt-2 mx-md-3 mt-md-3 mx-lg-3 mt-lg-3" >
-                    
-        <div class="col h-100">
-            <h2 class="text-center fw-bolder m-2" style="font-size: x-large;" style.color="{{selectedTheme()!.color}}" [style.font-family]="storeInfo()?.fontName!">Merchant Plan</h2>
-            <div *ngIf="mode == 'edit' && subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                <p class="text-center fw-bolder m-2 text-danger" style="font-size:initial;" [style.font-family]="storeInfo()?.fontName!">Renew your plan to keep your store!</p>
-            </div>
-                <div class="card-body mt-2" *ngIf="mode == 'edit'">
-                    <div class="rounded mx-auto" style="width: 35%; aspect-ratio: 1 / 1" >
-                        <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                            <img src='assets/thred_basic.png' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain;">
-                        </a>
-                    </div>
-                    <div class="d-block align-items-center justify-content-center mt-3 mb-3" style="font-size: 19px;">
-                        <label [style.font-family]="storeInfo()?.fontName!" class="mx-auto w-100 d-flex align-items-center justify-content-center" ><a class="fw-bold text-center mx-auto" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planStatus()}} <b *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;">(Trial)</b></a></label>
-                    </div>
-                    <div class="card bg-{{storeInfo()?.colorStyle!.back_code}} p-3 shadow" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                            <label style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Price: </label>
-                            <mat-hint *ngIf="subInfo.status != 'trialing'" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{((subInfo?.plan.amount ?? 0) / 100) | currency}}/{{subInfo?.plan.interval ?? 'month'}}</a></mat-hint>
-                            <mat-hint *ngIf="subInfo.status == 'trialing'" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">FREE <b style="color: #6c757d;">({{((subInfo?.plan.amount ?? 0) / 100) | currency}}/{{subInfo?.plan.interval ?? 'month'}} after trial)</b></a></mat-hint>
-                        </div>
-                        <div *ngIf="!subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">
-                            <label *ngIf="subInfo.status != 'trialing'" style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Renews: </label>
-                            <label *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Trial End: </label>
-                            <mat-hint [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planRenewalDate()}}</a></mat-hint>
-                        </div>
-                        <div *ngIf="subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">
-                            <label style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Plan Ends: </label>
-                            <mat-hint [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planEndDate()}}</a></mat-hint>
-                        </div>
-                    </div> 
-                    <div *ngIf="!subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                        <button [style.font-family]="storeInfo()?.fontName!" (click)="cancelSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Cancel Subscription <mat-icon class="ms-1">back_hand</mat-icon></button>
-                    </div>
-                    <div *ngIf="subInfo!.cancel_at_period_end" class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                        <button [style.font-family]="storeInfo()?.fontName!" (click)="reactivateSubscription()" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Reactivate Subscription <mat-icon class="ms-1">check_circle</mat-icon></button>
-                    </div>
-                </div>
-                <div class="card-body mt-2" *ngIf="mode == 'new'">
-                    <div class="rounded mx-auto" style="width: 35%; aspect-ratio: 1 / 1" >
-                        <a role="button" style="text-shadow: 2px 2px 4px #42424281;">
-                            <img src='assets/thred_basic.png' class="rounded img-responsive h-100 w-100 p-1" style="object-fit:contain;">
-                        </a>
-                    </div>
-                    <div class="d-block align-items-center justify-content-center mt-3 mb-3" style="font-size: 19px;">
-                        <label [style.font-family]="storeInfo()?.fontName!" class="mx-auto w-100 d-flex align-items-center justify-content-center" ><a class="fw-bold text-center mx-auto" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">Thred Core Plan</a></label>
-                    </div>
-                    <p class="text-center text-danger fw-bolder" *ngIf='err && err != ""'>
-                        {{err}}
-                    </p>
-                    <div class="card bg-{{storeInfo()?.colorStyle!.back_code}} p-3 pb-0 shadow" [class.border-secondary] = "storeInfo()!.colorStyle!.text_code == 'light'">
-                        <div class="d-block align-items-center justify-content-start my-2" style="font-size: 15px;">
-                            <label style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Price: </label>
-                            <mat-hint *ngIf="canTrial!" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{97 | currency}}/month after trial</a></mat-hint>
-                            <mat-hint *ngIf="!canTrial!" [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{97 | currency}}/month</a></mat-hint>
-                        </div>
-                        <h4 style.color="{{selectedTheme()!.color}}">
-                            <b>Need more info about this plan?</b>
-                            <br>
-                            <a class="text-primary" role="button" style="text-decoration: none;" (click)='planInfo()'>
-                                Click Here
-                            </a>
-                        </h4>
-                    </div>
-                    
-                    <!-- <div *ngIf="!subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">
-                        <label *ngIf="subInfo.status != 'trialing'" style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Renews: </label>
-                        <label *ngIf="subInfo.status == 'trialing'" style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Trial End: </label>
-                        <mat-hint [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planRenewalDate()}}</a></mat-hint>
-                    </div>
-                    <div *ngIf="subInfo!.cancel_at_period_end" class="d-block align-items-center justify-content-start my-2 mb-5" style="font-size: 15px;">
-                        <label style="color: #6c757d;" [style.font-family]="storeInfo()?.fontName!" class = " mb-1 me-1">Plan Ends: </label>
-                        <mat-hint [style.font-family]="storeInfo()?.fontName!"  align="start"><a class="fw-bold" role="button" style="text-decoration: none;" style.color="{{selectedTheme()!.color}}">{{planEndDate()}}</a></mat-hint>
-                    </div> -->
-                    <div class="d-flex align-items-center justify-content-center mt-3 mb-2" style="font-size: 15px;">
-                        <!-- <button *ngIf="canTrial!" [style.font-family]="storeInfo()?.fontName!" (click)="startSubscription(plan)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Free Trial</button>
-                        <button *ngIf="!canTrial!" [style.font-family]="storeInfo()?.fontName!" (click)="startSubscription(plan)" class="btn d-flex" style.background-color="{{selectedTheme()!.color}}" style.color="{{selectedTheme()!.bg_color}}">Start Subscription</button> -->
-                    </div>
-                </div>
-        </div>
+<div mat-dialog-title class="d-flex justify-content-between align-items-center">
+  <div class="big-design-header">
+    <h2 class="big-design-title">Plan Type</h2>
+    <div class="text-end">
+      <a role="button" (click)="closeDialog()" class="big-design-button">
+        Close
+      </a>
     </div>
+  </div>
 </div>
+<mat-dialog-content>
+  <div class="w-100 h-100 position-relative">
+    <div
+      class="row gx-0 row-cols-1 row-cols-md-2 justify-content-center px-3 w-100 h-100"
+      *ngIf="plans"
+    >
+      <div class="col w-100 w-md-50 p-3" *ngFor="let plan of plans">
+        <div class="card {{ plan.css }} w-100 h-100">
+          <div class="w-100 h-100">
+            <p
+              class="px-2 py-3 fw-bolder text-center text-light big-design-title"
+              style="font-size: large"
+            >
+              {{ plan.name }}
+            </p>
+            <p
+              class="px-2 mt-0 mb-2 text-center fw-bolder text-white big-design-title"
+              style="font-size: 45px; line-height: 0.75em"
+            >
+              {{ plan.price | currency: "USD" }}
+              <br />
+              <i style="font-size: 15px"> Billed Monthly </i>
+            </p>
+            <div class="card-body mt-3 big-design-body">
+              <h3 role="button" class="text-white text-center big-design-title">
+                View Details
+              </h3>
+              <div
+                class="d-flex align-items-center justify-content-center mt-3 mb-2"
+                style="font-size: 15px"
+              >
+                <button
+                  (click)="startSubscription(plan)"
+                  *ngIf="subInfo == '' && plan.available"
+                  class="big-design-button light-btn"
+                >
+                  {{ saveId == plan.id ? "Activating" : "Select Plan" }}
+                  <div
+                    class="big-design-button-spinner"
+                    [hidden]="saveId != plan.id"
+                  >
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </button>
+                <button
+                  *ngIf="subInfo == '' && !plan.available"
+                  class="big-design-button light-btn"
+                >
+                  UNAVAILABLE
+                </button>
+
+                <button
+                  (click)="cancelSubscription(plan)"
+                  *ngIf="
+                    subInfo != '' &&
+                    !subInfo!.cancel_at_period_end &&
+                    subInfo.plan.id == plan.id
+                  "
+                  class="big-design-button light-btn"
+                >
+                  {{ saveId == plan.id ? "Cancelling" : "Cancel Plan" }}
+                  <div
+                    class="big-design-button-spinner"
+                    [hidden]="saveId != plan.id"
+                  >
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </button>
+                <button
+                  (click)="renewSubscription(plan)"
+                  *ngIf="
+                    subInfo != '' &&
+                    subInfo!.cancel_at_period_end &&
+                    subInfo.plan.id == plan.id
+                  "
+                  class="big-design-button light-btn"
+                >
+                  {{ saveId == plan.id ? "Renewing" : "Renew Plan" }}
+                  <div
+                    class="big-design-button-spinner"
+                    [hidden]="saveId != plan.id"
+                  >
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </button>
+                <button
+                  (click)="switchToSubscription(plan)"
+                  *ngIf="subInfo != '' && subInfo.plan.id != plan.id"
+                  class="big-design-button light-btn"
+                >
+                  {{ saveId == plan.id ? "Switching" : "Switch to Plan" }}
+                  <div
+                    class="big-design-button-spinner"
+                    [hidden]="saveId != plan.id"
+                  >
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>

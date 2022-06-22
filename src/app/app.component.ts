@@ -26,12 +26,6 @@ import { HomeComponent } from './home/home.component';
 import { ProductComponent } from './product/product.component';
 import { isPlatformBrowser, isPlatformServer, DOCUMENT } from '@angular/common';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CartComponent } from './cart/cart.component';
-import { ShippingAddressComponent } from './shipping-address/shipping-address.component';
-import { BillingInfoComponent } from './billing-info/billing-info.component';
-import { CheckoutComponent } from './checkout/checkout.component';
-import { ViewOrderComponent } from './view-order/view-order.component';
-import { ViewOrderInfoComponent } from './view-order-info/view-order-info.component';
 import { LoginComponent } from './login/login.component';
 import { AdminViewComponent } from './admin-view/admin-view.component';
 import { map, filter, mergeMap, take } from 'rxjs/operators';
@@ -44,8 +38,6 @@ import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Banner } from './models/banner.model';
 import { Popup } from './models/popup.model';
 import { MatDialog } from '@angular/material/dialog';
-import { PopupComponent } from './popup/popup.component';
-import { WalletComponent } from './wallet/wallet.component';
 import { AuthService } from './services/auth.service';
 
 import * as AOS from 'aos';
@@ -278,7 +270,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   async routeToProfile(selected?: string) {
     // if (Globals.storeInfo?.username) {
-      this.loadService.myCallback = undefined;
+      // this.loadService.myCallback = undefined;
       // if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
       //   // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
       //   this.routingService.routeToProfile(
@@ -288,8 +280,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       //     'https://shopmythred.com/' + Globals.storeInfo?.username
       //   );
       // } else {
-        console.log((await this.loadService.isLoggedIn())?.uid)
-        console.log(this.getStoreName().isCustom)
+        
         this.loadService.getUser("", (await this.loadService.isLoggedIn())?.uid, this.getStoreName().isCustom, user => {
           if (user?.username) {
             if (this.isAdmin()) {
@@ -314,14 +305,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   cart?: Array<ProductInCart> = undefined;
 
-  getCart() {
-    if (this.cart == undefined && isPlatformBrowser(this.platformID)) {
-      this.cart = [];
-      this.loadService.getCart(true, (cart) => {
-        this.cart = cart;
-      });
-    }
-  }
 
   getStoreName() {
     var request = '';
@@ -330,9 +313,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       request = globalThis.location.host;
     }
-    if (request != 'localhost:4200' && request != 'shopmythred.com') {
+    if (request != 'localhost:4200' && request != Globals.ngrokId && request != 'shopmythred.com') {
       return {
-        isCustom: true,
+        isCustom: false,
         link: request,
       };
     }
@@ -487,10 +470,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  signOutPressed() {
-    this.loadService.myCallback = () => this.routeToHome();
-    this.loadService.signOut();
-  }
 
   storeLink(link: string) {
     return link.replace('STORE_NAME', this.storeInfo?.username ?? '');
@@ -568,37 +547,6 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
-  showPopUp(homePopup: Popup, duration = 0) {
-    if (this.isAdmin()) {
-      return;
-    }
-    setTimeout(() => {
-      const modalRef = this.dialog.open(PopupComponent, {
-        width: '' + this.myInnerHeight() + 'px',
-        maxWidth: '100vw',
-        maxHeight: '100vh',
-        data: {
-          popup: homePopup,
-        },
-        panelClass: 'app-full-bleed-dialog',
-      });
-    }, duration);
-
-    // let sub = modalRef.afterClosed().subscribe(resp => {
-    //   console.log('The dialog was closed');
-    //   sub.unsubscribe()
-    //   if (resp){
-    //     banner.bg_color = resp.bg_color
-    //     banner.color = resp.color
-    //     banner.icon = resp.icon
-    //     banner.text = resp.text
-    //   }
-    //   else{
-
-    //   }
-    // });
-  }
-
   applyProductFilter(template?: Template) {
     // let id = template?.productCode;
     // this.mode = this.titleCase(template?.templateDisplayName ?? 'All Products');
@@ -641,13 +589,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         'review-order'
       ) ||
       this.router.snapshot.firstChild?.routeConfig?.path?.includes('my-store')
-    );
-  }
-
-  hideCart() {
-    return (
-      this.router.snapshot.firstChild?.component == ViewOrderComponent ||
-      this.router.snapshot.firstChild?.component == ViewOrderInfoComponent
     );
   }
 

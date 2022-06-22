@@ -8,75 +8,103 @@
         : "Edit Page"
     }}
   </h2> -->
+  <h2 class="big-design-input-title">New Collection</h2>
 
-  <div class="d-flex justify-content-end align-items-center w-100">
-    <a
-      role="button"
-      (click)="closeDialog()"
-      class="btn-danger p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
-      style="font-size: x-large; text-decoration: none"
-    >
-      <mat-icon>highlight_off</mat-icon>
+  <div class="d-flex justify-content-end align-items-top">
+    <a role="button" (click)="save()" class="big-design-alt-button me-1">
+      {{ saving ? "Saving" : "Save" }}
+      <div class="big-design-alt-button-spinner" [hidden]="!saving">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </a>
+    <a role="button" (click)="closeDialog()" class="big-design-button ms-1">
+      Close
     </a>
   </div>
 </div>
 <mat-dialog-content class="h-100">
-  <div class="w-100 h-100 card shadow" style="overflow-y: scroll">
-    <ngx-spinner
-      bdColor="{{ selectedIndicator().bg_color }}"
-      size="medium"
-      color="{{ selectedIndicator().color }}"
-      type="{{ selectedIndicator().name }}"
-      [fullScreen]="false"
-      style.color="{{ selectedIndicator()!.color }}"
-      [name]="'loader'"
-    >
-      <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5 pt-5 fw-bold">
-        Deploying Contract
-        <br>
-        <b class="fw-normal" style="font-size: small;">
-          This may take a couple minutes
-        </b>
-      </h3>
-    </ngx-spinner>
+  <div class="w-100 h-100" style="overflow-y: scroll">
     <form
-      class="mt-4 px-3 px-md-5 px-lg-5 w-100 contact1-form"
+      class="mt-3 pb-4 px-3 px-md-5 px-lg-5 w-100 contact1-form"
       [formGroup]="nftForm"
     >
-      <h2 class="h2 my-0">New Collection</h2>
-      <h5 class="mt-0">Set your Collection's Name and Symbol</h5>
       <div class="wrap-input1 w-100">
-        <mat-form-field class="w-100" appearance="outline">
-          <mat-label>Name</mat-label>
+        <h2 class="my-0 big-design-input-title">Name</h2>
+        <h5 class="mt-0 big-design-input-subtitle">
+          The Collection's Name
+        </h5>
+        <mat-form-field class="w-100" appearance="outline" floatLabel="never">
           <input
             matInput
             class="bg-transparent"
             type="text"
             name="name"
             formControlName="title"
-            placeholder="Collection name"
+            placeholder="Collection Name"
           />
           <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
         </mat-form-field>
       </div>
 
       <div class="wrap-input1 w-100">
-        <mat-form-field class="w-100" appearance="outline">
-          <mat-label>Symbol</mat-label>
+        <h2 class="my-0 big-design-input-title">Identifier</h2>
+        <h5 class="mt-0 big-design-input-subtitle">
+          The Collection's Identifier
+        </h5>
+        <mat-form-field class="w-100" appearance="outline" floatLabel="never">
           <input
             matInput
             class="bg-transparent"
             type="text"
             name="name"
             formControlName="symbol"
-            placeholder="Collection symbol"
+            placeholder="Collection ID"
+          />
+          <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+        </mat-form-field>
+      </div>
+
+      <div class="wrap-input1 w-100">
+        <h2 class="my-0 big-design-input-title">Royalties</h2>
+        <h5 class="mt-0 big-design-input-subtitle">
+          Wallet address for Royalty Fees to be transferred to (Optional). 
+        </h5>
+        <mat-form-field class="w-100" appearance="outline" floatLabel="never">
+          <input
+            matInput
+            class="bg-transparent"
+            type="text"
+            name="name"
+            formControlName="royaltyAddress"
+            placeholder="Royalty Address"
           />
           <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
         </mat-form-field>
       </div>
       <div class="wrap-input1 w-100">
+        <h2 class="my-0 big-design-input-title">Generate Page</h2>
+        <h5 class="mt-0 big-design-input-subtitle">
+          Whether a page should be auto-generated for this collection.
+        </h5>
+        <mat-radio-group formControlName="generatePage">
+          <div>
+            <mat-radio-button [value]="true" [color]="'primary'" (change)="radioChange($event)"
+              >Create Page</mat-radio-button
+            >
+          </div>
+          <div class="mt-2">
+            <mat-radio-button [value]="false" [color]="'primary'" (change)="radioChange($event)"
+              >Don't Create Page</mat-radio-button
+            >
+          </div>
+        </mat-radio-group>
+      </div>
+      <!-- <div class="wrap-input1 w-100">
         <mat-form-field class="w-100" appearance="outline">
-          <mat-label>Payment Token</mat-label>
+          <mat-label>Blockchain</mat-label>
           <mat-select formControlName="currency">
             <mat-select-trigger
             class="d-flex align-items-center"
@@ -99,20 +127,11 @@
             </mat-optgroup>
           </mat-select>
         </mat-form-field>
-      </div>
+      </div> -->
     </form>
     <p *ngIf="err != ''" class="text-danger my-1 text-center fw-bold">
       {{ err }}
     </p>
-    <div class="d-flex justify-content-center m-2 mb-3 mt-0">
-      <a
-        role="button"
-        class="btn btn-dark rounded-pill"
-        
-        (click)="save()"
-        >Deploy Collection</a
-      >
-    </div>
   </div>
 </mat-dialog-content>
 

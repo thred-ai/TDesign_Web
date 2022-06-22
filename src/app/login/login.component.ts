@@ -47,65 +47,7 @@ export class LoginComponent implements OnInit {
     return Globals.storeInfo?.colorStyle.back_code;
   }
 
-  connect() {
-    if (this.authMode == 1) {
-      this.loadingAction = 'Connecting...';
-
-      this.showSpinner();
-
-      this.authService.signInWithMetaMask(
-        (uid?: string, app?: AppComponent, error?: string) => {
-          this.hideSpinner();
-          console.log(error);
-          if (uid) {
-            app!.signedIn = true;
-            app!.signedInUid = uid;
-            app?.setOptions();
-            this.close();
-            return;
-          } else if (error) {
-            if (error == 'login') {
-              this.authMode = 2;
-            }
-            else{
-              this.err = error;
-            }
-          }
-        }
-      );
-    } else {
-      const email = (this.authForm.controls.email.value ?? '') as string;
-
-      const username = this.storeVal();
-
-      if (username == '' || email == '') {
-        this.err = 'Invalid Username or Email';
-        return;
-      }
-
-      // let associated = (Globals.storeInfo?.uid && Globals.storeInfo?.uid != '') ? Globals.storeInfo?.uid : undefined
-
-      this.loadingAction = 'Creating Account...';
-
-      this.showLogSpinner();
-
-      this.authService.signUpWithMetaMask(
-        email.replace(/\s/g, '').split(' ').join('').trim().toLowerCase(),
-        username.replace(/\s/g, '').split(' ').join('').trim().toLowerCase(),
-        (uid?: string, app?: AppComponent, error?: string) => {
-          this.hideLogSpinner();
-          if (uid) {
-            app!.signedIn = true;
-            app!.signedInUid = uid;
-            app?.setOptions();
-            this.close();
-          } else if (error) {
-            this.err = error;
-          }
-        }
-      );
-    }
-  }
+  
 
   backColor() {
     if (this.isLanding) {
@@ -263,53 +205,8 @@ export class LoginComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  useGuest() {
-    this.loadingAction = 'Making Guest Account...';
 
-    this.showSpinner();
-    this.load.registerAccount('Guest', (app, error) => {
-      if (error) {
-        this.err = error;
-        this.hideSpinner();
-      } else {
-        app?.setOptions();
-        this.close();
-      }
-    });
-  }
 
-  async close() {
-    this.hideSpinner();
-    if (this.isLanding) {
-      this.signedIn.emit(true);
-    } else {
-      let user = await this.load.isLoggedIn();
-      if (
-        Globals.storeInfo?.uid &&
-        Globals.storeInfo?.uid != '' &&
-        user?.uid &&
-        user?.uid != Globals.storeInfo?.uid &&
-        user?.email &&
-        Globals.isNewUser &&
-        !user?.isAnonymous
-      ) {
-        this.load.saveData(
-          0,
-          user?.email,
-          (success) => {
-            this.spinner.hide('popupSpinner');
-            if (success) {
-            } else {
-              this.err = 'An Error Occured, Try Again Later';
-            }
-          },
-          undefined,
-          Globals.storeInfo?.uid
-        );
-      }
-      this.modalService.dismissAll('success');
-    }
-  }
 
   error(err: string) {
     this.spinner.hide('loginSpinner');
@@ -318,63 +215,6 @@ export class LoginComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  signInEmail() {
-    if (this.loginForm.valid) {
-      const usernameOrEmail =
-        this.loginForm.controls.username.value.toLowerCase();
-
-      const password = this.loginForm.controls.password.value;
-
-      let fieldToSearch = 'Username';
-
-      const credentials = {
-        email: usernameOrEmail,
-        password: password,
-        Code: password,
-        Field: fieldToSearch,
-        Term: usernameOrEmail,
-      };
-      this.loadingAction = 'Signing in...';
-
-      this.showSpinner();
-
-      if (usernameOrEmail.includes('@')) {
-        // this.showSpinner()
-        this.load.registerAccount(
-          'Email_IN',
-          (app, error) => {
-            if (error) {
-              this.err = error;
-              this.hideSpinner();
-            } else {
-              app?.setOptions();
-              this.close();
-            }
-          },
-          credentials
-        );
-      } else {
-        // this.showSpinner()
-        this.load.registerAccount(
-          'Email_IN_USER',
-          (app, error) => {
-            if (error) {
-              this.err = error;
-              this.hideSpinner();
-            } else {
-              app?.setOptions();
-              app!.signedIn = true;
-              app!.signedInUid = Globals.storeInfo?.uid;
-              this.close();
-            }
-          },
-          credentials
-        );
-      }
-    } else {
-      this.err = 'One or more fields are invalid.';
-    }
-  }
 
   // useApple(){
   //   this.load.myCallback = () => this.close()
@@ -398,94 +238,7 @@ export class LoginComponent implements OnInit {
       .trim() as string;
   }
 
-  useEmail() {
-    if (this.authForm.valid) {
-      const password = (this.authForm.controls.password.value ?? '') as string;
 
-      const confirmpassword = (this.authForm.controls.confirmpassword.value ??
-        '') as string;
-
-      const email = (this.authForm.controls.email.value ?? '') as string;
-
-      const username = this.storeVal();
-
-      if (password == '' || username == '' || email == '') {
-        return;
-      }
-
-      if (password?.replace(/\s/g, '') != confirmpassword?.replace(/\s/g, '')) {
-        this.error("Password Field's don't match");
-        return;
-      }
-
-      let associated =
-        Globals.storeInfo?.uid && Globals.storeInfo?.uid != ''
-          ? Globals.storeInfo?.uid
-          : undefined;
-
-      const credentials = {
-        email: email
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        password: password
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        username: username
-          .replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-      };
-
-      this.loadingAction = 'Creating Account...';
-
-      this.showSpinner();
-
-      if (password == confirmpassword) {
-        this.load.myCallback = () => this.close();
-        this.load.checkUsername(username, (err) => {
-          if (err) {
-            this.error(err);
-          } else {
-            this.load.registerAccount(
-              'Email_UP',
-              (app, error) => {
-                if (error) {
-                  this.err = error;
-                  this.hideSpinner();
-                } else {
-                  app!.signedIn = true;
-                  app!.signedInUid = Globals.storeInfo?.uid;
-                  app?.setOptions();
-                  this.hideSpinner();
-                  this.close();
-                }
-              },
-              credentials,
-              this.affiliate,
-              associated
-            );
-          }
-        });
-      } else {
-        this.hideSpinner();
-      }
-    } else {
-      if (this.authForm.controls.password.invalid) {
-        this.err = 'Password must be longer than 6 characters.';
-      } else if (this.authForm.controls.email.invalid) {
-        this.err = 'Invalid Email';
-      }
-    }
-    return false;
-  }
 
   hide = true
 

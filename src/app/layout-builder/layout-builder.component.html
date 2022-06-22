@@ -1,5 +1,5 @@
 <div style="position: relative" class="h-100">
-  <ngx-spinner
+  <!-- <ngx-spinner
     bdColor="{{ selectedIndicator().bg_color }}"
     size="large"
     color="{{ selectedIndicator().color }}"
@@ -11,52 +11,51 @@
     <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
       {{ title }}
     </h3>
-  </ngx-spinner>
+  </ngx-spinner> -->
   <div
     mat-dialog-title
     class="d-flex justify-content-between align-items-center"
-    *ngIf="loaded"
   >
-    <h2 class="me-2 text-center d-none d-md-block">
-      {{
-        mode == 0
-          ? editingBlock == undefined
-            ? "Drag/Drop to Rearrange"
-            : "Edit Block"
-          : "Edit Page"
-      }}
-    </h2>
-
-    <div class="d-flex justify-content-between align-items-center">
-      <a
+    <div class="big-design-header">
+      <h2 class="big-design-title">
+        {{
+          loaded
+            ? mode == 0
+              ? editingBlock == undefined
+                ? "Edit Layout"
+                : "Edit Block"
+              : "Edit Page"
+            : ""
+        }}
+      </h2>
+      <!-- <a
         role="button"
         (click)="changeSetting()"
         class="btn-secondary p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
         style="font-size: x-large; text-decoration: none"
       >
         <mat-icon>web</mat-icon>
-      </a>
-      <a
-        role="button"
-        (click)="close()"
-        class="fw-bolder btn btn-dark rounded-pill px-3 ms-2"
-      >
-        SAVE LAYOUT
-      </a>
-      <a
-        role="button"
-        (click)="closeDialog()"
-        class="btn-danger p-2 rounded-circle ms-2 fw-bolder text-light d-inline-flex justify-content-center align-items-center"
-        style="font-size: x-large; text-decoration: none"
-      >
-        <mat-icon>highlight_off</mat-icon>
-      </a>
+      </a> -->
+      <div class="text-end">
+        <a role="button" (click)="close()" class="big-design-alt-button me-1">
+          {{ saving ? "Saving" : mode == 0 ? "Save" : "Save Page" }}
+          <div class="big-design-alt-button-spinner" [hidden]="!saving">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </a>
+
+        <a role="button" (click)="closeDialog()" class="big-design-button ms-1">
+          Close
+        </a>
+      </div>
     </div>
   </div>
-  <mat-dialog-content *ngIf="mode == 0" class="h-100">
+  <mat-dialog-content *ngIf="mode == 0 && loaded" class="h-100">
     <div
       class="w-100 h-100 d-block d-md-flex justify-content-between align-items-top"
-      *ngIf="loaded"
     >
       <div class="d-none d-md-block w-100 w-md-25 h-100 parent">
         <div class="h-100 right">
@@ -164,57 +163,13 @@
                                   [useSrcset]="true"
                                   [defaultImage]="'/assets/default.png'"
                                   [lazyLoad]="
-                                  items![product].nft.linkUrl ?? '/assets/default.png'
+                                    items![product].nft.img ??
+                                    '/assets/default.png'
                                   "
                                   alt="ok"
-                                  style="
-                                    object-fit: cover;
-                                    aspect-ratio: 1;
-                                    margin-bottom: 0.35em;
-                                  "
+                                  style="object-fit: cover; aspect-ratio: 1"
                                 />
                               </a>
-                              <div class="text-center w-100">
-                                <p
-                                  class="fw-bolder w-100"
-                                  style="
-                                    text-decoration: none;
-                                    text-overflow: ellipsis;
-                                    word-wrap: break-word;
-                                    word-break: break-all;
-                                    overflow-x: hidden;
-                                  "
-                                  style.color="{{ selectedTheme!.color }}"
-                                  role="button"
-                                  [style.font-family]="storeInfo?.fontName!"
-                                >
-                                  {{ items![product].nft.name }}
-                                </p>
-                                <div
-                                  class="d-flex align-items-center justify-content-center w-100"
-                                >
-                                  <!-- <a
-                                role="button"
-                                class="btn"
-                                (click)="editProduct(product)"
-                              >
-                                <mat-icon
-                                  style.color="{{ selectedTheme()!.color }}"
-                                  >edit</mat-icon
-                                >
-                              </a> -->
-                                  <!-- <a
-                              role="button"
-                              class="btn"
-                              (click)="deleteProduct(product)"
-                            >
-                              <mat-icon
-                                style.color="{{ selectedTheme()!.color }}"
-                                >delete</mat-icon
-                              >
-                            </a> -->
-                                </div>
-                              </div>
                             </div>
                           </div>
                         </div>
@@ -914,7 +869,7 @@
                             class="{{
                               (storeInfo?.colorStyle)!.back_code
                             }} me-2 rounded"
-                            [src]="product.linkUrl ?? ''"
+                            [src]="product.img ?? ''"
                             style="
                               object-fit: cover;
                               width: 35px;
@@ -1002,194 +957,17 @@
           </div>
         </div>
       </div>
-      <div class="ms-md-4 w-100 w-md-75 h-100">
-        <div class="card shadow-lg border border-dark border-3 h-100 w-100">
+      <div class="ms-md-4 w-100 w-md-75 h-100 py-3">
+        <div class="big-design-card h-100 w-100">
           <div
-            class="card-header bg-dark text-light fw-bolder border-dark border-bottom border-2 rounded-0"
-          >
-            <i>Live Preview: Desktop</i>
-          </div>
-          <div
-            class="w-100 h-100 card-body p-0"
+            class="w-100 h-100 big-design-body p-0"
             style="overflow-y: scroll"
             style.background-color="{{ selectedTheme!.bg_color }}"
           >
-            <div
-              *ngIf="
-                !(layoutForm.controls.isFullscreen.value ?? false) &&
-                storeInfo?.banners &&
-                (storeInfo?.banners?.length ?? 0) > 0
-              "
-              class="w-100 rounded"
-              style="height: 35px"
-            >
-              <div
-                *ngIf="storeInfo?.bannerStyle == 1"
-                class="w-100 h-100"
-                id="outer"
-              >
-                <div class="w-100 h-100">
-                  <div class="w-100 h-100 loop">
-                    <div
-                      class="d-flex w-100 h-100 align-items-center"
-                      id="content"
-                    >
-                      <div
-                        class="d-flex h-100 align-items-center"
-                        *ngFor="let _ of arrLength()"
-                      >
-                        <h2
-                          *ngFor="let banner of storeInfo?.banners"
-                          style.color="{{
-                            (banner | storeBanner: ds?.currIndex ?? 0).color
-                          }}"
-                          style.background-color="{{
-                            (banner | storeBanner: ds?.currIndex ?? 0).bg_color
-                          }}"
-                          class="h-100 px-5 d-flex justify-content-center align-items-center my-auto"
-                          style="
-                            font-size: calc(
-                              14px + (16 - 14) * (100vh - 400px) / (800 - 400)
-                            );
-                          "
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          <div *ngIf="banner.text != ''">
-                            {{ banner.text ?? "" }}
-                          </div>
-                          <mat-icon
-                            class="mt-2"
-                            *ngIf="banner.icon != ''"
-                            style="font-size: inherit"
-                          >
-                            <span class="ms-1 material-icons-outlined">
-                              {{ banner.icon }}
-                            </span>
-                          </mat-icon>
-                        </h2>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                *ngIf="storeInfo && storeInfo?.bannerStyle == 0"
-                class="w-100 h-100"
-                style.background-color="{{
-                  (
-                    (storeInfo?.banners)![this.ds?.currIndex ?? 0]
-                    | storeBanner: this.ds?.currIndex ?? 0
-                  ).bg_color
-                }}"
-              >
-                <div
-                  class="h-100 w-100 d-flex justify-content-between align-items-center"
-                  style="position: relative"
-                >
-                  <div class="w-100 h-100 d-flex">
-                    <drag-scroll
-                      #carousel
-                      class="w-100 h-100"
-                      [scrollbar-hidden]="true"
-                      [indexChanged]="didMove()"
-                      *ngIf="storeInfo"
-                    >
-                      <div
-                        drag-scroll-item
-                        class="w-100 h-100 d-inline-flex justify-content-start align-items-center"
-                        *ngFor="let banner of storeInfo?.banners ?? []"
-                      >
-                        <h2
-                          style.color="{{
-                            (
-                              (storeInfo?.banners)![this.ds?.currIndex ?? 0]
-                              | storeBanner: this.ds?.currIndex ?? 0
-                            ).color
-                          }}"
-                          class="w-100 mx-3 mx-md-0 d-inline-flex justify-content-start justify-content-md-center align-items-center"
-                          [class.my-auto]="
-                            (storeInfo?.banners?.length ?? 0) == 1
-                          "
-                          style="
-                            font-size: calc(
-                              14px + (16 - 14) * (100vw - 400px) / (800 - 400)
-                            );
-                          "
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          <div *ngIf="banner.text != ''" class="mb-1">
-                            {{ banner.text ?? "fs" }}
-                          </div>
-                          <mat-icon
-                            *ngIf="banner.icon != ''"
-                            style="font-size: inherit"
-                          >
-                            <span class="ms-1 material-icons-outlined">
-                              {{ banner.icon }}
-                            </span>
-                          </mat-icon>
-                        </h2>
-                      </div>
-                    </drag-scroll>
-                  </div>
-                  <div
-                    class="w-100 d-flex justify-content-between align-items-center"
-                    style="position: absolute"
-                  >
-                    <a
-                      *ngIf="storeInfo && (storeInfo?.banners?.length ?? 0) > 1"
-                      class="d-none d-md-block"
-                      role="button"
-                      (click)="moveLeft()"
-                    >
-                      <mat-icon
-                        class="ms-3 ms-md-5 mt-1"
-                        style.color="{{
-                          (
-                            (storeInfo?.banners)![this.ds?.currIndex ?? 0]
-                            | storeBanner: this.ds?.currIndex ?? 0
-                          ).color
-                        }}"
-                      >
-                        <span
-                          class="material-icons-outlined"
-                          style="font-size: 30px"
-                        >
-                          chevron_left
-                        </span>
-                      </mat-icon>
-                    </a>
-                    <a
-                      *ngIf="storeInfo && (storeInfo?.banners?.length ?? 0) > 1"
-                      class="d-none d-md-block"
-                      role="button"
-                      (click)="moveRight()"
-                    >
-                      <mat-icon
-                        class="me-3 me-md-5 mt-1"
-                        style.color="{{
-                          (
-                            (storeInfo?.banners)![this.ds?.currIndex ?? 0]
-                            | storeBanner: this.ds?.currIndex ?? 0
-                          ).color
-                        }}"
-                      >
-                        <span
-                          class="material-icons-outlined"
-                          style="font-size: 30px"
-                        >
-                          chevron_right
-                        </span>
-                      </mat-icon>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
             <section
               class="py-0 w-100 mb-0"
               style.background-color="{{ selectedTheme!.bg_color }}"
+              id="capture"
             >
               <!-- (cdkDropListDropped)="drop($event)" -->
               <div
@@ -1259,18 +1037,15 @@
                         style="overflow: hidden"
                         *ngIf="items![product]"
                       >
-                        <div class="pb-0 w-100">
-                          <a role="button" class="w-100">
+                        <div class="pb-0 w-100 h-100">
+                          <a role="button" class="w-100 h-100">
                             <img
-                              loading="lazy"
                               id="image"
-                              class="h-100 w-100 {{
+                              class="h-100 w-100 bg-{{
                                 (storeInfo?.colorStyle)!.back_code
                               }}"
-                              [useSrcset]="true"
-                              [defaultImage]="'/assets/default.png'"
-                              [lazyLoad]="
-                                items![product].nft?.linkUrl ??
+                              [src]="
+                                items![product].nft?.img ??
                                 '/assets/default.png'
                               "
                               alt="ok"
@@ -1300,7 +1075,7 @@
                             >
                               {{ items![product].nft.name }}
                             </p>
-                            <a
+                            <!-- <a
                               class="btn btn-outline-{{
                                 (storeInfo?.colorStyle)!.text_code
                               }} mt-auto d-flex justify-content-center text-center"
@@ -1311,12 +1086,13 @@
                                 class="m-0 p-0 me-1"
                                 style="overflow: hidden; height: 25px"
                                 svgIcon="{{
-                                  items![product].collection.customToken | matIcon
+                                  items![product].collection.customToken
+                                    | matIcon
                                 }}"
                               >
                               </mat-icon>
                               {{ items![product].nft?.price | price }}
-                            </a>
+                            </a> -->
                           </div>
                         </div>
                       </div>
@@ -1348,15 +1124,11 @@
                       <div
                         class="d-block align-items-center text-center text-sm-start w-100"
                       >
-                        <a class="ms-0 me-0" role="button">
+                        <a class="mx-0" role="button">
                           <img
-                            loading="lazy"
-                            class="h-auto w-100 {{
-                              (storeInfo?.colorStyle)!.back_code
-                            }}"
-                            [useSrcset]="true"
-                            [defaultImage]="'/assets/default.png'"
-                            [lazyLoad]="img"
+                            class="h-auto w-100"
+                            style="object-fit: contain"
+                            [src]="img"
                             alt="ok"
                           />
                         </a>
@@ -1531,127 +1303,121 @@
               </div>
             </section>
           </div>
-          <div
-            class="card-footer bg-dark text-muted text-center p-2 border-dark border-top border-2 rounded-0"
-            style="height: 60px"
-          >
-            <img
-              class="h-100"
-              style="object-fit: contain; aspect-ratio: 1/1"
-              src="/assets/thred_desktop.png"
-            />
-          </div>
         </div>
       </div>
     </div>
     <div *ngIf="!loaded" style="height: 100vh"></div>
   </mat-dialog-content>
-  <mat-dialog-content *ngIf="mode == 1" class="h-100 d-block d-md-flex pb-4">
-    <div class="w-100 h-100 w-md-50 card shadow" style="overflow-y: scroll">
-      <form [formGroup]="layoutForm" novalidate class="mx-3 mt-2 mb-0">
+
+  <mat-dialog-content
+    *ngIf="mode == 1 && loaded"
+    class="h-100 d-block d-md-flex pb-4"
+  >
+    <div
+      class="w-100 h-100 w-md-50 big-design-card mt-1 py-3"
+      style="overflow-y: scroll"
+    >
+      <form [formGroup]="layoutForm" novalidate class="mx-3 mt-2 mb-0 h-100">
         <div class="row row-cols-1 my-4">
           <div class="col mt-0">
             <div class="mt-2">
-              <h2 class="h2 my-0">URL</h2>
-              <h5 class="text-secondary my-0">The URL of your page</h5>
+              <h2 class="big-design-input-title my-0">URL</h2>
+              <h5 class="big-design-input-subtitle my-0">
+                The URL of your page
+              </h5>
               <mat-form-field
-                class="w-100 mt-4"
+                class="w-100 mt-2"
                 style="font-size: small"
                 appearance="outline"
+                floatLabel="never"
               >
-                <mat-label>Page URL</mat-label>
-
                 <input
                   formControlName="url"
                   type="text"
                   matInput
                   placeholder="Page URL (ex. 'home')"
-                  class="text-dark my-0"
+                  class="text-dark my-auto big-design-input-text"
                 />
-                <h3 matSuffix class="text-secondary">
+                <h4
+                  matSuffix
+                  class="text-secondary big-design-input-text d-none d-md-block"
+                >
                   {{ urlText(false) }}
-                </h3>
+                </h4>
               </mat-form-field>
             </div>
           </div>
           <div class="col mt-0">
-            <div class="mt-2">
-              <h2 class="h2 my-0">Name</h2>
-              <h5 class="my-0">This is only visible to you</h5>
+            <div class="mt-0">
+              <h2 class="big-design-input-title my-0">Name</h2>
+              <h5 class="big-design-input-subtitle my-0">
+                The name of your page
+              </h5>
               <mat-form-field
-                class="w-100 mt-4"
+                class="w-100 mt-2"
                 style="font-size: small"
                 appearance="outline"
+                floatLabel="never"
               >
-                <mat-label>Page Name</mat-label>
-
                 <input
                   formControlName="name"
                   type="text"
                   matInput
                   placeholder="Page Name (ex. 'New-Product')"
-                  class="text-dark"
+                  class="text-dark big-design-input-text"
                 />
               </mat-form-field>
             </div>
           </div>
-          <div class="col mt-4">
-            <h2 class="h2 my-0">Navigation</h2>
-            <h5 class="mt-0">
-              When set to 'No Navigation', the headers & footers of your store
-              are hidden on this page
-            </h5>
-            <mat-radio-group formControlName="isFullscreen">
-              <div>
-                <mat-radio-button [value]="false" (change)="radioChange($event)"
-                  >Allows Navigation</mat-radio-button
-                >
-              </div>
-              <div class="mt-2">
-                <mat-radio-button [value]="true" (change)="radioChange($event)"
-                  >No Navigation</mat-radio-button
-                >
-              </div>
-            </mat-radio-group>
-          </div>
-          <div class="col mt-4">
-            <div class="my-2">
-              <h2 class="h2 my-0">SEO</h2>
-              <h5 class="my-0">The SEO content of your page</h5>
+          <div class="col mt-0">
+            <div class="mt-0 mb-0">
+              <h2 class="big-design-input-title my-0">Meta Title</h2>
+              <h5 class="big-design-input-subtitle my-0">
+                The meta title of your page
+              </h5>
               <mat-form-field
-                class="w-100 mt-4"
+                class="w-100 mt-2"
                 style="font-size: small"
                 appearance="outline"
+                floatLabel="never"
               >
-                <mat-label>SEO Title Tag</mat-label>
-
                 <input
-                  formControlName="seoTitle"
+                  formControlName="metaTitle"
                   type="text"
                   matInput
-                  placeholder="SEO Title"
-                  class="text-dark"
+                  placeholder="Meta Title"
+                  class="text-dark big-design-input-text"
                 />
               </mat-form-field>
+              <h2 class="big-design-input-title my-0">Meta Description</h2>
+              <h5 class="big-design-input-subtitle my-0">
+                The meta description of your page
+              </h5>
               <mat-form-field
-                class="w-100 mt-0"
+                class="w-100 mt-2"
                 style="font-size: small"
                 appearance="outline"
+                floatLabel="never"
               >
-                <mat-label>SEO Description Tag</mat-label>
-
                 <textarea
-                  formControlName="seoDesc"
+                  formControlName="metaDesc"
                   type="text"
                   matInput
-                  placeholder="SEO Description"
-                  class="text-dark"
+                  placeholder="Meta Description"
+                  class="text-dark big-design-input-text"
                   style="height: 100px"
                 ></textarea>
               </mat-form-field>
 
-              <mat-form-field class="w-100" appearance="outline">
-                <mat-label>SEO Keywords</mat-label>
+              <h2 class="big-design-input-title my-0">Meta Tags</h2>
+              <h5 class="big-design-input-subtitle my-0">
+                The meta tags of your page
+              </h5>
+              <mat-form-field
+                class="w-100 mt-2"
+                appearance="outline"
+                floatLabel="never"
+              >
                 <mat-chip-list #tagChipList aria-label="Keyword selection">
                   <mat-chip
                     *ngFor="let tag of layoutForm.controls.seoTags.value ?? []"
@@ -1660,7 +1426,7 @@
                     (removed)="removeTag(tag)"
                     class="category-chip"
                   >
-                    <div class="category-chip__text">
+                    <div class="category-chip__text big-design-input-text">
                       {{ tag }}
                     </div>
                     <button
@@ -1685,210 +1451,145 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="col mt-0">
-            <div class="my-2">
-              <h2 class="h2 my-0">Social Meta Tags</h2>
-              <h5 class="my-0">
-                How your URL looks when shared on social media
-              </h5>
-              <mat-form-field
-                class="w-100 mt-4"
-                style="font-size: small"
-                appearance="outline"
-              >
-                <mat-label>Meta Title Tag</mat-label>
-
-                <input
-                  formControlName="metaTitle"
-                  type="text"
-                  matInput
-                  placeholder="Meta Title"
-                  class="text-dark"
-                />
-              </mat-form-field>
-              <mat-form-field
-                class="w-100 mt-0"
-                style="font-size: small"
-                appearance="outline"
-              >
-                <mat-label>Meta Description Tag</mat-label>
-
-                <textarea
-                  formControlName="metaDesc"
-                  type="text"
-                  matInput
-                  placeholder="Meta Description"
-                  class="text-dark"
-                  style="height: 100px"
-                ></textarea>
-              </mat-form-field>
-
-              <!-- <div class="w-100 p-1" style="position: relative; aspect-ratio: 1;">
-                <a
-                  *ngIf="image.isActive"
-                  role="button"
-                  (click)="fileInput.click()"
-                  ><img
-                    class="w-100 ani-style"
-                    style="object-fit: contain"
-                    src="{{ image.img }}"
-                    alt="ok"
-                /></a>
-
-                <div style="position: absolute; top: 0; right: 0">
-                  <a
-                    *ngIf="image.isActive && canCancel()"
-                    class="ani-style"
-                    (click)="removeImg(image)"
-                    role="button"
-                    ><mat-icon>cancel</mat-icon></a
-                  >
-                </div>
-
-                <div
-                  *ngIf="!image.isActive"
-                  class="cdk-drag-placeholder w-100"
-                  style="height: 100px"
-                >
-                  <a
-                    class="h-100 w-100 d-flex ani-style justify-content-center align-items-center"
-                    (click)="fileInput.click()"
-                    style="text-decoration: none"
-                    role="button"
-                  >
-                    <mat-icon>add_circle</mat-icon>
-                  </a>
-                </div>
-                <mat-form-field class="w-100 my-1">
-                  <mat-placeholder 
-                    >Image Click URL</mat-placeholder
-                  >
-                  <input
-                    type="text"
-                    matInput
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="image.link"
-                    style="font-size: small"
-                    class="text-dark"
-                  />
-                  <mat-icon role="button" matSuffix>link</mat-icon>
-                </mat-form-field>
-                <input
-                  #fileInput
-                  type="file"
-                  (change)="fileChangeEvent($event, image)"
-                  style="display: none"
-                />
-              </div> -->
-            </div>
-          </div>
-          <div class="col mt-4">
-            <h2 class="h2 my-0">Loading Animation</h2>
-            <h5 class="mt-0">
-              When set to 'Hide', your store's loading animation will not
-              display on this page.
+          <div class="col mt-0 mb-5">
+            <h2 class="big-design-input-title my-0">Visibility</h2>
+            <h5 class="mt-0 big-design-input-subtitle">
+              When set to 'Visible', your page will be accessible from your
+              store's navigation menu.
             </h5>
-            <mat-radio-group formControlName="isLoader">
+            <mat-radio-group class="mb-4" formControlName="isFullscreen">
               <div>
                 <mat-radio-button
-                  [value]="true"
-                  (change)="radioChangeLoader($event)"
+                  class="big-design-input-text"
+                  [value]="false"
+                  (change)="radioChange($event)"
+                  >Visible</mat-radio-button
                 >
-                  Show
-                </mat-radio-button>
               </div>
               <div class="mt-2">
                 <mat-radio-button
-                  [value]="false"
-                  (change)="radioChangeLoader($event)"
+                  class="big-design-input-text"
+                  [value]="true"
+                  (change)="radioChange($event)"
+                  >Hidden</mat-radio-button
                 >
-                  Hide
-                </mat-radio-button>
               </div>
             </mat-radio-group>
           </div>
         </div>
       </form>
     </div>
-    <div class="w-100 w-md-50">
+    <div class="w-100 w-md-50 h-100">
       <div
-        class="w-100 px-md-5 mx-auto row row-cols-1 mt-0 justify-content-center align-items-top"
+        class="h-100 w-100 px-md-5 mx-auto row row-cols-1 mt-0 justify-content-center align-items-top"
+        style="overflow-y: scroll"
       >
-        <!-- <div class="col w-100 card shadow p-3 d-flex mb-0">
-          <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
-  
-          <div class="w-100 my-0 d-flex align-items-center justify-content-start h-100">
-            <img
-            class="h-100"
-            style="object-fit: contain; aspect-ratio: 1;"
-            src="{{this.layoutForm.controls.metaPic.value ?? storeInfo?.profileLink}}"
-          />
-            <p
-            class="ms-3 my-auto"
-            style="color: #6e6e6e; font-family: Arial; font-size: small; text-overflow: ellipsis; overflow-y: hidden;"
-          >
-          <b class="text-dark" style="font-size: medium;">
-            {{this.layoutForm.controls.metaTitle.value ?? ""}}
-          </b>
-          <br>
-  
-            {{this.layoutForm.controls.metaDesc.value ?? ""}}
-          </p>
-          </div>
-        </div> -->
-        <div class="col w-100 card shadow p-3 mt-3">
-          <h2 class="h1 mb-4 fw-bold">Search Engine Listing Preview</h2>
-          <p
-            class="mb-0"
-            style="color: #2417af; font-family: Arial; font-size: large"
-          >
-            {{ this.layoutForm.controls.seoTitle.value ?? "" }}
-          </p>
-          <p
-            class="my-0"
-            style="color: #006521; font-family: Arial; font-size: small"
-          >
-            {{ urlText(true) ?? "" }}
-          </p>
-          <p
-            class="my-0"
-            style="color: #6e6e6e; font-family: Arial; font-size: small"
-          >
-            {{ this.layoutForm.controls.seoDesc.value ?? "" }}
-          </p>
-        </div>
-        <div class="col w-100 card shadow p-3 d-flex mt-3">
-          <h2 class="h1 mb-4 fw-bold">Social Link Preview</h2>
-
-          <div
-            class="w-100 my-0 d-flex align-items-center justify-content-start"
-            style="height: 150px"
-          >
-            <img
-              class="h-100"
-              style="object-fit: contain; aspect-ratio: 1"
-              src="{{
-                this.layoutForm.controls.metaPic.value ?? storeInfo?.profileLink
-              }}"
-            />
-            <p
-              class="ms-3 my-auto"
-              style="
-                color: #6e6e6e;
-                font-family: Arial;
-                font-size: small;
-                text-overflow: ellipsis;
-                overflow-y: hidden;
-                height: 120px;
-              "
+        <div
+          id="back"
+          role="button"
+          style="aspect-ratio: 2/1"
+          class="col big-design-card mt-1"
+        >
+          <div class="big-design-header">
+            <p class="big-design-title">Page Builder</p>
+            <a role="button" (click)="mode = 0" class="big-design-button">
+              Edit Layout</a
             >
-              <b class="text-dark" style="font-size: medium">
-                {{ this.layoutForm.controls.metaTitle.value ?? "" }}
-              </b>
-              <br />
+            <!-- <div
+                    class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
+                  >
+                    
+                  
 
+                    <a
+                  role="button"
+                  (click)="deletePage(page)"
+                  class="ms-2 btn btn btn-{{
+                    (storeInfo?.colorStyle)!.text_code
+                  }} rounded-circle p-2 d-flex align-items-center justify-content-center"
+                  style="aspect-ratio: 1"
+                >
+                  <mat-icon>delete</mat-icon>
+                </a>
+                  </div> -->
+          </div>
+          <div class="big-design-body w-100 h-200 rounded border mt-3">
+            <div
+              class="w-100 h-100 rounded"
+              style="overflow-y: hidden; aspect-ratio: 2.5/1"
+            >
+              <img
+                class="w-100 h-auto"
+                style="object-fit: contain"
+                loading="lazy"
+                [useSrcset]="true"
+                [defaultImage]="'/assets/default.png'"
+                [lazyLoad]="pageDisplay ?? '/assets/default.png'"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col w-100 big-design-card mt-1">
+          <div class="big-design-header">
+            <p class="big-design-title">Search Engine Listing Preview</p>
+          </div>
+          <div class="mt-2">
+            <p
+              class="mb-0"
+              style="color: #2417af; font-family: Arial; font-size: large"
+            >
+              {{ this.layoutForm.controls.metaTitle.value ?? "" }}
+            </p>
+            <p
+              class="my-0"
+              style="color: #006521; font-family: Arial; font-size: small"
+            >
+              {{ urlText(true) ?? "" }}
+            </p>
+            <p
+              class="my-0"
+              style="color: #6e6e6e; font-family: Arial; font-size: small"
+            >
               {{ this.layoutForm.controls.metaDesc.value ?? "" }}
             </p>
+          </div>
+        </div>
+        <div class="col w-100 big-design-card mt-1">
+          <div class="big-design-header">
+            <p class="big-design-title">Social Link Preview</p>
+          </div>
+          <div class="d-flex mt-2">
+            <div
+              class="w-100 my-0 d-flex align-items-center justify-content-start"
+              style="height: 150px"
+            >
+              <img
+                class="h-100"
+                style="object-fit: contain; aspect-ratio: 1"
+                src="{{
+                  this.layoutForm.controls.metaPic.value ??
+                    storeInfo?.profileLink
+                }}"
+              />
+              <p
+                class="ms-3 my-auto"
+                style="
+                  color: #6e6e6e;
+                  font-family: Arial;
+                  font-size: small;
+                  text-overflow: ellipsis;
+                  overflow-y: hidden;
+                  height: 120px;
+                "
+              >
+                <b class="text-dark" style="font-size: medium">
+                  {{ this.layoutForm.controls.metaTitle.value ?? "" }}
+                </b>
+                <br />
+
+                {{ this.layoutForm.controls.metaDesc.value ?? "" }}
+              </p>
+            </div>
           </div>
         </div>
       </div>

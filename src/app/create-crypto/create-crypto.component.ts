@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   ViewChild,
   ElementRef,
+  LOCALE_ID,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { create } from 'ipfs-http-client';
@@ -21,7 +22,6 @@ import { Globals } from '../globals';
 import { ethers, BigNumber } from 'ethers';
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
-const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
 import { LazyMinter, NFTVoucher } from 'LazyMinter';
 import { Dict, LoadService } from '../services/load.service';
 import { AdminViewComponent } from '../admin-view/admin-view.component';
@@ -30,6 +30,9 @@ import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import axios from 'axios';
 import { thredMarketplace } from 'config';
+import { NgxDropzoneComponent } from 'ngx-dropzone';
+import { CurrencyPipe } from '@angular/common';
+import { local } from 'web3modal';
 
 @Component({
   selector: 'app-create-crypto',
@@ -41,6 +44,7 @@ export class CreateCryptoComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(LOCALE_ID) public localId: string,
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<CreateCryptoComponent>,
     private cdr: ChangeDetectorRef,
@@ -49,19 +53,27 @@ export class CreateCryptoComponent implements OnInit {
   ) {
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
+    this.utility = data.utils ?? []
+    // currency: col!.currency
+    let pipe = new CurrencyPipe(localId)
+
+    this.customCurrencyMaskConfig.prefix = pipe.transform(0, data.contract.currency ?? 'USD')?.replace("0.00", "") ?? "$"
+    console.log(this.customCurrencyMaskConfig.prefix)
   }
 
   nftContract: Collection;
   provider?: ethers.providers.Web3Provider;
+  saving = false;
+  planInfo?: any
 
   customCurrencyMaskConfig = {
     align: 'left',
     allowNegative: false,
     allowZero: false,
     decimal: '.',
-    precision: 3,
-    prefix: '',
-    suffix: ' MATIC',
+    precision: 2,
+    prefix: 'US $',
+    suffix: '',
     thousands: ',',
     min: 0,
     inputMode: CurrencyMaskInputMode.NATURAL,
@@ -84,27 +96,59 @@ export class CreateCryptoComponent implements OnInit {
     description: [null],
     price: [null, Validators.required],
     file: [null, Validators.required],
-    // skybox: [null, Validators.required],
-    // cover: [null, Validators.required],
-    format: [null],
-    lazyMint: [null],
-    url: [null],
+    skybox: [null],
+    cover: [null],
+    // url: [null],
     royalty: [null],
-    external_url: [null],
   });
 
   fileName?: string;
   skyBoxName?: string;
   coverName?: string;
 
-  ngOnInit(): void {
-    this.provider = this.data.provider;
+  utility: any[] = []
 
-    if (this.nftContract.currency)
-      this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`;
+  // <p><mat-checkbox formControlName="pepperoni">Pepperoni</mat-checkbox></p>
+  // <p><mat-checkbox formControlName="extracheese">Extra Cheese</mat-checkbox></p>
+  // <p><mat-checkbox formControlName="mushroom">Mushroom</mat-checkbox></p>
+
+  ngOnInit(): void {
+    let con = !this.nftContract.royalty ||
+    this.nftContract.royalty == ethers.constants.AddressZero
+    if (
+      con
+    ) {
+      this.royaltyPlaceholder = 'Royalties not available'
+      this.nftForm.controls.royalty.disable();
+    }
+
+    if (this.data.asset) {
+      let nft = this.data.asset as NFT;
+      this.nftForm.controls.title.setValue(nft.name);
+      this.nftForm.controls.description.setValue(nft.description);
+      this.nftForm.controls.price.setValue(nft.price);
+      this.nftForm.controls.file.setValue(nft.assetUrl);
+      this.nftForm.controls.royalty.setValue(!con ? nft.royalty / 100 : null);
+      this.nftForm.controls.cover.setValue(nft.img);
+      this.nftForm.controls.skybox.setValue(nft.skybox);
+
+      this.utility.forEach(u => {
+        if (this.data.asset.info.utility.find((a: any) => a.code == u.code)){
+          u.active = true
+        }
+      });
+      
+      this.nftForm.disable();
+    } else {
+      
+    }
+    // if (this.nftContract.currency)
+    //   this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`;
     // if (this.admin.selected)
-    this.nftForm.controls.lazyMint.setValue(true);
+    // this.nftForm.controls.lazyMint.setValue(true);
   }
+
+  royaltyPlaceholder = 'Royalties %'
 
   traits = new Array<any>();
 
@@ -121,11 +165,7 @@ export class CreateCryptoComponent implements OnInit {
   }
 
   set isLoading(isLoading: boolean) {
-    if (isLoading) {
-      this.spinner.show('loader');
-    } else {
-      this.spinner.hide('loader');
-    }
+    this.saving = isLoading;
   }
 
   admin?: AdminViewComponent;
@@ -156,197 +196,56 @@ export class CreateCryptoComponent implements OnInit {
 
   async save() {
     if (this.nftForm.valid) {
-      if (window.ethereum && typeof window.ethereum == 'object') {
-        this.provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          'any'
-        );
-        Globals.provider = this.provider;
-      }
-      if (!this.provider?.getSigner()) {
-        try {
-          await Globals.checkProvider();
-          this.provider = Globals.provider;
-        } catch (error) {
-          this.err = 'No Wallet Connected. Please try again';
-          return;
-        }
-      }
-      if (!(await (this.laodService.networkCheck() ?? false))) {
-        this.err = 'Please switch your Network to the Polygon Mainnet';
-        return;
-      }
-
-      let signer = this.provider?.getSigner();
-
-      let address = (await signer?.getAddress()) ?? '';
-      if (
-        address?.toLowerCase() !=
-        Globals.storeInfo?.walletAddress?.toLowerCase()
-      ) {
-        this.err = 'Wrong Wallet';
-        return;
-      }
-
       let name = this.nftForm.controls.title.value as string;
       let description = this.nftForm.controls.description.value as string;
       let cost = this.nftForm.controls.price.value as number;
       let contractNFT = this.nftContract.contract;
       let file = this.nftForm.controls.file.value as string;
-      let format = this.nftForm.controls.format.value as string;
-      let lazyMint = this.nftForm.controls.lazyMint.value as boolean;
       let royalty =
         ((this.nftForm.controls.royalty.value as number) ?? 0.0) * 100;
+      let skyBox = (this.nftForm.controls.skybox.value as string) ?? '';
+      let utility = this.utility.filter(f => f.active) ?? []
 
       let traits = (this.traits as Array<Dict<any>>) ?? [];
-      let external = (this.nftForm.controls.external_url.value as string) ?? '';
+      var uploadFile = this.convertBase64ToBlob(file);
+
       this.isLoading = true;
-      try {
-        if (file) {
-          var uploadFile = this.convertBase64ToBlob(file);
-          const added = await client.add(uploadFile, {
-            progress: (prog) => console.log(`received: ${prog}`),
-          });
-          const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-          this.nftForm.controls.url.setValue(url);
-        }
-      } catch (error) {
-        console.log('Error uploading file: ', error);
-        this.isLoading = false;
-        this.err = 'Something went wrong. Please try again';
-      }
 
-      let url = this.nftForm.controls.url.value as string;
+      let img = this.save3DThumbnail();
 
-      var data1 = {
+      this.laodService.saveNFT(
+        contractNFT,
         name,
         description,
-        image: url,
-        traits: traits != [] ? traits : undefined,
-        external_link: external != '' ? external : undefined,
-      };
-
-      const data = JSON.stringify(data1);
-
-      try {
-        const added = await client.add(data);
-        const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
-        /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-        const price = ethers.utils.parseUnits(cost.toString(), 'ether');
-
-        //tokenid 0x3C68CE8504087f89c640D02d133646d98e64ddd9
-        // this.laodService.getWalletInfo((signer?: ethers.Wallet) => {
-
-        this.laodService.getCollection(
-          this.nftContract.contract,
-          async (cl) => {
-            if (!cl) {
-              throw 'ERROR';
-              return;
-            }
-            var contract2 = new ethers.Contract(
-              thredMarketplace,
-              THRED_MARKET.abi,
-              signer
-            );
-
-            const lazyMinter = new LazyMinter(contract2, signer!, 'THRED-NFT');
-            console.log(signer);
-
-            let tokenId = (cl.collectionCount ?? 0) + 1;
-            const voucher = await lazyMinter.createVoucher(
-              tokenId,
-              url2,
-              royalty,
-              price,
-              cl.customTokenCheck() == undefined
-            );
-
-            if (!voucher) {
-              this.isLoading = false;
-              this.err = 'Creation Cancelled';
-              return;
-            }
-
-            console.log('loo');
-
-            if (!lazyMint) {
-              try {
-                let transaction = await contract2.mintNFT(voucher, cl.contract);
-                await transaction.wait();
-              } catch (error) {
-                this.isLoading = false;
-                throw 'An Error Occured';
-              }
-            }
-
-            console.log(voucher);
-
-            let nft = new NFT(
-              tokenId,
-              contractNFT,
-              await signer?.getAddress(),
-              false,
-              lazyMint,
-              format,
-              royalty,
-              voucher,
-              url2
-            );
-
-            nft.format = format;
-            var x = ethers.utils.parseUnits('0.02', 'ether');
-            if (voucher) {
-              x = voucher['minPrice'] as ethers.BigNumber;
-            }
-            nft.price = x;
-            nft.name = name;
-            nft.description = description;
-            nft.traits = traits;
-            nft.external_url = external;
-            nft.isAvailable = true;
-
-            // if (!lazyMint) {
-            //   await this.mintNFT(voucher, price, contract2, contract3);
-            // }
-            // else{
-            // console.log(voucher)
-            // const transaction = await contract2.mintAndTransfer(voucher, { value: x });
-            // await transaction.wait()
-
-            let img =
-              this.saveVideoThumbail() ?? this.save3DThumbnail() ?? (await this.getImgBase64(file));
-
-            let docID = await this.laodService.saveNFT(
-              nft,
-              Globals.storeInfo?.uid,
-              undefined,
-              img
-            );
-            if (docID) {
-              nft.docID = docID;
-              nft.linkUrl = this.laodService.getURL(docID);
-            }
-            const meta = await axios.get(url2);
-            nft.url = meta.data.image;
-            this.dialogRef.close(nft);
-            this.isLoading = false;
-          }
-        );
-        // })
-
-        // }
-      } catch (error) {
-        this.isLoading = false;
-        let data = (error as any).data;
-        if (data && data.code == -32000) {
-          this.err = 'Not enough MATIC' + ' in wallet!';
-        } else {
-          this.err = 'Something went wrong, please try again.';
+        uploadFile,
+        img,
+        traits,
+        royalty,
+        cost,
+        skyBox,
+        utility,
+        (nft?: NFT) => {
+          this.isLoading = false;
+          this.dialogRef.close(nft);
         }
-      }
+      );
+
+      // let docID = await this.laodService.saveNFT(
+      //   nft,
+      //   Globals.storeInfo?.uid,
+      //   undefined,
+      //   img
+      // );
+      // if (docID) {
+      //   nft.docID = docID;
+      //   nft.img = this.laodService.getURL(docID);
+      // }
+      // const meta = await axios.get(url2);
+      // nft.url = meta.data.image;
+      // this.dialogRef.close(nft);
+      // this.isLoading = false;
     } else {
-      console.log("invalid")
+      console.log('invalid');
     }
   }
 
@@ -375,14 +274,11 @@ export class CreateCryptoComponent implements OnInit {
   }
 
   save3DThumbnail() {
-    let frame = document.getElementById('3dIframe') as HTMLIFrameElement;
+    let viewer = document.getElementById('viewer') as HTMLElement;
 
-    if (frame) {
-      const viewer = frame.contentWindow?.document.querySelector(
-        'model-viewer'
-      ) as any;
-      const img = viewer.toDataURL('image/jpeg');
-      return img
+    if (viewer) {
+      const img = (viewer as any).toDataURL('image/jpeg');
+      return img;
     }
     return undefined;
   }
@@ -414,6 +310,9 @@ export class CreateCryptoComponent implements OnInit {
     return indicator;
   }
 
+  @ViewChild('drop', { read: NgxDropzoneComponent })
+  drop?: NgxDropzoneComponent;
+
   radioChange(event: any) {
     let val = event.value;
 
@@ -423,119 +322,123 @@ export class CreateCryptoComponent implements OnInit {
 
   closeDialog() {
     // this.interval = undefined;
+    this.nftForm.controls.file.setValue("0")
     this.dialogRef.close();
+    this.cdr.detectChanges()
   }
 
   acceptedModels = '.glb,.gltf';
   acceptedSkybox = '.hdr';
   acceptedCovers = '.png,.jpeg';
 
-  public async dropped(files: any, mode = "model") {
+  fileChangeEvent(event: any, mode = 'skybox'): void {
+    console.log(event);
 
-    console.log(files)
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (mode == 'skybox') {
+        this.nftForm.controls.skybox.setValue(
+          (reader.result as string)?.replace(/^[\w\d;:\/]+base64\,/g, '')
+        );
+      } else {
+        this.nftForm.controls.cover.setValue(reader.result);
+      }
+      this.cdr.detectChanges();
+    };
+  }
+
+  public async dropped(files: any) {
+    console.log(files);
     // this.files = files;
     for (const file of files.addedFiles) {
       // Is it a file?
 
-          // Here you can access the real file
+      // Here you can access the real file
 
-          var type = file.type;
+      var type = file.type;
 
-          console.log(file);
+      console.log(file);
 
-          var acceptedFiles: string = ""
+      var acceptedFiles = this.acceptedModels;
+      this.fileName = file.name;
 
-          if (mode == 'model'){
-            acceptedFiles = this.acceptedModels
-            this.fileName = file.name;
+      // else if (mode == 'skybox'){
+      //   acceptedFiles = this.acceptedSkybox
+      //   this.skyBoxName = file.name;
+      // }
+      // else{
+      //   acceptedFiles = this.acceptedCovers
+      //   this.coverName = file.name;
+      // }
+
+      let arrs = acceptedFiles.replace(/\./g, '').split(',');
+
+      console.log(arrs);
+
+      if (type == '') {
+        arrs.forEach((t) => {
+          if (file.name.indexOf(t) > -1) {
+            type = t;
+            return;
           }
-          else if (mode == 'skybox'){
-            acceptedFiles = this.acceptedSkybox
-            this.skyBoxName = file.name;
-          }
-          else{
-            acceptedFiles = this.acceptedCovers
-            this.coverName = file.name;
-          }
+        });
+        if (type == '') {
+          return;
+        }
+      } else {
+        let match = arrs.find((j) => {
+          return type.indexOf(j) > -1;
+        });
+        if (!match) {
+          return;
+        }
+      }
 
-          let arrs = acceptedFiles.replace(/\./g, '').split(',');
+      console.log(type);
+      // You could upload it like this:
+      // const formData = new FormData()
+      // formData.append('logo', file, file.)
 
-          console.log(arrs)
+      // console.log(formData)
+      // // Headers
+      // const headers = new HttpHeaders({
+      //   'security-token': 'mytoken'
+      // })
 
-          if (type == '') {
-            arrs.forEach((t) => {
-              if (file.name.indexOf(t) > -1) {
-                type = t;
-                return;
-              }
-            });
-            if (type == '') {
-              return;
-            }
-          } else {
-            let match = arrs.find((j) => {
-              return type.indexOf(j) > -1;
-            });
-            if (!match) {
-              return;
-            }
-          }
+      // this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
+      // .subscribe(data => {
+      //   // Sanitized logo returned from backend
+      // })
 
-          console.log(type);
-          // You could upload it like this:
-          // const formData = new FormData()
-          // formData.append('logo', file, file.)
+      let buffer = await file.arrayBuffer();
 
-          // console.log(formData)
-          // // Headers
-          // const headers = new HttpHeaders({
-          //   'security-token': 'mytoken'
-          // })
+      var blob = new Blob([buffer]);
 
-          // this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
-          // .subscribe(data => {
-          //   // Sanitized logo returned from backend
-          // })
+      // this.nftForm.controls.format.setValue(null);
 
-          let buffer = await file.arrayBuffer();
+      var reader = new FileReader();
+      reader.onload = (event: any) => {
+        var base64 = event.target.result;
 
-          var blob = new Blob([buffer]);
+        this.nftForm.controls.file.setValue(base64);
 
-          this.nftForm.controls.format.setValue(null);
+        // var format = '3d';
+        // if (type.indexOf('image') > -1) {
+        //   format = 'image';
+        // } else if (type.indexOf('video') > -1) {
+        //   format = 'video';
+        // } else if (type.indexOf('glb') > -1 || type.indexOf('gltf') > -1) {
+        //   format = '3d';
+        // }
 
-          var reader = new FileReader();
-          reader.onload = (event: any) => {
-            var base64 = event.target.result;
+        // this.nftForm.controls.format.setValue(format);
 
+        this.cdr.detectChanges();
+      };
 
-            if (mode == 'model'){
-              this.nftForm.controls.file.setValue(base64);
-            }
-            else if (mode == 'skybox'){
-              this.nftForm.controls.skybox.setValue(base64);
-            }
-            else{
-              this.nftForm.controls.cover.setValue(base64);
-            }
-
-            var format = '3d';
-            // if (type.indexOf('image') > -1) {
-            //   format = 'image';
-            // } else if (type.indexOf('video') > -1) {
-            //   format = 'video';
-            // } else if (type.indexOf('glb') > -1 || type.indexOf('gltf') > -1) {
-            //   format = '3d';
-            // }
-
-
-            this.nftForm.controls.format.setValue(format);
-
-
-            this.cdr.detectChanges();
-
-          };
-
-          reader.readAsDataURL(blob);
+      reader.readAsDataURL(blob);
     }
   }
 

@@ -27,6 +27,7 @@ export class CreateCollectionComponent implements OnInit {
   ) {}
 
   selectedTheme: Dict<any> = {};
+  saving = false;
 
   storeInfo?: Store;
 
@@ -75,154 +76,70 @@ export class CreateCollectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
-    this.nftForm.controls.currency.setValue(
-      Globals.storeInfo?.tokens[0].variations[0]
-    );
+
     this.storeInfo = Globals.storeInfo;
   }
 
   err = '';
 
   async save() {
+    console.log(this.nftForm.valid);
+
     if (this.nftForm.valid) {
-      this.spinner.show('loader');
+      this.saving = true;
 
       let name = (this.nftForm.controls.title.value as string) ?? '';
       let symbol =
         (this.nftForm.controls.symbol.value as string) ?? ''.toUpperCase();
-
-      let token = this.nftForm.controls.currency.value as Dict<any>;
-
-      var signer: ethers.Signer | undefined = undefined;
+      let royaltyAddress =
+        (this.nftForm.controls.royaltyAddress.value as string) ??
+        ethers.constants.AddressZero;
+      let generate = (this.nftForm.controls.generatePage.value as boolean) ?? false
 
       var domain = name.replace(/\s/g, '').toUpperCase();
 
-      if (window.ethereum && typeof window.ethereum == 'object') {
-        Globals.provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          'any'
-        );
-      }
-      if (Globals.provider) {
-        signer = Globals.provider.getSigner();
-      } else {
-      }
+      var abi: any = ERC721_MERCHANT.abi;
+      var bytecode: any = ERC721_MERCHANT.bytecode;
 
-      if (!signer) {
-        try {
-          await Globals.checkProvider();
-          signer = Globals.provider?.getSigner();
-        } catch (error) {
-          this.err = 'No Wallet Connected. Please try again';
-          return;
-        }
-      }
-      if (!(await (this.loadService.networkCheck() ?? false))) {
-        this.err = 'Please switch your Network to the Polygon Mainnet';
-        return;
-      }
+      // let customToken =
+      //   token.contract != 'default'
+      //     ? token.contract
+      //     : ethers.constants.AddressZero;
 
-      if (signer) {
-        let wallet = await signer.getAddress();
+      var deployedCollection: Collection | undefined = undefined;
 
-        console.log(wallet)
-        console.log(Globals.storeInfo?.walletAddress?.toLowerCase())
-
-        if (
-          wallet.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
-        ) {
-          this.err = 'Wrong Wallet';
-          this.spinner.hide('loader')
-          return;
-        }
-
-        var abi: any = ERC721_MERCHANT.abi;
-        var bytecode: any = ERC721_MERCHANT.bytecode;
-
-        let factory = new ethers.ContractFactory(abi, bytecode, signer);
-
-        let admins = [thredMarketplace] as string[];
-        let minters = [wallet, thredMarketplace] as string[];
-
-        let customToken =
-          token.contract != 'default'
-            ? token.contract
-            : ethers.constants.AddressZero;
-
-        var deployedCollection: Collection | undefined = undefined;
-
-        try {
-          if (!deployedCollection) {
-            let deployed = await factory.deploy(
-              name,
-              symbol,
-              customToken,
-              minters,
-              admins
-            );
-            await deployed.deployed();
-
-            let address = deployed.address;
-
-            let collection = new Collection(
-              name,
-              symbol,
-              {},
-              address,
-              token.name,
-              0,
-              wallet,
-              true,
-              Globals.storeInfo?.uid!,
-              new Date(),
-              domain,
-              token.contract != 'default' ? token.contract : undefined,
-              true,
-              abi,
-            );
-
-            deployedCollection = collection;
-
-            await this.loadService.saveCollectionInfo(
-              collection,
-              Globals.storeInfo?.uid
-            );
-          }
-
-          try {
-            let contract2 = new ethers.Contract(
-              deployedCollection.contract,
-              abi,
-              signer
-            );
-            let t2 = await contract2.setApprovalForAll(thredMarketplace, true);
-            await t2.wait();
-            this.dialogRef.close(deployedCollection);
-          } catch (error) {
-            console.log(error);
-            this.spinner.hide('loader');
-            let data = (error as any).data;
-            if (data && data.code == -32000) {
-              this.err = 'Not enough MATIC' + ' in wallet!';
-            } else {
-              this.err = 'Something went wrong, please try again.';
+      try {
+        if (!deployedCollection) {
+          this.loadService.deployCollection(
+            name,
+            symbol,
+            abi,
+            bytecode,
+            domain,
+            royaltyAddress,
+            generate,
+            (col?: Collection) => {
+              this.saving = false;
+              if (col as Collection) {
+                this.dialogRef.close({collection: col, generate});
+              } else {
+                throw 'Invalid';
+              }
             }
-          }
-        } catch (error) {
-          console.log(error);
-          this.spinner.hide('loader');
-          let data = (error as any).data;
-          if (data && data.code == -32000) {
-            this.err = 'Not enough MATIC' + ' in wallet!';
-          } else {
-            this.err = 'Something went wrong, please try again.';
-          }
+          );
         }
-      } else {
+      } catch (error) {
+        console.log(error);
+        this.saving = false;
+        let data = (error as any).data;
+        if (data && data.code == -32000) {
+          this.err = 'Not enough MATIC' + ' in wallet!';
+        } else {
+          this.err = 'Something went wrong, please try again.';
+        }
       }
     } else {
     }
-    this.spinner.hide('loader');
   }
 
   closeDialog() {
@@ -233,6 +150,13 @@ export class CreateCollectionComponent implements OnInit {
   nftForm = this.fb.group({
     title: [null, Validators.required],
     symbol: [null, Validators.required],
-    currency: [null, Validators.required],
+    royaltyAddress: [null],
+    generatePage: [true]
   });
+
+  radioChange(event: any) {
+    let val = event.value;
+    this.nftForm.controls.generatePage.setValue(val);
+    this.cdr.detectChanges();
+  }
 }

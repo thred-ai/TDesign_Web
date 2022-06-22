@@ -44,6 +44,11 @@ import { LoggedInPipe } from '../logged-in.pipe';
 import { NftPipe } from '../nft.pipe';
 import { BigNumPipe } from '../big-num.pipe';
 import { ModelViewerPipe } from '../model-viewer.pipe';
+import { ViewsPipe } from '../views.pipe';
+import { SalesPipe } from '../sales.pipe';
+import { LocationPipe } from '../location.pipe';
+import { PaginatorPipe } from '../paginator.pipe';
+import { UtilityDataPipe } from '../utility-data.pipe';
 
 @NgModule({
   imports: [
@@ -95,6 +100,11 @@ import { ModelViewerPipe } from '../model-viewer.pipe';
     NftPipe,
     BigNumPipe,
     ModelViewerPipe,
+    ViewsPipe,
+    SalesPipe,
+    LocationPipe,
+    PaginatorPipe,
+    UtilityDataPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -140,7 +150,12 @@ import { ModelViewerPipe } from '../model-viewer.pipe';
     LoggedInPipe,
     NftPipe,
     BigNumPipe,
-    ModelViewerPipe
+    ModelViewerPipe,
+    ViewsPipe,
+    SalesPipe,
+    LocationPipe,
+    PaginatorPipe,
+    UtilityDataPipe
   ]
 })
 export class ApplicationPipesModule {}

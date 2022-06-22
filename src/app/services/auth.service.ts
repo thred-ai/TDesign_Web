@@ -129,15 +129,15 @@ export class AuthService {
           await result.user?.sendEmailVerification();
           if (result.user && username) {
             Globals.isNewUser = result.additionalUserInfo?.isNewUser ?? false;
-            await this.loadService.setUsername(
-              result.user?.uid,
-              username,
-              true,
-              undefined,
-              undefined,
-              nonce,
-              address.toLowerCase()
-            );
+            // await this.loadService.setUsername(
+            //   result.user?.uid,
+            //   username,
+            //   true,
+            //   undefined,
+            //   undefined,
+            //   nonce,
+            //   address.toLowerCase()
+            // );
             callback(result.user.uid, this.app);
           } else {
             await this.auth.signOut();

@@ -8,7 +8,6 @@ var abi = require('human-standard-token-abi');
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
 const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
-
 export interface ICollection {
   name: string;
   symbol: string;
@@ -16,7 +15,7 @@ export interface ICollection {
   NFTs: Dict<NFT>;
   ABI: string;
   contract: string;
-  customToken?: string;
+  royalty?: string;
   currency?: string;
   collectionCount?: number;
   owner?: string;
@@ -25,21 +24,9 @@ export interface ICollection {
   uid?: string;
   timestamp?: Date;
   available?: boolean;
-  rpcEndpoint?: string;
-  volume?: ethers.BigNumber;
-  floor?: ethers.BigNumber;
-  holders?: ethers.BigNumber;
 
   getRarity(nft: NFT): string;
 
-  getCurrencyIcon(): string;
-
-  loadCurrency(
-    token: string,
-    provider: ethers.providers.Provider
-  ): Promise<any>;
-
-  loadName(token: string, provider: ethers.providers.Provider): Promise<any>;
 }
 
 export class Collection implements ICollection {
@@ -48,7 +35,7 @@ export class Collection implements ICollection {
 
   NFTs: Dict<NFT> = {};
   contract: string;
-  customToken?: string;
+  royalty?: string | undefined
   currency?: string;
   collectionCount?: number;
   owner?: string;
@@ -58,62 +45,22 @@ export class Collection implements ICollection {
   timestamp?: Date;
   available?: boolean;
   ABI: string;
-  rpcEndpoint?: string;
-  volume?: ethers.BigNumber = ethers.BigNumber.from(0);
-  floor?: ethers.BigNumber = ethers.BigNumber.from(0);
-  holders?: ethers.BigNumber = ethers.BigNumber.from(0);
 
-  customTokenCheck(){
-    return (this.customToken && this.customToken != ethers.constants.AddressZero) ? this.customToken : undefined
-  }
 
   getRarity(nft: NFT) {
-    var totalRarity = 0;
-    let arr = Object.values(this.NFTs);
+    // var totalRarity = 0;
+    // let arr = Object.values(this.NFTs);
 
-    (nft.traits ?? []).forEach((trait: any) => {
-      let same = arr.filter((n) =>
-        n.traits?.find(
-          (t) => t.trait_type == trait.trait_type && t.value == trait.value
-        )
-      );
-      totalRarity += (same.length ?? 0) / arr.length;
-    });
-    return (totalRarity * 100).toFixed(2);
-  }
-
-
-
-
-  getCurrencyIcon() {
-    let token = this.customToken ?? 'default';
-    let symbol =
-      Globals.storeInfo?.tokens
-        .find((t) =>
-          t.variations.find(
-            (s) => s.contract.toLowerCase() == token.toLowerCase()
-          )
-        )
-        ?.variations.find(
-          (s) => s.contract.toLowerCase() == token.toLowerCase()
-        )?.symbol ?? 'polygon_icon';
-
-    return symbol;
-  }
-
-  getApiName() {
-    let token = this.customToken ?? 'default';
-    let api_name =
-      Globals.storeInfo?.tokens
-        .find((t) =>
-          t.variations.find(
-            (s) => s.contract.toLowerCase() == token.toLowerCase()
-          )
-        )
-        ?.variations.find(
-          (s) => s.contract.toLowerCase() == token.toLowerCase()
-        )?.api_name ?? 'matic-network';
-    return api_name;
+    // (nft.traits ?? []).forEach((trait: any) => {
+    //   let same = arr.filter((n) =>
+    //     n.traits?.find(
+    //       (t) => t.trait_type == trait.trait_type && t.value == trait.value
+    //     )
+    //   );
+    //   totalRarity += (same.length ?? 0) / arr.length;
+    // });
+    // return (totalRarity * 100).toFixed(2);
+    return '2';
   }
 
   async loadCurrency(token: string, provider: ethers.providers.Provider) {
@@ -123,9 +70,10 @@ export class Collection implements ICollection {
   }
 
   get owners() {
-    let arr = Object.values(this.NFTs);
+    // let arr = Object.values(this.NFTs);
 
-    return arr.filter((n) => !n.forSale).length ?? 0;
+    // return arr.filter((n) => !n.forSale).length ?? 0;
+    return 0;
   }
 
   async loadName(token: string, provider: ethers.providers.Provider) {
@@ -136,8 +84,9 @@ export class Collection implements ICollection {
 
   async ownerOf(
     tokenId: number,
+    endpoint: string,
     provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
+      endpoint
     )
   ) {
     let contract = new ethers.Contract(this.contract, this.ABI, provider);
@@ -145,41 +94,30 @@ export class Collection implements ICollection {
     return owner;
   }
 
-  
-
-
   constructor(
     name: string,
     symbol: string,
-    NFTs: Dict<NFT> = {},
     contract: string,
     currency: string,
     collectionCount: number,
-    owner: string,
     isPublic: boolean,
     uid: string,
     timestamp: Date,
     domain: string = 'THRED-NFT',
-    customToken?: string,
+    royalty?: string,
     available?: boolean,
-    ABI?: string,
+    ABI?: string
   ) {
-    if (environment.rpc) {
-      this.rpcEndpoint = environment.rpc;
-    } else {
-      console.log(process.env);
-    }
 
     this.name = name ?? '';
     this.symbol = symbol ?? '';
     this.collectionCount = collectionCount ?? 0;
 
-
     this.contract = contract;
 
     this.NFTs = this.nftCount(collectionCount, contract);
 
-    this.customToken = customToken;
+    this.royalty = royalty
 
     this.domain = domain;
     this.currency = currency;
@@ -187,26 +125,30 @@ export class Collection implements ICollection {
     this.uid = uid;
     this.timestamp = timestamp;
     this.available = available;
-    this.ABI = ABI ?? ERC721_MERCHANT.abi;    
+    this.ABI = ABI ?? ERC721_MERCHANT.abi;
   }
 
-  nftCount(collectionCount: number, contract: string){
-    let nfts: Dict<NFT> = {}
+  nftCount(collectionCount: number, contract: string) {
+    let nfts: Dict<NFT> = {};
 
     for (let i = 0; i < (collectionCount ?? 0); i++) {
       nfts[`${contract}${i + 1}`] = new NFT(
-        i + 1,
         '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        i + 1,
+        undefined,
+        undefined,
         contract,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        ''
-      )
+        0,
+        0,
+        0,
+        `${contract}${i + 1}`
+      );
     }
-    return nfts
+    return nfts;
   }
 }

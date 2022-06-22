@@ -20,25 +20,16 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ImageCroppedEvent, LoadedImage } from 'ngx-image-cropper';
-import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
+import { Validators, FormBuilder } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from '../cropper/cropper.component';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Country } from '../models/shipping-country.model';
-import { Product } from '../models/product.model';
-import { DesignComponent } from '../design/design.component';
 import { ProductInCart } from '../models/product-in-cart.model';
-import { SocialFormComponent } from '../social-form/social-form.component';
 import { Inventory } from '../models/inventory.model';
 import { Template } from '../models/template.model';
-import { InventoryBuyComponent } from '../inventory-buy/inventory-buy.component';
-import { EditPlanComponent } from '../edit-plan/edit-plan.component';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { StoreSetupComponent } from '../store-setup/store-setup.component';
 import { RoutingService } from '../services/routing.service';
-import { PopupDialogComponent } from '../popup-dialog/popup-dialog.component';
-import { CouponInfoComponent } from '../coupon-info/coupon-info.component';
 import { Coupon } from '../models/coupon.model';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -47,15 +38,10 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Banner } from '../models/banner.model';
-import { EditBannerComponent } from '../edit-banner/edit-banner.component';
 import { Popup } from '../models/popup.model';
-import { EditPopupComponent } from '../edit-popup/edit-popup.component';
 import { PageEvent } from '@angular/material/paginator';
-import { EditInventoryComponent } from '../edit-inventory/edit-inventory.component';
 import { MatTable } from '@angular/material/table';
 import { Order } from '../models/order.model';
-import { ViewOrderAdminComponent } from '../view-order-admin/view-order-admin.component';
-import { ViewAllOrderAdminComponent } from '../view-all-order-admin/view-all-order-admin.component';
 import { Row } from '../models/row.model';
 import { LayoutBuilderComponent } from '../layout-builder/layout-builder.component';
 import { Page } from '../models/page.model';
@@ -71,21 +57,19 @@ import {
   ApexLegend,
   ApexFill,
 } from 'ng-apexcharts';
-import { MapPopupComponent } from '../map-popup/map-popup.component';
 import { CreateCryptoComponent } from '../create-crypto/create-crypto.component';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
 
-import { ethers } from 'ethers';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import Web3Modal from 'web3modal';
-import axios from 'axios';
 import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { Store } from '../models/store.model';
-import { skip, take, takeLast } from 'rxjs/operators';
-import { thredMarketplace } from 'config';
-
+import { skip } from 'rxjs/operators';
+import { BillingInfo } from '../models/billing-address.model';
+import { BillingAdminComponent } from '../billing-admin/billing-admin.component';
+import { EditPlanComponent } from '../edit-plan/edit-plan.component';
+import { StoreDomain } from '../models/store-domain.model';
+import { LocationPipe } from '../location.pipe';
 // artifacts/contracts/Market.sol/NFTMarket
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -125,174 +109,51 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   signedIn = false;
   bankInfo?: any = undefined;
   subInfo?: any = undefined;
+  billingInfo?: BillingInfo | null = undefined;
+  plans?: Plan[] = undefined;
+  views?: Dict<any>[] = undefined;
+
   canTrial?: boolean = true;
-  collections: Collection[] | undefined = undefined
-
+  collections: Collection[] | undefined = undefined;
   invTitle = 'FULFILLED BY THRED';
+  bigcommerceMetadata?: Dict<any> = undefined;
+  utilities?: Dict<any>[] = undefined;
 
-  headerName(h: string) {
-    return this.storeInfo?.pages?.find((p) => p.id == h)?.title ?? '';
-  }
-
-  socials() {
-    return Globals.socials;
-  }
-
-  toolTip(logo: { name: string; img: string }) {
-    let same = (this.storeForm.controls.socials.value as Array<any>)?.filter(
-      (social) => {
-        return social.name == logo.name;
-      }
-    );
-
-    if (same && same.length !== 0) {
-      return same[0];
-    }
-
-    return {
-      name: 'No ' + logo.name + ' URL set',
-      link: '',
-    };
-  }
-
-  couponHeader(coupon: Coupon) {
-    if (coupon.type == 'product') {
-      return 'Applied to ' + coupon.products.length + ' product(s)';
-    } else if (coupon.type == 'order_val') {
-      return 'Order ≥ ' + this.formatPrice(coupon.threshold, true);
-    } else if (coupon.type == 'order_qty') {
-      return 'Order ≥ ' + coupon.threshold + ' products';
-    }
-    return '';
-  }
-
-  customInv() {
-    return (
-      this.inventory?.filter((i) => {
-        return i.isCustom;
-      }) ?? []
-    );
-  }
-
-  thredInv() {
-    return (
-      this.inventory?.filter((i) => {
-        return !i.isCustom;
-      }) ?? []
-    );
-  }
-
-  popupHeader(popup: Popup) {
-    if (popup.trigger == 0) {
-      return 'Presents on initial store visit';
-    } else if (popup.trigger == 1) {
-      return 'Presents when "Add to Cart" pressed';
-    }
-    // else if (coupon.type == 'order_qty'){
-    //   return 'Order ≥ ' + coupon.threshold + " products"
-    // }
-    return '';
-  }
-
-  matchingType(id: string) {
-    return Globals.types.find((type) => {
-      return type.id == id;
-    });
-  }
-
-  showLinkModal() {
-    const modalRef = this.modalService.open(SocialFormComponent);
-
-    modalRef.componentInstance.linkImg = '/assets/domain.png';
-    modalRef.componentInstance.name = 'My Domain';
-    modalRef.componentInstance.isDomain = true;
-
-    if (this.storeInfo?.customURL) {
-      modalRef.componentInstance.socialForm.controls.link.setValue(
-        this.storeInfo?.customURL?.fullURL
-      );
-    }
-
-    let sub = modalRef.dismissed.subscribe((domain: string) => {
-      sub.unsubscribe();
-      if (domain != '0') {
-        if (domain != this.storeInfo?.customURL?.fullURL) {
-          if (domain == undefined) {
-            return;
-          }
-          this.loadService.saveDomain(
-            domain,
-            (success) => {
-              if (success) {
-                if (domain == '') {
-                  this.storeForm.controls.custom_url.setValue(null);
-                  this.toast('Custom Domain Removed!');
-                  return;
-                }
-                this.storeForm.controls.custom_url.setValue(domain);
-                this.toast('Custom Domain Saved!');
-              }
-            },
-            this.storeInfo?.uid
-          );
-        }
-      }
-    });
-  }
-
- 
-
-  mainPrice(product: NFT) {
-    // let coupon = this.autoCoupon(product);
-    // if (coupon) {
-    //   if (coupon.style == 0) {
-    //     return (
-    //       (product.price ?? 0) / 100 - ((product.price ?? 0) / 100) * coupon.amt
-    //     );
-    //   } else if (coupon.style == 1) {
-    //     return (product.price ?? 0) / 100 - (coupon.amt ?? 0) * 100;
-    //   }
-    // }
-    return (product.price ?? 0);
-  }
+  viewMapping: { [k: string]: string } = {
+    '=0': 'No Views',
+    '=1': '1 View',
+    other: '# Views',
+  };
+  saleMapping: { [k: string]: string } = {
+    '=0': 'No Sales',
+    '=1': '1 Sale',
+    other: '# Sales',
+  };
 
   intValue?: number = undefined;
 
   deletePage(page: Page) {
-    this.openPopup(
-      'Are you sure?',
-      "Your page '" +
-        page.title +
-        "' will be removed forever. This action cannot be undone.",
-      '',
-      'Yes, Remove',
-      'Never Mind',
-      async () => {
-        this.loadService.deletePage(
-          page,
-          (success) => {
-            this.toast('Page Removed!');
-          },
-          this.storeInfo?.uid
-        );
-      }
+    // this.openPopup(
+    //   'Are you sure?',
+    //   "Your page '" +
+    //     page.title +
+    //     "' will be removed forever. This action cannot be undone.",
+    //   '',
+    //   'Yes, Remove',
+    //   'Never Mind',
+    //   async () => {
+    this.loadService.deletePage(
+      page,
+      (success) => {
+        this.toast('Page Removed!');
+      },
+      this.storeInfo?.uid
     );
+    //   }
+    // );
   }
 
-  urlText() {
-    var url = 'https://shopmythred.com/' + this.storeInfo?.username;
-
-    if (this.storeInfo?.customURL?.status == 2) {
-      url =
-        this.storeInfo?.customURL?.fullURL != undefined
-          ? this.storeInfo?.customURL?.fullURL!
-          : url;
-    }
-
-    return url;
-  }
-
-  showLayoutModal(page?: Page) {
+  showLayoutModal(page?: Page, index?: number) {
     const modalRef = this.dialog.open(LayoutBuilderComponent, {
       width: '97.5vw',
       height: '97.5vh',
@@ -309,55 +170,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     let sub = modalRef.afterClosed().subscribe(async (layouts: any) => {
       sub.unsubscribe();
       if (layouts && layouts != '0') {
-        this.intValue = 20;
-        var isFinished = false;
-        let interval = setInterval(() => {
-          if (this.intValue) {
-            if (!isFinished) {
-              if (this.intValue < 80) {
-                this.intValue += 1;
-              } else {
-                this.intValue = 80;
-              }
-            } else {
-              this.intValue = 100;
-              clearInterval(interval);
-            }
-          }
-        }, 0.1);
 
-        const promises = layouts.page.rows.map(async (r: Row) => {
-          if (r.type == 1) {
-            let promises2 = (r.imgs ?? []).map(
-              async (i: string, index: number) => {
-                if (
-                  !this.loadService.isBase64(
-                    i?.replace(/^[\w\d;:\/]+base64\,/g, '')
-                  )
-                ) {
-                  var im = (await this.getBase64ImageFromUrl(
-                    i?.toString()
-                  )) as any;
-                  (r.imgs ?? [])[index] = im;
-                }
-              }
-            );
-            await Promise.all(promises2);
-          }
-        });
-        await Promise.all(promises);
-
-        if (layouts.page) {
-          this.loadService.addLayout(
-            layouts.page,
-            (success) => {
-              this.toast('Page Added!');
-              isFinished = true;
-              this.intValue = undefined;
-            },
-            this.storeInfo?.uid
-          );
+        if (index){
+          this.storeInfo!.pages![index] = layouts.page
         }
+        this.toast('Page Saved!');
       } else if (layouts == '0') {
         this.toast('Unable to save Page! Try Again Later.');
       }
@@ -396,320 +213,76 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     });
   }
 
-  showPopupModal(popup?: Popup) {
-    const modalRef = this.dialog.open(EditPopupComponent, {
-      width: '800px',
-      data: {
-        editPopup: popup,
-      },
-    });
+  // showLegend = true;
 
-    let sub = modalRef.afterClosed().subscribe((popup) => {
-      sub.unsubscribe();
-      if (popup && popup != '0') {
-        this.loadService.addPopup(
-          popup,
-          (success) => {
-            if (success) {
-              this.toast('Popup Saved!');
-            }
-          },
-          this.storeInfo?.uid
-        );
-      }
-    });
-  }
+  // colorScheme = {
+  //   domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+  // };
 
-  newInventory(inv?: Inventory) {
-    const modalRef = this.dialog.open(EditInventoryComponent, {
-      width: '800px',
-      data: {
-        inv: inv,
-      },
-    });
+  // // pie
+  // showLabels = true;
+  // explodeSlices = false;
+  // doughnut = false;
 
-    let sub = modalRef.afterClosed().subscribe((inventory: Inventory) => {
-      sub.unsubscribe();
-      if (inventory) {
-        let index = this.inventory?.findIndex((i) => {
-          return i.id == inventory.id;
-        });
-        if (index == -1) {
-          this.inventory?.unshift(inventory);
-        } else {
-          this.inventory![index!] = inventory;
-        }
-        this.toast('Inventory Added!');
-      } else if (inventory) {
-        this.toast('Unable to add Inventory!');
-      }
-    });
-  }
-
-  deleteInventory(inv?: Inventory) {
-    this.openPopup(
-      'Are you sure?',
-      "Your inventory '" +
-        inv?.name +
-        "' will be removed forever. All products using this inventory will also be unavailable.",
-      inv?.img ?? '',
-      'Yes, Remove',
-      'Never Mind',
-      async () => {
-        await this.loadService.removeInv(inv!);
-        let index = this.inventory?.findIndex((i) => {
-          return i.id == inv?.id;
-        });
-        if (index != undefined && index != -1) {
-          this.inventory?.splice(index, 1);
-          this.toast('Inventory Removed');
-        }
-      }
-    );
-  }
-
-  emailSubs?: Array<{
-    email: string;
-    name: string;
-    timestamp: string;
-  }>;
-
-  phoneSubs?: Array<{
-    phone: string;
-    name: string;
-    timestamp: string;
-  }>;
-
-  showLegend = true;
-
-  colorScheme = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
-  };
-
-  // pie
-  showLabels = true;
-  explodeSlices = false;
-  doughnut = false;
-
-  pieInfo?: Array<Dict<any>>;
-  addSubs() {
-    if (!this.emailSubs || !this.phoneSubs) {
-      return;
-    }
-    this.pieInfo = [
-      {
-        name: 'Email Subscribers',
-        value: this.emailSubs?.length ?? 0,
-      },
-      {
-        name: 'SMS Subscribers',
-        value: this.phoneSubs?.length ?? 0,
-      },
-    ];
-  }
-
-  emails() {
-    return this.emailSubs?.slice(
-      this.selectedEmailPageIndex * 10,
-      this.selectedEmailPageIndex * 10 + 10
-    );
-  }
-
-  numbers() {
-    return this.phoneSubs?.slice(
-      this.selectedPhonePageIndex * 10,
-      this.selectedPhonePageIndex * 10 + 10
-    );
-  }
-
-  emailLength() {
-    return Math.ceil((this.emailSubs?.length ?? 0) / 10);
-  }
-
-  emailLengthTotal() {
-    return Math.ceil(this.emailSubs?.length ?? 0);
-  }
-
-  phoneLength() {
-    return Math.ceil((this.phoneSubs?.length ?? 0) / 10);
-  }
-
-  phoneLengthTotal() {
-    return Math.ceil(this.phoneSubs?.length ?? 0);
-  }
-
-  selectedEmailPageIndex = 0;
-  selectedPhonePageIndex = 0;
-
-  changePhoneDisplayColumns(page: PageEvent) {
-    this.selectedPhonePageIndex = page.pageIndex;
-    this.cdr.detectChanges();
-  }
-
-  changeEmailDisplayColumns(page: PageEvent) {
-    this.selectedEmailPageIndex = page.pageIndex;
-    this.cdr.detectChanges();
-  }
-
-  async deletePopup(popup: Popup, i: number) {
-    this.openPopup(
-      'Are you sure?',
-      "Your popup '" + popup.title + "' will be removed forever.",
-      'MATICON:wysiwyg:',
-      'Yes, Remove',
-      'Never Mind',
-      async () => {
-        await this.loadService.removePopup(
-          popup,
-          (success) => {
-            this.toast('Popup Removed');
-          },
-          this.storeInfo?.uid
-        );
-      }
-    );
-  }
-
-  showCouponModal(coupon?: Coupon) {
-  //   const modalRef = this.dialog.open(CouponInfoComponent, {
-  //     width: '800px',
-  //     data: {
-  //       coupons: this.storeInfo?.coupons,
-  //       editCoupon: coupon,
-  //       products: this.storeProducts?.filter((product) => {
-  //         return (
-  //           this.inventory?.filter((inv) => {
-  //             return inv.code == product.productType && inv.amount > 0;
-  //           }).length != 0
-  //         );
-  //       }),
-  //     },
-  //   });
-
-  //   let sub = modalRef.afterClosed().subscribe((coupon) => {
-  //     sub.unsubscribe();
-  //     if (coupon != '0') {
-  //       if (
-  //         !this.storeInfo?.coupons?.find((c) => {
-  //           return c == coupon;
-  //         })
-  //       ) {
-  //         if (coupon == undefined) {
-  //           return;
-  //         }
-
-  //         this.loadService.addDiscount(
-  //           coupon,
-  //           (success) => {
-  //             if (success) {
-  //               this.toast('Coupon Saved!');
-  //             }
-  //           },
-  //           this.storeInfo?.uid
-  //         );
-  //       }
-  //     }
-  //   });
+  // pieInfo?: Array<Dict<any>>;
+  // addSubs() {
+  //   // if (!this.emailSubs || !this.phoneSubs) {
+  //   //   return;
+  //   // }
+  //   // this.pieInfo = [
+  //   //   {
+  //   //     name: 'Email Subscribers',
+  //   //     value: this.emailSubs?.length ?? 0,
+  //   //   },
+  //   //   {
+  //   //     name: 'SMS Subscribers',
+  //   //     value: this.phoneSubs?.length ?? 0,
+  //   //   },
+  //   // ];
   // }
 
-  // async deleteCoupon(coupon: Coupon, i: number) {
-  //   var color = '';
-  //   if ((coupon?.amt ?? 0) <= 0.2) {
-  //     color = 'rgb(165, 101, 42)';
-  //   } else if ((coupon?.amt ?? 0) > 0.2 && (coupon?.amt ?? 0) <= 0.5) {
-  //     color = 'silver';
-  //   } else {
-  //     color = 'gold';
-  //   }
+  // emails() {
+  //   // return this.emailSubs?.slice(
+  //   //   this.selectedEmailPageIndex * 10,
+  //   //   this.selectedEmailPageIndex * 10 + 10
+  //   // );
+  // }
 
-  //   this.openPopup(
-  //     'Are you sure?',
-  //     "Your coupon '" + coupon.code + "' will be removed forever.",
-  //     'MATICON:' + this.matchingType(coupon.type)?.icon + ':' + color,
-  //     'Yes, Remove',
-  //     'Never Mind',
-  //     async () => {
-  //       await this.loadService.removeDiscount(
-  //         coupon,
-  //         (success) => {
-  //           this.toast('Coupon Removed');
-  //         },
-  //         this.storeInfo?.uid
-  //       );
-  //     }
-  //   );
-  }
+  // numbers() {
+  // //   return this.phoneSubs?.slice(
+  // //     this.selectedPhonePageIndex * 10,
+  // //     this.selectedPhonePageIndex * 10 + 10
+  // //   );
+  // // }
 
-  domainNotSetUp() {
-    if (this.storeInfo?.customURL?.status == 1) {
-      return true;
-    } else if (this.storeInfo?.customURL?.status == 2) {
-      return false;
-    } else {
-      return undefined;
-    }
-  }
+  // emailLength() {
+  //   return Math.ceil((this.emailSubs?.length ?? 0) / 10);
+  // }
 
-  showSocialModal(logo: { name: string; img: string }) {
-    const modalRef = this.modalService.open(SocialFormComponent);
+  // emailLengthTotal() {
+  //   return Math.ceil(this.emailSubs?.length ?? 0);
+  // }
 
-    let same = (this.storeForm.controls.socials.value as Array<any>)?.filter(
-      (social) => {
-        return social.name == logo.name;
-      }
-    );
-    var prefix = '';
-    if (logo.name.toLowerCase() == 'tiktok') {
-      prefix = '@';
-    }
-    modalRef.componentInstance.socialForm.controls.link.setValue(
-      logo.name.toLowerCase() + '.com/' + prefix
-    );
+  // phoneLength() {
+  //   return Math.ceil((this.phoneSubs?.length ?? 0) / 10);
+  // }
 
-    if (same && same.length !== 0) {
-      modalRef.componentInstance.socialForm.controls.link.setValue(
-        same[0].link
-      );
-    }
-    modalRef.componentInstance.linkImg = logo.img;
-    modalRef.componentInstance.name = logo.name;
+  // phoneLengthTotal() {
+  //   return Math.ceil(this.phoneSubs?.length ?? 0);
+  // }
 
-    let sub = modalRef.dismissed.subscribe((url: string) => {
-      sub.unsubscribe();
-      let array = this.storeForm.controls.socials.value as Array<{
-        name: string;
-        link: string;
-      }>;
-      if (url != '0' && url != '' && url != 'undefined') {
-        let same = array?.filter((social) => {
-          return logo.name == social.name;
-        });
+  // selectedEmailPageIndex = 0;
+  // selectedPhonePageIndex = 0;
 
-        if (!same || same.length == 0) {
-          if (array != undefined || array != null) {
-            array.push({
-              name: logo.name,
-              link: url,
-            });
-          } else {
-            array = [
-              {
-                name: logo.name,
-                link: url,
-              },
-            ];
-          }
-        } else {
-          array[array.indexOf(same[0])].link = url;
-        }
-      } else if (url != '0') {
-        array.forEach((element, index) => {
-          if (element.name == logo.name) array.splice(index, 1);
-        });
-      }
-      this.storeForm.controls.socials.setValue(array);
-    });
-  }
+  // changePhoneDisplayColumns(page: PageEvent) {
+  //   this.selectedPhonePageIndex = page.pageIndex;
+  //   this.cdr.detectChanges();
+  // }
+
+  // changeEmailDisplayColumns(page: PageEvent) {
+  //   this.selectedEmailPageIndex = page.pageIndex;
+  //   this.cdr.detectChanges();
+  // }
 
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
@@ -729,48 +302,34 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     private dialog: MatDialog
   ) {
     (<any>window).openCard = this.openCard.bind(this);
-
-    Globals.selectedCurrency = undefined;
-    Globals.themes = undefined;
-    Globals.productsSold = undefined;
-    Globals.views = undefined;
-    Globals.dropCarts = undefined;
-    Globals.billingInfo = undefined;
-
-    // this.billingInfo().
   }
 
+  selectedCoord?: Dict<any> = undefined;
+
+  closeCard() {
+    this.selectedCoord = undefined;
+    this.cdr.detectChanges();
+  }
+
+
   openCard(coords: Dict<any>) {
-    console.log(coords.type);
-    console.log(coords);
+    coords.time = new Date(coords.time);
+
+    let col = this.collections?.find(
+      (c) => c.NFTs[`${coords.productID}`] != undefined
+    );
+
+    if (col) {
+      console.log(coords);
+      coords.product = col?.NFTs[`${coords.productID}`];
+      coords.collection = col;
+      this.selectedCoord = coords;
+      this.cdr.detectChanges();
+    }
   }
 
   ngOnDestroy(): void {
     this.loadService.adminComponent = undefined;
-  }
-
-  getBillingAddressThird() {
-    var address = this.billingInfo()?.street;
-    var unit = this.billingInfo()?.unit;
-    if (unit) address += '. ' + unit;
-    return address;
-  }
-
-  getBillingAddressFourth() {
-    return (
-      this.billingInfo()?.city +
-      ', ' +
-      this.billingInfo()?.admin_area +
-      '. ' +
-      this.billingInfo()?.postal
-    );
-  }
-
-  getBillingAddressSecond() {
-    var name = this.billingInfo()?.name;
-    var company = this.billingInfo()?.company;
-    if (company) name += ' - ' + company;
-    return name;
   }
 
   state: string = 'default';
@@ -1190,23 +749,17 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         }> = [];
 
         data_set.forEach((p) => {
-          
-            let i = views?.findIndex(
-              (k) =>
-                k.timestamp.toDateString() ==
-                p.timestamp.toDateString() 
-            );
-            if (i != -1) {
-              views[i].views += 1;
-            }
-            else {
-              views?.push({ views: 1, timestamp: p.timestamp });
-            }
+          let i = views?.findIndex(
+            (k) => k.timestamp.toDateString() == p.timestamp.toDateString()
+          );
+          if (i != -1) {
+            views[i].views += 1;
+          } else {
+            views?.push({ views: 1, timestamp: p.timestamp });
+          }
         });
         dataToUse = views;
       }
-
-
 
       let set = this.organizeAllTime(dataToUse, name);
 
@@ -1214,7 +767,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       if (name == 'Store Views') {
         index = 0;
       }
-
 
       // let item = {
       //   name: name,
@@ -1425,22 +977,19 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  move(ds: DragScrollComponent, direction: number){
-    if (direction == 0){
-      ds?.moveLeft()
-      return
+  move(ds: DragScrollComponent, direction: number) {
+    if (direction == 0) {
+      ds?.moveLeft();
+      return;
     }
-    ds?.moveRight()
+    ds?.moveRight();
   }
 
   loaders() {
     return Globals.loaders;
   }
 
-
-  storeInfo?: Store
-
+  storeInfo?: Store;
 
   availableCurrencies() {
     return Globals.availableCurrencies;
@@ -1493,8 +1042,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   passVars(iframe: HTMLIFrameElement) {
     if (iframe) {
-      console.log(iframe);
-
       // iframe.contentWindow?.postMessage(JSON.parse(JSON.stringify({
       //   storeInfo: this.storeInfo,
       //   themeInfo: {
@@ -1506,79 +1053,94 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   panels = [
+    // {
+    //   Category: 'DASHBOARD',
+    //   Options: [
+    //     // {
+    //     //   Title: 'OVERVIEW',
+    //     //   Icon: 'dashboard',
+    //     //   Active: false,
+    //     // },
+    //     {
+    //       Title: 'COLLECTIONS',
+    //       Icon: 'category',
+    //       Active: false,
+    //     },
+    //     // {
+    //     //   Title: 'LIVE VIEW',
+    //     //   Icon: 'public',
+    //     //   Active: false,
+    //     // },
+    //     // {
+    //     //   Title: 'AUDIENCE',
+    //     //   Icon: 'groups',
+    //     //   Active: false,
+    //     // },
+    //   ],
+    // },
+    // {
+    //   Category: 'LAYOUT',
+    //   Options: [
+    //     {
+    //       Title: 'PAGES',
+    //       Icon: 'layers',
+    //       Active: false,
+    //     },
+    //   ],
+    // },
+    // {
+    //   Category: 'MANAGE',
+    //   Options: [
+    //     {
+    //       Title: 'THEMES',
+    //       Icon: 'backup_table',
+    //       Active: false,
+    //     },
+    //     {
+    //       Title: 'STORE',
+    //       Icon: 'shopping_bag',
+    //       Active: false,
+    //     },
+    //     // {
+    //     //   Title: 'INVENTORY',
+    //     //   Icon: 'local_shipping',
+    //     //   Active: false,
+    //     // },
+    //     {
+    //       Title: 'POPUPS',
+    //       Icon: 'wysiwyg',
+    //       Active: false,
+    //     },
+    //     {
+    //       Title: 'BANNERS',
+    //       Icon: 'view_day',
+    //       Active: false,
+    //     },
+    //     // {
+    //     //   Title: 'DISCOUNTS',
+    //     //   Icon: 'local_offer',
+    //     //   Active: false,
+    //     // },
+    //   ],
+    // },
     {
-      Category: 'DASHBOARD',
+      Category: 'SETTINGS',
       Options: [
         {
-          Title: 'OVERVIEW',
-          Icon: 'dashboard',
+          Title: 'NEW',
+          Icon: 'add',
           Active: false,
         },
         {
-          Title: 'COLLECTIONS',
+          Title: 'ASSETS',
           Icon: 'category',
-          Active: false,
+          Active: true,
         },
-        {
-          Title: 'LIVE VIEW',
-          Icon: 'public',
-          Active: false,
-        },
-        {
-          Title: 'AUDIENCE',
-          Icon: 'groups',
-          Active: false,
-        },
-      ],
-    },
-    {
-      Category: 'LAYOUT',
-      Options: [
         {
           Title: 'PAGES',
           Icon: 'layers',
           Active: false,
         },
-      ],
-    },
-    {
-      Category: 'MANAGE',
-      Options: [
-        {
-          Title: 'THEMES',
-          Icon: 'backup_table',
-          Active: false,
-        },
-        {
-          Title: 'STORE',
-          Icon: 'shopping_bag',
-          Active: false,
-        },
-        // {
-        //   Title: 'INVENTORY',
-        //   Icon: 'local_shipping',
-        //   Active: false,
-        // },
-        {
-          Title: 'POPUPS',
-          Icon: 'wysiwyg',
-          Active: false,
-        },
-        {
-          Title: 'BANNERS',
-          Icon: 'view_day',
-          Active: false,
-        },
-        // {
-        //   Title: 'DISCOUNTS',
-        //   Icon: 'local_offer',
-        //   Active: false,
-        // },
-      ],
-    },
-    {
-      Category: 'SETTINGS',
-      Options: [
         {
           Title: 'BILLING',
           Icon: 'credit_card',
@@ -1594,50 +1156,48 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         //   Icon: 'monetization_on',
         //   Active: false,
         // },
-        {
-          Title: 'ADVERTISE',
-          Icon: 'share',
-          Active: false,
-        },
-        {
-          Title: 'SECURITY',
-          Icon: 'admin_panel_settings',
-          Active: false,
-        },
+        // {
+        //   Title: 'ADVERTISE',
+        //   Icon: 'share',
+        //   Active: false,
+        // },
+        // {
+        //   Title: 'SECURITY',
+        //   Icon: 'admin_panel_settings',
+        //   Active: false,
+        // },
       ],
     },
-    {
-      Category: 'OTHER',
-      Options: [
-        {
-          Title: 'AFFILIATE',
-          Icon: 'local_atm',
-          Active: false,
-        },
-        {
-          Title: 'PRIVACY',
-          Icon: 'vpn_lock',
-          Active: false,
-        },
-        {
-          Title: 'LEGAL',
-          Icon: 'sticky_note_2',
-          Active: false,
-        },
-        {
-          Title: 'QUESTIONS',
-          Icon: 'contact_support',
-          Active: false,
-        },
-      ],
-    },
+    // {
+    //   Category: 'OTHER',
+    //   Options: [
+    //     // {
+    //     //   Title: 'AFFILIATE',
+    //     //   Icon: 'local_atm',
+    //     //   Active: false,
+    //     // },
+    //     {
+    //       Title: 'PRIVACY',
+    //       Icon: 'vpn_lock',
+    //       Active: false,
+    //     },
+    //     {
+    //       Title: 'LEGAL',
+    //       Icon: 'sticky_note_2',
+    //       Active: false,
+    //     },
+    //     {
+    //       Title: 'QUESTIONS',
+    //       Icon: 'contact_support',
+    //       Active: false,
+    //     },
+    //   ],
+    // },
   ];
-
 
   // async isSignedIn(){
   //   return this.storeInfo?.walletAddress && this.storeInfo?.walletAddress?.toLowerCase() == (?.toLowerCase()
   // }
-
 
   inMenu(h?: string) {
     let headers = this.headerForm.controls.links.value;
@@ -1651,13 +1211,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         l.link.find((k: string) => k == h)
       ) != undefined
     );
-  }
-
-  getBillingAddressFirst() {
-    var name =
-      Globals.billingInfo?.brand + ' ending in ' + Globals.billingInfo?.number;
-
-    return name;
   }
 
   getLinkImg(name: string) {
@@ -1716,11 +1269,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   inventory?: Array<Inventory>;
 
   selectedIndicator() {
-    if (!this.storeInfo) { return {
-      name: '',
-      color: '',
-      bg_color: '',
-    }}
+    if (!this.storeInfo) {
+      return {
+        name: '',
+        color: '',
+        bg_color: '',
+      };
+    }
     let co = this.storeInfo?.loading?.color;
     let bco = this.storeInfo?.loading?.bg_color;
     let name = this.storeInfo?.loading?.name;
@@ -1757,27 +1312,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  buyMore(inventory: Inventory) {
-    const modalRef = this.modalService.open(InventoryBuyComponent, {
-      size: 'lg',
-    });
-    modalRef.componentInstance.inventory = inventory;
-
-    let sub = modalRef.dismissed.subscribe((inv?: Inventory) => {
-      sub.unsubscribe();
-      if (inv) {
-        let same = this.inventory?.filter((i) => {
-          i.id == inv.id;
-        })[0];
-        if (same) {
-          same.amount = inv.amount;
-        }
-      }
-    });
-  }
-
   checkBilling() {
-    if (Globals.billingInfo?.name && Globals.billingInfo?.name != '') {
+    if (this.billingInfo?.name && this.billingInfo?.name != '') {
       return true;
     } else {
       var sec = 0;
@@ -1798,9 +1334,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   shouldHideLiveBtn() {
     return (
-      Globals.billingInfo == undefined ||
-      this.bankInfo == undefined ||
-      this.subInfo == undefined
+      this.billingInfo == undefined
+      //  ||
+      // // this.bankInfo == undefined ||
+      // this.subInfo == undefined
     );
   }
 
@@ -1815,47 +1352,30 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   storeLive() {
-    return (
-      this.subInfo != ''
-    );
+    return this.subInfo != '';
   }
 
   shouldRed(panel: any) {
-    if (this.shouldHideLiveBtn()) {
-      return false;
-    }
+    // if (this.shouldHideLiveBtn()) {
+    //   return false;
+    // }
     if (panel.Title == 'BILLING') {
-      if (Globals.billingInfo?.name?.replace(' ', '') == '') {
+      if (this.billingInfo == null) {
         return true;
+      } else {
       }
-    } 
+    }
     // else if (panel.Title == 'PAYMENTS') {
     //   if (this.bankInfo == '') {
     //     return true;
     //   }
-    // } 
+    // }
     else if (panel.Title == 'PLAN') {
       if (this.subInfo == '') {
         return true;
       }
     }
     return false;
-  }
-
-  buyNewInventory(template: Template) {
-    if (this.checkBilling()) {
-      const modalRef = this.modalService.open(InventoryBuyComponent, {
-        size: 'lg',
-      });
-      modalRef.componentInstance.template = template;
-
-      let sub = modalRef.dismissed.subscribe((inv?: Inventory) => {
-        sub.unsubscribe();
-        if (inv) {
-          this.inventory?.unshift(inv);
-        }
-      });
-    }
   }
 
   missingInfo() {
@@ -1873,96 +1393,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return array;
   }
 
-  removeAutoReload(inventory: Inventory) {
-    this.loadService.removeAutoReload(inventory, (success) => {
-      if (success) {
-        inventory.autoReload = false;
-        this.toast(
-          'Auto-Reload for ' + inventory.name.toLowerCase() + ' removed'
-        );
-      }
-    });
-  }
-
-  setUpAutoReload(inventory: Inventory) {
-    if (this.checkBilling()) {
-      this.loadService.setAutoReload(inventory, (success) => {
-        if (success) {
-          inventory.autoReload = true;
-          this.toast(
-            'Auto-Reload for ' + inventory.name.toLowerCase() + ' set'
-          );
-        }
-      });
-    }
-  }
   @ViewChild('chartObj') chart?: ChartComponent;
-
-  getInventory() {
-    if (this.inventory != undefined) return;
-    this.inventory = [];
-    this.loadService.getInventory((inventory) => {
-      this.inventory = (inventory ?? []).sort(function (a, b) {
-        if (a.timestamp < b.timestamp) {
-          return 1;
-        }
-        if (a.timestamp > b.timestamp) {
-          return -1;
-        }
-        return 0;
-      });
-
-      this.cdr.detectChanges();
-    });
-  }
-
-  hasInventory(template: Template) {
-    return this.inventory?.find((obj) => {
-      return template.productCode == obj.code;
-    });
-  }
-
-  availableToBuyTemplates() {
-    return this.templates()?.filter((template) => {
-      return !this.hasInventory(template);
-    });
-  }
-
-  matchTemplate(inv: Inventory) {
-    return this.templates()?.find((obj) => {
-      return inv.code == obj.productCode;
-    });
-  }
-
-  discountDisplay(coupon: Coupon) {
-    if (coupon.style == 0) {
-      return coupon.amt * 100 + '% off';
-    }
-    return this.formatPrice(coupon.amt * 100) + ' off';
-  }
-
-  invUsed(inv: Inventory) {
-    // Globals.productsSold
-    let n =
-      Globals.productsSold?.filter((p) => {
-        return p.product?.productID == inv.code;
-      })?.length ?? 0;
-
-    if (n == 0) {
-      return 'No sales on this product';
-    }
-    return n + ' sales on this product';
-  }
-
-  matchInventory(template: Template) {
-    return (this.inventory?.filter((obj) => {
-      return template.productCode == obj.code;
-    }))![0];
-  }
 
   totalElement(series: Array<number>) {
     var total = 0;
-    if (!series){ return 0}
+    if (!series) {
+      return 0;
+    }
     series.forEach((item) => {
       total += item;
     });
@@ -1970,27 +1407,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   totalSales() {
-    return 0// this.formatPrice(this.totalElement(this.charts()[1].series[0].data));
+    return 0; // this.formatPrice(this.totalElement(this.charts()[1].series[0].data));
   }
 
   totalViews() {
-    return 0 // this.charts().length > 0 ? this.totalElement(this.charts()[0].series[0].data) : 0
-  }
-
-  orderCurrency(order?: Order) {
-    if (order == undefined) {
-      return undefined;
-    }
-    return new Country(
-      order?.currency.toUpperCase().slice(0, (order?.currency.length ?? 0) - 1),
-      undefined,
-      undefined,
-      order?.currency,
-      order?.currencySymbol,
-      1,
-      true,
-      0
-    );
+    return 0; // this.charts().length > 0 ? this.totalElement(this.charts()[0].series[0].data) : 0
   }
 
   formatGraphElement(element: number, name: string) {
@@ -1999,62 +1420,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       name == 'Net Profit' ||
       name == 'Affiliate Revenue'
     ) {
-      return this.formatPrice(element);
+      return ''; //this.formatPrice(element);
     }
     return element;
-  }
-
-  formatPrice(price: number, short = false, order?: Order, crypto: boolean = true) {
-    if (!crypto){
-      var priceAsString = new String(
-        Number(
-          (
-            price *
-            (this.orderCurrency(order)?.rate ??
-              Globals.selectedCurrency?.rate ??
-              1)
-          ).toFixed(2)
-        ).toLocaleString('en')
-      );
-      if (!short) {
-        priceAsString = new String(
-          Number(
-            (
-              price *
-              (this.orderCurrency(order)?.rate ??
-                Globals.selectedCurrency?.rate ??
-                1)
-            ).toFixed(2)
-          )
-        );
-      }
-      let index = priceAsString.indexOf('.');
-  
-      switch (index) {
-        case priceAsString.length - 1:
-          priceAsString += '00';
-          break;
-        case -1:
-          priceAsString += '.00';
-          break;
-        case priceAsString.length - 2:
-          priceAsString += '0';
-          break;
-        default:
-          break;
-      }
-      return (
-        this.getCurrencyForCountry(
-          (this.orderCurrency(order)?.name ?? Globals.selectedCurrency?.name) !=
-            'US',
-          this.orderCurrency(order) ?? Globals.selectedCurrency
-        ) + priceAsString
-      );
-    }
-    else{
-      return price.toString()
-      // return ethers.utils.formatUnits(price.toString(), 'ether');
-    }
   }
 
   getCurrencyForCountry(shouldShowName: boolean, country?: Country) {
@@ -2066,7 +1434,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   isSpinning = false;
 
-  mainLoad = false
+  mainLoad = false;
 
   showSpinner(duration = 500) {
     if (!this.isSpinning) {
@@ -2172,17 +1540,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     link.remove();
   }
 
-  async setFBPixel() {
-    let pixel = this.marketingForm.controls.pixel.value as string;
-    await this.loadService.setPixel(pixel);
-    this.toast('Facebook Pixel Updated!');
-  }
-
   setForm() {
     this.storeForm.controls.username.setValue(this.storeInfo?.username ?? '');
-    this.storeForm.controls.full_name.setValue(
-      this.storeInfo?.fullName ?? ''
-    );
+    this.storeForm.controls.full_name.setValue(this.storeInfo?.fullName ?? '');
     this.storeForm.controls.bio.setValue(this.storeInfo?.bio ?? '');
 
     this.themeForm.controls.loadingIndicator.setValue(
@@ -2264,16 +1624,14 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     var prod = Array<NFT>();
     products?.forEach((p) => {
       let pro = this.collections?.find((pr) => {
-
         // Object.values
-        let k = pr.NFTs![`${p}`]
-        return k
-      })?.NFTs![`${p}`]
+        let k = pr.NFTs![`${p}`];
+        return k;
+      })?.NFTs![`${p}`];
       if (pro) {
         prod.push(pro);
-      }
-      else{
-        prod.push(new NFT())
+      } else {
+        prod.push(new NFT());
       }
     });
     return prod;
@@ -2292,7 +1650,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     //   })
     //   .slice(0, 4);
 
-    return []
+    return [];
   }
 
   featuredProducts() {
@@ -2308,7 +1666,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     //   })
     //   .slice(0, 4);
 
-    return []
+    return [];
   }
 
   colCount(row: Row) {
@@ -2404,103 +1762,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return this.storeInfo?.fullName ?? "Brian's Tees";
   }
 
-  saveProfile() {
-    if (this.storeForm.valid) {
-      var data = {
-        username: this.storeForm.controls.username.value,
-        full_name: this.storeForm.controls.full_name.value,
-        bio: this.storeForm.controls.bio.value,
-        socials: this.storeForm.controls.socials.value,
-        custom_url: this.storeForm.controls.custom_url.value?.replace(
-          /\s/g,
-          ''
-        ),
-        profile_pic: this.storeForm.controls.profile_pic.value,
-      };
-
-      this.loadService.checkURL(data.custom_url, (error) => {
-        if (error) {
-          this.toast(error);
-        } else {
-          this.loadService.saveUser(data, (success) => {
-            if (success) {
-              this.toast('Profile Information Updated!');
-            }
-          });
-        }
-      });
-    } else {
-      this.toast('One or more fields are invalid!');
-    }
-  }
-
-  savePassword() {
-    if (this.changePassForm.valid) {
-      if (
-        this.changePassForm.controls.password.value?.replace(/\s/g, '') !=
-        this.changePassForm.controls.confirmNewPassword.value?.replace(
-          /\s/g,
-          ''
-        )
-      ) {
-        return;
-      }
-
-      let data = {
-        password: this.changePassForm.controls.password.value
-          ?.replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        newPassword: this.changePassForm.controls.newPassword.value
-          ?.replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-      };
-      this.loadService.savePassword(data, (success) => {
-        this.changePassForm.controls.password.setValue(undefined);
-        this.changePassForm.controls.newPassword.setValue(undefined);
-        if (success) {
-          this.toast('Password Updated!');
-        } else {
-          this.toast('Error! Something went wrong.');
-        }
-      });
-    } else {
-    }
-  }
-
   show: boolean = false;
 
   password() {
     this.show = !this.show;
-  }
-
-  saveEmail() {
-    if (this.changeEmailForm.valid) {
-      let data = {
-        password: this.changeEmailForm.controls.password.value
-          ?.replace(/\s/g, '')
-          .split(' ')
-          .join('')
-          .trim()
-          .toLowerCase(),
-        newEmail: this.changeEmailForm.controls.newEmail.value,
-      };
-      this.loadService.saveEmail(data, (success) => {
-        this.changeEmailForm.controls.password.setValue(undefined);
-        this.changeEmailForm.controls.newEmail.setValue(undefined);
-        if (success) {
-          this.toast('Email Updated!');
-        } else {
-          this.toast('Error! Something went wrong.');
-        }
-      });
-    } else {
-    }
   }
 
   joinColor(color: string) {
@@ -2552,103 +1817,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return theme;
   }
 
-  editBanner(banner: Banner) {
-    const modalRef = this.dialog.open(EditBannerComponent, {
-      width: '' + this.myInnerHeight() + 'px',
-      maxWidth: '100vw',
-      maxHeight: '100vh',
-      data: {
-        banner: banner,
-      },
-    });
-
-    let sub = modalRef.afterClosed().subscribe((resp) => {
-      sub.unsubscribe();
-      if (resp) {
-        banner.bg_color = resp.bg_color;
-        banner.color = resp.color;
-        banner.icon = resp.icon;
-        banner.text = resp.text;
-      } else {
-      }
-    });
-  }
-
-  addBanner() {
-    let banner = new Banner('', '', [], []);
-    const modalRef = this.dialog.open(EditBannerComponent, {
-      width: '' + this.myInnerHeight() + 'px',
-      maxWidth: '100vw',
-      maxHeight: '100vh',
-      data: {
-        banner: banner,
-      },
-    });
-
-    let sub = modalRef.afterClosed().subscribe((resp) => {
-      sub.unsubscribe();
-      if (resp) {
-        banner.bg_color = resp.bg_color;
-        banner.color = resp.color;
-        banner.icon = resp.icon;
-        banner.text = resp.text;
-        let curr = this.bannerForm.controls.banners.value ?? [];
-        curr.push(banner);
-        this.bannerForm.controls.banners.setValue(curr);
-      } else {
-      }
-    });
-  }
-
-  styles = [
-    {
-      name: 'Scroll & Stop',
-      code: 0,
-    },
-    {
-      name: 'Infinite Scroll',
-      code: 1,
-    },
-  ];
-
-  matchingStyle(s?: any) {
-    return this.styles.find((style) => {
-      return style.code == s;
-    });
-  }
-
-  async deleteBanner(banner: Banner) {
-    var banners = new Array<Dict<any>>();
-
-    let bannerVals = this.bannerForm.controls.banners.value as Array<Dict<any>>;
-
-    bannerVals.forEach((b) => {
-      if (b != banner) {
-        banners.push({
-          text: b.text,
-          icon: b.icon,
-          bg_color: this.numToColor(b.bg_color ?? []),
-          color: this.numToColor(b.color ?? []),
-        });
-      }
-    });
-
-    var data: Dict<any> = {
-      banners: banners,
-    };
-
-    this.loadService.myCallback = () => {
-      let index = bannerVals.indexOf(banner);
-
-      bannerVals.splice(index, 1);
-
-      this.bannerForm.controls.banners.setValue(bannerVals);
-
-      this.toast('Banner Removed!');
-    };
-    await this.loadService.saveStore(data);
-  }
-
   drop(event: CdkDragDrop<string[]>) {
     let arr = this.bannerForm.controls.banners.value;
     moveItemInArray(arr, event.previousIndex, event.currentIndex);
@@ -2683,7 +1851,8 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     let bco = this.storeInfo?.colorStyle?.bg_color;
     let name = this.storeInfo?.colorStyle?.name!;
 
-    let color = 'rgba(' + co![0] + ',' + co![1] + ',' + co![2] + ',' + co![3] + ')';
+    let color =
+      'rgba(' + co![0] + ',' + co![1] + ',' + co![2] + ',' + co![3] + ')';
 
     let bg_color =
       'rgba(' + bco![0] + ',' + bco![1] + ',' + bco![2] + ',' + bco![3] + ')';
@@ -2700,156 +1869,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     this.themeForm.controls.storeTheme.setValue(theme);
     this.theme = this.themeForm.controls.storeTheme.value;
 
-    this.saveStore();
-  }
-
-  saveHeader() {
-    let header = this.headerForm.controls.links.value ?? [];
-
-    this.loadService.saveHeader(
-      header,
-      this.footerCols,
-      (success) => {
-        if (success) {
-          this.toast('Store Header Updated!');
-        }
-      },
-      this.storeInfo?.uid
-    );
-  }
-
-  async saveStore() {
-    var data: Dict<any> = {};
-
-    if (this.getSelectedPanel().Title == 'STORE') {
-      this.saveProfile();
-      return;
-    } else if (this.getSelectedPanel().Title == 'PAGES') {
-      this.saveHeader();
-      return;
-    } else {
-      if (this.getSelectedPanel().Title == 'SHOP') {
-        data = {};
-        var images = new Array<Dict<string>>();
-        if (
-          this.shopForm.controls.themeImg.value &&
-          this.isBase64(
-            this.shopForm.controls.themeImg.value.replace(
-              /^[\w\d;:\/]+base64\,/g,
-              ''
-            )
-          )
-        ) {
-          images.push({
-            type: 'shop_top',
-            img: this.shopForm.controls.themeImg.value,
-          });
-        }
-        data.images = images;
-      } else if (this.getSelectedPanel().Title == 'THEMES') {
-        var color = this.joinColor(
-          this.themeForm.controls.loadingIndicatorColor.value
-        );
-        var bg_color = this.joinColor(
-          this.themeForm.controls.loadingIndicatorBgColor.value
-        );
-        data = {
-          indicator: {
-            name: this.themeForm.controls.loadingIndicator.value,
-            color: color,
-            bg_color: bg_color,
-          },
-          loadingIndicatorColor: color,
-          loadingIndicatorBgColor: bg_color,
-          font: this.themeForm.controls.font.value,
-        };
-        var selectedTheme = this.themeForm.controls.storeTheme.value as string;
-
-        let matchingTheme = Globals.themes
-          ?.find((theme) => {
-            return theme.themes.find((theme) => {
-              return theme.name == selectedTheme;
-            });
-          })
-          ?.themes.find((theme) => {
-            return theme.name == selectedTheme;
-          });
-
-        if (matchingTheme) {
-          var color = this.numToColor(matchingTheme.btn_color);
-          var bg_color = this.numToColor(matchingTheme.bg_color);
-
-          data.theme = {
-            back_code: matchingTheme.back_code,
-            text_code: matchingTheme.text_code,
-            nav_code: matchingTheme.nav_code,
-            class: matchingTheme.style,
-            bg_color: bg_color,
-            btn_color: color,
-            name: matchingTheme?.name,
-          };
-        }
-        var images = new Array<Dict<string>>();
-        if (
-          this.themeForm.controls.themeImg.value &&
-          this.isBase64(
-            this.themeForm.controls.themeImg.value.replace(
-              /^[\w\d;:\/]+base64\,/g,
-              ''
-            )
-          )
-        ) {
-          images.push({
-            type: 'theme',
-            img: this.themeForm.controls.themeImg.value,
-          });
-        }
-        if (
-          this.themeForm.controls.actionImg.value &&
-          this.isBase64(
-            this.themeForm.controls.actionImg.value.replace(
-              /^[\w\d;:\/]+base64\,/g,
-              ''
-            )
-          )
-        ) {
-          images.push({
-            type: 'action',
-            img: this.themeForm.controls.actionImg.value,
-          });
-        }
-        data.images = images;
-      } else if (this.getSelectedPanel().Title == 'BANNERS') {
-        var banners = new Array<Dict<any>>();
-        let bannerVals = this.bannerForm.controls.banners.value as Array<
-          Dict<any>
-        >;
-
-        bannerVals.forEach((b) => {
-          banners.push({
-            text: b.text,
-            icon: b.icon,
-            bg_color: this.numToColor(b.bg_color ?? []),
-            color: this.numToColor(b.color ?? []),
-          });
-        });
-        data = {
-          banners: banners,
-          banner_style: this.bannerForm.controls.style.value ?? 0,
-        };
-      }
-
-      // if (this.storeForm.valid){
-
-      // console.log(data.banner_style)
-
-      this.loadService.myCallback = () => this.toast('Store Updated!');
-      await this.loadService.saveStore(data);
-      // }
-      // else{
-
-      // }
-    }
+    // this.saveStore();
   }
 
   titleCase(str: string = '') {
@@ -2886,6 +1906,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   async selectSetting(index: number, section: number) {
+    if (section == 0 && index == 0) {
+      this.createNewProduct();
+      return;
+    }
     if (section == 4 && index != 0) {
       var urlLink = '';
       if (index == 1 || index == 2) {
@@ -2938,12 +1962,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
     this.panels[section].Options[index].Active = true;
     this.cdr.detectChanges();
-
   }
 
-  soldNFTs: Array<NFT> = []
-
-
+  soldNFTs: Array<NFT> = [];
 
   copyAffiliateURL() {
     this.toast('Affiliate link copied to clipboard!');
@@ -2952,26 +1973,12 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     this.clipboard.copy(host + '/?affiliate=' + this.storeInfo?.uid);
   }
 
-  getSoldProducts() {
-    if (Globals.productsSold == undefined) {
-      this.loadService.saleCallback = () => this.getSoldProducts();
-      this.loadService.getSoldProducts(this.storeInfo?.uid);
-    } else {
-      let data = ['Products Sold', 'Gross Revenue', 'Net Profit'];
-      data.forEach((d) => {
-        this.addChart(d, Globals.productsSold!);
-      });
-      this.getAffiliateStats();
-    }
-  }
-
   async getAffiliateStats(showEmpty = false) {
     // if (this.activeAffiliates.length == 0) {
     //   this.loadService.miscCallback = () => this.getMiscStats();
     //   let user = await this.loadService.isLoggedIn();
     //   this.loadService.getAffiliateStats(user?.uid!, (affiliates) => {
     //     this.activeAffiliates = affiliates;
-
     //     if (affiliates.length != 0 || showEmpty) {
     //       let data = ['Onboarded Users (Affiliate)', 'Affiliate Revenue'];
     //       data.forEach((d) => {
@@ -2982,40 +1989,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     // }
   }
 
-  async getMiscStats() {
-    if (Globals.views == undefined) {
-      this.loadService.miscCallback = () => this.getMiscStats();
-      let user = await this.loadService.isLoggedIn();
-
-      this.loadService.getMiscStats(user?.uid!);
-    } else {
-      let data = [
-        {
-          name: 'Store Views',
-          series: Globals.views,
-        },
-        // {
-        //   name: 'Abandoned Carts',
-        //   series: Globals.dropCarts,
-        // },
-      ];
-
-      // data.forEach((d) => {
-        this.addMiscCharts(data[0]?.name, data[0]?.series ?? []);
-      // });
-      // this.getSoldProducts();
-    }
-  }
-
   isBrowser() {
     return isPlatformBrowser(this.platformID);
   }
 
-  views() {
-    return Globals.views ?? [];
-  }
-
-  classApplied = false;
+  classApplied = true;
 
   toggleSidebar() {
     this.classApplied = !this.classApplied;
@@ -3039,157 +2017,277 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return bio?.replace(/\n/g, '<br>') ?? '';
   }
 
-  planEndDate() {
-    return new Date(this.subInfo.cancel_at * 1000).toDateString();
-  }
-
   async ngOnInit() {
     this.loadService.adminComponent = this;
-    this.getMiscStats()
-    Globals.sInfo.pipe(skip(1)).subscribe(s => {
-      this.storeInfo = s
-    })
+    Globals.sInfo.pipe(skip(1)).subscribe((s) => {
+      this.storeInfo = s;
+    });
     // Globals.uInfo.subscribe(s => {
     //   this.storeInfo = s
     // })
-    
+
     this.init();
   }
 
   showWelcomeModal() {
     if (Globals.isNewUser) {
-      Globals.isNewUser = false
-      this.loadService.startSubscription(this.plans[0], (id: any, err?: string) => {
-        if (err && err != '') {
-          return;
-        } else {
-          this.subInfo = id;
-        }
-      });
+      Globals.isNewUser = false;
+      // this.loadService.startSubscription(
+      //   this.plans[0],
+      //   (id: any, err?: string) => {
+      //     if (err && err != '') {
+      //       return;
+      //     } else {
+      //       this.subInfo = id;
+      //     }
+      //   }
+      // );
     }
   }
 
-  str =
-    "<!DOCTYPE html><html lang='en'><head><title>Miniature Earth | Hologram Demo</title><meta charset='utf-8'><meta name='viewport' content='width=device-width'><link rel='stylesheet' href='hologram/style.css'><script src='../miniature.earth.js'></script><style>.arrow-tip {background-color: #33cc33;color: white;padding: 0.5em 0.75em 0.5em 1.75em;font-size: 1.5em;clip-path: polygon(1.25em 0, 100% 0, 100% 50%, 100% 100%, 1.25em 100%, 0 50%);transition: clip-path 0.3s ease, padding 0.3s ease, transform 0.3s ease;transform: translate(0, -50%);}.earth-overlay-left > .arrow-tip {padding: 0.5em 1.75em 0.5em 0.75em;clip-path: polygon(0% 0%, calc(100% - 1.25em) 0%, 100% 50%, calc(100% - 1.25em) 100%, 0% 100%, 0% 50%);transform: translate(-100%, -50%);}</style><script>if ( location.protocol == 'file:' ) {alert( 'This demo does not work with the file protocol due to browser security restrictions.' );}var myearth;var sprites = [];window.addEventListener( 'load', function() {myearth = new Earth( 'myearth', {location : { lat: 20, lng : 20 },light: 'none',mapImage: 'hologram/hologram-map.svg',zoomable: true,transparent: true,autoRotate : true,autoRotateSpeed: 1.2,autoRotateDelay: 100,autoRotateStart: 2000,}, {passive: true} );myearth.addEventListener( 'ready', function() {this.startAutoRotate();var line = {color : '#009CFF',opacity: 0.35,hairline: true,offset: -0.5};for ( var i in connections ) {line.locations = [ { lat: connections[i][0], lng: connections[i][1] }, { lat: connections[i][2], lng: connections[i][3] } ];this.addLine( line );}var c = '#e60000';yyyy;for ( var i=0; i < 8; i++ ) {sprites[i] = this.addSprite( {image: 'hologram/hologram-shine.svg',scale: 0.01,offset: -0.5,opacity: 0.5} );xxxxxx; pulse( i );}},{passive: true});});function getRandomInt(min, max){min = Math.ceil(min);max = Math.floor(max);return Math.floor(Math.random() * (max - min)) + min;}function pulse( index ) {var random_location = connections[ getRandomInt(0, connections.length-1) ];sprites[index].location = { lat: random_location[0] , lng: random_location[1] };sprites[index].animate( 'scale', 0.5, { duration: 320, complete : function(){this.animate( 'scale', 0.01, { duration: 320, complete : function(){setTimeout( function(){ pulse( index ); }, getRandomInt(100, 400) );}});}});}var connections = [[59.651901245117,17.918600082397,41.8002778,12.2388889],[59.651901245117,17.918600082397,51.4706,-0.461941],[13.681099891662598,100.74700164794922,	-6.1255698204,106.65599823],[13.681099891662598,100.74700164794922,	28.566499710083008,77.10310363769531],[30.12190055847168,31.40559959411621, -1.31923997402,36.9277992249],[30.12190055847168,31.40559959411621, 25.2527999878,55.3643989563],[30.12190055847168,31.40559959411621, 41.8002778,12.2388889],[28.566499710083008,77.10310363769531,	7.180759906768799,79.88410186767578],[28.566499710083008,77.10310363769531,	40.080101013183594,116.58499908447266],[28.566499710083008,77.10310363769531,	25.2527999878,55.3643989563],[-33.9648017883,18.6016998291, -1.31923997402,36.9277992249],[-1.31923997402,36.9277992249, 25.2527999878,55.3643989563],[41.8002778,12.2388889, 51.4706,-0.461941],[41.8002778,12.2388889, 40.471926,-3.56264],[19.4363,-99.072098,25.79319953918457,-80.29060363769531],[19.4363,-99.072098,33.94250107,-118.4079971],[19.4363,-99.072098,-12.0219,-77.114304],[-12.0219,-77.114304,	-33.393001556396484,-70.78579711914062],[-12.0219,-77.114304, -34.8222,-58.5358],[-12.0219,-77.114304, -22.910499572799996,-43.1631011963],[-34.8222,-58.5358, -33.393001556396484,-70.78579711914062],[-34.8222,-58.5358, -22.910499572799996,-43.1631011963],[22.3089008331,113.915000916, 13.681099891662598,100.74700164794922],[22.3089008331,113.915000916, 40.080101013183594,116.58499908447266],[22.3089008331,113.915000916, 31.143400192260742,121.80500030517578],[35.552299,139.779999, 40.080101013183594,116.58499908447266],[35.552299,139.779999, 31.143400192260742,121.80500030517578],[33.94250107,-118.4079971,	40.63980103,-73.77890015],[33.94250107,-118.4079971,	25.79319953918457,-80.29060363769531],[33.94250107,-118.4079971,	49.193901062,-123.183998108],[40.63980103,-73.77890015, 25.79319953918457,-80.29060363769531],[40.63980103,-73.77890015, 51.4706,-0.461941],[51.4706,-0.461941, 40.471926,-3.56264],[40.080101013183594,116.58499908447266,	31.143400192260742,121.80500030517578],[-33.94609832763672,151.177001953125,	-41.3272018433,174.804992676],[-33.94609832763672,151.177001953125,	-6.1255698204,106.65599823],[55.5914993286,37.2615013123, 59.651901245117,17.918600082397],[55.5914993286,37.2615013123, 41.8002778,12.2388889],[55.5914993286,37.2615013123, 40.080101013183594,116.58499908447266],[55.5914993286,37.2615013123, 25.2527999878,55.3643989563],];</script></head><body><div id='myearth'><div id='glow'></div></div></body></html>";
+  str = `
+
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="stylesheet" href="hologram/style.css" />
+        <script src="../miniature.earth.js"></script>
+        <style>
+          .arrow-tip {
+            background-color: #33cc33;
+            color: white;
+            padding: 0.5em 0.75em 0.5em 1.75em;
+            font-size: 1.5em;
+            clip-path: polygon(
+              1.25em 0,
+              100% 0,
+              100% 50%,
+              100% 100%,
+              1.25em 100%,
+              0 50%
+            );
+            transition: clip-path 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+            transform: translate(0, -50%);
+          }
+          .earth-overlay-left > .arrow-tip {
+            padding: 0.5em 1.75em 0.5em 0.75em;
+            clip-path: polygon(
+              0% 0%,
+              calc(100% - 1.25em) 0%,
+              100% 50%,
+              calc(100% - 1.25em) 100%,
+              0% 100%,
+              0% 50%
+            );
+            transform: translate(-100%, -50%);
+          }
+        </style>
+        <script>
+          var myearth;
+          var sprites = [];
+          window.addEventListener("load", function () {
+            myearth = new Earth(
+              "myearth",
+              {
+                location: {
+                  lat: 20,
+                  lng: 20,
+                },
+                light: "none",
+                mapImage: "hologram/hologram-map.svg",
+                zoomable: true,
+                transparent: false,
+                autoRotate: true,
+                autoRotateSpeed: 1.0,
+                autoRotateDelay: 100,
+                autoRotateStart: 2000,
+              },
+              {
+                passive: true,
+              }
+            );
+            myearth.addEventListener(
+              "ready",
+              function () {
+                this.startAutoRotate();
+                var line = {
+                  color: "#009CFF",
+                  opacity: 0.01,
+                  hairline: true,
+                  offset: -0.5,
+                };
+                for (var i in connections) {
+                  line.locations = [
+                    {
+                      lat: connections[i][0],
+                      lng: connections[i][1],
+                    },
+                    {
+                      lat: connections[i][2],
+                      lng: connections[i][3],
+                    },
+                  ];
+                  this.addLine(line);
+                }
+    
+                yyyy;
+    
+                for (var i = 0; i < 8; i++) {
+                  sprites[i] = this.addSprite({
+                    image: "hologram/hologram-shine.svg",
+                    scale: 0.01,
+                    offset: -0.5,
+                    opacity: 0.5,
+                  });
+    
+                  xxxxxx;
+    
+                  pulse(i);
+                }
+              },
+              {
+                passive: true,
+              }
+            );
+          });
+    
+          function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min;
+          }
+          function goTo(coords) {
+            myearth.goTo(
+              { 
+                lat :coords.LATITUDE, 
+                lng :coords.LONGITUDE
+              }, 
+              { 
+                duration: 500 
+              } 
+            );
+          };
+          function pulse(index) {
+            var random_location =
+              connections[getRandomInt(0, connections.length - 1)];
+            sprites[index].location = {
+              lat: random_location[0],
+              lng: random_location[1],
+            };
+            sprites[index].animate("scale", 0.5, {
+              duration: 320,
+              complete: function () {
+                this.animate("scale", 0.01, {
+                  duration: 320,
+                  complete: function () {
+                    setTimeout(function () {
+                      pulse(index);
+                    }, getRandomInt(100, 400));
+                  },
+                });
+              },
+            });
+          }
+          var connections = [
+            [59.651901245117, 17.918600082397, 41.8002778, 12.2388889],
+            [59.651901245117, 17.918600082397, 51.4706, -0.461941],
+            [13.681099891662598, 100.74700164794922, -6.1255698204, 106.65599823],
+            [
+              13.681099891662598, 100.74700164794922, 28.566499710083008,
+              77.10310363769531,
+            ],
+            [30.12190055847168, 31.40559959411621, -1.31923997402, 36.9277992249],
+            [30.12190055847168, 31.40559959411621, 25.2527999878, 55.3643989563],
+            [30.12190055847168, 31.40559959411621, 41.8002778, 12.2388889],
+            [
+              28.566499710083008, 77.10310363769531, 7.180759906768799,
+              79.88410186767578,
+            ],
+            [
+              28.566499710083008, 77.10310363769531, 40.080101013183594,
+              116.58499908447266,
+            ],
+            [28.566499710083008, 77.10310363769531, 25.2527999878, 55.3643989563],
+            [-33.9648017883, 18.6016998291, -1.31923997402, 36.9277992249],
+            [-1.31923997402, 36.9277992249, 25.2527999878, 55.3643989563],
+            [41.8002778, 12.2388889, 51.4706, -0.461941],
+            [41.8002778, 12.2388889, 40.471926, -3.56264],
+            [19.4363, -99.072098, 25.79319953918457, -80.29060363769531],
+            [19.4363, -99.072098, 33.94250107, -118.4079971],
+            [19.4363, -99.072098, -12.0219, -77.114304],
+            [-12.0219, -77.114304, -33.393001556396484, -70.78579711914062],
+            [-12.0219, -77.114304, -34.8222, -58.5358],
+            [-12.0219, -77.114304, -22.910499572799996, -43.1631011963],
+            [-34.8222, -58.5358, -33.393001556396484, -70.78579711914062],
+            [-34.8222, -58.5358, -22.910499572799996, -43.1631011963],
+            [22.3089008331, 113.915000916, 13.681099891662598, 100.74700164794922],
+            [22.3089008331, 113.915000916, 40.080101013183594, 116.58499908447266],
+            [22.3089008331, 113.915000916, 31.143400192260742, 121.80500030517578],
+            [35.552299, 139.779999, 40.080101013183594, 116.58499908447266],
+            [35.552299, 139.779999, 31.143400192260742, 121.80500030517578],
+            [33.94250107, -118.4079971, 40.63980103, -73.77890015],
+            [33.94250107, -118.4079971, 25.79319953918457, -80.29060363769531],
+            [33.94250107, -118.4079971, 49.193901062, -123.183998108],
+            [40.63980103, -73.77890015, 25.79319953918457, -80.29060363769531],
+            [40.63980103, -73.77890015, 51.4706, -0.461941],
+            [51.4706, -0.461941, 40.471926, -3.56264],
+            [
+              40.080101013183594, 116.58499908447266, 31.143400192260742,
+              121.80500030517578,
+            ],
+            [-33.94609832763672, 151.177001953125, -41.3272018433, 174.804992676],
+            [-33.94609832763672, 151.177001953125, -6.1255698204, 106.65599823],
+            [55.5914993286, 37.2615013123, 59.651901245117, 17.918600082397],
+            [55.5914993286, 37.2615013123, 41.8002778, 12.2388889],
+            [55.5914993286, 37.2615013123, 40.080101013183594, 116.58499908447266],
+            [55.5914993286, 37.2615013123, 25.2527999878, 55.3643989563],
+          ];
+        </script>
+      </head>
+      <body>
+        <div id="myearth">
+          <div id="glow"></div>
+        </div>
+      </body>
+    </html>    
+
+    `;
+
+  trackByFn(index: number, collection: Collection) {
+    return collection.contract;
+  }
 
   routeToProduct(product: NFT) {
-    
     this.rootComponent.routeToProduct(product.docID ?? '');
   }
 
-  switchToSubscription(plan: Plan) {
-    this.renewSubscription(plan)
-  }
+  editPlan() {
+    const modalRef = this.dialog.open(EditPlanComponent, {
+      width: '750px',
+      height: '750px',
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      panelClass: 'app-full-bleed-sm-dialog',
+      data: {
+        plans: this.plans,
+        subInfo: this.subInfo,
+      },
+    });
 
-  cancelSubscription(plan: Plan) {
-    this.spinner.show('adminSpinner')
-    this.loadService.stopSubscription(plan, (id: any) => {
-      this.subInfo = id
-      this.spinner.hide('adminSpinner')
-      this.toast('Plan Cancelled!')
-    })
-  }
-
-  renewSubscription(plan: Plan) {
-    this.spinner.show('adminSpinner')
-    this.loadService.reactivateSubscription(plan, (id: any, err?: string) => {
-      this.subInfo = id
-      this.spinner.hide('adminSpinner')
-      this.toast('Plan Updated!')
-      // if (err && err != ''){
-      //   this.err = err!
-      // }
-      // else{
-      //   this.subInfo = id
-      //   this.done()
-      // }
-    })
-  }
-
-  startSubscription(plan: Plan) {
-    // if (Globals.billingInfo?.number && Globals.billingInfo?.number != ""){
-    var sec = 0;
-    var ind = 0;
-
-    if (this.getSelectedPanel().Title != 'PLAN') {
-      this.panels.forEach((panel, section) => {
-        panel.Options.forEach((option, index) => {
-          if (option.Title == 'PLAN') {
-            sec = section;
-            ind = index;
-          }
-        });
-      });
-      this.selectSetting(ind, sec);
-    }
-
-    this.spinner.show('adminSpinner')
-
-    this.loadService.startSubscription(plan, (id: any, err?: string) => {
-      this.subInfo = id ?? ''
-      this.toast('Plan Started!')
-      this.spinner.hide('adminSpinner')
-    })
-
-    // const modalRef = this.modalService.open(EditPlanComponent, { size: 'lg' });
-    // modalRef.componentInstance.canTrial = this.canTrial;
-
-    // let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
-    //   sub.unsubscribe();
-    //   if (subInfo) {
-    //     this.subInfo = subInfo ?? '';
-    //   }
-    // });
-
-
-    // }
-    // else{
-    //   var sec = 0
-    //   var ind = 0
-    //   this.panels.forEach((panel, section) => {
-    //     panel.Options.forEach((option, index) => {
-    //       if (option.Title == 'BILLING'){
-    //         sec = section
-    //         ind = index
-    //         return
-    //       }
-    //     });
-    //   });
-    //   this.selectSetting(ind, sec)
-    // }
-  }
-
-  editSubscription(subInfo: any) {
-    const modalRef = this.modalService.open(EditPlanComponent, { size: 'lg' });
-    modalRef.componentInstance.subInfo = subInfo;
-
-    let sub = modalRef.dismissed.subscribe((subInfo?: any) => {
+    let sub = modalRef.afterClosed().subscribe((subInfo?: any) => {
       sub.unsubscribe();
       if (subInfo) {
         this.subInfo = subInfo ?? '';
+        this.toast('Plan Updated!');
       }
     });
   }
 
-  get thredMarketplace(){
-    return thredMarketplace
-  }
-
-  syncProduct(nft: NFT){
-    // if (nft.marketAddress == 'loading'){
-    //   return
-    // }
-    // nft.marketAddress = 'loading'
-    // this.loadService.syncNFT(success => {
-    //   nft.marketAddress = thredMarketplace
-    // })
-  }
-
   async callback() {
-    
     if (this.storeInfo?.username) {
-      this.showSpinner(500);
-      this.mainLoad = true
+      this.mainLoad = true;
       this.rootComponent.setOptions();
       this.rootComponent.setFavIcon(
         this.storeInfo?.profileLink?.toString() ?? ''
@@ -3203,48 +2301,12 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         this.storeInfo?.bio ?? 'Check out my Thred Store!',
         'shopmythred.com/' + this.storeInfo?.username
       );
+      // this.loadService.logView()
 
       if (isPlatformBrowser(this.platformID)) {
         if (this.signedIn) {
-
-          // else if (Globals.selectedCurrency == undefined) {
-          //   this.loadService.getCountries();
-          // } 
-          if (Globals.themes == undefined) {
-            this.loadService.getThemes();
-          }
-          // } else if (
-          //   Globals.templates.length == 0 &&
-          //   isPlatformBrowser(this.platformID)
-          // ) {
-          //   this.loadService.getTemplates();
-          // }
-          if (Globals.billingInfo == undefined) {
-            this.loadService.getAllBillingInfo();
-          } 
-          else {
-            this.inventory?.forEach((inv) => {
-              if (!inv.isCustom) {
-                let name = Globals.templates.filter((obj) => {
-                  return obj.productCode == inv.code;
-                })[0]?.templateDisplayName;
-                inv.name = name;
-              }
-            });
-            // if (!this.provider && !this.needsLogin){
-              // this.routingService.routeToProfile(this.getStoreName().link, this.getStoreName().isCustom)              
-              // let signer = await this.provider?.getSigner()
-              // let balance = await signer?.getBalance()
-            // }
-            this.hideSpinner();
-            this.setForm();
-            this.showWelcomeModal();
-            // this.cdr.detectChanges();
-
-          }
-        } else {
-          this.spinner.hide('adminSpinner');
-          this.rootComponent.accountPressed(1, true);
+          this.setForm();
+          this.showWelcomeModal();
         }
       }
     } else {
@@ -3252,27 +2314,41 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  providerName(){
-    if (Globals.provider){
-      return 'CONNECTED'
+  scrollToLocation(val?: string) {
+    let locPipe = new LocationPipe();
+
+    let locs = locPipe.transform(this.views, val);
+
+    if (locs.length > 0) {
+      let loc = locs[0];
+      let coords = loc.coords;
+
+      let frame = (document.getElementById('earthFrame') as HTMLIFrameElement)
+        ?.contentWindow as any;
+
+      frame.goTo(coords);
     }
-    return 'CONNECT WALLET'
   }
 
-  async setProvider(){
-    await Globals.checkProvider()
+  providerName() {
+    if (Globals.provider) {
+      return 'CONNECTED';
+    }
+    return 'CONNECT WALLET';
   }
 
-  get provider(){
-    return Globals.provider
+  async setProvider() {
+    await Globals.checkProvider();
   }
 
+  get provider() {
+    return Globals.provider;
+  }
 
   planStatus() {
     if (this.subInfo?.plan.id == 'price_1KrbIjIdY1nzc70NYFEfX1OV') {
       return 'Thred Core Plan';
-    }
-    else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy'){
+    } else if (this.subInfo.plan.id == 'price_1KfTcTIdY1nzc70NJcgzPZCy') {
       return 'Thred Store Builder Plan';
     }
     return '';
@@ -3282,135 +2358,33 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     return new Date(this.subInfo.current_period_end * 1000).toDateString();
   }
 
-  billingInfo() {
-    return Globals.billingInfo;
-  }
-
-  orderTotal(order: Order) {
-    return this.numberWithCommas(
-      this.formatPrice(this.total(order), false, order)
-    );
-  }
-
-  orderLoaded() {
-    return !this.orders?.find((o) => o.products?.length == 0);
-  }
-
-  orderSlice() {
-    return this.orders?.slice(0, 4) ?? [];
-  }
-
-  orderCount() {
-    return (
-      this.orders?.filter((o) => {
-        return o.status == 'confirmed' || o.status == 'completed';
-      }).length ?? 0
-    );
-  }
-
-  total(order: Order) {
-    var total = 0;
-
-    order.products.forEach((product) => {
-      total += (product.product?.price ?? 0) * (product.quantity ?? 1);
-    });
-    return total / 100;
-  }
-
-  numberWithCommas(x: string) {
-    return x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-
-  beginBankAdd() {
-    this.spinner.show('adminSpinner');
-    this.loadService.beginBankAdd((urlLink: string) => {
-      const link = document.createElement('a');
-      link.target = '_blank';
-
-      let url: string = '';
-      if (!/^http[s]?:\/\//.test(urlLink)) {
-        url += 'http://';
-      }
-
-      url += urlLink;
-
-      link.href = url;
-      window.open(urlLink, '_self');
-    });
+  planEndDate() {
+    return new Date(this.subInfo.cancel_at * 1000).toDateString();
   }
 
   routeToBillingAdmin() {
-    this.rootComponent.routeToBillingAdmin();
-  }
-
-  viewAllOrders() {
-    const modalRef = this.dialog.open(ViewAllOrderAdminComponent, {
-      width: '800px',
+    const modalRef = this.dialog.open(BillingAdminComponent, {
+      width: '750px',
+      height: '650px',
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      panelClass: 'app-full-bleed-sm-dialog',
       data: {
-        orders: this.orders ?? [],
+        billingInfo: this.billingInfo,
       },
-      panelClass: 'app-full-bleed-dialog',
     });
-
-    let sub = modalRef.afterClosed().subscribe((order) => {
+    let sub = modalRef.afterClosed().subscribe((resp) => {
       sub.unsubscribe();
-      if (order as Order) {
-        this.viewOrder(order);
+      if (resp) {
+        let col = resp as BillingInfo;
+        this.billingInfo = col;
+        this.cdr.detectChanges();
       }
-    });
-  }
-
-  viewOrder(order: Order) {
-    const modalRef = this.dialog.open(ViewOrderAdminComponent, {
-      width: '100vw',
-      data: {
-        order: order,
-      },
-      panelClass: 'app-full-bleed-dialog',
-    });
-
-    let sub = modalRef.afterClosed().subscribe((popup) => {
-      // console.log('The dialog was closed');
-      // sub.unsubscribe()
-      // if (popup && popup != '0'){
-      //   this.loadService.addPopup(popup, success => {
-      //     if (success){
-      //       this.toast("Popup Saved!")
-      //     }
-      //   }, this.storeInfo?.uid)
-      // }
     });
   }
 
   orders?: Array<Order>;
   displayedColumns: string[] = ['name', 'value', 'status', 'action'];
-
-  matchingElem(order: Order) {
-    if (order.status == 'confirmed' || order.status == 'completed') {
-      return {
-        color: 'info',
-        icon: 'credit_card',
-        text: 'CONFIRMED',
-      };
-    } else if (order.status == 'cancelled') {
-      return {
-        color: 'secondary',
-        icon: 'cancel',
-        text: 'CANCELLED',
-      };
-    }
-    return {
-      color: 'success',
-      icon: 'local_shipping',
-      text: 'SHIPPED',
-    };
-  }
-
-  plans: Plan[] = [
-    new Plan('THRED CORE PLAN', 'core', 'price_1KrbIjIdY1nzc70NYFEfX1OV', 4999, 'gradient', 'info', true),
-    // new Plan('THRED CORE PLAN', 'core', 'price_1KXUw3IdY1nzc70N22t0gNoN', 9700, 'gradient', 'info', true),
-    // new Plan('THRED METAVERSE PLAN', 'metaverse', 'price_1KgkOkIdY1nzc70NIdKF1fXi', 19900, 'gradient2', 'warning', true)
-  ]
 
   async init() {
     if (isPlatformBrowser(this.platformID)) {
@@ -3419,14 +2393,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       let isAnon = user?.isAnonymous ?? false;
 
       this.signedIn = uid != undefined && !isAnon;
-
-      if (!this.bankInfo) {
-        this.loadService.getBankInfo(async (bankInfo: any) => {
-          this.bankInfo =
-            bankInfo && bankInfo?.payouts_enabled == true ? bankInfo : '';
-          this.cdr.detectChanges();
-        });
-      }
       if (!this.subInfo) {
         this.loadService.getSubInfo(
           async (subInfo: any, canTrial?: boolean) => {
@@ -3439,81 +2405,88 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         );
       }
       if (!this.collections) {
-        this.loadService.getPosts(cols => {
-          if (!this.collections) {
-            this.collections = cols ?? [];
+        this.loadService.getPosts(
+          (cols) => {
+            if (!this.collections) {
+              this.collections = cols ?? [];
+            }
+            this.cdr.detectChanges();
+          },
+          undefined,
+          undefined,
+          uid
+        );
+      }
+      if (!this.plans) {
+        this.loadService.getPlans(async (plans?: Array<Plan>) => {
+          if (!this.plans) {
+            this.plans = plans ?? [];
           }
           this.cdr.detectChanges();
-        }, undefined, undefined, uid)
+        });
       }
-      if (!this.orders) {
-        this.loadService.getAllOrders(async (arr: Array<Order>) => {
-          this.orders = arr ?? [];
+      if (!this.views) {
+        this.loadService.getMiscStats(user?.uid!, (views) => {
+          this.views = views ?? [];
+        });
+        // let data = [
+        //   {
+        //     name: 'Store Views',
+        //     series: Globals.views,
+        //   },
+        // ];
+      }
+      if (!this.bigcommerceMetadata) {
+        this.loadService.getBigCommerceStore((info) => {
+          this.bigcommerceMetadata = info ?? null;
+          console.log(info);
+          if (info.logo.url) {
+            Globals.storeInfo.profileLink = new URL(info.logo.url);
+          }
+          Globals.storeInfo.customURL = new StoreDomain(
+            info.domain,
+            'https',
+            2,
+            ''
+          );
+          this.cdr.detectChanges();
+        });
+      }
+      if (!this.billingInfo) {
+        this.loadService.getBillingInfo(async (billingInfo?: any) => {
+          if (billingInfo) {
+            this.billingInfo = new BillingInfo(
+              billingInfo.billing_details.name,
+              undefined,
+              billingInfo.card.last4,
+              billingInfo.card.brand,
+              billingInfo.billing_details.address.line1,
+              billingInfo.billing_details.address.city,
+              billingInfo.billing_details.address.country,
+              billingInfo.billing_details.address.state,
+              billingInfo.billing_details.address.line2,
+              billingInfo.billing_details.address.postal_code,
+              billingInfo.card.country
+            );
+          } else {
+            this.billingInfo = null;
+          }
+          this.cdr.detectChanges();
+        });
+      }
+      if (!this.utilities) {
+        this.loadService.getUtilities(async (utils?: Array<any>) => {
+          if (!this.utilities) {
+            this.utilities = utils ?? [];
+          }
+          this.cdr.detectChanges();
+        });
+      }
 
-          this.orderTable?.renderRows();
-          this.cdr.detectChanges();
-        });
-      }
-      if (!this.emailSubs) {
-        this.loadService.getEmailSubs(uid, async (arr: Array<Dict<any>>) => {
-          this.emailSubs =
-            (arr as Array<{
-              email: string;
-              name: string;
-              timestamp: string;
-            }>) ?? [];
-          this.addSubs();
-          this.cdr.detectChanges();
-        });
-      }
-      if (!this.phoneSubs) {
-        this.loadService.getNumSubs(uid, async (arr: Array<Dict<any>>) => {
-          this.phoneSubs =
-            (arr as Array<{
-              phone: string;
-              name: string;
-              timestamp: string;
-            }>) ?? [];
-          this.addSubs();
-          this.cdr.detectChanges();
-        });
-      }
-      if (!this.inventory) {
-        this.getInventory();
-      }
       this.router.queryParams.subscribe((params) => {
         let selected = params.selected as string;
 
         let s = selected?.toUpperCase();
-
-        var sec = 0;
-        var ind = 0;
-
-        if (selected == undefined) {
-          if (
-            this.panels.filter((panel) => {
-              return (
-                panel.Options.filter((option) => {
-                  return option.Active;
-                }).length > 0
-              );
-            }).length == 0
-          ) {
-            this.selectSetting(ind, sec);
-          }
-        }
-        this.panels.forEach((panel, section) => {
-          panel.Options.forEach((option, index) => {
-            if (option.Title == s) {
-              sec = section;
-              ind = index;
-              return;
-            }
-          });
-        });
-        if (selected != undefined) {
-          this.selectSetting(ind, sec);
-        }
       });
     }
 
@@ -3536,10 +2509,13 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   downloadAllStoreInfo(storeName: string, isCustom = false) {
-    this.loadService.getUser(storeName, undefined, isCustom, store => {
-      this.loadService.myCallback = () => this.callback()
-      this.callback()
+    this.loadService.getUser(storeName, undefined, isCustom, (store) => {
+      this.callback();
     });
+  }
+
+  plan(id: string) {
+    return this.plans!.find((p) => p.id == id);
   }
 
   getStoreName() {
@@ -3549,11 +2525,15 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     } else {
       request = globalThis.location.host;
     }
-    if (request != 'localhost:4200' && request != 'shopmythred.com') {
-      return {
-        isCustom: true,
-        link: request,
-      };
+    if (
+      request != 'localhost:4200' &&
+      request != Globals.ngrokId &&
+      request != 'shopmythred.com'
+    ) {
+      // return {
+      //   isCustom: true,
+      //   link: request,
+      // };
     }
     const routeParams = this.router.snapshot.paramMap;
     const storeID = routeParams.get('user') as string;
@@ -3577,32 +2557,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     // );
   }
 
-  openPopup(
-    title: string,
-    message: string,
-    img: string,
-    yesBtn = 'Yes',
-    noBtn = 'No',
-    callback: () => any
-  ) {
-    const modalRef = this.modalService.open(PopupDialogComponent, {
-      size: 'sm',
-      centered: true,
-    });
-    modalRef.componentInstance.yesBtn = yesBtn;
-    modalRef.componentInstance.noBtn = noBtn;
-    modalRef.componentInstance.message = message;
-    modalRef.componentInstance.title = title;
-    modalRef.componentInstance.img = img;
-
-    let sub = modalRef.dismissed.subscribe((resp: any) => {
-      sub.unsubscribe();
-      if (resp.Success) {
-        callback();
-      }
-    });
-  }
-
   editProduct(product: NFT) {
     // let same =
     //   this.templates().find((temp) => {
@@ -3612,7 +2566,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     //   same?.colors.find((co) => {
     //     return co.code == product.templateColor;
     //   }) ?? null;
-
     // var data: Dict<any> = {
     //   linkImg: product.url,
     //   back_linkImg: undefined,
@@ -3647,8 +2600,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   productDetailsMode = false;
   productDetails: any;
 
-  createNewNFT(contract: Collection) {
+  createNewNFT(selected: any) {
     // if (!this.isSignedIn()){ return }
+    selected.utils = this.utilities ?? [];
     const modalRef = this.dialog.open(CreateCryptoComponent, {
       width: '97.5vw',
       height: '97.5vh',
@@ -3656,10 +2610,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       maxWidth: '100vw',
       panelClass: 'app-full-bleed-sm-dialog',
 
-      data: {
-        provider: this.provider,
-        contract: contract
-      },
+      data: selected,
     });
 
     // const modalRef = this.dialog.open(DesignComponent, {
@@ -3672,18 +2623,23 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     //   },
     // });
 
-    let sub = modalRef.afterClosed().subscribe(resp => {
-      sub.unsubscribe()
-      if (resp){
-        let col = resp as NFT
+    let sub = modalRef.afterClosed().subscribe((resp) => {
+      sub.unsubscribe();
+      console.log(resp);
+      if (resp) {
+        let col = resp as NFT;
 
-        let same = this.collections?.find(c => c.contract == contract.contract)
-        same!.NFTs[col.docID!] = col
-        same!.collectionCount! += 1
+        let same = this.collections?.findIndex(
+          (c) => c.contract == col.address
+        );
+        this.collections![same!].NFTs[col.docID!] = col;
+        this.collections![same!].collectionCount! += 1;
 
-        this.cdr.detectChanges()
+        console.log(this.collections);
 
-        this.toast('NFT Created!')
+        this.cdr.detectChanges();
+
+        this.toast('NFT Created!');
       }
       // if (resp == 2){
       //   this.newInventory()
@@ -3712,7 +2668,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       panelClass: 'app-full-bleed-sm-dialog',
 
       data: {
-        provider: this.provider
+        provider: this.provider,
       },
     });
 
@@ -3726,13 +2682,18 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     //   },
     // });
 
-    let sub = modalRef.afterClosed().subscribe(resp => {
-      sub.unsubscribe()
-      if (resp){
-        let col = resp as Collection
-        this.collections?.push(col)
-        this.toast('Collection Created!')
-        this.cdr.detectChanges()
+    let sub = modalRef.afterClosed().subscribe((resp) => {
+      sub.unsubscribe();
+      if (resp) {
+        let col = resp.collection as Collection;
+        let generate = resp.generate as boolean;
+        this.collections?.push(col);
+        this.toast('Collection Created!');
+        // if (generate){
+        //   let page = new Page(col.name.toLowerCase().replace(" ", ''), col.name, undefined, )
+        //   this.storeInfo?.pages.push
+        // }
+        this.cdr.detectChanges();
       }
       // if (resp == 2){
       //   this.newInventory()
@@ -3769,11 +2730,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   routeToHome() {
     this.rootComponent.routeToHome();
-  }
-
-  signOutPressed() {
-    this.loadService.myCallback = () => this.routeToHome();
-    this.loadService.signOut();
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string) {

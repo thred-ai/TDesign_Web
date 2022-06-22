@@ -64,7 +64,7 @@ export class NftAdminUpdateComponent implements OnInit {
         Number(ethers.utils.formatEther(this.nft?.price))
       );
     }
-    this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
+    // this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
 
     console.log(this.nft);
   }
@@ -131,123 +131,123 @@ export class NftAdminUpdateComponent implements OnInit {
   err = '';
 
   async save() {
-    if (this.nftForm.valid) {
-        // this.laodService.getWalletInfo(async (signer?: ethers.Wallet) => {
+    // if (this.nftForm.valid) {
+    //     // this.laodService.getWalletInfo(async (signer?: ethers.Wallet) => {
 
 
-          if (window.ethereum && typeof window.ethereum == 'object') {
-            this.provider = new ethers.providers.Web3Provider(
-              window.ethereum,
-              'any'
-            );
-            Globals.provider = this.provider;
-          }
-          if (!this.provider?.getSigner()) {
-            try {
-              await Globals.checkProvider();
-              this.provider = Globals.provider;
-            } catch (error) {
-              this.err = 'No Wallet Connected. Please try again';
-              return;
-            }
-          }
-          if (!(await (this.laodService.networkCheck() ?? false))) {
-            this.err = 'Please switch your Network to the Polygon Mainnet';
-            return;
-          }
+    //       if (window.ethereum && typeof window.ethereum == 'object') {
+    //         this.provider = new ethers.providers.Web3Provider(
+    //           window.ethereum,
+    //           'any'
+    //         );
+    //         Globals.provider = this.provider;
+    //       }
+    //       if (!this.provider?.getSigner()) {
+    //         try {
+    //           await Globals.checkProvider();
+    //           this.provider = Globals.provider;
+    //         } catch (error) {
+    //           this.err = 'No Wallet Connected. Please try again';
+    //           return;
+    //         }
+    //       }
+    //       if (!(await (this.laodService.networkCheck() ?? false))) {
+    //         this.err = 'Please switch your Network to the Polygon Mainnet';
+    //         return;
+    //       }
     
-          let signer = this.provider?.getSigner();
+    //       let signer = this.provider?.getSigner();
     
-          let address = (await signer?.getAddress()) ?? '';
-          if (
-            address?.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
-          ) {
-            this.err = 'Wrong Wallet';
-            return;
-          }
+    //       let address = (await signer?.getAddress()) ?? '';
+    //       if (
+    //         address?.toLowerCase() != Globals.storeInfo?.walletAddress?.toLowerCase()
+    //       ) {
+    //         this.err = 'Wrong Wallet';
+    //         return;
+    //       }
 
 
 
-          let cost = this.nftForm.controls.price.value as number;
-          let forSale = this.nftForm.controls.isListed.value as boolean;
+    //       let cost = this.nftForm.controls.price.value as number;
+    //       let forSale = this.nftForm.controls.isListed.value as boolean;
 
-          this.isLoading = true;
+    //       this.isLoading = true;
 
-          const price = ethers.utils.parseUnits(cost.toString(), 'ether');
+    //       const price = ethers.utils.parseUnits(cost.toString(), 'ether');
 
-          const gasPrice = await signer?.provider.getGasPrice();
+    //       const gasPrice = await signer?.provider.getGasPrice();
 
-          // const options = {
-          //   gasPrice: gasPrice,
-          //   gasLimit: 500000,
-          // };
+    //       // const options = {
+    //       //   gasPrice: gasPrice,
+    //       //   gasLimit: 500000,
+    //       // };
 
-          try {
-            if (
-              this.collection == undefined ||
-              this.nft == undefined ||
-              this.nft?.tokenID == undefined ||
-              this.nft?.metadata == undefined ||
-              this.nft?.royalty == undefined
-            ) {
-              this.isLoading = false;
-              return;
-            }
-            let contract = new ethers.Contract(
-              thredMarketplace,
-              THRED_MARKET.abi,
-              signer
-            );
-            let condition = this.nft?.lazyMint && this.nft?.lazyHash;
+    //       try {
+    //         if (
+    //           this.collection == undefined ||
+    //           this.nft == undefined ||
+    //           this.nft?.tokenID == undefined ||
+    //           this.nft?.metadata == undefined ||
+    //           this.nft?.royalty == undefined
+    //         ) {
+    //           this.isLoading = false;
+    //           return;
+    //         }
+    //         let contract = new ethers.Contract(
+    //           thredMarketplace,
+    //           THRED_MARKET.abi,
+    //           signer
+    //         );
+    //         let condition = this.nft?.lazyMint && this.nft?.lazyHash;
 
-            switch (condition) {
-              // @ts-ignore
-              case false:
-                let t = await contract.updateItem(
-                  this.nft?.itemId,
-                  0,
-                  forSale,
-                  price,
-                  // options
-                );
-                await t.wait();
-              default:
-                const lazyMinter = new LazyMinter(
-                  contract,
-                  signer!,
-                  'THRED-NFT'
-                );
-                const voucher = await lazyMinter.createVoucher(
-                  this.nft?.tokenID,
-                  this.nft?.metadata,
-                  this.nft?.royalty,
-                  price,
-                  this.collection.customTokenCheck() == undefined
-                );
-                this.nft.lazyHash = voucher;
-                this.nft.forSale = forSale;
-                this.nft.price = price;
+    //         switch (condition) {
+    //           // @ts-ignore
+    //           case false:
+    //             let t = await contract.updateItem(
+    //               this.nft?.itemId,
+    //               0,
+    //               forSale,
+    //               price,
+    //               // options
+    //             );
+    //             await t.wait();
+    //           default:
+    //             // const lazyMinter = new LazyMinter(
+    //             //   contract,
+    //             //   signer!,
+    //             //   'THRED-NFT'
+    //             // );
+    //             // const voucher = await lazyMinter.createVoucher(
+    //             //   this.nft?.tokenID,
+    //             //   this.nft?.metadata,
+    //             //   this.nft?.royalty,
+    //             //   price,
+    //             //   this.collection.customTokenCheck() == undefined
+    //             // );
+    //             // this.nft.lazyHash = voucher;
+    //             // this.nft.forSale = forSale;
+    //             // this.nft.price = price;
 
-                await this.laodService.updateNFT(
-                  this.nft,
-                  Globals.storeInfo?.uid,
-                  this.nft?.docID
-                );
-            }
-            this.dialogRef.close(this.nft);
-          } catch (error) {
-            let data = (error as any).data;
-            console.log(error);
-            if (data && data.code == -32000) {
-              this.err = 'Not enough MATIC' + ' in wallet!';
-            } else {
-              this.err = 'Something went wrong, please try again.';
-            }
-          }
-          this.isLoading = false;
-        // });
-    } else {
-    }
+    //             // await this.laodService.updateNFT(
+    //             //   this.nft,
+    //             //   Globals.storeInfo?.uid,
+    //             //   this.nft?.docID
+    //             // );
+    //         }
+    //         this.dialogRef.close(this.nft);
+    //       } catch (error) {
+    //         let data = (error as any).data;
+    //         console.log(error);
+    //         if (data && data.code == -32000) {
+    //           this.err = 'Not enough MATIC' + ' in wallet!';
+    //         } else {
+    //           this.err = 'Something went wrong, please try again.';
+    //         }
+    //       }
+    //       this.isLoading = false;
+    //     // });
+    // } else {
+    // }
   }
 
   selectedIndicator() {

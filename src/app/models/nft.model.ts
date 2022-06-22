@@ -3,80 +3,68 @@ import { erc721Merchant, thredMarketplace } from 'config';
 import { ethers } from 'ethers';
 
 export class NFT {
-  tokenID?: number;
-  contractID: string;
-  owner: string;
-  seller: string;
-  sold: boolean;
-  lazyMint?: boolean;
-  format?: string;
-  royalty?: number = 0;
-  lazyHash?: Dict<any>;
-  metadata?: string;
-  url?: string;
-  linkUrl?: string = ''
-  price: ethers.BigNumber = ethers.utils.parseUnits('0', 'ether');
-  marketAddress?: string
-  storeImg?: string = '';
-
-  get priceNum() {
-    let x = ethers.utils.formatUnits(this.price, 'ether');
-    return Number(x);
-  }
+  name: string;
+  description: string;
+  url: string;
+  img: string;
+  assetUrl: string;
+  skybox: string;
+  tokenId: number;
+  info: Dict<any>[];
+  uid: string;
+  address: string;
+  royalty: number = 0;
+  price: number;
+  status?: number = 0;
+  docID: string;
+  utility: number[] = [];
 
   get hashedAddress() {
-    let contractId = this.contractID.substring(2, this.contractID.length)
+    let contractId = this.address.substring(2, this.address.length);
     let zero = ethers.constants.HashZero;
-    return (zero.substring(0, zero.length - contractId.length) + contractId).toLowerCase();
+    return (
+      zero.substring(0, zero.length - contractId.length) + contractId
+    ).toLowerCase();
   }
 
   get hashedTokenId() {
-    let strTokenId = String(this.tokenID);
+    let strTokenId = String(this.tokenId);
     let zero = ethers.constants.HashZero;
 
     return zero.substring(0, zero.length - strTokenId.length) + strTokenId;
   }
 
-  name?: string;
-  description?: string;
-  traits?: Array<Dict<any>> = [];
-  forSale?: boolean = true;
-
-  external_url?: string;
-  isAvailable?: boolean;
-  docID?: string;
-  isNFT?: boolean;
-  itemId?: number;
-  isLoaded?: boolean;
-
   constructor(
-    tokenID?: number,
-    contractID?: string,
-    owner?: string,
-    sold?: boolean,
-    lazyMint?: boolean,
-    format?: string,
-    royalty: number = 0,
-    lazyHash?: Dict<any>,
-    metadata?: string,
-    seller?: string,
-    marketAddress?: string
+    name?: string,
+    description?: string,
+    url?: string,
+    img?: string,
+    assetUrl?: string,
+    skybox?: string,
+    tokenId?: number,
+    info?: Dict<any>[],
+    uid?: string,
+    address?: string,
+    royalty?: number,
+    price?: number,
+    status?: number,
+    docID?: string,
+    utility?: number[]
   ) {
-    this.tokenID = tokenID;
-    this.contractID = contractID ?? erc721Merchant;
-    this.owner = owner ?? '';
-    this.sold = sold ?? false;
-    this.lazyMint = lazyMint ?? true;
-    this.format = format = 'image/jpeg';
+    this.name = name ?? 'NFT';
+    this.description = description ?? ''; // ?? erc721Merchant;
     this.royalty = royalty ?? 0;
-    this.lazyHash = lazyHash;
-    this.metadata = metadata;
-    this.seller = seller ?? '';
-
-    this.isNFT = metadata != undefined;
-
-    this.marketAddress = marketAddress ?? thredMarketplace
-
-    
+    this.url = url ?? '';
+    this.img = img ?? '';
+    this.skybox = skybox ?? '';
+    this.assetUrl = assetUrl ?? '';
+    this.tokenId = tokenId ?? 0;
+    this.info = info ?? [];
+    this.uid = uid ?? '';
+    this.address = address ?? '';
+    this.price = price ?? 0;
+    this.status = status ?? 0;
+    this.docID = docID ?? '';
+    this.utility = utility ?? [];
   }
 }

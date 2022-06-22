@@ -34,7 +34,7 @@ export class StoreCheckerPipe implements PipeTransform {
     else{
       request = globalThis.location.host
     }  
-    if (request != 'localhost:4200' && request != 'shopmythred.com'){
+    if (request != 'localhost:4200' && request != Globals.ngrokId && request != 'shopmythred.com'){
       return {
         isCustom: true,
         link: request

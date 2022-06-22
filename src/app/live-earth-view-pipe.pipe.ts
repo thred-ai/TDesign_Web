@@ -2,49 +2,121 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Dict } from './services/load.service';
 
 @Pipe({
-  name: 'liveEarthViewPipe'
+  name: 'liveEarthViewPipe',
 })
 export class LiveEarthViewPipePipe implements PipeTransform {
-
   transform(value: string, n: Array<Dict<any>>) {
+    var markers: Array<{
+      coords: Dict<number>;
+      address: Dict<string>;
+      views: number;
+      sales: number;
+      productId: string;
+      timestamp: Date;
+    }> = [];
+    n.forEach((p) => {
+      console.log(p);
+      let same = markers?.findIndex(
+        (k) =>
+          p.address.city == k.address.city &&
+          p.address.region == k.address.region &&
+          p.address.country == k.address.country &&
+          p.productId == k.productId
+      );
+      if (same >= 0) {
+        if (p.type == 'SALE') {
+          markers[same].sales += p.num;
+        } else {
+          markers[same].views += p.num;
+        }
+      } else {
+        var views = 0;
+        var sales = 0;
+        if (p.type == 'SALE') {
+          sales += p.num;
+        } else {
+          views += p.num;
+        }
+        markers?.push({
+          coords: p.coords,
+          address: p.address,
+          views: views,
+          sales: sales,
+          productId: p.productId,
+          timestamp: p.timestamp,
+        });
+      }
+    });
+    var mystr = '';
+    markers.forEach((i) => {
+      var color = '';
+      var scale = 0;
 
-    var views: Array<{
-      views: Dict<any>,
-      timestamp: Date,
-    }> = []
-    n.forEach(p => {
-      // p.views = p.views.sort(function(a:any, b:any){
-      //   if(a.timestamp < b.timestamp) { return 1; }
-      //   if(a.timestamp > b.timestamp) { return -1; }
-      //   return 0;
-      // })
-      if (views?.find(k => p.views.find((h: any) => h.coords.LONGITUDE == k.views.coords.LONGITUDE && h.coords.LATITUDE == k.views.coords.LATITUDE))){
-        let i = views?.findIndex(k => p.views.find((h: any) => h.coords.LONGITUDE == k.views.coords.LONGITUDE && h.coords.LATITUDE == k.views.coords.LATITUDE))
-        if (i >= 0){
-          views[i].views.num += p.views.length
+      if (i.views > 0 && i.sales > 0) {
+        color = '"rgb(255,165,0)"';
+        scale = 0.5;
+      } else {
+        scale = 0.3;
+        if (i.views == 0) {
+          color = '"rgb(48, 184, 48)"';
+        } else {
+          color = '"rgb(184, 48, 48)"';
         }
       }
-      else{
-        views?.push({ 
-          views: {
-            coords: p.views[0].coords,
-            num: p.views.length
+      mystr += `
+      var mymarker = this.addMarker( 
+        {
+          location: { 
+            lat :${i.coords.LATITUDE}, 
+            lng : ${i.coords.LONGITUDE} 
+          },
+          mesh: ['Pin3'],
+          color: ${color},
+          hotspot: true,
+          transparent:true,
+          opacity:1.0,
+          scale: ${scale}
+        } 
+      );
+      mymarker.animate( 'scale', 0.2, { 
+          loop: true, 
+          oscillate: true, 
+          duration: 2000, 
+          easing: 'in-out-quad' 
+        }
+      );
+      mymarker.animate( 'opacity', 0.75, { 
+          loop: true, 
+          oscillate: true, 
+          duration: 2000,
+           easing: 'in-out-quad'
+        } 
+      );
+      mymarker.addEventListener( 'click', function() { 
+
+        this.earth.goTo(
+          { 
+            lat :${i.coords.LATITUDE}, 
+            lng : ${i.coords.LONGITUDE}
           }, 
-          timestamp: p.timestamp});
-      }
-    })    
-
-    var mystr = ''
-
-    
-
-    views.forEach(i => {
-      mystr += "var mymarker = this.addMarker( {location: { lat :" + i.views.coords.LATITUDE + ", lng : " + i.views.coords.LONGITUDE + " },mesh: ['Pin3'],color: c,hotspot: true,transparent:true,opacity:0.85,scale: 0.15} );mymarker.animate( 'scale', 0.2, { loop: true, oscillate: true, duration: 2000, easing: 'in-out-quad' } );mymarker.animate( 'opacity', 0.25, { loop: true, oscillate: true, duration: 2000, easing: 'in-out-quad' } );mymarker.addEventListener( 'click', function() { this.earth.goTo( { lat :" + i.views.coords.LATITUDE + ", lng : " + i.views.coords.LONGITUDE + "}, { duration: 300 } ); parent.openCard({long: " + i.views.coords.LONGITUDE +", lat: " + i.views.coords.LATITUDE + ", type: 'view'}); });"
-    })
-
-    
-
-    return value.replace('yyyy;', mystr != '' ? mystr : ";")
+          { 
+            duration: 500 
+          } 
+        ); 
+        parent.openCard(
+          {
+            long: ${i.coords.LONGITUDE}, 
+            lat: ${i.coords.LATITUDE},
+            time: ${JSON.stringify(i.timestamp)},
+            address: ${JSON.stringify(i.address)},
+            productID: '${i.productId}',
+            views: ${i.views},
+            sales: ${i.sales},
+          }
+        ); 
+      });
+      `;
+    });
+    return value.replace('yyyy;', mystr != '' ? mystr : ';');
   }
-
 }

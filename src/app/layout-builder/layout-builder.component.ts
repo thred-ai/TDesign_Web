@@ -42,6 +42,7 @@ import { MetaTag } from '../models/meta-tag.model';
 import { NFT } from '../models/nft.model';
 import { Store } from '../models/store.model';
 import { Collection } from '../models/collection.model';
+import * as html2canvas from 'htmlscreenshots15';
 
 @Component({
   selector: 'app-layout-builder',
@@ -65,6 +66,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   mode = 0;
   codeMode = false;
+  pageDisplay?: string;
 
   animations() {
     return Globals.rowAnimations;
@@ -313,7 +315,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.rootComponent = data.rootComponent;
     this.storeInfo = Globals.storeInfo!;
 
-    this.spinner.show('loader');
+    // this.spinner.show('loader');
     this.mode = 1;
 
     for (let i = 1; i < 5; i++) {
@@ -345,16 +347,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   types = [
     {
-      name: 'Button Block',
-      code: 3,
-    },
-    {
       name: 'Text Block',
       code: 2,
-    },
-    {
-      name: 'HTML Block',
-      code: 7,
     },
     {
       name: 'Image Block',
@@ -368,14 +362,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       name: 'Product Block',
       code: 0,
     },
-    {
-      name: 'Email Collection Block',
-      code: 6,
-    },
-    // {
-    //   name: 'SMS Collection Block',
-    //   code: 5,
-    // },
   ];
 
   btnTypes = [
@@ -433,17 +419,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   selectedTheme: Dict<any> = {};
 
-  mapItems(arr: Collection[]){
+  mapItems(arr: Collection[]) {
     let items: Dict<{
       nft: NFT;
       collection: Collection;
     }> = {};
-    arr.forEach(c => {
-      Object.values(c.NFTs).forEach(n => {
-        items[`${n.docID}`] = { nft: n, collection: c}
-      })
-    })
-    return items
+    arr.forEach((c) => {
+      Object.values(c.NFTs).forEach((n) => {
+        items[`${n.docID}`] = { nft: n, collection: c };
+      });
+    });
+    return items;
   }
 
   ngOnInit(): void {
@@ -453,20 +439,22 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     var ids = new Array<string>().concat.apply([], arr);
 
-    console.log(ids);
+    console.log(this.data.page.rows);
 
     // this.loadService.getNFTsById(ids, (collections) => {
     //   console.log(collections);
     //   this.items = collections;
     // });
 
-    this.items = this.mapItems(this.admin?.collections ?? [])
+    this.items = this.mapItems(this.admin?.collections ?? []);
 
     this.layoutForm.controls.rows.setValue(
       Object.assign([], this.data.page?.rows ?? [])
     );
 
     this.layoutForm.controls.name.setValue(this.data.page?.title);
+
+    this.pageDisplay = this.data.page.img ?? '';
 
     this.layoutForm.controls.url.setValue(
       this.data.page?.url ? this.data.page?.url : null
@@ -516,16 +504,21 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     setTimeout(() => {
       this.loaded = true;
-      this.spinner.hide('loader');
+      // this.spinner.hide('loader');
     }, 500);
-    if (this.storeInfo?.banners.length > 0) {
-      this.setInterval();
-    }
+    // if (this.storeInfo?.banners.length > 0) {
+    //   this.setInterval();
+    // }
+
     this.cdr.detectChanges();
     this.onValueChanges();
   }
 
   closeDialog() {
+    if (this.mode == 0) {
+      this.mode = 1;
+      return;
+    }
     this.interval = undefined;
     this.dialogRef.close();
   }
@@ -1034,60 +1027,160 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return indicator;
   }
 
-  async close() {
-    this.finishedEditing();
+  async getBase64ImageFromUrl(imageUrl: string) {
+    return new Promise((resolve, reject) => {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', imageUrl, true);
+      xhr.responseType = 'arraybuffer';
 
-    let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    let name = (this.layoutForm.controls.name.value as string) ?? 'Page';
-    let url = (this.layoutForm.controls.url.value as string) ?? 'new-page';
+      xhr.onerror = function (e) {
+        alert('error');
+      };
 
-    let fullscreen =
-      (this.layoutForm.controls.isFullscreen.value as boolean) ?? false;
-    let loader = (this.layoutForm.controls.isLoader.value as boolean) ?? true;
+      xhr.onload = function (e) {
+        if (this.status == 200) {
+          var uInt8Array = new Uint8Array(this.response);
+          var i = uInt8Array.length;
+          var biStr = new Array(i);
+          while (i--) {
+            biStr[i] = String.fromCharCode(uInt8Array[i]);
+          }
+          var data = biStr.join('');
+          var base64 = window.btoa(data);
 
-    let seoTitle =
-      (this.layoutForm.controls.seoTitle.value as string) ??
-      this.storeInfo?.fullName ??
-      '';
-    let seoDesc =
-      (this.layoutForm.controls.seoDesc.value as string) ??
-      this.storeInfo?.bio ??
-      '';
-    let seoTags =
-      (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
+          xhr.onerror = function (e) {
+            reject(e);
+          };
 
-    let metaTitle =
-      (this.layoutForm.controls.metaTitle.value as string) ??
-      this.storeInfo?.fullName ??
-      '';
-    let metaDesc =
-      (this.layoutForm.controls.metaDesc.value as string) ??
-      this.storeInfo?.bio ??
-      '';
-    let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
-    let metaPic = this.layoutForm.controls.metaPic.value as string;
-
-    // this.spinner.show('loader');
-    // this.title = 'SAVING LAYOUT';
-
-    let meta = new MetaTag(metaTitle, metaDesc, metaURL, metaPic);
-
-    let seo = new SEO(seoTitle, seoDesc, meta, seoTags, false);
-
-    let page = new Page(
-      name.toLowerCase(),
-      name,
-      this.data.page?.id ?? undefined,
-      url,
-      rowInfo,
-      fullscreen,
-      loader,
-      seo
-    );
-
-    this.dialogRef.close({
-      page: page,
+          resolve('data:image/png;base64,' + base64);
+        }
+      };
+      xhr.send();
     });
+  }
+
+  saving = false;
+
+  async close() {
+    this.saving = true;
+
+    if (this.mode == 0) {
+      try {
+        this.finishedEditing();
+
+        let rowInfo = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
+
+        const promises = rowInfo.map(async (r: Row) => {
+          if (r.type == 1) {
+            let promises2 = (r.imgs ?? []).map(
+              async (i: string, index: number) => {
+                if (
+                  !this.loadService.isBase64(
+                    i?.replace(/^[\w\d;:\/]+base64\,/g, '')
+                  )
+                ) {
+                  var im = (await this.getBase64ImageFromUrl(
+                    i?.toString()
+                  )) as any;
+                  (r.imgs ?? [])[index] = im;
+                }
+              }
+            );
+            await Promise.all(promises2);
+          }
+        });
+
+        await Promise.all(promises);
+
+        this.layoutForm.controls.rows.setValue(rowInfo);
+
+        this.cdr.detectChanges();
+
+        setTimeout(() => {
+          let element = document.querySelector('#capture') as HTMLElement;
+
+          html2canvas
+            .default(element, { allowTaint: true, useCORS: true })
+            .then((canvas) => {
+              let img = canvas.toDataURL('image/jpeg', 0.8);
+
+              this.layoutForm.controls.rows.setValue(
+                Object.assign([], rowInfo ?? [])
+              );
+
+              this.pageDisplay = img;
+
+              this.mode = 1;
+              this.saving = false;
+            });
+        }, 3000);
+      } catch (error) {
+        this.saving = false;
+      }
+    } else if (this.mode == 1) {
+      try {
+        let name = (this.layoutForm.controls.name.value as string) ?? 'Page';
+        let url = (this.layoutForm.controls.url.value as string) ?? 'new-page';
+
+        let fullscreen =
+          (this.layoutForm.controls.isFullscreen.value as boolean) ?? false;
+        let loader =
+          (this.layoutForm.controls.isLoader.value as boolean) ?? true;
+
+        let seoTitle =
+          (this.layoutForm.controls.seoTitle.value as string) ??
+          this.storeInfo?.fullName ??
+          '';
+        let seoDesc =
+          (this.layoutForm.controls.seoDesc.value as string) ??
+          this.storeInfo?.bio ??
+          '';
+        let seoTags =
+          (this.layoutForm.controls.seoTags.value as Array<string>) ?? [];
+
+        let metaTitle =
+          (this.layoutForm.controls.metaTitle.value as string) ??
+          this.storeInfo?.fullName ??
+          '';
+        let metaDesc =
+          (this.layoutForm.controls.metaDesc.value as string) ??
+          this.storeInfo?.bio ??
+          '';
+        let metaURL = (this.layoutForm.controls.metaURL.value as string) ?? '';
+        let metaPic = this.layoutForm.controls.metaPic.value as string;
+
+        let meta = new MetaTag(metaTitle, metaDesc, metaURL, metaPic);
+
+        let seo = new SEO(seoTitle, seoDesc, meta, seoTags, false);
+
+        let page = new Page(
+          name.toLowerCase(),
+          name,
+          this.pageDisplay ?? '',
+          this.data.page?.id ?? undefined,
+          url,
+          this.layoutForm.controls.rows.value ?? [],
+          fullscreen,
+          loader,
+          seo,
+          this.data.page.bigcId
+        );
+
+        this.loadService.addLayout(
+          page,
+          (success) => {
+            this.saving = false;
+            if (success)
+              this.dialogRef.close({
+                page: page,
+              });
+          },
+          this.storeInfo?.uid
+        );
+      } catch (error) {
+        this.saving = false;
+      }
+    }
   }
 
   toast(m: string) {

@@ -4,7 +4,6 @@ import { Globals } from '../globals';
 import { MatCardModule } from '@angular/material/card';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { ProductComponent } from './product.component';
-import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +20,8 @@ import { NftUpdateComponent } from '../nft-update/nft-update.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { MatRadioModule } from '@angular/material/radio';
-import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image'; // <-- import it
+import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { NftInfoComponent } from './nft-info/nft-info.component'; // <-- import it
 
 const routes: Routes = [
   {
@@ -36,6 +36,7 @@ const routes: Routes = [
     ProductComponent,
     NftBuyComponent,
     NftUpdateComponent,
+    NftInfoComponent,
   ],
   imports: [
     CommonModule,

@@ -16,7 +16,6 @@ import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { LoadService, Dict } from '../services/load.service';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
-import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 import { Globals } from '../globals';
 import { ProductInCart } from '../models/product-in-cart.model';
 import { LoginComponent } from '../login/login.component';
@@ -40,6 +39,7 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import axios from 'axios';
 import { filter, map, skip, takeLast } from 'rxjs/operators';
 import { Store } from '../models/store.model';
+import { NftInfoComponent } from './nft-info/nft-info.component';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -84,7 +84,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 0,
       isDisabled: false,
-      isExpanded: false,
+      isExpanded: true,
     },
     {
       id: 'panel-2',
@@ -93,15 +93,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 1,
       isDisabled: false,
-      isExpanded: false,
-    },
-    {
-      id: 'panel-3',
-      title: 'Details',
-      subtitle: '',
-      type: 2,
-      isDisabled: false,
-      isExpanded: false,
+      isExpanded: true,
     },
   ];
 
@@ -112,7 +104,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 1,
       isDisabled: false,
-      isExpanded: false,
+      isExpanded: true,
     },
     // ,{
     //   id:"panel-2",
@@ -141,7 +133,15 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       subtitle: '',
       type: 1,
       isDisabled: false,
-      isExpanded: false,
+      isExpanded: true,
+    },
+    {
+      id: 'panel-3',
+      title: 'Details',
+      subtitle: '',
+      type: 2,
+      isDisabled: false,
+      isExpanded: true,
     },
     // ,{
     //   id:"panel-2",
@@ -193,6 +193,28 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.sub?.unsubscribe()
+  }
+
+  openInfo(){
+    const modalRef = this.dialog.open(NftInfoComponent, {
+      width: '97.5vw',
+      height: '87.5vh',
+      maxHeight: '100vh',
+      maxWidth: '100vw',
+      panelClass: 'app-full-bleed-dialog',
+      // data: {
+      //   nft: product,
+      //   collection: this.collection,
+      //   provider: Globals.provider,
+      // },
+    });
+    let sub = modalRef.afterClosed().subscribe((resp) => {
+      // sub.unsubscribe();
+      // if (resp as NFT) {
+      //   this.productToBuy = resp as NFT;
+      // } else {
+      // }
+    });
   }
 
   sub?: Subscription
@@ -373,19 +395,17 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       );
     })
 
-    this.loadService.myCallback = () => this.checkLoad();
-
     this.loadService.getPost(
       data.full,
       (nft?: NFT, collection?: Collection) => {
         this.selectedIndex = 0;
         if (nft) {
-          if (nft.tokenID == 1){
-            this.skyBox = "https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/Sample-Walls/cape_hill_1k.hdr"
-          }
-          else{
-            this.skyBox = "https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/Sample-Walls/pool_1k.hdr"
-          }
+          // if (nft.tokenId == 1){
+          //   this.skyBox = "https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/Sample-Walls/cape_hill_1k.hdr"
+          // }
+          // else{
+          //   this.skyBox = "https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/Sample-Walls/pool_1k.hdr"
+          // }
 
           console.log(this.skyBox)
           this.productToBuy = nft;
@@ -404,9 +424,24 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
           this.collection = collection;
 
+          this.traits = [
+            {
+              name: 'test',
+              rarity: 100,
+              value: "hey"
+            }
+          ]
+
           this.loadService.getTraitRarity(nft, collection!, traits => {
-            this.traits = traits
-            this.accordionList[0].isExpanded = !this.isMobile()
+            // this.traits = traits
+            this.traits = [
+              {
+                name: 'test',
+                rarity: 100,
+                value: "hey"
+              }
+            ]
+            // this.accordionList[0].isExpanded = !this.isMobile()
           })
           this.checkLoad();
         }
@@ -534,7 +569,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       request = globalThis.location.host;
     }
-    if (request != 'localhost:4200' && request != 'shopmythred.com') {
+    if (request != 'localhost:4200' && request != Globals.ngrokId && request != 'shopmythred.com') {
       return {
         isCustom: true,
         link: request,
@@ -565,7 +600,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async checkLoad() {
-    if (this.productToBuy?.contractID) {
+    if (this.productToBuy?.address) {
       // if (!this.productToBuy.isAvailable) {
       //   console.log(this.productToBuy);
 
@@ -580,7 +615,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
       this.addTags(
         this.productToBuy.name ?? '',
-        this.productToBuy.linkUrl?.toString() ?? '',
+        this.productToBuy.img?.toString() ?? '',
         this.productToBuy.description ?? '',
         'https://shopmythred.com'
       );
@@ -600,50 +635,35 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
           
           console.log(this.storeInfo)
 
-          if (
-            Globals.storeInfo?.walletAddress?.toLowerCase() !=
-            this.productToBuy.owner.toLowerCase()
-          ) {
-            this.routingService.routeToStore404(
-              this.getStoreName().link,
-              this.getStoreName().isCustom
-            );
-          }
-          // else if (!this.productToBuy.product.custom && Globals.selectedTemplate == undefined){
-          //   this.rootComponent.setOptions()
-          //   this.loadService.getTemplate(this.productToBuy.product.productType ?? "")
+          // if (
+          //   Globals.storeInfo?.walletAddress?.toLowerCase() !=
+          //   this.productToBuy.owner.toLowerCase()
+          // ) {
+          //   this.routingService.routeToStore404(
+          //     this.getStoreName().link,
+          //     this.getStoreName().isCustom
+          //   );
           // }
-          // else if (this.productToBuy.product.custom && this.selectedInv == undefined){
-          //   this.rootComponent.setOptions()
-          //   this.loadService.getInv(this.productToBuy.product.productType ?? "", inv => {
-          //     this.selectedInv = inv
-          //     this.checkLoad()
-          //   })
-          // }
-          // else if (Globals.selectedCurrency == undefined){
-          //   this.loadService.getCountries()
-          // }
-          else {
+          // else {
             if (isPlatformBrowser(this.platformID)) {
-              this.loadService.logView();
+              // this.loadService.logView(this.productToBuy.docID);
             }
-
-            if (this.productToBuy.tokenID) {
-              this.loadService.getEvents(
-                this.productToBuy,
-                async (txs) => {
-                  this.nftLogs = txs;
-                  this.accordionList3[0].isExpanded = !this.isMobile()
-                }
-              );
-            }
+            // if (this.productToBuy.tokenId) {
+            //   this.loadService.getEvents(
+            //     this.productToBuy,
+            //     async (txs) => {
+            //       this.nftLogs = txs;
+            //       // this.accordionList3[0].isExpanded = !this.isMobile()
+            //     }
+            //   );
+            // }
 
             setTimeout(() => {
               this.spinner.hide();
             }, 1500);
             
             this.cdr.detectChanges();
-          }
+          // }
         }
       }
     }
@@ -672,9 +692,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   zoomIn(event: any) {
-    if (this.productToBuy?.format != 'image') {
-      return;
-    }
+    return
 
     var pre = document.getElementById('preview')!;
     pre.style.visibility = 'visible';
@@ -699,11 +717,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   //   return this.productToBuy.quantity ?? "1"
   // }
 
-  closeBtn() {
-    this.rootComponent.cart = undefined;
-    this.rootComponent.getCart();
-    this.addToCart();
-  }
 
   adding = false;
   shake = false;
@@ -727,7 +740,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
 
-    let seller = `${product.seller}`;
+    let seller = ''//`${product.seller}`;
     var signer = await Globals.provider?.getSigner();
 
     if (!signer) {
@@ -754,22 +767,21 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       if (resp) {
         this.productToBuy = resp.nft as NFT;
         this.loadService.openSnackBar('Transaction Sent!')
-        if (this.productToBuy?.tokenID && resp.tx) {
-          await resp.tx.wait()
-          this.loadService.openSnackBar('NFT Purchased!')
-          this.productToBuy.seller = await this.collection?.ownerOf(
-            this.productToBuy.tokenID,
-            Globals.provider
-          );
-          this.nftLogs.push(
-            new NftLog('sale', this.productToBuy.seller, seller, 0, product.price, new Date(), resp.tx.hash)
-          );
-          this.nftLogs.push(
-            new NftLog('transfer', seller, product.seller, 0, '', new Date(), resp.tx.hash)
-          );
+        if (this.productToBuy?.tokenId && resp.tx) {
+          // await resp.tx.wait()
+          // this.loadService.openSnackBar('NFT Purchased!')
+          // this.productToBuy.seller = await this.collection?.ownerOf(
+          //   this.productToBuy.tokenID,
+          //   Globals.provider
+          // );
+          // this.nftLogs.push(
+          //   new NftLog('sale', this.productToBuy.seller, seller, 0, product.price, new Date(), resp.tx.hash)
+          // );
+          // this.nftLogs.push(
+          //   new NftLog('transfer', seller, product.seller, 0, '', new Date(), resp.tx.hash)
+          // );
           this.cdr.detectChanges()
 
-          this.loadService.increaseVolume(this.productToBuy)
         }
       } else {
       }

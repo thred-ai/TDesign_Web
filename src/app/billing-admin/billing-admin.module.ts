@@ -14,13 +14,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { BillingAdminComponent } from './billing-admin.component';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: BillingAdminComponent,
-  },
-];
-
 
 @NgModule({
   declarations: [
@@ -38,10 +31,7 @@ const routes: Routes = [
     MatInputModule,
     ReactiveFormsModule,
     MatRadioModule,
-    RouterModule.forChild(routes),
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
-
-
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

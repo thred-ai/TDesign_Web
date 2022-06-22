@@ -64,7 +64,7 @@ export class NftUpdateComponent implements OnInit {
         Number(ethers.utils.formatEther(this.nft?.price))
       );
     }
-    this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
+    // this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
   }
 
   provider?: ethers.providers.Web3Provider;
@@ -129,138 +129,106 @@ export class NftUpdateComponent implements OnInit {
   err = '';
 
   async save() {
-    if (this.nftForm.valid) {
-      if (window.ethereum && typeof window.ethereum == 'object') {
-        this.provider = new ethers.providers.Web3Provider(
-          window.ethereum,
-          'any'
-        );
-        Globals.provider = this.provider;
-      }
-      if (!Globals.provider?.getSigner()) {
-        try {
-          await Globals.checkProvider();
-        } catch (error) {
-          this.err = 'No Wallet Connected. Please try again';
-          return;
-        }
-        return;
-      }
-      if (!(await (this.laodService.networkCheck() ?? false))) {
-        this.err = 'Please switch your Network to the Polygon Mainnet';
-        return;
-      }
+    // if (this.nftForm.valid) {
+    //   if (window.ethereum && typeof window.ethereum == 'object') {
+    //     this.provider = new ethers.providers.Web3Provider(
+    //       window.ethereum,
+    //       'any'
+    //     );
+    //     Globals.provider = this.provider;
+    //   }
+    //   if (!Globals.provider?.getSigner()) {
+    //     try {
+    //       await Globals.checkProvider();
+    //     } catch (error) {
+    //       this.err = 'No Wallet Connected. Please try again';
+    //       return;
+    //     }
+    //     return;
+    //   }
+    //   if (!(await (this.laodService.networkCheck() ?? false))) {
+    //     this.err = 'Please switch your Network to the Polygon Mainnet';
+    //     return;
+    //   }
 
-      let cost = this.nftForm.controls.price.value as number;
-      let forSale = this.nftForm.controls.isListed.value as boolean;
+    //   let cost = this.nftForm.controls.price.value as number;
+    //   let forSale = this.nftForm.controls.isListed.value as boolean;
 
-      this.isLoading = true;
+    //   this.isLoading = true;
 
-      const price = ethers.utils.parseUnits(cost.toString(), 'ether');
+    //   const price = cost
 
-      let signer = this.provider?.getSigner();
+    //   let signer = this.provider?.getSigner();
 
-      let address = (await signer?.getAddress()) ?? '';
-      if (address?.toLowerCase() != this.nft?.seller?.toLowerCase()) {
-        this.err = 'Wrong Wallet';
-        return;
-      }
+    //   let address = (await signer?.getAddress()) ?? '';
+    //   if (address?.toLowerCase() != this.nft?.seller?.toLowerCase()) {
+    //     this.err = 'Wrong Wallet';
+    //     return;
+    //   }
 
-      try {
-        if (
-          this.collection == undefined ||
-          this.nft == undefined ||
-          this.nft.tokenID == undefined ||
-          this.nft.metadata == undefined ||
-          this.nft.royalty == undefined
-        ) {
-          this.isLoading = false;
-          return;
-        }
-        let contract = new ethers.Contract(
-          thredMarketplace,
-          THRED_MARKET.abi,
-          signer
-        );
-        let contract2 = new ethers.Contract(
-          this.nft.contractID,
-          this.collection.ABI,
-          signer
-        );
+    //   try {
+    //     if (
+    //       this.collection == undefined ||
+    //       this.nft == undefined ||
+    //       this.nft.tokenID == undefined ||
+    //       this.nft.metadata == undefined ||
+    //       this.nft.royalty == undefined
+    //     ) {
+    //       this.isLoading = false;
+    //       return;
+    //     }
+    //     let contract = new ethers.Contract(
+    //       thredMarketplace,
+    //       THRED_MARKET.abi,
+    //       signer
+    //     );
+    //     let contract2 = new ethers.Contract(
+    //       this.nft.contractID,
+    //       this.collection.ABI,
+    //       signer
+    //     );
 
-        let isApproved = await contract2.isApprovedForAll(
-          address,
-          thredMarketplace
-        );
+    //     let isApproved = await contract2.isApprovedForAll(
+    //       address,
+    //       thredMarketplace
+    //     );
 
-        if (!isApproved) {
-          try {
-            let t2 = await contract2.setApprovalForAll(
-              thredMarketplace,
-              forSale
-            );
-            await t2.wait();
-          } catch (error) {
-            let data = (error as any).data;
-            this.isLoading = false;
-            if (data && data.code == -32000) {
-              this.err = 'Not enough MATIC' + ' in wallet!';
-            } else {
-              this.err = 'Something went wrong, please try again.';
-            }
-          }
-        }
+    //     if (!isApproved) {
+    //       try {
+    //         let t2 = await contract2.setApprovalForAll(
+    //           thredMarketplace,
+    //           forSale
+    //         );
+    //         await t2.wait();
+    //       } catch (error) {
+    //         let data = (error as any).data;
+    //         this.isLoading = false;
+    //         if (data && data.code == -32000) {
+    //           this.err = 'Not enough MATIC' + ' in wallet!';
+    //         } else {
+    //           this.err = 'Something went wrong, please try again.';
+    //         }
+    //       }
+    //     }
 
-        if (this.nft?.lazyMint && this.nft.lazyHash) {
-          const lazyMinter = new LazyMinter(contract, signer!, 'THRED-NFT');
-
-          const voucher = await lazyMinter.createVoucher(
-            this.nft.tokenID,
-            this.nft.metadata,
-            this.nft.royalty,
-            price,
-            this.collection.customTokenCheck() == undefined
-          );
-
-          if (!voucher){
-            this.isLoading = false;
-            this.err = "Creation Cancelled"
-            return
-          }
-
-
-          this.nft.lazyHash = voucher;
-          this.nft.forSale = forSale;
-
-          await this.laodService.updateNFT(
-            this.nft,
-            Globals.storeInfo?.uid,
-            this.nft.docID
-          );
-        } else {
-          // updateItem(
-          //   MarketItem memory item,
-          //   bool forSale,
-          //   uint256 price
-          let t = await contract.updateItem(this.nft.itemId, 0, forSale, price);
-          await t.wait();
-        }
-        this.nft.price = price;
-        this.nft.forSale = forSale;
-        this.dialogRef.close(this.nft);
-      } catch (error) {
-        let data = (error as any).data;
-        this.isLoading = false;
-        console.log(error)
-        if (data && data.code == -32000) {
-          this.err = 'Not enough MATIC' + ' in wallet!';
-        } else {
-          this.err = 'Something went wrong, please try again.';
-        }
-      }
-      this.isLoading = false;
-    } else {
-    }
+    //       // let t = await contract.updateItem(this.nft.itemId, 0, forSale, price);
+    //       // await t.wait();
+    //     this.nft.price = price;
+    //     // this.nft.forSale = forSale;
+    //     this.dialogRef.close(this.nft);
+    //   } catch (error) {
+    //     let data = (error as any).data;
+    //     this.isLoading = false;
+    //     console.log(error)
+    //     if (data && data.code == -32000) {
+    //       this.err = 'Not enough MATIC' + ' in wallet!';
+    //     } else {
+    //       this.err = 'Something went wrong, please try again.';
+    //     }
+    //   }
+    //   this.isLoading = false;
+    // } else {
+    // }
   }
 
   async setProvider() {
