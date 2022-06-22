@@ -67,25 +67,25 @@ export class Store {
           name: 'Polygon (MATIC)',
           symbol: 'polygon_icon',
           contract: 'default',
-          api_name: 'matic-network'
+          api_name: 'matic-network',
         },
         {
           name: 'Ethereum (WETH)',
           symbol: 'weth_icon',
           contract: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-          api_name: 'ethereum'
+          api_name: 'ethereum',
         },
         {
           name: 'Bitcoin (WBTC)',
           symbol: 'btc_icon',
           contract: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
-          api_name: 'bitcoin'
+          api_name: 'bitcoin',
         },
         {
           name: 'DOGE (LxDOGE)',
           symbol: 'doge_icon',
           contract: '0x9Bd9aD490dD3a52f096D229af4483b94D63BE618',
-          api_name: 'dogecoin'
+          api_name: 'dogecoin',
         },
       ],
     },
@@ -103,8 +103,8 @@ export class Store {
       .forEach((t) => {
         all = all.concat(t);
       });
-    return all
-    
+    return all;
+
     // .filter((a) =>
     //   this.collections?.find(
     //     (c) => a.contract == 'default' || c.customToken == a.contract
@@ -164,15 +164,7 @@ export class Store {
     this.username = username;
     this.fullName = fullName;
     this.bio =
-      bio && bio.trim() != ''
-        ? bio
-        : 'Hello! ' +
-          fullName +
-          ' was made for creative trail blazers like you. The dreamers who seek new adventures that warp reality and transcend time. Our lust for life lives on through our unique pieces. Here’s your chance to display inspiration, love, heartache, vibes in the form of a unique piece of clothing/accessory not found anywhere else in the world but here… With a purchase of ' +
-          this.fullName +
-          ' you show the world that you are a free thinker, and belong to the tribe of dreamers. We welcome you with open arms. We are ' +
-          fullName +
-          '.';
+      bio ?? ''
     this.notifID = notifID;
     this.userFollowing = userFollowing;
     this.userLiked = userLiked;
@@ -227,13 +219,13 @@ export class Store {
       colorStyle && (colorStyle?.name ?? '').trim() != ''
         ? colorStyle
         : new StoreTheme(
-            'Black / Electric',
+            'Light',
+            'light',
             'dark',
-            'info',
-            'dark',
-            'glow',
-            [10.0, 10.0, 10.0, 1],
-            [255.0, 255.0, 255.0, 1]
+            'light',
+            'simple',
+            [255.0, 255.0, 255.0, 1],
+            [10.0, 10.0, 10.0, 1]
           );
 
     this.fontName = fontName ?? 'Montserrat'; //"Roboto"
@@ -272,11 +264,13 @@ export class Store {
       new Page(
         'home',
         'Home',
+        undefined,
         '1',
         'home',
-        homeRows ?? [new Row('NEW COLLECTION', undefined, 0, 0, undefined, 4)]
+        homeRows ?? [new Row('NEW COLLECTION', undefined, 0, 0, undefined, 4)],
+        
       ),
-      new Page('about', 'About', '2', 'about', [
+      new Page('about', 'About', undefined, '2', 'about', [
         new Row(
           'ABOUT US',
           undefined,
@@ -300,7 +294,7 @@ export class Store {
         // new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
         // new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
       ]),
-      new Page('collections', 'Collections', '3', 'collections', [
+      new Page('collections', 'Collections', '3', undefined, 'collections', [
         new Row('All Collections', undefined, 2, 0, undefined, 4),
       ]),
     ];
