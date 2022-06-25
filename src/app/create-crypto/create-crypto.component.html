@@ -166,9 +166,7 @@
               >{{ util.name }}</mat-checkbox
             >
 
-          <ng-template *ngIf="util.active"> 
-
-          </ng-template>
+            <ng-template *ngIf="util.active"> </ng-template>
           </p>
         </div>
 
@@ -310,7 +308,9 @@
           class="w-100 h-100"
           style="border-color: #2852ea"
           (change)="dropped($event)"
-          *ngIf="!nftForm.controls.file.value && nftForm.controls.file.value != '0'"
+          *ngIf="
+            !nftForm.controls.file.value && nftForm.controls.file.value != '0'
+          "
           [multiple]="false"
         >
           <ngx-dropzone-label class="big-design-title text-dark">
@@ -336,33 +336,24 @@
         <div
           class="w-100 h-100 position-relative"
           style="z-index: 1000"
-          *ngIf="nftForm.controls.file.value && nftForm.controls.file.value != '0'"
+          *ngIf="
+            nftForm.controls.file.value && nftForm.controls.file.value != '0'
+          "
         >
           <div class="position-absolute w-100 h-100">
             <!-- <p class="big-design-title w-100 text-center mb-2">
             {{ fileName }}
           </p> -->
-            <model-viewer
-              camera-controls
-              class="w-100 h-100"
-              style="object-fit: cover;"
-              [attr.src]="nftForm.controls.file.value"
-              autoplay="true"
-              [attr.skybox-image]="
-                nftForm.controls.skybox.value ??
-                'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
-              "
-              [attr.poster]="
-                nftForm.controls.cover.value ?? '/assets/default.png'
-              "
-              [attr.environment-image]="
-                nftForm.controls.skybox.value ??
-                'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
-              "
-              alt="A 3D model of an astronaut"
-              id="viewer"
+            <app-model-viewer
+              [camera]="true"
+              [model]="nftForm.controls.file.value"
+              [animate]="true"
+              [skybox]="nftForm.controls.skybox.value"
+              [poster]="nftForm.controls.cover.value ?? '/assets/default.png'"
+              [id]="'viewer'"
+              [ar]="false"
             >
-            </model-viewer>
+            </app-model-viewer>
           </div>
           <ngx-dropzone
             class="w-100 h-100 position-absolute bg-transparent border-0"

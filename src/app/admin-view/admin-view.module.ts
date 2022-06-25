@@ -49,6 +49,7 @@ import { ANIMATION_MODULE_TYPE } from '@angular/platform-browser/animations';
 import { ViewCoordComponent } from '../view-coord/view-coord.component';
 import { StatusComponent } from '../status/status.component';
 import { CollectionTableComponent } from '../collection-table/collection-table.component';
+import { ModelViewerComponent } from '../model-viewer/model-viewer.component';
 import { LOCALE_ID } from '@angular/core';
 
 const routes: Routes = [
@@ -72,6 +73,8 @@ const routes: Routes = [
     ViewCoordComponent,
     StatusComponent,
     CollectionTableComponent,
+    ModelViewerComponent,
+
   ],
 
   imports: [

@@ -2134,18 +2134,18 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     
                 yyyy;
     
-                for (var i = 0; i < 8; i++) {
-                  sprites[i] = this.addSprite({
-                    image: "hologram/hologram-shine.svg",
-                    scale: 0.01,
-                    offset: -0.5,
-                    opacity: 0.5,
-                  });
+                // for (var i = 0; i < 8; i++) {
+                //   sprites[i] = this.addSprite({
+                //     image: "hologram/hologram-shine.svg",
+                //     scale: 0.01,
+                //     offset: -0.5,
+                //     opacity: 0.5,
+                //   });
     
-                  xxxxxx;
+                //   xxxxxx;
     
-                  pulse(i);
-                }
+                //   pulse(i);
+                // }
               },
               {
                 passive: true,

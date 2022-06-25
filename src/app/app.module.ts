@@ -38,6 +38,7 @@ import { VgBufferingModule } from '@videogular/ngx-videogular/buffering';
 import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- include ScrollHooks
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ModelViewerComponent } from './model-viewer/model-viewer.component';
 
 @NgModule({
   declarations: [

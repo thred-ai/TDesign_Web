@@ -53,18 +53,20 @@ export class CreateCryptoComponent implements OnInit {
   ) {
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
-    this.utility = data.utils ?? []
+    this.utility = data.utils ?? [];
     // currency: col!.currency
-    let pipe = new CurrencyPipe(localId)
+    let pipe = new CurrencyPipe(localId);
 
-    this.customCurrencyMaskConfig.prefix = pipe.transform(0, data.contract.currency ?? 'USD')?.replace("0.00", "") ?? "$"
-    console.log(this.customCurrencyMaskConfig.prefix)
+    this.customCurrencyMaskConfig.prefix =
+      pipe.transform(0, data.contract.currency ?? 'USD')?.replace('0.00', '') ??
+      '$';
+    console.log(this.customCurrencyMaskConfig.prefix);
   }
 
   nftContract: Collection;
   provider?: ethers.providers.Web3Provider;
   saving = false;
-  planInfo?: any
+  planInfo?: any;
 
   customCurrencyMaskConfig = {
     align: 'left',
@@ -106,19 +108,18 @@ export class CreateCryptoComponent implements OnInit {
   skyBoxName?: string;
   coverName?: string;
 
-  utility: any[] = []
+  utility: any[] = [];
 
   // <p><mat-checkbox formControlName="pepperoni">Pepperoni</mat-checkbox></p>
   // <p><mat-checkbox formControlName="extracheese">Extra Cheese</mat-checkbox></p>
   // <p><mat-checkbox formControlName="mushroom">Mushroom</mat-checkbox></p>
 
   ngOnInit(): void {
-    let con = !this.nftContract.royalty ||
-    this.nftContract.royalty == ethers.constants.AddressZero
-    if (
-      con
-    ) {
-      this.royaltyPlaceholder = 'Royalties not available'
+    let con =
+      !this.nftContract.royalty ||
+      this.nftContract.royalty == ethers.constants.AddressZero;
+    if (con) {
+      this.royaltyPlaceholder = 'Royalties not available';
       this.nftForm.controls.royalty.disable();
     }
 
@@ -128,19 +129,22 @@ export class CreateCryptoComponent implements OnInit {
       this.nftForm.controls.description.setValue(nft.description);
       this.nftForm.controls.price.setValue(nft.price);
       this.nftForm.controls.file.setValue(nft.assetUrl);
+      console.log(nft.assetUrl);
       this.nftForm.controls.royalty.setValue(!con ? nft.royalty / 100 : null);
       this.nftForm.controls.cover.setValue(nft.img);
-      this.nftForm.controls.skybox.setValue(nft.skybox);
+      this.nftForm.controls.skybox.setValue(
+        nft.skybox ??
+          'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
+      );
 
-      this.utility.forEach(u => {
-        if (this.data.asset.info.utility.find((a: any) => a.code == u.code)){
-          u.active = true
+      this.utility.forEach((u) => {
+        if (this.data.asset.info.utility?.find((a: any) => a.code == u.code)) {
+          u.active = true;
         }
       });
-      
+
       this.nftForm.disable();
     } else {
-      
     }
     // if (this.nftContract.currency)
     //   this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`;
@@ -148,7 +152,7 @@ export class CreateCryptoComponent implements OnInit {
     // this.nftForm.controls.lazyMint.setValue(true);
   }
 
-  royaltyPlaceholder = 'Royalties %'
+  royaltyPlaceholder = 'Royalties %';
 
   traits = new Array<any>();
 
@@ -204,7 +208,7 @@ export class CreateCryptoComponent implements OnInit {
       let royalty =
         ((this.nftForm.controls.royalty.value as number) ?? 0.0) * 100;
       let skyBox = (this.nftForm.controls.skybox.value as string) ?? '';
-      let utility = this.utility.filter(f => f.active) ?? []
+      let utility = this.utility.filter((f) => f.active) ?? [];
 
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       var uploadFile = this.convertBase64ToBlob(file);
@@ -322,9 +326,9 @@ export class CreateCryptoComponent implements OnInit {
 
   closeDialog() {
     // this.interval = undefined;
-    this.nftForm.controls.file.setValue("0")
+    this.nftForm.controls.file.setValue('0');
     this.dialogRef.close();
-    this.cdr.detectChanges()
+    this.cdr.detectChanges();
   }
 
   acceptedModels = '.glb,.gltf';
