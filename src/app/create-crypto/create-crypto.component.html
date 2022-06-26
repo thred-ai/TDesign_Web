@@ -264,13 +264,17 @@
     >
       <div
         class="big-design-header justify-content-{{
-          data.asset ? 'start' : 'between'
+          data.asset ? 'between' : 'between'
         }}"
       >
         <p class="big-design-title">
           {{
             data.asset ? "Edition " + data.asset.tokenId + "" : "Model Preview"
           }}
+          <br>
+          <a *ngIf="data.asset" class="big-design-body mt-4">
+            <app-status [status]="data.asset.status"> </app-status>
+          </a>
         </p>
         <input
           #fileInput
@@ -298,9 +302,11 @@
           </a>
         </div>
         <ng-template #assetStatus>
-          <div class="big-design-body ms-2">
-            <app-status [status]="data.asset.status"> </app-status>
-          </div>
+          <a
+            class="big-design-button"
+          >
+            Remove from Sale
+          </a>
         </ng-template>
       </div>
       <div class="big-design-body w-100 h-100 mt-3" style="flex: 1">

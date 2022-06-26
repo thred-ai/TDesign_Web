@@ -7,7 +7,7 @@ import { CropperComponent } from '../cropper/cropper.component';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Globals } from '../globals';
 import { Dict, LoadService } from '../services/load.service';
-import * as html2canvas from 'htmlscreenshots15'
+import * as html2canvas from 'html2canvas'
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Product } from '../models/product.model';
 import { Inventory } from '../models/inventory.model';

@@ -147,7 +147,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       (success) => {
         this.toast('Page Removed!');
       },
-      this.storeInfo?.uid
     );
     //   }
     // );
@@ -169,10 +168,12 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
     let sub = modalRef.afterClosed().subscribe(async (layouts: any) => {
       sub.unsubscribe();
-      if (layouts && layouts != '0') {
-
-        if (index){
-          this.storeInfo!.pages![index] = layouts.page
+      if (layouts == 'DELETE') {
+        this.toast('Page Deleted!');
+        return;
+      } else if (layouts && layouts != '0') {
+        if (index) {
+          this.storeInfo!.pages![index] = layouts.page;
         }
         this.toast('Page Saved!');
       } else if (layouts == '0') {
@@ -310,7 +311,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     this.selectedCoord = undefined;
     this.cdr.detectChanges();
   }
-
 
   openCard(coords: Dict<any>) {
     coords.time = new Date(coords.time);
@@ -2261,6 +2261,23 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   routeToProduct(product: NFT) {
     this.rootComponent.routeToProduct(product.docID ?? '');
+  }
+
+  viewPage(page: Page) {
+    const link = document.createElement('a');
+    link.target = '_blank';
+
+    let url = Globals.storeInfo.customURL;
+
+    if (url) {
+      let url2: string = `${url.fullURL}/${page.url}`;
+
+      link.href = url2;
+
+      link.setAttribute('visibility', 'hidden');
+      link.click();
+      link.remove();
+    }
   }
 
   editPlan() {

@@ -132,7 +132,7 @@
                           (aRow.index == i ? aRow?.row : undefined)?.grid_row ??
                             row.grid_row ??
                             1
-                        }} justify-content-center mt-1"
+                        }} justify-content-start mt-1"
                         style="pointer-events: none"
                       >
                         <div
@@ -410,7 +410,7 @@
                   </a>
                 </div>
                 <div
-                  class="card zoom container-fluid d-flex justify-content-center align-items-center example-custom-placeholder m-3 ms-3 me-4 mt-1"
+                  class="card zoom container-fluid d-flex justify-content-center align-items-center big-design-placeholder m-3 ms-3 me-4 mt-1"
                   role="button"
                   (click)="addBlock()"
                 >
@@ -431,31 +431,19 @@
             </div>
             <div [hidden]="editingBlock == undefined" class="w-100 h-100 pe-3">
               <form [formGroup]="rowForm" novalidate>
-                <mat-form-field class="w-100 h-100">
-                  <mat-placeholder
-                    >Block Header Title (Optional)</mat-placeholder
-                  >
-                  <input
-                    type="text"
-                    matInput
-                    formControlName="title"
-                    class="text-dark"
-                  />
-                </mat-form-field>
-
                 <mat-form-field class="w-100" appearance="outline">
-                  <mat-label>Block Type</mat-label>
                   <mat-select
                     formControlName="type"
+                    class="big-design-input-text"
                     (selectionChange)="changed(undefined, $event)"
                   >
                     <mat-select-trigger
-                      class="d-flex align-items-center"
+                      class="d-flex align-items-center big-design-input-text"
                       *ngIf="matchingType(rowForm.controls.type.value)"
                     >
-                      {{ matchingType(rowForm.controls.type.value)!.name }}
+                      Type: {{ matchingType(rowForm.controls.type.value)!.name }}
                     </mat-select-trigger>
-                    <mat-option *ngFor="let type of types" [value]="type.code">
+                    <mat-option class="big-design-input-text" *ngFor="let type of types" [value]="type.code">
                       <!-- <mat-icon >{{type.icon}}</mat-icon> -->
                       {{ type.name }}
                     </mat-option>
@@ -495,20 +483,20 @@
                     rowForm.controls.type.value != 6
                   "
                 >
-                  <mat-label>Items Per. Row</mat-label>
                   <mat-select
+                  class="big-design-input-text"
                     formControlName="grid"
                     (selectionChange)="changed($event)"
                   >
                     <mat-select-trigger
-                      class="d-flex align-items-center"
+                      class="d-flex align-items-center big-design-input-text"
                       *ngIf="rowForm.controls.grid.value"
                     >
-                      {{ rowForm.controls.grid.value }}
+                      {{ rowForm.controls.grid.value }} Item(s) Per. Row
                     </mat-select-trigger>
-                    <mat-option *ngFor="let g of grid" [value]="g.name">
+                    <mat-option *ngFor="let g of grid" class="big-design-input-text" [value]="g.name">
                       <!-- <mat-icon >{{type.icon}}</mat-icon> -->
-                      {{ g.name }}
+                      {{ g.name }} Per. Row
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
@@ -730,15 +718,15 @@
                           <mat-icon>add_circle</mat-icon>
                         </a>
                       </div>
-                      <mat-form-field class="w-100 my-1">
-                        <mat-placeholder>Image Click URL</mat-placeholder>
+                      <mat-form-field class="w-100 my-1" floatLabel="never">
                         <input
                           type="text"
                           matInput
                           [ngModelOptions]="{ standalone: true }"
                           [(ngModel)]="image.link"
                           style="font-size: small"
-                          class="text-dark"
+                          placeholder="Image Click URL"
+                          class="text-dark big-design-input-text"
                         />
                         <mat-icon role="button" matSuffix>link</mat-icon>
                       </mat-form-field>
@@ -790,11 +778,10 @@
                           style="text-decoration: none"
                           role="button"
                         >
-                          <mat-icon>add_circle</mat-icon>
+                          No Video Set
                         </a>
                       </div>
-                      <mat-form-field class="w-100 my-1">
-                        <mat-placeholder>Video URL</mat-placeholder>
+                      <mat-form-field class="w-100 my-1" floatLabel="never">
                         <input
                           type="text"
                           matInput
@@ -802,7 +789,8 @@
                           [(ngModel)]="vid.link"
                           (keyup)="vidChangeEvent($event, vid)"
                           style="font-size: small"
-                          class="text-dark"
+                          placeholder="Video URL"
+                          class="text-dark big-design-input-text"
                         />
                         <mat-icon role="button" matSuffix>link</mat-icon>
                       </mat-form-field>
@@ -815,14 +803,13 @@
                   class="w-100"
                   appearance="outline"
                 >
-                  <mat-label>Products</mat-label>
                   <mat-chip-list #chipList aria-label="Product selection">
                     <mat-chip
                       *ngFor="let product of prods ?? []"
                       [selectable]="selectable"
                       [removable]="removable"
                       (removed)="remove(product)"
-                      class="category-chip"
+                      class="category-chip big-design-input-text"
                     >
                       <div class="category-chip__text">
                         {{ productName(product) }}
@@ -838,8 +825,9 @@
                     </mat-chip>
                     <!-- *ngIf='!allSelected()' -->
                     <input
+                    class="big-design-input-text"
                       *ngIf="!allSelected()"
-                      placeholder="Add product..."
+                      placeholder="Products"
                       #productInput
                       [formControl]="productCtrl"
                       [matAutocomplete]="auto"
@@ -868,7 +856,7 @@
                             id="image"
                             class="{{
                               (storeInfo?.colorStyle)!.back_code
-                            }} me-2 rounded"
+                            }} me-2 rounded big-design-input-text"
                             [src]="product.img ?? ''"
                             style="
                               object-fit: cover;
@@ -935,22 +923,16 @@
                 <a
                   role="button"
                   (click)="finishedEditing()"
-                  class="btn btn-dark rounded-pill px-3 mw-100 mb-2 me-2 d-inline-flex align-items-center justify-content-center"
+                  class="big-design-alt-button"
                 >
-                  DONE
-                  <mat-icon [inline]="true" class="ms-2 text-white"
-                    >check_circle</mat-icon
-                  >
+                  Save
                 </a>
                 <a
                   role="button"
                   (click)="finishedEditing(true)"
-                  class="btn btn-danger rounded-pill px-3 mw-100 mb-2 d-inline-flex align-items-center justify-content-center"
+                  class="big-design-button ms-2"
                 >
-                  DELETE
-                  <mat-icon [inline]="true" class="ms-2 text-white"
-                    >delete</mat-icon
-                  >
+                  Delete
                 </a>
               </div>
             </div>
@@ -1018,7 +1000,7 @@
                       (aRow.index == i ? aRow?.row : undefined)?.grid_row ??
                         row.grid_row ??
                         1
-                    }} justify-content-center mt-3"
+                    }} justify-content-start mt-3"
                   >
                     <div
                       class="col mb-3"
@@ -1038,7 +1020,7 @@
                         *ngIf="items![product]"
                       >
                         <div class="pb-0 w-100 h-100">
-                          <a role="button" class="w-100 h-100">
+                          <a role="button" class="w-100 card-img-top">
                             <img
                               id="image"
                               class="h-100 w-100 bg-{{
@@ -1451,7 +1433,7 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="col mt-0 mb-5">
+          <div class="col mt-0">
             <h2 class="big-design-input-title my-0">Visibility</h2>
             <h5 class="mt-0 big-design-input-subtitle">
               When set to 'Visible', your page will be accessible from your
@@ -1475,6 +1457,22 @@
                 >
               </div>
             </mat-radio-group>
+
+            
+          </div>
+          <div class="col my-3">
+            <hr>
+          </div>
+          <div class="col mt-0 mb-4">
+              <a class="big-design-button" (click)="deletePage()">
+                {{deleting ? 'Deleting' : 'Delete Page'}}
+                <div class="big-design-button-spinner" [hidden]="!deleting">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </a>
           </div>
         </div>
       </form>

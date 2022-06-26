@@ -1,28 +1,14 @@
 <!-- Navigation-->
 <router-outlet></router-outlet>
 
-<ngx-spinner
-  *ngIf="isBrowser() && (page?.loader ?? true)"
-  bdColor="{{ selectedIndicator().bg_color }}"
-  size="large"
-  color="{{ selectedIndicator().color }}"
-  type="{{ selectedIndicator().name }}"
-  [fullScreen]="true"
-  style.color="{{ selectedIndicator()!.color }}"
->
-  <h3 class="text-center mt-5" [style.font-family]="storeInfo?.fontName!">
-    {{ storeInfo?.fullName }}
-  </h3>
-</ngx-spinner>
 
 <!-- Header-->
 
 <!-- Section-->
 <section
-  class="py-5 pt-0 w-100"
+  class="py-5 pt-0 w-100 bg-transparent"
   [class.fixed-top]="page?.fullscreen ?? false"
   style="overflow-y: scroll; min-height: 60vh;"
-  style.background-color="{{ selectedTheme()!.bg_color }}"
   (window:resize)="resize()"
   #header
 >
@@ -80,7 +66,6 @@
                     [useSrcset]="true"
                     [defaultImage]="'/assets/default.png'"
                     [lazyLoad]="items![product].nft?.img ?? '/assets/default.png'"
-                    alt="ok"
                     style="
                       object-fit: cover;
                       aspect-ratio: 1;
@@ -163,7 +148,6 @@
                 [useSrcset]="true"
                 [defaultImage]="'/assets/default.png'"
                 [lazyLoad]="img"
-                alt="ok"
               />
             </a>
           </div>
@@ -218,12 +202,7 @@
         ></div>
       </div>
     </div>
-    <div
-      class="mb-0 bg-{{ (storeInfo?.colorStyle)!.back_code }}"
-      *ngIf="page?.fullscreen ?? false"
-    >
-      <h3 class="h-100 w-100 text-center text-muted">Powered By Thred</h3>
-    </div>
+
   </div>
 </section>
 

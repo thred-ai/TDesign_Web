@@ -249,7 +249,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit(): void {
     this.resizeService.addResizeEventListener(this.el?.nativeElement, (elem: ElementRef) => {
       let height = this.el?.nativeElement.scrollHeight ?? 0
-      this.resize(height)
+      if (height >= window.innerHeight * 0.8){
+        this.resize(height)
+      }
     });
   }
   resize(height = document.documentElement.getBoundingClientRect().height){

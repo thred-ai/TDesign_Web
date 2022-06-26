@@ -701,7 +701,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         document
           .getElementById('body')
           ?.classList.add(
-            'bg-' + (color ?? this.storeInfo?.colorStyle.back_code)
+            'bg-transparent'
           );
       }
     }

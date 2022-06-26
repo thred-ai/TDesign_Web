@@ -59,8 +59,8 @@
         <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon text-dark">public</mat-icon>
-          <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
-            Activity
+          <span class="ms-2 text-dark big-design-body fw-bold">
+            Customer Activity
           </span>
         </ng-template>
         <div
@@ -70,7 +70,7 @@
           <div class="w-100 w-md-50 h-md-100 bg-white">
             <div class="big-design-card m-3">
               <div class="big-design-header">
-                <p class="big-design-title">Top Activity</p>
+                <p class="big-design-title">Top Engagement</p>
                 <a
                   class="big-design-button"
                   (click)="scrollToLocation()"
@@ -322,8 +322,8 @@
           >
             rocket_launch</mat-icon
           >
-          <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
-            Assets
+          <span class="ms-2 text-dark big-design-body fw-bold">
+            Token Collections
           </span>
         </ng-template>
         <div class="tab">
@@ -384,15 +384,15 @@
         <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon"> web</mat-icon>
-          <span class="ms-2"> Pages </span>
+          <span class="ms-2 big-design-body fw-bold"> Token Pages </span>
         </ng-template>
         <div class="w-100">
           <div
-            class="row row-cols-1 row-cols-md-2 justify-content-center ps-4 w-100 align-items-start mt-3"
+            class="row row-cols-1 row-cols-md-2 justify-content-start ps-4 w-100 align-items-start mt-3"
             style="overflow-x: hidden"
           >
             <div
-              class="col p-1 py-md-3 px-md-3"
+              class="col p-1 py-md-2 px-md-3"
               *ngFor="let page of storeInfo?.pages ?? []"
             >
               <!-- (click)="showLayoutModal(page)" -->
@@ -407,13 +407,22 @@
                   <p class="big-design-title">
                     {{ page.title }}
                   </p>
+                  <div class="d-inline-flex justify-content-end align-items-center">
+                    <a
+                    role="button"
+                    (click)="viewPage(page)"
+                    class="big-design-alt-button me-2"
+                  >
+                    View
+                  </a>
                   <a
                     role="button"
                     (click)="showLayoutModal(page)"
                     class="big-design-button"
                   >
-                    Edit Page
+                    Edit
                   </a>
+                  </div>
                   <!-- <div
                     class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
                   >
@@ -463,7 +472,7 @@
           <mat-icon class="example-tab-icon text-dark">
             account_circle</mat-icon
           >
-          <span class="ms-2 text-{{ (storeInfo?.colorStyle)!.text_code }}">
+          <span class="ms-2 text-dark big-design-body fw-bold">
             Account
           </span>
         </ng-template>

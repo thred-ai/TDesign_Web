@@ -42,7 +42,7 @@ import { MetaTag } from '../models/meta-tag.model';
 import { NFT } from '../models/nft.model';
 import { Store } from '../models/store.model';
 import { Collection } from '../models/collection.model';
-import * as html2canvas from 'htmlscreenshots15';
+import * as html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-layout-builder',
@@ -830,6 +830,19 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     glyphMargin: false,
     folding: false,
   };
+
+  deleting = false
+
+  deletePage(){
+    this.deleting = true
+    this.loadService.deletePage(
+      this.data.page,
+      (success) => {
+        this.dialogRef.close("DELETE")
+        this.deleting = false
+      },
+    );
+  }
 
   finishedEditing(isDelete: boolean = false) {
     if (this.editingBlock == undefined) {

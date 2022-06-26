@@ -263,7 +263,6 @@ export class LoadService {
       });
   }
 
-
   isLoading = true;
 
   registerTokens(tokens: Dict<any>[] = [], store: Store = Globals.storeInfo) {
@@ -630,7 +629,6 @@ export class LoadService {
     return network?.chainId == 137;
   }
 
-
   async getCryptoRates(callback: (arr: Array<Dict<any>>) => any) {
     var query = this.db.doc('Crypto_Rates/THRED_COINS');
     let sub = query.get().subscribe((doc) => {
@@ -641,7 +639,6 @@ export class LoadService {
       }
     });
   }
-
 
   parseColor(color?: string) {
     var finalArr = new Array<number>();
@@ -794,7 +791,7 @@ export class LoadService {
       if (c) {
         col = col?.concat(c);
       }
-      var counter = 0
+      var counter = 0;
       await Promise.all(
         col.map((collection: Collection) => {
           // let info = await this.getCollectionInfo(collection.contract);
@@ -825,7 +822,7 @@ export class LoadService {
             });
 
             collection.NFTs = products;
-            counter += 1
+            counter += 1;
 
             if (counter == col.length) {
               callback(col);
@@ -972,7 +969,6 @@ export class LoadService {
       provider
     );
 
-
     const data3 = await marketContract.fetchCollectionAssetsById(assets);
 
     const i = data3[0];
@@ -1102,7 +1098,6 @@ export class LoadService {
 
   adminComponent?: AdminViewComponent;
   homeComponent?: HomeComponent;
-
 
   hasEmptyProperties(obj: any, ignoreKeys: Array<string>) {
     for (var key in obj) {
@@ -1308,7 +1303,6 @@ export class LoadService {
       );
   }
 
-
   async linkCard(
     billing: any,
     details: Dict<any>,
@@ -1412,7 +1406,7 @@ export class LoadService {
           }
         });
     } else {
-      callback("Missing Fields.")
+      callback('Missing Fields.');
     }
   }
 
@@ -1496,11 +1490,9 @@ export class LoadService {
       );
   }
 
-
   isUndefined(element: any) {
     return element == undefined || element == null || element == '';
   }
-
 
   isBase64(str: string) {
     try {
@@ -1509,7 +1501,6 @@ export class LoadService {
       return false;
     }
   }
-
 
   async deployCollection(
     name: string,
@@ -1529,7 +1520,7 @@ export class LoadService {
       domain,
       thredMarketplace,
       royaltyAddress,
-      generatePage
+      generatePage,
     };
 
     this.functions
@@ -1550,10 +1541,8 @@ export class LoadService {
       );
   }
 
-
   async saveStore(mappedData: Dict<any>) {
     // let uid = (await this.isLoggedIn())?.uid;
-
     // if (mappedData.images?.length > 0) {
     //   mappedData.image_list = new Array<string>();
     //   await mappedData.images.forEach(async (image: Dict<string>) => {
@@ -1561,7 +1550,6 @@ export class LoadService {
     //     let url = await this.uploadStoreImages(image.img, image.type, uid);
     //   });
     // }
-
     // await this.saveStoreInfo(mappedData, uid);
   }
 
@@ -1581,7 +1569,6 @@ export class LoadService {
 
     return url;
   }
-
 
   private async uploadLayoutImages(image: string, type: string, uid?: string) {
     const filePath = 'Users/' + uid + '/Layouts/' + type + '.png';
@@ -1720,15 +1707,18 @@ export class LoadService {
     //add token later
 
     this.getCollection(collectionAddress, async (col?: Collection) => {
-      if (col){
-        const image = await this.saveNftImage(img, `${collectionAddress}${(col.collectionCount ?? 0) + 1}`)
+      if (col) {
+        const image = await this.saveNftImage(
+          img,
+          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`
+        );
 
         const added = await client.add(model, {
           progress: (prog) => console.log(`received: ${prog}`),
         });
 
         const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
-      
+
         var data1 = {
           name,
           description,
@@ -1738,9 +1728,9 @@ export class LoadService {
           traits: traits && traits !== [] ? traits : undefined,
           utility,
         };
-      
+
         const data2 = JSON.stringify(data1);
-      
+
         const added2 = await client.add(data2);
         const url = `https://ipfs.infura.io/ipfs/${added2.path}`;
 
@@ -1759,7 +1749,7 @@ export class LoadService {
             utility,
           } as Dict<any>)
         );
-    
+
         this.functions
           .httpsCallable('generateAsset')(data)
           .pipe(first())
@@ -1777,11 +1767,8 @@ export class LoadService {
             }
           );
       }
-    })
-    
-    
+    });
   }
-
 
   // async saveStoreInfo(mappedData: Dict<any>, uid?: string) {
   //   var data: Dict<any> = {};
@@ -1868,29 +1855,30 @@ export class LoadService {
     return k.toString();
   }
 
-
   async deletePage(
     page: Page,
     callback: (success: boolean) => any,
-    uid?: string
   ) {
-    var pages = JSON.parse(JSON.stringify(Globals.storeInfo?.pages ?? []));
-
-    let i = pages.findIndex((p: any) => p.id == page.id);
-
-    pages.splice(i, 1);
-
-    var data = {
-      pages: pages,
-    };
-
-    if (uid && data) {
-      await this.db.collection('Users').doc(uid).update(data);
-      if (data.pages) {
-        Globals.storeInfo!.pages = data.pages ?? [];
-      }
-    }
-    callback(true);
+    this.functions
+      .httpsCallable('deletePage')({
+        docID: page.id,
+      })
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          if (resp as Page) {
+            Globals.storeInfo!.pages = resp ?? [];
+            Globals.sInfo.next(Globals.storeInfo);
+            callback(true);
+          } else {
+            callback(false);
+          }
+        },
+        (err) => {
+          console.error({ err });
+          callback(false);
+        }
+      );
   }
 
   async addLayout(
@@ -1952,7 +1940,7 @@ export class LoadService {
       pages[i].seo = page.seo;
       pages[i].loader = page.loader;
       pages[i].img = url;
-      pages[i].bigcId = page.bigcId
+      pages[i].bigcId = page.bigcId;
     } else {
       page.id = uuid().replace('-', '');
       page.img = url;
@@ -1972,7 +1960,6 @@ export class LoadService {
     callback(true);
   }
 
-
   openSnackBar(
     message: string,
     timeDuration = 1000,
@@ -1986,7 +1973,6 @@ export class LoadService {
     });
   }
 
-
   isLoggedIn() {
     return this.auth.authState.pipe(first()).toPromise();
   }
@@ -1995,11 +1981,9 @@ export class LoadService {
     return this.auth.authState;
   }
 
-
   roundedFavIconLink() {
     return Globals.storeInfo?.profileLink;
   }
-
 
   async authenticated() {
     const user = await this.isLoggedIn();
@@ -2009,7 +1993,6 @@ export class LoadService {
       return false;
     }
   }
-
 
   async getCoords() {
     let value = (await this.http
@@ -2034,7 +2017,6 @@ export class LoadService {
       address,
     };
   }
-
 
   addDays(date: Date, days: number) {
     return new Date(
@@ -2095,7 +2077,6 @@ export class LoadService {
         if (isPlatformBrowser(this.platformID)) sub.unsubscribe();
       });
   }
-
 
   splitToBulks(arr: Array<any>, bulkSize = 10) {
     const bulks = [];
@@ -2226,7 +2207,6 @@ export class LoadService {
     console.log(estimatedGas.toNumber());
   }
 
-
   getURL(productID: string) {
     return (
       'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
@@ -2236,7 +2216,6 @@ export class LoadService {
       '.png?alt=media'
     );
   }
-
 
   getProfileURL(uid: string, dpID: string) {
     if (Globals.isNewUser) {
@@ -2258,5 +2237,4 @@ export class LoadService {
   getAltURL() {
     return 'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Flink_empty.jpeg?alt=media';
   }
-
 }
