@@ -296,7 +296,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       url: `${document.referrer}${this.location.pathname.replace("/" + this.getStoreName().link + "/", "")}`
     };
 
-    let url = `https://${Globals.ngrokId}/${this.getStoreName().link}/nft/${
+    let url = `https://${'shopmythred.com'}/${this.getStoreName().link}/nft/${
       product.docID
     }?info=${this.utf8ToHex(JSON.stringify(data))}`;
     
