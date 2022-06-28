@@ -46,6 +46,7 @@ import { filter, map, skip, takeLast } from 'rxjs/operators';
 import { Store } from '../models/store.model';
 import { NftInfoComponent } from './nft-info/nft-info.component';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { FormBuilder, Validators } from '@angular/forms';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -175,6 +176,17 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ethereum: any;
 
+  signInForm = this.fb.group({
+    email: [null, Validators.required],
+    password: [null],
+  });
+
+  signUpForm = this.fb.group({
+    email: [null, Validators.required],
+    password: [null],
+    confirmPassword: [null],
+  });
+
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
     private cdr: ChangeDetectorRef,
@@ -188,7 +200,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     private spinner: NgxSpinnerService,
     private routingService: RoutingService,
     private dialog: MatDialog,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private fb: FormBuilder,
   ) {
     Globals.selectedTemplate = undefined;
     Globals.selectedCurrency = undefined;
@@ -498,6 +511,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   buyItem(){
     this.mode = 1
+  }
+
+  signUpMode(){
+    this.mode = 2
   }
 
   closeItem(){

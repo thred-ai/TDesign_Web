@@ -358,24 +358,181 @@
       </div>
 
       <div
-        class="w-100 big-design-card position-absolute h-100 animate__animated animate__fadeInUp animate__faster animate__delay-0s"
+        class="w-100 big-design-card position-absolute vh-60 h-md-100 animate__animated animate__fadeInUp animate__faster animate__delay-0s"
         style="z-index: 10000"
-        *ngIf="mode == 1"
+        *ngIf="mode == 1 || mode == 2 || mode == 3"
       >
-      <div class="big-design-header">
-        
-        <h2 class="big-design-title">
-          {{productToBuy.name}}
-        </h2>
-        <a class="text-dark" role="button" (click)="closeItem()">
-          <mat-icon>
-            close
-          </mat-icon>
-        </a>
+        <div class="w-100" *ngIf="mode == 1">
+          <div class="big-design-header">
+            <h2 class="big-design-title">Sign in to account</h2>
+            <a class="text-dark" role="button" (click)="closeItem()">
+              <mat-icon> close </mat-icon>
+            </a>
+          </div>
+          <div class="big-design-body">
+            <form [formGroup]="signInForm">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+                <p class="my-0 big-design-input-title text-start">Email address</p>
+                <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                  floatLabel="never"
+                  style="font-size: small"
+                >
+                  <input
+                    matInput
+                    class="bg-transparent big-design-input-text"
+                    type="email"
+                    name="email"
+                    formControlName="email"
+                    [disabled]="true"
+                    placeholder="Email address"
+                  />
+                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                </mat-form-field>
+              </div>
+              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+                <p class="my-0 big-design-input-title text-start">Password</p>
+                <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                  floatLabel="never"
+                  style="font-size: small"
+                  
+                >
+                  <input
+                    matInput
+                    class="bg-transparent big-design-input-text"
+                    type="password"
+                    name="password"
+                    formControlName="password"
+                    [disabled]="true"
+                    placeholder="Password"
+                  />
+                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                </mat-form-field>
+              </div>
+              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName ?? ''">
+                <div class="w-100 w-md-auto">
+                  <a class="btn btn-dark w-100 w-md-auto">
+                    Continue
+                  </a>
+                  <a class="btn btn-outline-dark ms-md-2 w-100 w-md-auto my-2 my-md-0" (click)="signUpMode()">
+                    Create account
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="w-100" *ngIf="mode == 2">
+          <div class="big-design-header">
+            <h2 class="big-design-title">Create new account</h2>
+            <a class="text-dark" role="button" (click)="closeItem()">
+              <mat-icon> close </mat-icon>
+            </a>
+          </div>
+          <div class="big-design-body">
+            <form [formGroup]="signUpForm">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+                <p class="my-0 big-design-input-title text-start">Email address</p>
+                <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                  floatLabel="never"
+                  style="font-size: small"
+                >
+                  <input
+                    matInput
+                    class="bg-transparent big-design-input-text"
+                    type="email"
+                    name="email"
+                    formControlName="email"
+                    [disabled]="true"
+                    placeholder="Email address"
+                  />
+                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                </mat-form-field>
+              </div>
+              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+                <p class="my-0 big-design-input-title text-start">Password</p>
+                <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                  floatLabel="never"
+                  style="font-size: small"
+                  
+                >
+                  <input
+                    matInput
+                    class="bg-transparent big-design-input-text"
+                    type="password"
+                    name="password"
+                    formControlName="password"
+                    [disabled]="true"
+                    placeholder="Password"
+                  />
+                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                </mat-form-field>
+              </div>
+              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+                <p class="my-0 big-design-input-title text-start">Confirm Password</p>
+                <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                <mat-form-field
+                  class="w-100"
+                  appearance="outline"
+                  floatLabel="never"
+                  style="font-size: small"
+                  
+                >
+                  <input
+                    matInput
+                    class="bg-transparent big-design-input-text"
+                    type="password"
+                    name="password"
+                    formControlName="confirmPassword"
+                    [disabled]="true"
+                    placeholder="Confirm password"
+                  />
+                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                </mat-form-field>
+              </div>
+              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName ?? ''">
+                <div class="w-100 w-md-auto">
+                  <a class="btn btn-dark w-100 w-md-auto">
+                    Continue
+                  </a>
+                  <a class="btn btn-outline-dark ms-md-2 w-100 w-md-auto my-2 my-md-0" (click)="buyItem()">
+                    Sign in
+                  </a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="w-100" *ngIf="mode == 3">
+          <div class="big-design-header">
+            <h2 class="big-design-title">Checkout</h2>
+            <a class="text-dark" role="button" (click)="closeItem()">
+              <mat-icon> close </mat-icon>
+            </a>
+          </div>
+        </div>
       </div>
-
-    </div>
-      
     </div>
   </div>
 </div>
