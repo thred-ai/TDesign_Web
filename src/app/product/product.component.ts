@@ -481,8 +481,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       let info = JSON.parse(this.hexToUtf8(storeInfo));
 
       this.loadService.getPost(info.docId, (product?: NFT, collection?: Collection) => {
-        this.productToBuy = Object.assign(new NFT(), product);
-        this.collection = Object.assign(new Collection(), collection);
+        this.productToBuy = product;
+        this.collection = collection;
         this.url = info.url ?? ""
         this.checkLoad();
       })
