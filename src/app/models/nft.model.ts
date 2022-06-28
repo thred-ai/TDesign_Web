@@ -27,10 +27,11 @@ export class NFT {
     ).toLowerCase();
   }
 
-  get hashedTokenId() {
+  hashedTokenId() {
     let strTokenId = String(this.tokenId);
     let zero = ethers.constants.HashZero;
 
+    console.log(this.tokenId)
     return zero.substring(0, zero.length - strTokenId.length) + strTokenId;
   }
 

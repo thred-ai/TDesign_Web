@@ -691,7 +691,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   setFavIcon(link: string) {
     if (isPlatformBrowser(this.platformID)) {
       this.createLinkForFavURL(link);
-      this.setBodyColor();
+      // this.setBodyColor();
     }
   }
 
@@ -708,7 +708,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   addConfig() {
-    this.setBodyColor('dark');
+    // this.setBodyColor('dark');
     this.createLinkForFavURL(
       'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Resources%2Ffavicon_thred.png?alt=media'
     );

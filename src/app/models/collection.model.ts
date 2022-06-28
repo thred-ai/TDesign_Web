@@ -95,14 +95,14 @@ export class Collection implements ICollection {
   }
 
   constructor(
-    name: string,
-    symbol: string,
-    contract: string,
-    currency: string,
-    collectionCount: number,
-    isPublic: boolean,
-    uid: string,
-    timestamp: Date,
+    name?: string,
+    symbol?: string,
+    contract?: string,
+    currency?: string,
+    collectionCount: number = 0,
+    isPublic?: boolean,
+    uid?: string,
+    timestamp?: Date,
     domain: string = 'THRED-NFT',
     royalty?: string,
     available?: boolean,
@@ -113,9 +113,9 @@ export class Collection implements ICollection {
     this.symbol = symbol ?? '';
     this.collectionCount = collectionCount ?? 0;
 
-    this.contract = contract;
+    this.contract = contract ?? '';
 
-    this.NFTs = this.nftCount(collectionCount, contract);
+    this.NFTs = this.nftCount(collectionCount, contract ?? "");
 
     this.royalty = royalty
 

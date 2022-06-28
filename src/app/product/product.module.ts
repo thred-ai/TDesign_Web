@@ -22,6 +22,8 @@ import { NgxCurrencyModule } from 'ngx-currency';
 import { MatRadioModule } from '@angular/material/radio';
 import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
 import { NftInfoComponent } from './nft-info/nft-info.component'; // <-- import it
+import { SharedModule } from '../shared/shared.module'; // <-- import it
+import { MatTabsModule } from '@angular/material/tabs';
 
 const routes: Routes = [
   {
@@ -48,16 +50,17 @@ const routes: Routes = [
     HttpClientModule,
     NgxSpinnerModule,
     LazyLoadImageModule,
-    
     NgbModule,
     DragScrollModule,
     MatExpansionModule,
     MatTableModule,
+    MatTabsModule,
     ApplicationPipesModule,
     ReactiveFormsModule,
     NgxCurrencyModule,
     MatRadioModule,
     RouterModule.forChild(routes),
+    SharedModule,
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

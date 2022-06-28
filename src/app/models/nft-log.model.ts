@@ -24,15 +24,15 @@ export class NftLog {
 
   get logEvent(){
     if (this.event == 'mint'){
-      return 'NFT was minted'
+      return 'Item was minted'
     }
     else if (this.event == 'sale'){
-      return 'NFT was sold'
+      return 'Item was sold'
     }
     else if (this.event == 'list'){
-      return 'NFT was listed'
+      return 'Item was listed'
     }
-    return 'NFT was transferred'
+    return 'Item was transferred'
   }
 
   constructor(

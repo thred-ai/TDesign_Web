@@ -544,9 +544,10 @@ export class LoadService {
   getEvents(nft: NFT, callback: (transactions: Array<NftLog>) => any) {
     const data = {
       contract: nft.address,
-      tokenId: nft.hashedTokenId,
+      tokenId: nft.hashedTokenId(),
       test: false,
     };
+    console.log(data)
     this.functions
       .httpsCallable('getTransactionHistory')(data)
       .pipe(first())
@@ -554,8 +555,8 @@ export class LoadService {
         async (resp) => {
           let hashes = resp.result as any[];
           if (hashes) {
-            // console.log(hashes)
             var logs = new Array<NftLog>();
+
             await Promise.all(
               hashes.map(async (t) => {
                 var type = '';
@@ -1855,10 +1856,7 @@ export class LoadService {
     return k.toString();
   }
 
-  async deletePage(
-    page: Page,
-    callback: (success: boolean) => any,
-  ) {
+  async deletePage(page: Page, callback: (success: boolean) => any) {
     this.functions
       .httpsCallable('deletePage')({
         docID: page.id,
@@ -2114,22 +2112,37 @@ export class LoadService {
           let nfts = docDatas.docs.map((doc) => doc.data()) as NFT[];
 
           nfts.forEach((n) => {
-            let co = new Collection(
-              '',
-              '',
-              n.address,
-              'USD',
-              0,
-              true,
-              Globals.storeInfo?.uid ?? '',
-              new Date()
-            );
-            cols[`${n.docID}`] = { nft: n, collection: co };
+            this.getCols(n, cols, (collection?: Collection) => {
+              cols[`${n.docID}`] = { nft: n, collection: collection! };
+            });
           });
         });
       })
     );
     callback(cols);
+  }
+
+  getCols(
+    n: NFT,
+    cols: Dict<{
+      nft: NFT;
+      collection: Collection;
+    }>,
+    callback: (col?: Collection) => any
+  ) {
+    let same = Object.values(cols).find((c) => c.nft.address == n.address);
+    if (same) {
+      callback(same.collection);
+    } else {
+      this.getCollection(n.address, async (co) => {
+        if (!co) {
+          callback(undefined);
+          return;
+        }
+        callback(co);
+        return;
+      });
+    }
   }
 
   async getPost(

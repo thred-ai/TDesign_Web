@@ -24,13 +24,11 @@ export class ModelViewerComponent implements OnInit {
   pro = 0
 
   visible(event: any){
-    console.log(event)
     this.obj = event
     this.cdr.detectChanges()
   }
 
   progress(event: any){
-    console.log(event)
     this.pro = ((event.detail.totalProgress ?? 0) * 100)
   }
 

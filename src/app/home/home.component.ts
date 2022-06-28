@@ -36,8 +36,10 @@ import { NFT } from '../models/nft.model';
 import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
 import { filter, map } from 'rxjs/operators';
-import { ResizeService } from '../resize-events/resize.service'
+import { ResizeService } from '../resize-events/resize.service';
 import { DragScrollComponent } from 'ngx-drag-scroll';
+import { MatDialog } from '@angular/material/dialog';
+import { ethers } from 'ethers';
 
 @Component({
   selector: 'app-home',
@@ -237,7 +239,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     private sanitizer: DomSanitizer,
     private location: PlatformLocation,
     private fb: FormBuilder,
-    private resizeService: ResizeService
+    private resizeService: ResizeService,
+    private dialog: MatDialog
   ) {
     _router.events.subscribe((event: any) => {
       // You only receive NavigationStart events
@@ -247,14 +250,17 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
   ngAfterViewInit(): void {
-    this.resizeService.addResizeEventListener(this.el?.nativeElement, (elem: ElementRef) => {
-      let height = this.el?.nativeElement.scrollHeight ?? 0
-      if (height >= window.innerHeight * 0.8){
-        this.resize(height)
+    this.resizeService.addResizeEventListener(
+      this.el?.nativeElement,
+      (elem: ElementRef) => {
+        let height = this.el?.nativeElement.scrollHeight ?? 0;
+        if (height >= window.innerHeight * 0.8) {
+          this.resize(height);
+        }
       }
-    });
+    );
   }
-  resize(height = document.documentElement.getBoundingClientRect().height){
+  resize(height = document.documentElement.getBoundingClientRect().height) {
     window.parent.postMessage(height, '*');
   }
 
@@ -264,11 +270,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resizeService.removeResizeEventListener(this.el?.nativeElement);
   }
 
-  @ViewChild('header', { read: ElementRef, static:false }) el?: ElementRef;
-
+  @ViewChild('header', { read: ElementRef, static: false }) el?: ElementRef;
 
   ngOnInit(): void {
-    
     this.loadService.homeComponent = this;
     Globals.sInfo.subscribe((s) => {
       this.storeInfo = s;
@@ -276,8 +280,61 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     this.init();
   }
 
-  routeToProduct(product: NFT) {
-    this.rootComponent.routeToProduct(product.docID ?? '');
+  utf8ToHex(str: string) {
+    return Array.from(str)
+      .map((c) =>
+        c.charCodeAt(0) < 128
+          ? c.charCodeAt(0).toString(16)
+          : encodeURIComponent(c).replace(/\%/g, '').toLowerCase()
+      )
+      .join('');
+  }
+
+  routeToProduct(product: NFT, collection: Collection) {
+    let data = {
+      store: this.storeInfo,
+      product: product,
+      url: `${document.referrer}${this.location.pathname.replace("/" + this.getStoreName().link + "/", "")}`
+    };
+
+    let url = `https://${'shopmythred.com'}/${this.getStoreName().link}/nft/${
+      product.docID
+    }?info=${this.utf8ToHex(JSON.stringify(data))}`;
+    
+    window.parent.postMessage(
+      {
+        open: url,
+        theme: this.selectedTheme(),
+        style: Globals.storeInfo.colorStyle,
+        font: Globals.storeInfo.fontName,
+      },
+      '*'
+    );
+    // const modalRef = this.dialog.open(, {
+    //   width: '97.5vw',
+    //   height: '97.5vh',
+    //   maxHeight: '100vh',
+    //   maxWidth: '100vw',
+    //   panelClass: 'app-full-bleed-sm-dialog',
+    //   data: {
+    //     product,
+    //   },
+    // });
+
+    // let sub = modalRef.afterClosed().subscribe(async (layouts: any) => {
+    //   sub.unsubscribe();
+    //   if (layouts == 'DELETE') {
+    //     this.toast('Page Deleted!');
+    //     return;
+    //   } else if (layouts && layouts != '0') {
+    //     if (index) {
+    //       this.storeInfo!.pages![index] = layouts.page;
+    //     }
+    //     this.toast('Page Saved!');
+    //   } else if (layouts == '0') {
+    //     this.toast('Unable to save Page! Try Again Later.');
+    //   }
+    // });
   }
 
   routeToShop() {
@@ -363,9 +420,9 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   callback() {
     if (Globals.storeInfo?.username) {
-      this.rootComponent.setFavIcon(
-        Globals.storeInfo?.profileLink?.toString() ?? ''
-      );
+      // this.rootComponent.setFavIcon(
+      //   Globals.storeInfo?.profileLink?.toString() ?? ''
+      // );
 
       const routeParams = this.router.snapshot.paramMap;
       const storeID = routeParams.get('page') as string;
@@ -373,7 +430,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       let rows = page?.rows;
 
       if (page && rows && rows != []) {
-        this.addTags(page);
+        // this.addTags(page);
 
         this.homeRows = rows;
         this.page = page;
@@ -387,7 +444,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
           this.cdr.detectChanges();
           if (isPlatformBrowser(this.platformID)) {
             // setTimeout(() => {
-              
             // }, 500);
           }
         });

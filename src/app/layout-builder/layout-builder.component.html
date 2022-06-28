@@ -91,7 +91,8 @@
                   </div>
                   <div class="m-0 h-100 w-100">
                     <div
-                      class="card shadow my-1 me-1 p-1 zoom"
+                      class="big-design-card h-100 shadow my-1 me-1 p-1 zoom"
+                      role="button"
                       (mouseover)="changeStyle($event, i)"
                       (mouseout)="changeStyle($event, i)"
                       style="position: relative"
@@ -219,43 +220,7 @@
                           </div>
                         </div>
                       </div>
-                      <div
-                        class="row gx-0 row-cols-1 row-cols-md-{{
-                          (aRow.index == i ? aRow?.row : undefined)?.grid_row ??
-                            row.grid_row ??
-                            1
-                        }} justify-content-center mw-100 px-3 mb-1"
-                        *ngIf="
-                          ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                            row.type) ==
-                          3
-                        "
-                        style="pointer-events: none"
-                      >
-                        <div
-                          class="col text-center mt-1 px-1"
-                          *ngFor="
-                            let button of (aRow.index == i
-                              ? aRow?.row
-                              : undefined
-                            )?.buttons ??
-                              row.buttons ??
-                              []
-                          "
-                        >
-                          <a
-                            *ngIf="button.text != ''"
-                            class="text-center fw-bolder p-1 px-3 btn {{
-                              matchingStyle(button.style)
-                            }} my-auto"
-                            style="text-decoration: none; font-size: 5px"
-                            style.background-color="{{ button.bg_color }}"
-                            style.color="{{ button.text_color }}"
-                          >
-                            {{ button.text }}
-                          </a>
-                        </div>
-                      </div>
+
                       <div
                         class="row gx-0 row-cols-1 row-cols-md-{{
                           (aRow.index == i ? aRow?.row : undefined)?.grid_row ??
@@ -331,60 +296,7 @@
                         <h1 class="m-2 text-center fw-bolder">CUSTOM HTML</h1>
                       </div>
 
-                      <div
-                        *ngIf="
-                          ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                            row.type) ==
-                            5 ||
-                          ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                            row.type) ==
-                            6
-                        "
-                        class="w-100 w-md-75 mt-3 card text-{{
-                          (storeInfo?.colorStyle)!.text_code
-                        }} bg-{{ (storeInfo?.colorStyle)!.back_code }} mx-auto"
-                      >
-                        <mat-form-field
-                          *ngIf="
-                            ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                              row.type) ==
-                            6
-                          "
-                          class="h-100 m-3 my-0 mb-0"
-                        >
-                          <mat-placeholder [style.color]="selectedTheme!.color"
-                            >Name</mat-placeholder
-                          >
-                          <input
-                            type="text"
-                            matInput
-                            class="text-{{
-                              (storeInfo?.colorStyle)!.text_code
-                            }}"
-                            style.color="{{ selectedTheme!.color }}"
-                          />
-                        </mat-form-field>
-                        <mat-form-field
-                          *ngIf="
-                            ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                              row.type) ==
-                            6
-                          "
-                          class="h-100 m-3 my-0"
-                        >
-                          <mat-placeholder [style.color]="selectedTheme!.color"
-                            >Email</mat-placeholder
-                          >
-                          <input
-                            type="email"
-                            matInput
-                            class="text-{{
-                              (storeInfo?.colorStyle)!.text_code
-                            }}"
-                            style.color="{{ selectedTheme!.color }}"
-                          />
-                        </mat-form-field>
-                      </div>
+  
 
                       <div
                         class="w-100 h-100"
@@ -441,9 +353,14 @@
                       class="d-flex align-items-center big-design-input-text"
                       *ngIf="matchingType(rowForm.controls.type.value)"
                     >
-                      Type: {{ matchingType(rowForm.controls.type.value)!.name }}
+                      Type:
+                      {{ matchingType(rowForm.controls.type.value)!.name }}
                     </mat-select-trigger>
-                    <mat-option class="big-design-input-text" *ngFor="let type of types" [value]="type.code">
+                    <mat-option
+                      class="big-design-input-text"
+                      *ngFor="let type of types"
+                      [value]="type.code"
+                    >
                       <!-- <mat-icon >{{type.icon}}</mat-icon> -->
                       {{ type.name }}
                     </mat-option>
@@ -484,7 +401,7 @@
                   "
                 >
                   <mat-select
-                  class="big-design-input-text"
+                    class="big-design-input-text"
                     formControlName="grid"
                     (selectionChange)="changed($event)"
                   >
@@ -494,174 +411,16 @@
                     >
                       {{ rowForm.controls.grid.value }} Item(s) Per. Row
                     </mat-select-trigger>
-                    <mat-option *ngFor="let g of grid" class="big-design-input-text" [value]="g.name">
+                    <mat-option
+                      *ngFor="let g of grid"
+                      class="big-design-input-text"
+                      [value]="g.name"
+                    >
                       <!-- <mat-icon >{{type.icon}}</mat-icon> -->
                       {{ g.name }} Per. Row
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-
-                <div
-                  cdkDropList
-                  class="rounded shadow bg-light w-100 h-100 px-1"
-                  (cdkDropListDropped)="drop($event, false, true)"
-                  style="overflow-y: scroll"
-                  *ngIf="rowForm.controls.type.value == 3"
-                >
-                  <div
-                    class="example-box p-2 my-1 bg-white rounded"
-                    *ngFor="let button of buttons; index as i"
-                    cdkDrag
-                  >
-                    <div class="h-100 w-100" style="position: relative">
-                      <a
-                        role="button"
-                        class="btn"
-                        style.background-color="button.bg_color ?? 'black'"
-                        style.color="button.text_color ?? 'light'"
-                      >
-                      </a>
-                      <!-- (click)="removeImg(image)" -->
-                      <!-- *ngIf="image.isActive && canCancel()" -->
-
-                      <div
-                        style="position: absolute; top: 0; right: 0"
-                        *ngIf="canCancel(true)"
-                      >
-                        <a
-                          class="ani-style"
-                          role="button"
-                          (click)="removeBtn(button)"
-                          ><mat-icon>cancel</mat-icon></a
-                        >
-                      </div>
-
-                      <mat-form-field class="w-100 my-1">
-                        <mat-placeholder>Button Text</mat-placeholder>
-                        <input
-                          type="text"
-                          matInput
-                          [ngModelOptions]="{ standalone: true }"
-                          [(ngModel)]="button.text"
-                          style="font-size: small"
-                          class="text-dark"
-                        />
-                      </mat-form-field>
-                      <mat-form-field class="w-100" appearance="outline">
-                        <mat-label>Button Style</mat-label>
-                        <mat-select
-                          [ngModelOptions]="{ standalone: true }"
-                          [(ngModel)]="button.style"
-                        >
-                          <mat-option
-                            *ngFor="let btnType of btnTypes"
-                            [value]="btnType.code"
-                          >
-                            <!-- <mat-icon >{{type.icon}}</mat-icon> -->
-                            {{ btnType.name }}
-                          </mat-option>
-                        </mat-select>
-                      </mat-form-field>
-
-                      <mat-radio-group
-                        class="w-100 my-4"
-                        [ngModelOptions]="{ standalone: true }"
-                        [(ngModel)]="button.submit"
-                      >
-                        <div class="w-100">
-                          <mat-radio-button
-                            [value]="true"
-                            (change)="radioChangeBtn($event, i)"
-                            >Submit Button</mat-radio-button
-                          >
-                        </div>
-                        <div class="mt-2">
-                          <mat-radio-button
-                            [value]="false"
-                            (change)="radioChangeBtn($event, i)"
-                            >Standalone Button</mat-radio-button
-                          >
-                        </div>
-                      </mat-radio-group>
-
-                      <mat-form-field class="my-4 w-100" appearance="fill">
-                        <mat-label>Font Size</mat-label>
-                        <input
-                          matInput
-                          type="number"
-                          placeholder="Ex. 12"
-                          [ngModelOptions]="{ standalone: true }"
-                          [(ngModel)]="button.fontsize"
-                          min="5"
-                        />
-                        <span matSuffix>px</span>
-                      </mat-form-field>
-                      <mat-label
-                        class="mt-2 text-secondary"
-                        style="font-size: small"
-                        >Button Text Color</mat-label
-                      >
-                      <div class="card w-100 mb-2">
-                        <a
-                          role="button"
-                          role="button"
-                          class="btn w-100"
-                          [cpPosition]="'top'"
-                          [cpPositionRelativeToArrow]="true"
-                          [style.background]="button.text_color"
-                          (colorPickerSelect)="button.text_color = $event"
-                          [cpOutputFormat]="'rgba'"
-                          [cpOKButton]="true"
-                          [cpOKButtonText]="'SET COLOR'"
-                          [cpOKButtonClass]="'btn btn-dark'"
-                          [cpSaveClickOutside]="false"
-                          [(colorPicker)]="button.text_color!"
-                        >
-                          <mat-icon class="mt-1">colorize</mat-icon>
-                        </a>
-                      </div>
-
-                      <mat-label
-                        class="placeholder mt-2 text-secondary"
-                        style="font-size: small"
-                        >Button Fill Color</mat-label
-                      >
-                      <div class="card w-100 mb-2">
-                        <a
-                          role="button"
-                          role="button"
-                          class="btn w-100"
-                          [cpPosition]="'top'"
-                          [cpPositionRelativeToArrow]="true"
-                          [style.background]="button.bg_color"
-                          (colorPickerSelect)="button.bg_color = $event"
-                          [cpOutputFormat]="'rgba'"
-                          [cpOKButton]="true"
-                          [cpOKButtonText]="'SET COLOR'"
-                          [cpOKButtonClass]="'btn btn-dark'"
-                          [cpSaveClickOutside]="false"
-                          [(colorPicker)]="button.bg_color!"
-                        >
-                          <mat-icon class="mt-1">colorize</mat-icon>
-                        </a>
-                      </div>
-
-                      <mat-form-field class="w-100 my-2" appearance="outline">
-                        <mat-label>Button Click URL</mat-label>
-                        <input
-                          type="text"
-                          matInput
-                          [ngModelOptions]="{ standalone: true }"
-                          [(ngModel)]="button.link"
-                          style="font-size: small"
-                          class="text-dark"
-                        />
-                        <mat-icon role="button" matSuffix>link</mat-icon>
-                      </mat-form-field>
-                    </div>
-                  </div>
-                </div>
-
                 <div
                   cdkDropList
                   class="rounded shadow bg-light w-100 h-100"
@@ -825,7 +584,7 @@
                     </mat-chip>
                     <!-- *ngIf='!allSelected()' -->
                     <input
-                    class="big-design-input-text"
+                      class="big-design-input-text"
                       *ngIf="!allSelected()"
                       placeholder="Products"
                       #productInput
@@ -939,7 +698,7 @@
           </div>
         </div>
       </div>
-      <div class="ms-md-4 w-100 w-md-75 h-100 py-3">
+      <div class="ms-md-4 w-100 w-md-75 h-100 py-3 pt-1">
         <div class="big-design-card h-100 w-100">
           <div
             class="w-100 h-100 big-design-body p-0"
@@ -1130,29 +889,6 @@
                     "
                     style="pointer-events: none"
                   >
-                    <div
-                      class="col text-center mt-3 px-3"
-                      *ngFor="
-                        let button of (aRow.index == i ? aRow?.row : undefined)
-                          ?.buttons ??
-                          row.buttons ??
-                          []
-                      "
-                    >
-                      <a
-                        role="button"
-                        *ngIf="button.text != ''"
-                        class="text-center fw-bolder px-4 btn {{
-                          matchingStyle(button.style)
-                        }} my-auto"
-                        style="text-decoration: none"
-                        [style.font-size.px]="button.fontsize"
-                        style.background-color="{{ button.bg_color }}"
-                        style.color="{{ button.text_color }}"
-                      >
-                        {{ button.text }}
-                      </a>
-                    </div>
                   </div>
                   <div
                     class="row gx-0 row-cols-1 row-cols-md-{{
@@ -1229,57 +965,6 @@
                           | safeHtml
                       "
                     ></iframe>
-                  </div>
-
-                  <div
-                    *ngIf="
-                      ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                        row.type) ==
-                        5 ||
-                      ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                        row.type) ==
-                        6
-                    "
-                    class="w-100 w-md-50 mt-3 card text-{{
-                      (storeInfo?.colorStyle)!.text_code
-                    }} bg-{{ (storeInfo?.colorStyle)!.back_code }} mx-auto"
-                  >
-                    <mat-form-field
-                      *ngIf="
-                        ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                          row.type) ==
-                        6
-                      "
-                      class="h-100 m-3 mb-0"
-                    >
-                      <mat-placeholder [style.color]="selectedTheme!.color"
-                        >Name</mat-placeholder
-                      >
-                      <input
-                        type="text"
-                        matInput
-                        class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
-                        style.color="{{ selectedTheme!.color }}"
-                      />
-                    </mat-form-field>
-                    <mat-form-field
-                      *ngIf="
-                        ((aRow.index == i ? aRow?.row : undefined)?.type ??
-                          row.type) ==
-                        6
-                      "
-                      class="h-100 m-3 mt-0"
-                    >
-                      <mat-placeholder [style.color]="selectedTheme!.color"
-                        >Email</mat-placeholder
-                      >
-                      <input
-                        type="email"
-                        matInput
-                        class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
-                        style.color="{{ selectedTheme!.color }}"
-                      />
-                    </mat-form-field>
                   </div>
                 </div>
               </div>
@@ -1457,36 +1142,31 @@
                 >
               </div>
             </mat-radio-group>
-
-            
           </div>
           <div class="col my-3">
-            <hr>
+            <hr />
           </div>
           <div class="col mt-0 mb-4">
-              <a class="big-design-button" (click)="deletePage()">
-                {{deleting ? 'Deleting' : 'Delete Page'}}
-                <div class="big-design-button-spinner" [hidden]="!deleting">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </a>
+            <a class="big-design-button" (click)="deletePage()">
+              {{ deleting ? "Deleting" : "Delete Page" }}
+              <div class="big-design-button-spinner" [hidden]="!deleting">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </a>
           </div>
         </div>
       </form>
     </div>
     <div class="w-100 w-md-50 h-100">
-      <div
-        class="h-100 w-100 px-md-5 mx-auto row row-cols-1 mt-0 justify-content-center align-items-top"
-        style="overflow-y: scroll"
-      >
+      <div class="h-100 w-100 px-md-5 mx-auto mt-0" style="overflow-y: scroll">
         <div
           id="back"
           role="button"
           style="aspect-ratio: 2/1"
-          class="col big-design-card mt-1"
+          class="big-design-card mt-1"
         >
           <div class="big-design-header">
             <p class="big-design-title">Page Builder</p>
@@ -1527,32 +1207,38 @@
             </div>
           </div>
         </div>
-        <div class="col w-100 big-design-card mt-1">
+        <div class="w-100 big-design-card mt-1" style="height: fit-content">
           <div class="big-design-header">
             <p class="big-design-title">Search Engine Listing Preview</p>
           </div>
-          <div class="mt-2">
+          <div class="mt-2 w-100">
             <p
-              class="mb-0"
+              class="mb-0 w-100"
               style="color: #2417af; font-family: Arial; font-size: large"
             >
               {{ this.layoutForm.controls.metaTitle.value ?? "" }}
             </p>
             <p
-              class="my-0"
+              class="my-0 w-100"
               style="color: #006521; font-family: Arial; font-size: small"
             >
               {{ urlText(true) ?? "" }}
             </p>
             <p
-              class="my-0"
-              style="color: #6e6e6e; font-family: Arial; font-size: small"
+              class="my-0 w-100"
+              style="
+                color: #6e6e6e;
+                font-family: Arial;
+                font-size: small;
+                line-break: auto;
+                word-break: break-all;
+              "
             >
               {{ this.layoutForm.controls.metaDesc.value ?? "" }}
             </p>
           </div>
         </div>
-        <div class="col w-100 big-design-card mt-1">
+        <!-- <div class="col w-100 big-design-card mt-1">
           <div class="big-design-header">
             <p class="big-design-title">Social Link Preview</p>
           </div>
@@ -1589,7 +1275,7 @@
               </p>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </mat-dialog-content>

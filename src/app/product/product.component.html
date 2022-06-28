@@ -1,58 +1,383 @@
 <!-- Navigation-->
 <router-outlet></router-outlet>
 
-<ngx-spinner
-  *ngIf="isBrowser()"
-  bdColor="{{ selectedIndicator().bg_color }}"
-  size="large"
-  color="{{ selectedIndicator().color }}"
-  type="{{ selectedIndicator().name }}"
-  [fullScreen]="true"
-  style.color="{{ selectedIndicator()!.color }}"
->
-  <h3 [style.font-family]="storeInfo?.fontName!" class="text-center mt-5">
-    {{ storeInfo?.fullName }}
-  </h3>
-</ngx-spinner>
 <!-- Section -->
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
 
 <!-- && (storeInfo?.active || loggedIn); else elseActive -->
-<div
-  class="w-100 d-flex flex-column justify-content-center align-items-center bg-white position-relative"
-  style="aspect-ratio: 1;"
-  *ngIf="productToBuy"
->
-  <model-viewer
-    class="border rounded-10 position-absolute shadow"
-    style="width: 100%; aspect-ratio: 1; top: 10px"
-    camera-controls
-    *ngIf="skyBox"
-    [attr.src]="productToBuy.url!"
-    alt="A 3D model of an astronaut"
-    [attr.skybox-image]="skyBox"
-    [attr.environment-image]="skyBox"
-    [attr.poster]="productToBuy.img!"
-    
+<div class="p-2 bg-transparent w-100" style="height: 90vh; overflow-y: scroll">
+  <div
+    class="bg-transparent d-flex justify-content-center justify-content-md-start align-items-top align-items-md-center flex-column flex-md-row h-md-100 w-100 p-2 pt-4"
+    *ngIf="storeInfo && productToBuy && collection"
   >
-  </model-viewer>
-  <!-- <div
-    class="position-absolute text-light d-flex justify-content-between align-items-end"
-    style="z-index: 1000; bottom: 205px; left: 300px; right: 300px;"
-  >
-    <p class="big-design-title" style="text-shadow: 2px 2px 4px #42424281; line-height: 1.3em;">
-      <b>{{ productToBuy.name }}</b>
-      <br />
-      Edition: {{ productToBuy.tokenID }}
-      <br/>
-      {{
-        productToBuy?.price
-      }}
-    </p>
-    <a class="big-design-alt-button shadow" style="font-size:large">
-      Buy Now
-    </a>
-  </div> -->
+    <div
+      class="h-md-100 big-design-card w-100 w-md-auto p-0"
+      style="aspect-ratio: 1"
+      style.background-color="{{ selectedTheme()!.bg_color }}"
+    >
+      <app-model-viewer
+        [camera]="true"
+        [model]="productToBuy.assetUrl!"
+        [animate]="true"
+        [poster]="productToBuy.img ?? '/assets/default.png'"
+        [id]="'viewer'"
+        [ar]="true"
+      >
+      </app-model-viewer>
+    </div>
+    <div
+      class="big-design-card h-md-100 w-100 text-center text-md-start shadow-none ms-md-2 position-relative p-0"
+      style.background-color="{{ selectedTheme()!.bg_color }}"
+      [style.font-family]="storeInfo?.fontName ?? ''"
+    >
+      <div class="position-absolute p-md-4 w-100 h-100">
+        <div
+          class="d-flex flex-column justify-content-start align-items-center w-100"
+        >
+          <p class="mt-0 w-100" style="font-size: 30px; line-height: 1.4em">
+            {{ collection.name }}:
+            <br />
+            {{ productToBuy.name }}
+          </p>
+          <div
+            class="w-100 d-flex justify-content-center flex-column align-items-center flex-md-row justify-content-md-start align-items-md-start py-2"
+          >
+            <div
+              class="card border-0 border-md rounded-pill bg-white p-3 px-4"
+              style="width: fit-content"
+            >
+              <p class="w-100 my-auto" style="font-size: 20px">
+                {{ productToBuy.price | currency: collection.currency }}
+              </p>
+            </div>
+            <div class="ms-md-2 mt-3 mt-md-auto w-100 w-md-auto">
+              <div
+                class="card bg-dark rounded-pill p-3 w-100 px-4"
+                role="button"
+                *ngIf="productToBuy.status == 0"
+                (click)="buyItem()"
+              >
+                <p class="w-100 my-auto text-light" style="font-size: 20px">
+                  Buy Now
+                </p>
+              </div>
+              <div
+                class="card bg-secondary rounded-pill p-3 w-100 px-4"
+                *ngIf="productToBuy.status == 1"
+              >
+                <p class="w-100 my-auto text-light" style="font-size: 20px">
+                  Not For Sale
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <mat-tab-group
+            mat-stretch-tabs
+            #menu
+            class="w-100 h-100 mt-4"
+            dynamicHeight
+            animationDuration="0ms"
+          >
+            <mat-tab class="my-0 bg-danger">
+              <!-- #docregion label-directive -->
+              <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon text-dark"
+                  >call_to_action</mat-icon
+                >
+                <span class="ms-2 text-dark big-design-body fw-bold">
+                  Info
+                </span>
+              </ng-template>
+              <div class="w-100 h-100 p-2">
+                <div class="py-4 pb-3 w-100 big-design-card">
+                  <div class="big-design-header">
+                    <h2 class="big-design-title">
+                      {{ collection.collectionCount }}
+                      {{
+                        collection.collectionCount | i18nPlural: editionMapping
+                      }}
+                    </h2>
+                  </div>
+                  <div
+                    class="big-design-body"
+                    style="max-height: 30vh; overflow-y: scroll"
+                  >
+                    {{ productToBuy.description }}
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab class="tab bg-success">
+              <!-- #docregion label-directive -->
+              <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon text-dark"
+                  >analytics</mat-icon
+                >
+                <span class="ms-2 text-dark big-design-body fw-bold">
+                  History
+                </span>
+              </ng-template>
+              <div class="w-100 h-100 p-2">
+                <div class="py-4 pb-3 big-design-card">
+                  <div class="big-design-header">
+                    <h2 class="big-design-title">Item Activity</h2>
+                  </div>
+                  <div
+                    class="big-design-body w-100"
+                    style="max-height: 30vh; overflow: scroll"
+                  >
+                    <table
+                      *ngIf="(nftLogs.length ?? 0) > 0"
+                      mat-table
+                      [dataSource]="nftLogs"
+                      class="w-md-100 text-{{
+                        (storeInfo?.colorStyle)!.text_code
+                      }} bg-white"
+                    >
+                      <!--- Note that these columns can be defined in any order.
+                    The actual rendered columns are set as a property on the row definition" -->
+
+                      <!-- Position Column -->
+                      <ng-container matColumnDef="symbol">
+                        <th
+                          mat-header-cell
+                          *matHeaderCellDef
+                          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
+                          [style.font-family]="storeInfo?.fontName!"
+                        >
+                          Event
+                        </th>
+                        <td
+                          mat-cell
+                          *matCellDef="let element"
+                          style.color="{{ selectedTheme()!.color }}"
+                        >
+                          <mat-icon
+                            class="m-0 p-0 hover-icon"
+                            style="overflow: hidden"
+                            [ngbTooltip]="etipContent"
+                          >
+                            {{ element.icon }}
+                            <ng-template #etipContent>
+                              {{ element.logEvent }}
+                            </ng-template>
+                          </mat-icon>
+
+                          <!-- <mat-icon
+                    class="m-0 p-0"
+                    style="overflow: hidden"
+                    svgIcon="{{
+                      info
+                        | collectionPipe: collection?.contract
+                        | matIcon
+                    }}"
+                  >
+                  </mat-icon> -->
+                        </td>
+                      </ng-container>
+
+                      <!-- Name Column -->
+                      <ng-container matColumnDef="from">
+                        <th
+                          mat-header-cell
+                          *matHeaderCellDef
+                          class="text-{{
+                            (storeInfo?.colorStyle)!.text_code
+                          }} padding"
+                          [style.font-family]="storeInfo?.fontName!"
+                        >
+                          From
+                        </th>
+                        <td
+                          mat-cell
+                          *matCellDef="let element"
+                          style.color="{{ selectedTheme()!.color }}"
+                          [style.font-family]="storeInfo?.fontName!"
+                        >
+                          {{ element.from | address }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="to">
+                        <th
+                          mat-header-cell
+                          *matHeaderCellDef
+                          class="text-{{
+                            (storeInfo?.colorStyle)!.text_code
+                          }} padding"
+                          [style.font-family]="storeInfo?.fontName!"
+                        >
+                          To
+                        </th>
+                        <td
+                          mat-cell
+                          *matCellDef="let element"
+                          style.color="{{ selectedTheme()!.color }}"
+                          [style.font-family]="storeInfo?.fontName!"
+                        >
+                          {{ element.to | address }}
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="price">
+                        <th
+                          mat-header-cell
+                          *matHeaderCellDef
+                          class="text-{{
+                            (storeInfo?.colorStyle)!.text_code
+                          }} padding"
+                          [style.font-family]="storeInfo?.fontName!"
+                        >
+                          Price
+                        </th>
+                        <td
+                          mat-cell
+                          *matCellDef="let element"
+                          style.color="{{ selectedTheme()!.color }}"
+                        >
+                          <div
+                            class="d-flex justify-content-start align-items-center w-100"
+                          >
+                            <p
+                              class="m-0 h-100 fw-bolder"
+                              style="font-size: large"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              {{
+                                element.price | currency: collection.currency
+                              }}
+                            </p>
+                          </div>
+                        </td>
+                      </ng-container>
+
+                      <ng-container matColumnDef="date">
+                        <th
+                          mat-header-cell
+                          *matHeaderCellDef
+                          class="text-{{
+                            (storeInfo?.colorStyle)!.text_code
+                          }} padding"
+                          [style.font-family]="storeInfo?.fontName!"
+                        ></th>
+                        <td
+                          mat-cell
+                          *matCellDef="let element"
+                          class="text-secondary"
+                        >
+                          <div
+                            class="d-flex justify-content-center align-items-center"
+                            [style.font-family]="storeInfo?.fontName!"
+                          >
+                            <!-- {{
+                          (element | eventTimestamp: provider | async)
+                            ?.timestamp
+                            | dateConstruct
+                            | dateAgo
+                        }} -->
+                            <mat-icon
+                              style="overflow: hidden"
+                              class="p-0 text-{{
+                                (storeInfo?.colorStyle)!.text_code
+                              }}"
+                              (click)="viewTxPolygonScan(element)"
+                              [ngbTooltip]="gtipContent"
+                            >
+                              launch
+                              <ng-template #gtipContent>
+                                View on Polygonscan
+                              </ng-template>
+                            </mat-icon>
+                          </div>
+                        </td>
+                      </ng-container>
+                      <tr
+                        mat-header-row
+                        *matHeaderRowDef="displayedColumns"
+                      ></tr>
+                      <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns"
+                      ></tr>
+                    </table>
+                    <div class="mb-0" *ngIf="(nftLogs.length ?? 0) == 0">
+                      <p
+                        class="text-start mb-0"
+                        style.color="{{ selectedTheme()!.color }}"
+                      >
+                        No History
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab class="tab">
+              <!-- #docregion label-directive -->
+              <ng-template mat-tab-label>
+                <mat-icon class="example-tab-icon text-dark">share</mat-icon>
+                <span class="ms-2 text-dark big-design-body fw-bold">
+                  Share
+                </span>
+              </ng-template>
+              <div class="w-100 h-100 p-2">
+                <div class="py-4 pb-3 w-100 big-design-card">
+                  <div class="big-design-header">
+                    <h2 class="big-design-title">Share Link</h2>
+                  </div>
+                  <div
+                    class="big-design-body"
+                    style="max-height: 30vh; overflow-y: scroll"
+                    role="button"
+                  >
+                    <a
+                      class="d-flex justify-content-start align-items-center text-dark"
+                      style="text-decoration: none"
+                      role="button"
+                      (click)="copyURL()"
+                    >
+                      <mat-icon class="me-1" [inline]="true">
+                        content_copy
+                      </mat-icon>
+                      Copy a link to this collection.
+                    </a>
+                    <p
+                      class="text-success text-start"
+                      style="font-size: small"
+                      *ngIf="copied"
+                    >
+                      Copied to clipboard.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </div>
+
+      <div
+        class="w-100 big-design-card position-absolute h-100 animate__animated animate__fadeInUp animate__faster animate__delay-0s"
+        style="z-index: 10000"
+        *ngIf="mode == 1"
+      >
+      <div class="big-design-header">
+        
+        <h2 class="big-design-title">
+          {{productToBuy.name}}
+        </h2>
+        <a class="text-dark" role="button" (click)="closeItem()">
+          <mat-icon>
+            close
+          </mat-icon>
+        </a>
+      </div>
+
+    </div>
+      
+    </div>
+  </div>
 </div>
 
 <!-- </div> -->
