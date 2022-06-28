@@ -2156,7 +2156,7 @@ export class LoadService {
       this.rpcEndpoint
     )
   ) {
-    let provider2 = await this.checkProviderChain(provider);
+    // let provider2 = await this.checkProviderChain(provider);
 
     var query = this.db.collectionGroup('Products', (ref) =>
       ref.where('Product_ID', '==', productID).orderBy('Token_ID')
