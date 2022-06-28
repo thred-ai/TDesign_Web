@@ -2159,7 +2159,7 @@ export class LoadService {
     // let provider2 = await this.checkProviderChain(provider);
 
     var query = this.db.collectionGroup('Products', (ref) =>
-      ref.where('docID', '==', productID).orderBy('Token_ID')
+      ref.where('docID', '==', productID).orderBy('tokenId')
     );
 
     let sub = query.get().subscribe(async (docDatas) => {
