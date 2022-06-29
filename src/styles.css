@@ -11497,6 +11497,11 @@ mat-sidenav-content {
   text-align: start;
 }
 
+.big-design-link-text {
+  color: rgb(85,120,246);
+  font-family: "Source Sans Pro", sans-serif;
+}
+
 .big-design-body {
   font-family: "Source Sans Pro", sans-serif;
   font-size: medium;
@@ -11698,7 +11703,7 @@ mat-sidenav-content {
   color: rgb(255, 255, 255);
   border-radius: 0.25rem;
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   line-height: 1.25rem;
   text-align: center;

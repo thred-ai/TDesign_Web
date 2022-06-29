@@ -1,4 +1,4 @@
-<div class="big-design-header">
+<div class="big-design-header px-4">
   <p class="big-design-title single-line d-block">
     {{ col?.name }}
   </p>
@@ -12,7 +12,7 @@
 </div>
 <div
   class="big-design-body position-relative"
-  style="overflow-x: scroll; height: 350px"
+  style="overflow-x: scroll; height: 475px"
 >
   <table
     #table
@@ -22,38 +22,22 @@
     style="width: 650px"
   >
     <ng-container matColumnDef="edition">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">
-        Edition
-      </th>
+      <th mat-header-cell *matHeaderCellDef class="big-design-body">Edition</th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         {{ element.tokenId }}
       </td>
     </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">
-        Name
-      </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body">
-        {{ element.name }}
-      </td>
-    </ng-container>
-
     <!-- Weight Column -->
     <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">
-        Price
-      </th>
+      <th mat-header-cell *matHeaderCellDef class="big-design-body">Price</th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         {{ element.price | currency: col!.currency }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">
-        Status
-      </th>
+      <th mat-header-cell *matHeaderCellDef class="big-design-body">Status</th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         <app-status [status]="element.status"> </app-status>
       </td>
@@ -62,32 +46,37 @@
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef class="big-design-body"></th>
       <td mat-cell *matCellDef="let element" class="text-end">
-        <a
-          class="big-design-button border-0 fw-bold me-0"
-          role="button"
-        >
+        <a class="big-design-button border-0 fw-bold me-0" role="button">
           View
         </a>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="image">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">Display Image</th>
-      <td mat-cell *matCellDef="let element">
-        <img
-          class="nft-img rounded"
-          loading="lazy"
-          id="image"
-          [useSrcset]="true"
-          [defaultImage]="'/assets/default.png'"
-          [lazyLoad]="element?.img ?? '/assets/default.png'"
-        />
+      <th mat-header-cell *matHeaderCellDef class="big-design-body">
+        Display Image
+      </th>
+      <td mat-cell *matCellDef="let element" class="big-design-body">
+        <div class="d-flex justify-content-start align-items-center">
+          <img
+            class="nft-img rounded"
+            loading="lazy"
+            id="image"
+            [useSrcset]="true"
+            [defaultImage]="'/assets/default.png'"
+            [lazyLoad]="element?.img ?? '/assets/default.png'"
+          />
+          <p class="ms-3 my-auto big-design-link-text">
+            {{ element.name }}
+          </p>
+        </div>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: true"></tr>
     <tr
       mat-row
+      style="height: 70px"
       *matRowDef="let row; columns: displayedColumns2"
       (click)="createNewNFT(col, row)"
     ></tr>
@@ -108,7 +97,7 @@
       </td>
     </tr>
   </table>
-  <div class="w-100 position-absolute" style="bottom: 0; margin-bottom: 0">
+  <div class="w-100 position-absolute px-3" style="bottom: 0; margin-bottom: 0">
     <mat-paginator
       class="mat-elevation-z0 big-design-body"
       #paginator

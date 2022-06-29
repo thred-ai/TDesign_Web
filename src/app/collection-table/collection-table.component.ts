@@ -50,7 +50,6 @@ export class CollectionTableComponent
   displayedColumns2: string[] = [
     'image',
     'edition',
-    'name',
     'price',
     'status',
     'action',
