@@ -1,4 +1,4 @@
-<div class="big-design-header px-4">
+<div class="big-design-header px-4 pb-2 align-items-center">
   <p class="big-design-title single-line d-block">
     {{ col?.name }}
   </p>
@@ -22,7 +22,9 @@
     style="width: 650px"
   >
     <ng-container matColumnDef="edition">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">Edition</th>
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Edition
+      </th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         {{ element.tokenId }}
       </td>
@@ -30,31 +32,41 @@
 
     <!-- Weight Column -->
     <ng-container matColumnDef="price">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">Price</th>
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Price
+      </th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         {{ element.price | currency: col!.currency }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">Status</th>
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Status
+      </th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         <app-status [status]="element.status"> </app-status>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="action">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body"></th>
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="big-design-body fw-bold"
+      ></th>
       <td mat-cell *matCellDef="let element" class="text-end">
-        <a class="big-design-button border-0 fw-bold me-0" role="button">
-          View
+        <a class="big-design-button border-0 text-secondary fw-bold me-0" role="button">
+          <mat-icon>
+            more_horiz
+          </mat-icon>
         </a>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="image">
-      <th mat-header-cell *matHeaderCellDef class="big-design-body">
-        Display Image
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Name
       </th>
       <td mat-cell *matCellDef="let element" class="big-design-body">
         <div class="d-flex justify-content-start align-items-center">
@@ -73,7 +85,12 @@
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns2; sticky: true"></tr>
+    <tr
+      class="border-top"
+      style="height: 50px; background-color: rgb(246, 247, 252)"
+      mat-header-row
+      *matHeaderRowDef="displayedColumns2; sticky: true"
+    ></tr>
     <tr
       mat-row
       style="height: 70px"
