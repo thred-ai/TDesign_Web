@@ -203,18 +203,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     private clipboard: Clipboard,
     private fb: FormBuilder
   ) {
-    Globals.selectedTemplate = undefined;
-    Globals.selectedCurrency = undefined;
-
-    // Globals.storeInfo?.uid = undefined
-    setTimeout(() => {
-      this.sub = _router.events.subscribe((event: any) => {
-        // You only receive NavigationStart events
-        if (event instanceof NavigationEnd) {
-          this.ngOnInit();
-        }
-      });
-    }, 2000);
   }
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
@@ -425,7 +413,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       undefined,
       storeInfo?.isCustom,
       (user) => {
-        this.showSpinner();
+        this.cdr.detectChanges()
       }
     );
 
