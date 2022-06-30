@@ -202,8 +202,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     private dialog: MatDialog,
     private clipboard: Clipboard,
     private fb: FormBuilder
-  ) {
-  }
+  ) {}
   ngOnDestroy(): void {
     this.sub?.unsubscribe();
   }
@@ -413,7 +412,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       undefined,
       storeInfo?.isCustom,
       (user) => {
-        this.cdr.detectChanges()
+        this.cdr.detectChanges();
       }
     );
 
@@ -492,11 +491,13 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
             this.productToBuy = Object.assign(new NFT(), product);
             this.collection = Object.assign(new Collection(), collection);
             this.url = info.url ?? '';
-            this.cdr.detectChanges()
-            this.loadService.getEvents(this.productToBuy!, async (txs) => {
-              this.nftLogs = txs;
-            });
-          }, 200);
+            this.cdr.detectChanges();
+            setTimeout(() => {
+              this.loadService.getEvents(this.productToBuy!, async (txs) => {
+                this.nftLogs = txs;
+              });
+            }, 250);
+          }, 250);
         }
       );
     });
@@ -656,7 +657,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   prevStep() {
     this.step--;
   }
-
 
   selectSize(size: string, $event: { target: any; srcElement: any }) {
     // this.productToBuy.size = size
