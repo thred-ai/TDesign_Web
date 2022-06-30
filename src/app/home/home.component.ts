@@ -297,6 +297,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         '/' + this.getStoreName().link + '/',
         ''
       )}`,
+      font: Globals.storeInfo.fontName,
     };
 
     let url = `https://${'shopmythred.com'}/${this.getStoreName().link}/nft/${

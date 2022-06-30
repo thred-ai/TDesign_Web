@@ -8,7 +8,8 @@
 <div class="p-2 bg-transparent w-100" style="height: 90vh; overflow-y: scroll">
   <div
     class="bg-transparent d-flex justify-content-center justify-content-md-start align-items-top align-items-md-center flex-column flex-md-row h-md-100 w-100 p-2 pt-4"
-    *ngIf="storeInfo && productToBuy && collection && productToBuy.tokenId > 0"
+    *ngIf="storeInfo && productToBuy && collection"
+    [hidden]="!(productToBuy.tokenId > 0)"
   >
     <div
       class="h-md-100 big-design-card w-100 w-md-auto p-0"

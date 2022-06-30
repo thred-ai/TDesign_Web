@@ -476,9 +476,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // this.accordionList[1].description = this.productToBuy.description;
 
-    for (let i = 0; i < 9; i++) {
-      this.quantityNumbers.push(i + 1);
-    }
     // this.route.navigate([], {
     //   queryParams: {
     //     id: productID
@@ -491,15 +488,15 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loadService.getPost(
         info.docId,
         (product?: NFT, collection?: Collection) => {
-          this.productToBuy = Object.assign(new NFT(), product);
-          this.collection = Object.assign(new Collection(), collection);
-          this.url = info.url ?? '';
-          this.cdr.detectChanges()
           setTimeout(() => {
+            this.productToBuy = Object.assign(new NFT(), product);
+            this.collection = Object.assign(new Collection(), collection);
+            this.url = info.url ?? '';
+            this.cdr.detectChanges()
             this.loadService.getEvents(this.productToBuy!, async (txs) => {
               this.nftLogs = txs;
             });
-          }, 500);
+          }, 200);
         }
       );
     });
