@@ -542,8 +542,9 @@ export class LoadService {
   }
 
   getEvents(nft: NFT, callback: (transactions: Array<NftLog>) => any) {
+    console.log(nft.address)
     const data = {
-      contract: nft.address,
+      contract: ethers.utils.getAddress(nft.address),
       tokenId: nft.hashedTokenId(),
       test: false,
     };
@@ -556,7 +557,7 @@ export class LoadService {
           let hashes = resp.result as any[];
           if (hashes) {
             var logs = new Array<NftLog>();
-
+            console.log(hashes)
             await Promise.all(
               hashes.map(async (t) => {
                 var type = '';

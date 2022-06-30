@@ -201,7 +201,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     private routingService: RoutingService,
     private dialog: MatDialog,
     private clipboard: Clipboard,
-    private fb: FormBuilder,
+    private fb: FormBuilder
   ) {
     Globals.selectedTemplate = undefined;
     Globals.selectedCurrency = undefined;
@@ -410,16 +410,24 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   traits: Dict<any>[] | undefined;
 
   async ngOnInit() {
-    const data = this.getProductID();
-
     Globals.sInfo.pipe(skip(1)).subscribe((s) => {
       this.storeInfo = s;
-      console.log(this.storeInfo)
+      console.log(this.storeInfo);
       // this.showSpinner();
       // this.rootComponent.setFavIcon(
       //     s?.profileLink?.toString() ?? ''
       // );
     });
+
+    const storeInfo = this.getStoreName();
+    this.loadService.getUser(
+      storeInfo?.link,
+      undefined,
+      storeInfo?.isCustom,
+      (user) => {
+        this.showSpinner();
+      }
+    );
 
     // this.loadService.getPost(
     //   data.full,
@@ -494,13 +502,19 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
       let info = JSON.parse(this.hexToUtf8(storeInfo));
 
-      this.loadService.getPost(info.docId, (product?: NFT, collection?: Collection) => {
-        this.productToBuy = Object.assign(new NFT(), product);
-        this.collection = Object.assign(new Collection(), collection);
-        this.url = info.url ?? ""
-        this.checkLoad();
-      })
-
+      this.loadService.getPost(
+        info.docId,
+        (product?: NFT, collection?: Collection) => {
+          this.productToBuy = Object.assign(new NFT(), product);
+          this.collection = Object.assign(new Collection(), collection);
+          this.url = info.url ?? '';
+          setTimeout(() => {
+            this.loadService.getEvents(this.productToBuy!, async (txs) => {
+              this.nftLogs = txs;
+            });
+          }, 500);
+        }
+      );
     });
   }
 
@@ -508,18 +522,18 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
   }
 
-  mode = 0
+  mode = 0;
 
-  buyItem(){
-    this.mode = 1
+  buyItem() {
+    this.mode = 1;
   }
 
-  signUpMode(){
-    this.mode = 2
+  signUpMode() {
+    this.mode = 2;
   }
 
-  closeItem(){
-      this.mode = 0
+  closeItem() {
+    this.mode = 0;
   }
 
   ngAfterViewInit(): void {}
@@ -659,70 +673,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     this.step--;
   }
 
-  async checkLoad() {
-    if (this.productToBuy?.address) {
-      // if (!this.productToBuy.isAvailable) {
-      //   console.log(this.productToBuy);
-
-      //   if (isPlatformBrowser(this.platformID)) {
-      //     this.routingService.routeToStore404(
-      //       this.getStoreName().link,
-      //       this.getStoreName().isCustom
-      //     );
-      //   }
-      //   return;
-      // }
-
-      this.addTags(
-        this.productToBuy.name ?? '',
-        this.productToBuy.img?.toString() ?? '',
-        this.productToBuy.description ?? '',
-        'https://shopmythred.com'
-      );
-
-      if (isPlatformBrowser(this.platformID)) {
-        if (this.storeInfo?.uid == undefined) {
-          const storeInfo = this.getStoreName();
-          this.loadService.getUser(
-            storeInfo?.link,
-            undefined,
-            storeInfo?.isCustom,
-            (user) => {
-              this.showSpinner();
-              this.checkLoad();
-            }
-          );
-        } else {
-
-          // if (
-          //   Globals.storeInfo?.walletAddress?.toLowerCase() !=
-          //   this.productToBuy.owner.toLowerCase()
-          // ) {
-          //   this.routingService.routeToStore404(
-          //     this.getStoreName().link,
-          //     this.getStoreName().isCustom
-          //   );
-          // }
-          // else {
-          if (isPlatformBrowser(this.platformID)) {
-            // this.loadService.logView(this.productToBuy.docID);
-          }
-          if (this.productToBuy.tokenId) {
-            this.loadService.getEvents(
-              this.productToBuy,
-              async (txs) => {
-                this.nftLogs = txs;
-                // this.accordionList3[0].isExpanded = !this.isMobile()
-              }
-            );
-          }
-
-          this.cdr.detectChanges();
-          // }
-        }
-      }
-    }
-  }
 
   selectSize(size: string, $event: { target: any; srcElement: any }) {
     // this.productToBuy.size = size
@@ -741,8 +691,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   isZoom = false;
-
-
 
   zoomIn(event: any) {
     return;
@@ -883,12 +831,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     // })
   }
 
-  copied = false
-  url = ""
+  copied = false;
+  url = '';
 
-  copyURL(){
-    this.copied = true
-    console.log(this.url)
+  copyURL() {
+    this.copied = true;
+    console.log(this.url);
     this.clipboard.copy(this.url);
   }
 
