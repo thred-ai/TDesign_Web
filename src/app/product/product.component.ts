@@ -414,6 +414,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     Globals.sInfo.pipe(skip(1)).subscribe((s) => {
       this.storeInfo = s;
+      console.log(this.storeInfo)
       // this.showSpinner();
       // this.rootComponent.setFavIcon(
       //     s?.profileLink?.toString() ?? ''
