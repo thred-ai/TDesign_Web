@@ -28,7 +28,7 @@
     <div
       class="big-design-card h-md-100 w-100 text-center text-md-start shadow-none ms-md-2 position-relative p-0"
       style.background-color="{{ selectedTheme()!.bg_color }}"
-      [style.font-family]="storeInfo?.fontName ?? ''"
+      [style.font-family]="storeInfo?.fontName"
     >
       <div class="position-absolute p-md-4 w-100 h-100">
         <div
@@ -373,7 +373,7 @@
           </div>
           <div class="big-design-body">
             <form [formGroup]="signInForm">
-              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName">
                 <p class="my-0 big-design-input-title text-start">Email address</p>
                 <!-- <h5 class="mt-0 big-design-input-subtitle">
                 Collection the token will belong to.
@@ -396,7 +396,7 @@
                   <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
                 </mat-form-field>
               </div>
-              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName">
                 <p class="my-0 big-design-input-title text-start">Password</p>
                 <!-- <h5 class="mt-0 big-design-input-subtitle">
                 Collection the token will belong to.
@@ -420,7 +420,7 @@
                   <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
                 </mat-form-field>
               </div>
-              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName">
                 <div class="w-100 w-md-auto">
                   <a class="btn btn-dark w-100 w-md-auto">
                     Continue
@@ -442,7 +442,7 @@
           </div>
           <div class="big-design-body">
             <form [formGroup]="signUpForm">
-              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName">
                 <p class="my-0 big-design-input-title text-start">Email address</p>
                 <!-- <h5 class="mt-0 big-design-input-subtitle">
                 Collection the token will belong to.
@@ -465,7 +465,7 @@
                   <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
                 </mat-form-field>
               </div>
-              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName">
                 <p class="my-0 big-design-input-title text-start">Password</p>
                 <!-- <h5 class="mt-0 big-design-input-subtitle">
                 Collection the token will belong to.
@@ -489,7 +489,7 @@
                   <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
                 </mat-form-field>
               </div>
-              <div class="w-100" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="w-100" [style.font-family]="storeInfo?.fontName">
                 <p class="my-0 big-design-input-title text-start">Confirm Password</p>
                 <!-- <h5 class="mt-0 big-design-input-subtitle">
                 Collection the token will belong to.
@@ -513,7 +513,7 @@
                   <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
                 </mat-form-field>
               </div>
-              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName ?? ''">
+              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName">
                 <div class="w-100 w-md-auto">
                   <a class="btn btn-dark w-100 w-md-auto">
                     Continue

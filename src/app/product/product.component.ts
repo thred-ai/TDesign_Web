@@ -486,16 +486,15 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     //   queryParamsHandling: 'merge',
     // });
     this.router.queryParams.subscribe((params) => {
-      let storeInfo = params.info as string;
-
-      let info = JSON.parse(this.hexToUtf8(storeInfo));
-
+      let linkInfo = params.info as string;
+      let info = JSON.parse(this.hexToUtf8(linkInfo));
       this.loadService.getPost(
         info.docId,
         (product?: NFT, collection?: Collection) => {
           this.productToBuy = Object.assign(new NFT(), product);
           this.collection = Object.assign(new Collection(), collection);
           this.url = info.url ?? '';
+          this.cdr.detectChanges()
           setTimeout(() => {
             this.loadService.getEvents(this.productToBuy!, async (txs) => {
               this.nftLogs = txs;
