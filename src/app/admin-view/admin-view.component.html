@@ -52,7 +52,7 @@
       class="w-100"
       dynamicHeight
       animationDuration="0ms"
-      style="overflow-y: hidden"
+      style="overflow-y: hidden; background-color: white"
     >
       <mat-tab class="tab">
         <!-- #docregion label-directive -->
@@ -63,173 +63,72 @@
           </span>
         </ng-template>
         <div
-          class="w-100 d-flex flex-column-reverse flex-md-row justify-content-between align-items-center px-3"
-          style="height: 100vh; overflow-y: scroll"
+          class="px-3 pt-2 bg-light"
+          style="min-height: 100vh; overflow-y: scroll"
         >
-          <div class="w-100 w-md-50 h-md-100">
-            <div class="big-design-card m-3">
-              <div class="big-design-header">
-                <p class="big-design-title">Top Engagement</p>
-                <a
-                  class="big-design-button"
-                  (click)="scrollToLocation()"
-                  [hidden]="!(views | location)[0]"
-                >
-                  View Location
-                </a>
-              </div>
-              <div class="big-design-body">
-                <p class="mt-3">
-                  {{ (views | location)[0]?.name }}
-                </p>
-                <div class="mt-3">
-                  <div
-                    class="d-flex align-items-center justify-content-start"
-                    style="font-size: medium"
-                  >
-                    <mat-icon
-                      [inline]="true"
-                      class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                      style="
-                        background-color: rgb(201, 33, 27);
-                        aspect-ratio: 1;
-                      "
-                    >
-                    </mat-icon>
-                    <p class="my-0 big-design-body" style="font-size: medium">
-                      {{
-                        (views | location: undefined:"VIEW")?.length ?? 0
-                          | i18nPlural: viewMapping
-                      }}
-                    </p>
-                  </div>
-                </div>
-                <div class="mt-2">
-                  <div
-                    class="d-flex align-items-center justify-content-start"
-                    style="font-size: medium"
-                  >
-                    <mat-icon
-                      [inline]="true"
-                      class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                      style="background-color: rgb(0, 188, 75); aspect-ratio: 1"
-                    >
-                    </mat-icon>
-                    <p class="my-0 big-design-body" style="font-size: medium">
-                      {{
-                        (views | location: undefined:"SALE")?.length ?? 0
-                          | i18nPlural: saleMapping
-                      }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="big-design-card m-3">
-              <div class="big-design-header">
-                <p class="big-design-title">Top Views</p>
-                <a
-                  class="big-design-button"
-                  (click)="scrollToLocation('VIEW')"
-                  [hidden]="!(views | location: 'VIEW')[0]"
-                >
-                  View Location
-                </a>
-              </div>
-              <div class="big-design-body">
-                <p class="mt-3">
-                  {{ (views | location: "VIEW")[0]?.name }}
-                </p>
-                <div class="mt-3">
-                  <div
-                    class="d-flex align-items-center justify-content-start"
-                    style="font-size: medium"
-                  >
-                    <mat-icon
-                      [inline]="true"
-                      class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                      style="
-                        background-color: rgb(201, 33, 27);
-                        aspect-ratio: 1;
-                      "
-                    >
-                    </mat-icon>
-                    <p class="my-0 big-design-body" style="font-size: medium">
-                      {{
-                        (views | location: "VIEW":"VIEW")?.length ?? 0
-                          | i18nPlural: viewMapping
-                      }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="big-design-card m-3">
-              <div class="big-design-header">
-                <p class="big-design-title">Top Sales</p>
-                <a
-                  class="big-design-button"
-                  (click)="scrollToLocation('SALE')"
-                  [hidden]="!(views | location: 'SALE')[0]"
-                >
-                  View Location
-                </a>
-              </div>
-              <div class="big-design-body">
-                <p class="mt-3">
-                  {{ (views | location: "SALE")[0]?.name }}
-                </p>
-                <div class="mt-2">
-                  <div
-                    class="d-flex align-items-center justify-content-start"
-                    style="font-size: medium"
-                  >
-                    <mat-icon
-                      [inline]="true"
-                      class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                      style="background-color: rgb(0, 188, 75); aspect-ratio: 1"
-                    >
-                    </mat-icon>
-                    <p class="my-0 big-design-body" style="font-size: medium">
-                      {{
-                        (views | location: "SALE":"SALE")?.length ?? 0
-                          | i18nPlural: saleMapping
-                      }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="w-100 w-md-50 h-50 h-md-100 p-3">
-            <div class="h-100 w-100 big-design-card p-0 bg-black">
-              <div class="big-design-body position-relative h-100 w-100">
-                <iframe
-                  style="border-radius: 0.25rem"
-                  class="w-100 h-100 position-absolute"
-                  id="earthFrame"
-                  [srcdoc]="
-                    str
-                      | liveEarthViewPipe: views ?? []
-                      | liveEarthPipe: []
-                      | safeHtml
+          <div
+            class="w-100 d-flex flex-column-reverse flex-md-row justify-content-between align-items-start h-100"
+          >
+            <div class="w-100 w-md-50 h-md-100">
+              <div class="m-3" *ngIf="storeInfo.active">
+                <app-notification
+                  [canClose]="false"
+                  [title]='"Ready To Go!"'
+                  [subtitle]="
+                    'Customers can view and buy your tokens.'
                   "
+                  [icon]="'check_circle'"
+                  [iconColor]="'success'"
                 >
-                </iframe>
-
-                <div
-                  class="d-inline-flex align-items-top justify-content-between"
-                  style="top: 1.2rem; left: 1.5rem; position: absolute"
+                </app-notification>
+              </div>
+              <div class="m-3" *ngIf="billingInfo == ''">
+                <app-notification
+                  [actionBtn]="'Update'"
+                  [canClose]="false"
+                  [title]="'Action Required!'"
+                  [subtitle]="
+                    'Update the payment method used for your Thred plan.'
+                  "
+                  (actionBtnPressed)="routeToBillingAdmin()"
+                  [iconColor]="'danger'"
+                  [icon]="'error'"
                 >
-                  <div class="h-100">
-                    <h1 class="big-design-title" style="color: white">
-                      48 Hour Activity
-                    </h1>
-                    <a
-                      class="side d-flex mt-2 align-items-center justify-content-start"
-                      style="font-size: large"
+                </app-notification>
+              </div>
+              <div class="m-3" *ngIf="subInfo == ''">
+                <app-notification
+                  [actionBtn]="'Select Plan'"
+                  [canClose]="false"
+                  [title]="'Action Required!'"
+                  [subtitle]="
+                    'Select a Thred plan to begin selling tokens on your store.'
+                  "
+                  (actionBtnPressed)="editPlan()"
+                  [iconColor]="'danger'"
+                  [icon]="'error'"
+                >
+                </app-notification>
+              </div>
+              <div class="big-design-card m-3">
+                <div class="big-design-header">
+                  <p class="big-design-title">Top Engagement</p>
+                  <a
+                    class="big-design-button"
+                    (click)="scrollToLocation()"
+                    [hidden]="!(views | location)[0]"
+                  >
+                    View Location
+                  </a>
+                </div>
+                <div class="big-design-body">
+                  <p class="mt-3">
+                    {{ (views | location)[0]?.name }}
+                  </p>
+                  <div class="mt-3">
+                    <div
+                      class="d-flex align-items-center justify-content-start"
+                      style="font-size: medium"
                     >
                       <mat-icon
                         [inline]="true"
@@ -239,23 +138,19 @@
                           aspect-ratio: 1;
                         "
                       >
-                        <!-- <span class="material-icons-outlined m-0 text-white">
-                  person_outline
-                </span> -->
                       </mat-icon>
-                      <p
-                        class="my-0 big-design-body"
-                        style="color: white; font-size: larger"
-                      >
+                      <p class="my-0 big-design-body" style="font-size: medium">
                         {{
-                          (views | views)?.length ?? 0 | i18nPlural: viewMapping
+                          (views | location: undefined:"VIEW")?.length ?? 0
+                            | i18nPlural: viewMapping
                         }}
                       </p>
-                    </a>
-                    <a
-                      role="button"
-                      class="side d-flex mt-2 align-items-center justify-content-start"
-                      style="font-size: large"
+                    </div>
+                  </div>
+                  <div class="mt-2">
+                    <div
+                      class="d-flex align-items-center justify-content-start"
+                      style="font-size: medium"
                     >
                       <mat-icon
                         [inline]="true"
@@ -265,46 +160,205 @@
                           aspect-ratio: 1;
                         "
                       >
-                        <!-- <span class="material-icons-outlined m-0 text-white">
-                  attach_money
-                </span> -->
                       </mat-icon>
-                      <p
-                        class="my-0 big-design-body"
-                        style="color: white; font-size: larger"
-                      >
+                      <p class="my-0 big-design-body" style="font-size: medium">
                         {{
-                          (views | sales)?.length ?? 0 | i18nPlural: saleMapping
+                          (views | location: undefined:"SALE")?.length ?? 0
+                            | i18nPlural: saleMapping
                         }}
                       </p>
-                    </a>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div
-                  *ngIf="selectedCoord"
-                  class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
-                  style="
-                    border-radius: 0.25rem;
-                    background-color: rgba(0, 0, 0, 0.406);
-                  "
-                  (click)="closeCard()"
-                ></div>
-                <div
-                  class="big-design-card bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s"
-                  *ngIf="selectedCoord"
-                  style="
-                    top: 10px;
-                    right: 10px;
-                    position: absolute;
-                    width: 275px;
-                  "
-                >
-                  <app-view-coord
-                    [coord]="selectedCoord"
-                    (close)="closeCard()"
-                    (open)="createNewNFT($event)"
-                  ></app-view-coord>
+              <div class="big-design-card m-3">
+                <div class="big-design-header">
+                  <p class="big-design-title">Top Views</p>
+                  <a
+                    class="big-design-button"
+                    (click)="scrollToLocation('VIEW')"
+                    [hidden]="!(views | location: 'VIEW')[0]"
+                  >
+                    View Location
+                  </a>
+                </div>
+                <div class="big-design-body">
+                  <p class="mt-3">
+                    {{ (views | location: "VIEW")[0]?.name }}
+                  </p>
+                  <div class="mt-3">
+                    <div
+                      class="d-flex align-items-center justify-content-start"
+                      style="font-size: medium"
+                    >
+                      <mat-icon
+                        [inline]="true"
+                        class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                        style="
+                          background-color: rgb(201, 33, 27);
+                          aspect-ratio: 1;
+                        "
+                      >
+                      </mat-icon>
+                      <p class="my-0 big-design-body" style="font-size: medium">
+                        {{
+                          (views | location: "VIEW":"VIEW")?.length ?? 0
+                            | i18nPlural: viewMapping
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="big-design-card m-3">
+                <div class="big-design-header">
+                  <p class="big-design-title">Top Sales</p>
+                  <a
+                    class="big-design-button"
+                    (click)="scrollToLocation('SALE')"
+                    [hidden]="!(views | location: 'SALE')[0]"
+                  >
+                    View Location
+                  </a>
+                </div>
+                <div class="big-design-body">
+                  <p class="mt-3">
+                    {{ (views | location: "SALE")[0]?.name }}
+                  </p>
+                  <div class="mt-2">
+                    <div
+                      class="d-flex align-items-center justify-content-start"
+                      style="font-size: medium"
+                    >
+                      <mat-icon
+                        [inline]="true"
+                        class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                        style="
+                          background-color: rgb(0, 188, 75);
+                          aspect-ratio: 1;
+                        "
+                      >
+                      </mat-icon>
+                      <p class="my-0 big-design-body" style="font-size: medium">
+                        {{
+                          (views | location: "SALE":"SALE")?.length ?? 0
+                            | i18nPlural: saleMapping
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="w-100 w-md-50 vh-60 vh-md-100 p-3 pb-0 pb-md-3"
+            >
+              <div class="h-100 w-100 big-design-card p-0 bg-black">
+                <div class="big-design-body position-relative h-100 w-100">
+                  <iframe
+                    style="border-radius: 0.25rem"
+                    class="w-100 h-100 position-absolute"
+                    id="earthFrame"
+                    [srcdoc]="
+                      str
+                        | liveEarthViewPipe: views ?? []
+                        | liveEarthPipe: []
+                        | safeHtml
+                    "
+                  >
+                  </iframe>
+
+                  <div
+                    class="d-inline-flex align-items-top justify-content-between"
+                    style="top: 1.2rem; left: 1.5rem; position: absolute"
+                  >
+                    <div class="h-100">
+                      <h1 class="big-design-title" style="color: white">
+                        48 Hour Activity
+                      </h1>
+                      <a
+                        class="side d-flex mt-2 align-items-center justify-content-start"
+                        style="font-size: large"
+                      >
+                        <mat-icon
+                          [inline]="true"
+                          class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                          style="
+                            background-color: rgb(201, 33, 27);
+                            aspect-ratio: 1;
+                          "
+                        >
+                          <!-- <span class="material-icons-outlined m-0 text-white">
+                  person_outline
+                </span> -->
+                        </mat-icon>
+                        <p
+                          class="my-0 big-design-body"
+                          style="color: white; font-size: larger"
+                        >
+                          {{
+                            (views | views)?.length ?? 0
+                              | i18nPlural: viewMapping
+                          }}
+                        </p>
+                      </a>
+                      <a
+                        role="button"
+                        class="side d-flex mt-2 align-items-center justify-content-start"
+                        style="font-size: large"
+                      >
+                        <mat-icon
+                          [inline]="true"
+                          class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                          style="
+                            background-color: rgb(0, 188, 75);
+                            aspect-ratio: 1;
+                          "
+                        >
+                          <!-- <span class="material-icons-outlined m-0 text-white">
+                  attach_money
+                </span> -->
+                        </mat-icon>
+                        <p
+                          class="my-0 big-design-body"
+                          style="color: white; font-size: larger"
+                        >
+                          {{
+                            (views | sales)?.length ?? 0
+                              | i18nPlural: saleMapping
+                          }}
+                        </p>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div
+                    *ngIf="selectedCoord"
+                    class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+                    style="
+                      border-radius: 0.25rem;
+                      background-color: rgba(0, 0, 0, 0.406);
+                    "
+                    (click)="closeCard()"
+                  ></div>
+                  <div
+                    class="big-design-card bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s"
+                    *ngIf="selectedCoord"
+                    style="
+                      top: 10px;
+                      right: 10px;
+                      position: absolute;
+                      width: 275px;
+                    "
+                  >
+                    <app-view-coord
+                      [coord]="selectedCoord"
+                      (close)="closeCard()"
+                      (open)="createNewNFT($event)"
+                    ></app-view-coord>
+                  </div>
                 </div>
               </div>
             </div>
@@ -325,21 +379,24 @@
             Token Collections
           </span>
         </ng-template>
-        <div class="tab">
+        <div class="h-100 w-100 bg-light">
           <div
             *ngIf="collections && collections?.length != 0"
             class="px-2 mt-0 pt-0 w-100"
           >
             <div class="w-100 h-100 py-5 pt-3 px-4">
-              <div class="d-flex justify-content-end align-items-center py-2" style="width: 100%;">
+              <div
+                class="d-flex justify-content-end align-items-center py-2"
+                style="width: 100%"
+              >
                 <p
                   (click)="createNewProduct()"
                   class="big-design-alt-button ps-2"
                   style="right: 0px; margin-right: 0px"
                 >
-                <mat-icon class="h-100 me-1" style="aspect-ratio: 1;">
-                  add
-                </mat-icon>
+                  <mat-icon class="h-100 me-1" style="aspect-ratio: 1">
+                    add
+                  </mat-icon>
                   Add new
                 </p>
               </div>
@@ -387,9 +444,9 @@
           <mat-icon class="example-tab-icon"> web</mat-icon>
           <span class="ms-2 big-design-body fw-bold"> Token Pages </span>
         </ng-template>
-        <div class="w-100">
+        <div class="w-100 pt-3 bg-light">
           <div
-            class="row row-cols-1 row-cols-md-2 justify-content-start ps-4 w-100 align-items-start mt-3"
+            class="row row-cols-1 row-cols-md-2 justify-content-start ps-4 w-100 align-items-start h-100"
             style="overflow-x: hidden"
           >
             <div
@@ -408,21 +465,23 @@
                   <p class="big-design-title">
                     {{ page.title }}
                   </p>
-                  <div class="d-inline-flex justify-content-end align-items-center">
+                  <div
+                    class="d-inline-flex justify-content-end align-items-center"
+                  >
                     <a
-                    role="button"
-                    (click)="viewPage(page)"
-                    class="big-design-alt-button me-2"
-                  >
-                    View
-                  </a>
-                  <a
-                    role="button"
-                    (click)="showLayoutModal(page)"
-                    class="big-design-button"
-                  >
-                    Edit
-                  </a>
+                      role="button"
+                      (click)="viewPage(page)"
+                      class="big-design-alt-button me-2"
+                    >
+                      View
+                    </a>
+                    <a
+                      role="button"
+                      (click)="showLayoutModal(page)"
+                      class="big-design-button"
+                    >
+                      Edit
+                    </a>
                   </div>
                   <!-- <div
                     class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
@@ -473,16 +532,41 @@
           <mat-icon class="example-tab-icon text-dark">
             account_circle</mat-icon
           >
-          <span class="ms-2 text-dark big-design-body fw-bold">
-            Account
-          </span>
+          <span class="ms-2 text-dark big-design-body fw-bold"> Account </span>
         </ng-template>
-        <div class="comp p-4">
-          <div class="big-design-card mx-2">
+        <div class="comp p-4 bg-light">
+          <div class="mx-2" *ngIf="billingInfo == ''">
+            <app-notification
+              [actionBtn]="'Update'"
+              [canClose]="false"
+              [title]="'Action Required!'"
+              [subtitle]="'Update the payment method used for your Thred plan.'"
+              (actionBtnPressed)="routeToBillingAdmin()"
+              [iconColor]="'danger'"
+              [icon]="'error'"
+            >
+            </app-notification>
+          </div>
+          <div class="mx-2" *ngIf="subInfo == ''">
+            <app-notification
+              [actionBtn]="'Select Plan'"
+              [canClose]="false"
+              [title]="'Action Required!'"
+              [subtitle]="
+                'Select a Thred plan to begin selling tokens on your store.'
+              "
+              (actionBtnPressed)="editPlan()"
+              [iconColor]="'danger'"
+              [icon]="'error'"
+            >
+            </app-notification>
+          </div>
+
+          <div class="big-design-card mx-2" *ngIf="billingInfo != undefined">
             <div class="big-design-header">
               <p class="big-design-title">Payment Method</p>
               <a class="big-design-button" (click)="routeToBillingAdmin()">
-                {{ billingInfo == null ? "Add" : "Edit" }}
+                {{ billingInfo == '' ? "Add" : "Edit" }}
               </a>
             </div>
             <div class="big-design-body" *ngIf="billingInfo">
@@ -507,12 +591,12 @@
                   billingInfo?.postal
               }}
             </div>
-            <div class="big-design-body" *ngIf="billingInfo == null">
+            <div class="big-design-body" *ngIf="billingInfo == ''">
               This card will be used for your Thred Merchant Plan.
             </div>
           </div>
 
-          <div class="big-design-card mt-3 mx-2">
+          <div class="big-design-card mt-3 mx-2" *ngIf="subInfo != undefined">
             <div class="big-design-header">
               <p class="big-design-title">Plan Type</p>
               <a class="big-design-button" (click)="editPlan()">

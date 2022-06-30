@@ -142,7 +142,8 @@
             >
               {{
                 (nftForm.controls.royalty.value / 100) *
-                  nftForm.controls.price.value | currency: nftContract.currency
+                  nftForm.controls.price.value
+                  | currency: nftContract.currency:"symbol":"1.0-0"
               }}
             </h4>
           </mat-form-field>
@@ -271,7 +272,7 @@
           {{
             data.asset ? "Edition " + data.asset.tokenId + "" : "Model Preview"
           }}
-          <br>
+          <br />
           <a *ngIf="data.asset" class="big-design-body mt-4">
             <app-status [status]="data.asset.status"> </app-status>
           </a>
@@ -302,11 +303,7 @@
           </a>
         </div>
         <ng-template #assetStatus>
-          <a
-            class="big-design-button"
-          >
-            Remove from Sale
-          </a>
+          <a class="big-design-button"> Remove from Sale </a>
         </ng-template>
       </div>
       <div class="big-design-body w-100 h-100 mt-3" style="flex: 1">

@@ -50,7 +50,8 @@ import { ViewCoordComponent } from '../view-coord/view-coord.component';
 import { StatusComponent } from '../status/status.component';
 import { CollectionTableComponent } from '../collection-table/collection-table.component';
 import { LOCALE_ID } from '@angular/core';
-import { SharedModule } from '../shared/shared.module'; // <-- import it
+import { SharedModule } from '../shared/shared.module';
+import { NotificationComponent } from '../notification/notification.component'; // <-- import it
 
 const routes: Routes = [
   {
@@ -73,6 +74,7 @@ const routes: Routes = [
     ViewCoordComponent,
     StatusComponent,
     CollectionTableComponent,
+    NotificationComponent,
 
   ],
 

@@ -11724,6 +11724,69 @@ mat-sidenav-content {
   background-color: rgb(94, 99, 122);
 }
 
+.big-design-status-info{
+  background-color: rgb(10, 56, 217);
+}
+
+.big-design-info{
+  color: rgb(10, 56, 217);
+}
+
+.big-design-success {
+  color: rgb(32, 136, 49);
+}
+
+.big-design-notif-content {
+  font-size: small;
+}
+
+.big-design-danger {
+  color: rgb(219, 54, 67);
+}
+
+.big-design-notif-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 100%;
+  margin-left: 0.25rem;
+  margin-right: 0px;
+  background-color: white;
+}
+
+.big-design-notif-title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+}
+
+.big-design-notif-icon {
+  aspect-ratio: 1;
+  margin-left: 0.7rem;
+  margin-top: 0.7rem;
+  font-size: x-large;
+}
+
+
+.big-design-notif-content-body {
+  margin: 0.7rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  text-align: left;
+  height: 100%;
+}
+
+.big-design-notif-button {
+  margin: 0.7rem;
+  color: rgb(50, 52, 64);
+}
+
+.big-design-notif-color {
+  color: rgb(10, 56, 217);
+  background-color: rgb(10, 56, 217);
+}
+
 .light-btn{
   color: white;
   border-color: white;

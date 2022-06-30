@@ -109,7 +109,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   signedIn = false;
   bankInfo?: any = undefined;
   subInfo?: any = undefined;
-  billingInfo?: BillingInfo | null = undefined;
+  billingInfo?: BillingInfo | any = undefined;
   plans?: Plan[] = undefined;
   views?: Dict<any>[] = undefined;
 
@@ -142,12 +142,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     //   'Yes, Remove',
     //   'Never Mind',
     //   async () => {
-    this.loadService.deletePage(
-      page,
-      (success) => {
-        this.toast('Page Removed!');
-      },
-    );
+    this.loadService.deletePage(page, (success) => {
+      this.toast('Page Removed!');
+    });
     //   }
     // );
   }
@@ -2283,7 +2280,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   editPlan() {
     const modalRef = this.dialog.open(EditPlanComponent, {
       width: '750px',
-      height: '750px',
+      height: '760px',
       maxHeight: '100vh',
       maxWidth: '100vw',
       panelClass: 'app-full-bleed-sm-dialog',
@@ -2387,7 +2384,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       maxWidth: '100vw',
       panelClass: 'app-full-bleed-sm-dialog',
       data: {
-        billingInfo: this.billingInfo,
+        billingInfo: this.billingInfo != '' ? this.billingInfo : null,
       },
     });
     let sub = modalRef.afterClosed().subscribe((resp) => {
@@ -2486,7 +2483,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
               billingInfo.card.country
             );
           } else {
-            this.billingInfo = null;
+            this.billingInfo = '';
           }
           this.cdr.detectChanges();
         });

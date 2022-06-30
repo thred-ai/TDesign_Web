@@ -4,11 +4,11 @@ import { AuthComponent } from './auth/auth.component';
 import { Globals } from './globals';
 
 var routes: Routes = [
-  {
-    path: '',
-    loadChildren: () =>
-      import('./landing/landing.module').then((m) => m.LandingModule),
-  },
+  // {
+  //   path: '',
+  //   loadChildren: () =>
+  //     import('./landing/landing.module').then((m) => m.LandingModule),
+  // },
   { path: 'not-found', redirectTo: '', pathMatch: 'full' },
   { path: 'not-found/home', redirectTo: '', pathMatch: 'full' },
   { path: 'api/auth', component: AuthComponent, pathMatch: 'full' },

@@ -37,8 +37,7 @@ export class CollectionTableComponent
     this.cdr.detectChanges();
   }
 
-  @Input() count: number = 0
-
+  @Input() count: number = 0;
 
   @Output() viewNFT = new EventEmitter<{
     contract?: Collection;
@@ -56,11 +55,11 @@ export class CollectionTableComponent
   ];
 
   ngOnChanges() {
-    console.log("CHANGED")
-    console.log(this.collection)
-    console.log(this.col)
-    this.collection = this.col!
-    console.log(this.dataSource)
+    console.log('CHANGED');
+    console.log(this.collection);
+    console.log(this.col);
+    this.collection = this.col!;
+    console.log(this.dataSource);
 
     this.cdr.detectChanges();
   }
@@ -80,6 +79,5 @@ export class CollectionTableComponent
 
   ngOnInit(): void {}
 
-  ngAfterViewInit() {
-  }
+  ngAfterViewInit() {}
 }

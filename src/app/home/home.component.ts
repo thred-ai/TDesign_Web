@@ -293,13 +293,16 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   routeToProduct(product: NFT, collection: Collection) {
     let data = {
       docId: product.docID,
-      url: `${document.referrer}${this.location.pathname.replace("/" + this.getStoreName().link + "/", "")}`
+      url: `${document.referrer}${this.location.pathname.replace(
+        '/' + this.getStoreName().link + '/',
+        ''
+      )}`,
     };
 
     let url = `https://${Globals.ngrokId}/${this.getStoreName().link}/nft/${
       product.docID
     }?info=${this.utf8ToHex(JSON.stringify(data))}`;
-    
+
     window.parent.postMessage(
       {
         open: url,

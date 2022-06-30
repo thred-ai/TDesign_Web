@@ -105,6 +105,8 @@ ul ul a {
   background: #6d7fcc;
 }
 
+
+
 .tab {
   height: 100%;
   width: 100%;
@@ -374,8 +376,6 @@ a[data-toggle="collapse"] {
   background-color: #fff;
   border-bottom: 1px solid #e5e9f2;
 }
-
-
 
 .single-line {
   white-space: nowrap;

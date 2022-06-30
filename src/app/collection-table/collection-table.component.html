@@ -25,7 +25,11 @@
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
         Edition
       </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body">
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="big-design-body w-md-25 text-truncate"
+      >
         {{ element.tokenId }}
       </td>
     </ng-container>
@@ -35,8 +39,12 @@
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
         Price
       </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body">
-        {{ element.price | currency: col!.currency }}
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="big-design-body w-md-25 text-truncate"
+      >
+        {{ element.price | currency: col!.currency:"symbol":"1.0-0" }}
       </td>
     </ng-container>
 
@@ -44,7 +52,7 @@
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
         Status
       </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body">
+      <td mat-cell *matCellDef="let element" class="big-design-body w-md-25">
         <app-status [status]="element.status"> </app-status>
       </td>
     </ng-container>
@@ -56,10 +64,11 @@
         class="big-design-body fw-bold"
       ></th>
       <td mat-cell *matCellDef="let element" class="text-end">
-        <a class="big-design-button border-0 text-secondary fw-bold me-0" role="button">
-          <mat-icon>
-            more_horiz
-          </mat-icon>
+        <a
+          class="big-design-button border-0 text-secondary fw-bold me-0"
+          role="button"
+        >
+          <mat-icon> more_horiz </mat-icon>
         </a>
       </td>
     </ng-container>
@@ -68,8 +77,8 @@
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
         Name
       </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body">
-        <div class="d-flex justify-content-start align-items-center">
+      <td mat-cell *matCellDef="let element" class="big-design-body w-md-25">
+        <div class="d-flex justify-content-start align-items-center my-auto">
           <img
             class="nft-img rounded"
             loading="lazy"
@@ -78,7 +87,7 @@
             [defaultImage]="'/assets/default.png'"
             [lazyLoad]="element?.img ?? '/assets/default.png'"
           />
-          <p class="ms-3 my-auto big-design-link-text">
+          <p class="ms-3 my-auto big-design-link-text text-truncate nft-name">
             {{ element.name }}
           </p>
         </div>
@@ -86,13 +95,14 @@
     </ng-container>
 
     <tr
-      class="border-top"
+      class="border-top w-md-25"
       style="height: 50px; background-color: rgb(246, 247, 252)"
       mat-header-row
       *matHeaderRowDef="displayedColumns2; sticky: true"
     ></tr>
     <tr
       mat-row
+      class="w-md-25"
       style="height: 70px"
       *matRowDef="let row; columns: displayedColumns2"
       (click)="createNewNFT(col, row)"

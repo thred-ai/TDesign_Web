@@ -11,9 +11,14 @@
   display: inherit;
 }
 
+.nft-name{
+  max-width: 130px;
+}
+
 .mat-row:hover > .mat-cell {
   background-color: #3c64f310;
 }
+
 
 .mat-cell{
     cursor: pointer;
