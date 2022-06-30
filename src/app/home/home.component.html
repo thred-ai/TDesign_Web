@@ -51,7 +51,12 @@
                 <a
                   role="button"
                   class="w-100"
-                  (click)="routeToProduct(items![product].nft, items![product].collection)"
+                  (click)="
+                    routeToProduct(
+                      items![product].nft,
+                      items![product].collection
+                    )
+                  "
                 >
                   <img
                     loading="lazy"
@@ -85,7 +90,12 @@
                     style.color="{{ selectedTheme()!.color }}"
                     [style.font-family]="storeInfo?.fontName!"
                     role="button"
-                    (click)="routeToProduct(items![product].nft, items![product].collection)"
+                    (click)="
+                      routeToProduct(
+                        items![product].nft,
+                        items![product].collection
+                      )
+                    "
                   >
                     {{ items![product].nft.name }}
                   </p>
@@ -102,11 +112,19 @@
                     style.color="{{ selectedTheme()!.color }}"
                     [style.font-family]="storeInfo?.fontName!"
                     role="button"
-                    (click)="routeToProduct(items![product].nft, items![product].collection)"
+                    (click)="
+                      routeToProduct(
+                        items![product].nft,
+                        items![product].collection
+                      )
+                    "
                   >
                     {{
                       items![product].nft.price
-                        | currency: items![product].collection.currency
+                        | currency
+                          : items![product].collection.currency
+                          : "symbol"
+                          : "1.0-0"
                     }}
                   </p>
                 </div>
