@@ -6,19 +6,20 @@
 
 <!-- && (storeInfo?.active || loggedIn); else elseActive -->
 <div class="p-2 bg-transparent w-100" style="height: 90vh; overflow-y: scroll">
+  <div class="w-100 h-100" [hidden]="!(storeInfo && productToBuy && collection) || !(productToBuy.tokenId > 0)">
+
   <div
     class="bg-transparent d-flex justify-content-center justify-content-md-start align-items-top align-items-md-center flex-column flex-md-row h-md-100 w-100 p-2 pt-4"
-    *ngIf="storeInfo && productToBuy && collection"
-    [hidden]="!(productToBuy.tokenId > 0)"
   >
     <div
       class="h-md-100 big-design-card w-100 w-md-auto p-0"
       style="aspect-ratio: 1"
       style.background-color="{{ selectedTheme()!.bg_color }}"
+      *ngIf="productToBuy"
     >
       <app-model-viewer
         [camera]="true"
-        [model]="productToBuy.assetUrl!"
+        [model]="productToBuy.assetUrl"
         [animate]="true"
         [poster]="productToBuy.img ?? '/assets/default.png'"
         [id]="'viewer'"
@@ -36,9 +37,9 @@
           class="d-flex flex-column justify-content-start align-items-center w-100"
         >
           <p class="mt-0 w-100" style="font-size: 30px; line-height: 1.4em">
-            {{ collection.name }}:
+            {{ collection?.name }}:
             <br />
-            {{ productToBuy.name }}
+            {{ productToBuy?.name }}
           </p>
           <div
             class="w-100 d-flex justify-content-center flex-column-reverse align-items-center flex-md-row justify-content-md-start align-items-md-start py-2"
@@ -47,7 +48,7 @@
             <div
               class="card bg-dark rounded-pill p-3 w-100 px-4"
               role="button"
-              *ngIf="productToBuy.status == 0"
+              *ngIf="productToBuy?.status == 0"
               (click)="buyItem()"
             >
               <p class="w-100 my-auto text-light" style="font-size: 20px">
@@ -56,7 +57,7 @@
             </div>
             <div
               class="card bg-secondary rounded-pill p-3 w-100 px-4"
-              *ngIf="productToBuy.status == 1"
+              *ngIf="productToBuy?.status == 1"
             >
               <p class="w-100 my-auto text-light" style="font-size: 20px">
                 Not For Sale
@@ -68,7 +69,7 @@
               style="width: fit-content"
             >
               <p class="w-100 my-auto" style="font-size: 20px">
-                {{ productToBuy.price | currency: collection.currency : "symbol"
+                {{ productToBuy?.price | currency: collection?.currency : "symbol"
                 : "1.0-0" }}
               </p>
             </div>
@@ -95,9 +96,9 @@
                 <div class="py-4 pb-3 w-100 big-design-card">
                   <div class="big-design-header">
                     <h2 class="big-design-title">
-                      {{ collection.collectionCount }}
+                      {{ collection?.collectionCount }}
                       {{
-                        collection.collectionCount | i18nPlural: editionMapping
+                        collection?.collectionCount | i18nPlural: editionMapping
                       }}
                     </h2>
                   </div>
@@ -105,7 +106,7 @@
                     class="big-design-body"
                     style="max-height: 30vh; overflow-y: scroll"
                   >
-                    {{ productToBuy.description }}
+                    {{ productToBuy?.description }}
                   </div>
                 </div>
               </div>
@@ -247,7 +248,7 @@
                               [style.font-family]="storeInfo?.fontName!"
                             >
                               {{
-                                element.price | currency: collection.currency : "symbol"
+                                element.price | currency: collection?.currency : "symbol"
                                 : "1.0-0"
                               }}
                             </p>
@@ -538,4 +539,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>
