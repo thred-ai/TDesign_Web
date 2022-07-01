@@ -296,8 +296,6 @@
                         <h1 class="m-2 text-center fw-bolder">CUSTOM HTML</h1>
                       </div>
 
-  
-
                       <div
                         class="w-100 h-100"
                         style="
@@ -755,89 +753,22 @@
                     </p>
                   </div>
                   <div
-                    class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{
-                      (aRow.index == i ? aRow?.row : undefined)?.grid_row ??
-                        row.grid_row ??
-                        1
-                    }} justify-content-start mt-3"
+                    class="w-100"
+                    *ngIf="
+                      ((aRow.index == i ? aRow?.row : undefined)?.type ??
+                        row.type) ==
+                      0
+                    "
                   >
-                    <div
-                      class="col mb-3"
-                      *ngFor="
-                        let product of (aRow.index == i ? aRow?.row : row)
-                          .products ?? []
-                      "
+                    <app-product-section
+                      [items]="items"
+                      [row]="(aRow.index == i ? aRow?.row : undefined) ?? row"
+                      [storeInfo]="storeInfo"
+                      [selectedTheme]="storeInfo | storeTheme"
+                      [hidePrice]="true"
+                      [lazy]="false"
                     >
-                      <div
-                        class="bg-{{
-                          (storeInfo?.colorStyle)!.back_code
-                        }} shadow rounded border border-secondary"
-                        [class.border-secondary]="
-                          storeInfo!.colorStyle!.text_code == 'light'
-                        "
-                        style="overflow: hidden"
-                        *ngIf="items![product]"
-                      >
-                        <div class="pb-0 w-100 h-100">
-                          <a role="button" class="w-100 card-img-top">
-                            <img
-                              id="image"
-                              class="h-100 w-100 bg-{{
-                                (storeInfo?.colorStyle)!.back_code
-                              }}"
-                              [src]="
-                                items![product].nft?.img ??
-                                '/assets/default.png'
-                              "
-                              alt="ok"
-                              style="
-                                object-fit: cover;
-                                aspect-ratio: 1;
-                                margin-bottom: 0.35em;
-                              "
-                            />
-                          </a>
-                          <div
-                            class="card-body text-start w-100 d-flex justify-content-between align-items-center"
-                          >
-                            <p
-                              class="fw-bolder w-100 my-auto"
-                              style="
-                                text-decoration: none;
-                                text-overflow: ellipsis;
-                                word-wrap: break-word;
-                                word-break: break-all;
-                                overflow-x: hidden;
-                                font-size: small;
-                              "
-                              style.color="{{ selectedTheme!.color }}"
-                              [style.font-family]="storeInfo?.fontName!"
-                              role="button"
-                            >
-                              {{ items![product].nft.name }}
-                            </p>
-                            <!-- <a
-                              class="btn btn-outline-{{
-                                (storeInfo?.colorStyle)!.text_code
-                              }} mt-auto d-flex justify-content-center text-center"
-                              style="font-weight: bold"
-                              role="button"
-                            >
-                              <mat-icon
-                                class="m-0 p-0 me-1"
-                                style="overflow: hidden; height: 25px"
-                                svgIcon="{{
-                                  items![product].collection.customToken
-                                    | matIcon
-                                }}"
-                              >
-                              </mat-icon>
-                              {{ items![product].nft?.price | price }}
-                            </a> -->
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    </app-product-section>
                   </div>
                   <div
                     class="row gx-0 row-cols-1 row-cols-md-{{
@@ -888,8 +819,7 @@
                       3
                     "
                     style="pointer-events: none"
-                  >
-                  </div>
+                  ></div>
                   <div
                     class="row gx-0 row-cols-1 row-cols-md-{{
                       (aRow.index == i ? aRow?.row : undefined)?.grid_row ??

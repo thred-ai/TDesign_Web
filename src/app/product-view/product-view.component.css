@@ -1,0 +1,64 @@
+.product-hover {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.product-hover:hover {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+
+img {
+  border-radius: 10px;
+}
+
+img:hover {
+  border-radius: 0px;
+  animation: animate3 0.5s linear infinite;
+  animation-iteration-count: 1;
+}
+
+.overlay{
+    opacity: 0;
+}
+.overlay:hover{
+    opacity: 1;
+    animation: animate4 0.25s linear infinite;
+    animation-iteration-count: 1;
+}
+
+.buy{
+    opacity: 0;
+}
+.buy:hover{
+    opacity: 1;
+    animation: animate5 0.25s linear infinite;
+    animation-iteration-count: 1;
+}
+
+@keyframes animate3 {
+  0% {
+    border-radius: 10px;
+  }
+  100% {
+    border-radius: 0px;
+  }
+}
+
+@keyframes animate4 {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity:1;
+    }
+  }
+
+  @keyframes animate5 {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+  }
+  

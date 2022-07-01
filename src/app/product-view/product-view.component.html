@@ -1,0 +1,96 @@
+<div
+  class="bg-{{
+    (storeInfo?.colorStyle)!.back_code
+  }} rounded-15 border border-secondary w-100 h-100 product-hover"
+  [class.border-secondary]="(storeInfo?.colorStyle)!.text_code == 'light'"
+  style="overflow: hidden"
+  *ngIf="product && collection"
+>
+  <div class="pb-0 w-100 h-100">
+    <div class="w-100 position-relative" style="aspect-ratio: 1">
+      <a
+        class="w-100 h-100 position-absolute"
+        (click)="nftPressed.emit({ nft: product, col: collection })"
+      >
+        <img
+          *ngIf="lazy; else noLazy"
+          loading="lazy"
+          id="image"
+          class="w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+          [useSrcset]="true"
+          [defaultImage]="'/assets/default.png'"
+          [lazyLoad]="product?.img ?? '/assets/default.png'"
+          style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
+        />
+        <ng-template #noLazy>
+          <img
+            id="image"
+            class="w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+            [src]="product?.img ?? '/assets/default.png'"
+            style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
+          />
+        </ng-template>
+      </a>
+      <div class="position-absolute bg-transparent w-100 h-100" (click)="nftPressed.emit({ nft: product, col: collection })">
+        <div
+          class="bg-transparent w-100 h-100 position-relative d-flex justify-content-center align-items-center overlay"
+          style="position: none;"
+        >
+          <div
+            class="position-absolute position-absolute w-100 h-100 bg-{{
+              (storeInfo?.colorStyle)!.back_code
+            }}"
+            role="button"
+            style="z-index: 1000; text-decoration: none; opacity: 0.75"
+          ></div>
+          <a
+            style="z-index: 1001"
+            [style.font-family]="storeInfo?.fontName!"
+            class="position-absolute btn btn-{{(storeInfo?.colorStyle)!.text_code}} rounded-pill px-3 py-2"
+          >
+            View item
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="card-body text-start w-100 d-flex justify-content-between align-items-center"
+    >
+      <p
+        class="fw-bolder my-auto"
+        style="
+          text-decoration: none;
+          text-overflow: ellipsis;
+          word-wrap: break-word;
+          word-break: break-all;
+          overflow-x: hidden;
+          font-size: medium;
+        "
+        style.color="{{ selectedTheme!.color }}"
+        [style.font-family]="storeInfo?.fontName!"
+        role="button"
+        (click)="nftPressed.emit({ nft: product, col: collection })"
+      >
+        {{ product?.name }}
+      </p>
+      <p
+        class="fw-bolder my-auto"
+        [hidden]="hidePrice"
+        style="
+          text-decoration: none;
+          text-overflow: ellipsis;
+          word-wrap: break-word;
+          word-break: break-all;
+          overflow-x: hidden;
+          font-size: medium;
+        "
+        style.color="{{ selectedTheme!.color }}"
+        [style.font-family]="storeInfo?.fontName!"
+        role="button"
+        (click)="nftPressed.emit({ nft: product, col: collection })"
+      >
+        {{ product?.price | currency: collection.currency:"symbol":"1.0-0" }}
+      </p>
+    </div>
+  </div>
+</div>

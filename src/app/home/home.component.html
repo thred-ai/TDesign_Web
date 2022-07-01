@@ -17,7 +17,7 @@
         *ngIf="(row.text ?? '').trim() != ''"
         class="d-flex align-items-center justify-content-center pb-1 mb-5"
         style="height: 50px; font-weight: bold; font-size: 30px"
-        style.color="{{ selectedTheme()!.color }}"
+        style.color="{{ (storeInfo | storeTheme)!.color }}"
       >
         <p
           class="text-center text-{{ (storeInfo?.colorStyle)!.text_code }}"
@@ -31,107 +31,14 @@
 
       <!-- href="{{ '/products/' + product.tokenID | storeChecker }}" -->
       <div class="w-100" *ngIf="row.type == 0 && !shouldHide()">
-        <div
-          class="row mx-2 gx-3 gx-lg-3 row-cols-1 row-cols-md-{{
-            row.grid_row ?? 1
-          }} justify-content-start mt-3"
+        <app-product-section
+          [items]="items"
+          [row]="row"
+          [storeInfo]="storeInfo"
+          [selectedTheme]="storeInfo | storeTheme"
+          (nftPressed)="routeToProduct($event)"
         >
-          <div class="col mb-3" *ngFor="let product of row.products ?? []">
-            <div
-              class="bg-{{
-                (storeInfo?.colorStyle)!.back_code
-              }} shadow rounded border border-secondary"
-              [class.border-secondary]="
-                (storeInfo?.colorStyle)!.text_code == 'light'
-              "
-              style="overflow: hidden"
-              *ngIf="items![product]"
-            >
-              <div class="pb-0 w-100">
-                <a
-                  role="button"
-                  class="w-100"
-                  (click)="
-                    routeToProduct(
-                      items![product].nft,
-                      items![product].collection
-                    )
-                  "
-                >
-                  <img
-                    loading="lazy"
-                    id="image"
-                    class="h-100 w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
-                    [useSrcset]="true"
-                    [defaultImage]="'/assets/default.png'"
-                    [lazyLoad]="
-                      items![product].nft?.img ?? '/assets/default.png'
-                    "
-                    style="
-                      object-fit: cover;
-                      aspect-ratio: 1;
-                      margin-bottom: 0.35em;
-                    "
-                  />
-                </a>
-                <div
-                  class="card-body text-start w-100 d-flex justify-content-between align-items-center"
-                >
-                  <p
-                    class="fw-bolder my-auto"
-                    style="
-                      text-decoration: none;
-                      text-overflow: ellipsis;
-                      word-wrap: break-word;
-                      word-break: break-all;
-                      overflow-x: hidden;
-                      font-size: medium;
-                    "
-                    style.color="{{ selectedTheme()!.color }}"
-                    [style.font-family]="storeInfo?.fontName!"
-                    role="button"
-                    (click)="
-                      routeToProduct(
-                        items![product].nft,
-                        items![product].collection
-                      )
-                    "
-                  >
-                    {{ items![product].nft.name }}
-                  </p>
-                  <p
-                    class="fw-bolder my-auto"
-                    style="
-                      text-decoration: none;
-                      text-overflow: ellipsis;
-                      word-wrap: break-word;
-                      word-break: break-all;
-                      overflow-x: hidden;
-                      font-size: medium;
-                    "
-                    style.color="{{ selectedTheme()!.color }}"
-                    [style.font-family]="storeInfo?.fontName!"
-                    role="button"
-                    (click)="
-                      routeToProduct(
-                        items![product].nft,
-                        items![product].collection
-                      )
-                    "
-                  >
-                    {{
-                      items![product].nft.price
-                        | currency
-                          : items![product].collection.currency
-                          : "symbol"
-                          : "1.0-0"
-                    }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </app-product-section>
       </div>
 
       <div
@@ -202,7 +109,7 @@
         <div
           class="px-3 my-0"
           [style.font-family]="storeInfo?.fontName!"
-          style.color="{{ selectedTheme()!.color }}"
+          style.color="{{ (storeInfo | storeTheme)!.color }}"
           [innerHTML]="row.html ?? '' | safeTextRows"
         ></div>
       </div>

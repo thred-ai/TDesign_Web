@@ -2540,8 +2540,6 @@ textarea.form-control-lg {
   text-shadow: 0 0 0 #212529;
 }
 
-
-
 .form-select-sm {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -6988,8 +6986,6 @@ mat-sidenav-content {
   border: 1px solid #dee2e6 !important;
 }
 
-
-
 .border-0 {
   border: 0 !important;
 }
@@ -8043,6 +8039,10 @@ mat-sidenav-content {
   border-radius: 0.3rem !important;
 }
 
+.rounded-15 {
+  border-radius: 10px !important;
+}
+
 .rounded-circle {
   border-radius: 50% !important;
 }
@@ -8092,7 +8092,6 @@ mat-sidenav-content {
   .w-sm-75 {
     width: 75% !important;
   }
-  
 }
 
 @media (min-width: 576px) {
@@ -8744,9 +8743,10 @@ mat-sidenav-content {
 
   .text-sm-center {
     text-align: center !important;
-  }.vh-100 {
-  height: 100vh !important;
-}
+  }
+  .vh-100 {
+    height: 100vh !important;
+  }
 }
 @media (min-width: 768px) {
   .w-md-100 {
@@ -11498,7 +11498,7 @@ mat-sidenav-content {
 }
 
 .big-design-link-text {
-  color: rgb(85,120,246);
+  color: rgb(85, 120, 246);
   font-family: "Source Sans Pro", sans-serif;
 }
 
@@ -11683,17 +11683,17 @@ mat-sidenav-content {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.big-design-input-title{
+.big-design-input-title {
   font-family: "Source Sans Pro", sans-serif;
   font-weight: bold;
   font-size: 1.1em;
 }
 
-.big-design-input-text{
+.big-design-input-text {
   font-family: "Source Sans Pro", sans-serif;
 }
 
-.big-design-input-subtitle{
+.big-design-input-subtitle {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 0.95em;
   color: gray;
@@ -11724,11 +11724,11 @@ mat-sidenav-content {
   background-color: rgb(94, 99, 122);
 }
 
-.big-design-status-info{
+.big-design-status-info {
   background-color: rgb(10, 56, 217);
 }
 
-.big-design-info{
+.big-design-info {
   color: rgb(10, 56, 217);
 }
 
@@ -11767,7 +11767,6 @@ mat-sidenav-content {
   font-size: x-large;
 }
 
-
 .big-design-notif-content-body {
   margin: 0.7rem;
   font-size: 0.875rem;
@@ -11787,7 +11786,7 @@ mat-sidenav-content {
   background-color: rgb(10, 56, 217);
 }
 
-.light-btn{
+.light-btn {
   color: white;
   border-color: white;
 }

@@ -15,6 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- import it
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ResizeService } from '../resize-events/resize.service';
+import { SharedModule } from '../shared/shared.module';
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
     MatButtonModule,
     MatSelectModule,
     LazyLoadImageModule,
-    NgbModule
+    NgbModule,
+    SharedModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals, ResizeService],

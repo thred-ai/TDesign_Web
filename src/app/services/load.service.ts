@@ -2103,6 +2103,8 @@ export class LoadService {
     }> = {};
 
     let ids = this.splitToBulks(docIDs);
+    console.log(ids)
+    var counter = 0
     await Promise.all(
       ids.map((i) => {
         var query = this.db.collectionGroup('Products', (ref) =>
@@ -2115,12 +2117,15 @@ export class LoadService {
           nfts.forEach((n) => {
             this.getCols(n, cols, (collection?: Collection) => {
               cols[`${n.docID}`] = { nft: n, collection: collection! };
+              counter += 1
+              if (counter == nfts.length){
+                callback(cols);
+              }
             });
           });
         });
       })
     );
-    callback(cols);
   }
 
   getCols(

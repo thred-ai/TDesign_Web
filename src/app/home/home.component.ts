@@ -290,17 +290,17 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .join('');
   }
 
-  routeToProduct(product: NFT, collection: Collection) {
+  routeToProduct(productInfo: {nft: NFT, col: Collection}) {
     let data = {
-      docId: product.docID,
+      docId: productInfo.nft.docID,
       url: `${document.referrer}${this.location.pathname.replace(
         '/' + this.getStoreName().link + '/',
         ''
       )}`,
     };
 
-    let url = `https://${'shopmythred.com'}/${this.getStoreName().link}/nft/${
-      product.docID
+    let url = `https://${Globals.ngrokId}/${this.getStoreName().link}/nft/${
+      productInfo.nft.docID
     }?info=${this.utf8ToHex(JSON.stringify(data))}`;
 
     window.parent.postMessage(
@@ -434,8 +434,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       if (page && rows && rows != []) {
         // this.addTags(page);
 
-        this.homeRows = rows;
-        this.page = page;
 
         let arr = rows.map((r) => r.products ?? []) ?? [];
 
@@ -443,6 +441,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.loadService.getNFTsById(ids, (collections) => {
           this.items = collections;
+          this.homeRows = rows!;
+          this.page = page;
           this.cdr.detectChanges();
           if (isPlatformBrowser(this.platformID)) {
             // setTimeout(() => {
