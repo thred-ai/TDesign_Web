@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class Globals {
-  public static ngrokId = 'b3b8-2607-fea8-7ddd-3900-5910-671b-cb5b-adb3.ngrok.io';
+  public static ngrokId = 'beb1-2607-fea8-7ddd-3900-e087-990a-fc0e-4aa7.ngrok.io';
 
   public static sInfo = new BehaviorSubject<Store>(new Store());
 
