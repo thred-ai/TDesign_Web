@@ -542,13 +542,11 @@ export class LoadService {
   }
 
   getEvents(nft: NFT, callback: (transactions: Array<NftLog>) => any) {
-    console.log(nft.address)
     const data = {
       contract: ethers.utils.getAddress(nft.address),
       tokenId: nft.hashedTokenId(),
       test: false,
     };
-    console.log(data)
     this.functions
       .httpsCallable('getTransactionHistory')(data)
       .pipe(first())
@@ -557,7 +555,6 @@ export class LoadService {
           let hashes = resp.result as any[];
           if (hashes) {
             var logs = new Array<NftLog>();
-            console.log(hashes)
             await Promise.all(
               hashes.map(async (t) => {
                 var type = '';
@@ -1555,21 +1552,36 @@ export class LoadService {
     // await this.saveStoreInfo(mappedData, uid);
   }
 
-  private async saveNftImage(image: string, productID: string) {
+  private async saveNftImage(image: any, productID: string, mode = 0) {
     const filePath =
-      'Products/' + productID + '/' + 'link_' + productID + '.png';
+      'Products/' +
+      productID +
+      '/' +
+      (mode == 0 ? 'link_' + productID + '.png' : 'ios_' + productID + '.usdz');
 
     let ref = this.storage.ref(filePath);
 
-    const byteArray = Buffer.from(
-      image.replace(/^[\w\d;:\/]+base64\,/g, ''),
-      'base64'
-    );
+    if (mode == 0){
+      const byteArray = Buffer.from(
+        image.replace(/^[\w\d;:\/]+base64\,/g, ''),
+        'base64'
+      );
+      await ref.put(byteArray);
+    }
+    else{
+      await ref.put(image);
+    }
 
-    await ref.put(byteArray);
-    const url = this.getURL(productID);
+    const url =
+      mode == 0 ? this.getURL(productID) : this.getModelURL(productID);
 
     return url;
+  }
+
+  private async uploadIOSModel(model: File, productID: string){
+    let task = await this.storage.upload(`/Products/${productID}}/ios_${productID}.usdz`, model)
+    console.log(task.metadata.fullPath)
+    return task.metadata.fullPath 
   }
 
   private async uploadLayoutImages(image: string, type: string, uid?: string) {
@@ -1704,6 +1716,7 @@ export class LoadService {
     price: number = 0,
     skybox: string,
     utility: any[],
+    ios_model: File,
     callback: (nft?: NFT) => any
   ) {
     //add token later
@@ -1719,16 +1732,24 @@ export class LoadService {
           progress: (prog) => console.log(`received: ${prog}`),
         });
 
+        // const added3 = await client.add(ios_model, {
+        //   progress: (prog) => console.log(`received: ${prog}`),
+        // });
+
+        const url4 = await this.saveNftImage(ios_model, `${collectionAddress}${(col.collectionCount ?? 0) + 1}`, 1)
+
         const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
+        // const url4 = `https://ipfs.infura.io/ipfs/${added3.path}`;
 
         var data1 = {
           name,
           description,
           image,
-          model: added,
+          model: url2,
           skybox,
           traits: traits && traits !== [] ? traits : undefined,
           utility,
+          ios_model: url4,
         };
 
         const data2 = JSON.stringify(data1);
@@ -1749,6 +1770,7 @@ export class LoadService {
             royalty,
             price,
             utility,
+            ios_model: url4,
           } as Dict<any>)
         );
 
@@ -1911,7 +1933,6 @@ export class LoadService {
 
     var url = page.img;
 
-    console.log(page.img);
 
     if (
       page.img &&
@@ -2103,8 +2124,7 @@ export class LoadService {
     }> = {};
 
     let ids = this.splitToBulks(docIDs);
-    console.log(ids)
-    var counter = 0
+    var counter = 0;
     await Promise.all(
       ids.map((i) => {
         var query = this.db.collectionGroup('Products', (ref) =>
@@ -2117,8 +2137,8 @@ export class LoadService {
           nfts.forEach((n) => {
             this.getCols(n, cols, (collection?: Collection) => {
               cols[`${n.docID}`] = { nft: n, collection: collection! };
-              counter += 1
-              if (counter == nfts.length){
+              counter += 1;
+              if (counter == nfts.length) {
                 callback(cols);
               }
             });
@@ -2233,6 +2253,16 @@ export class LoadService {
       '%2Flink_' +
       productID +
       '.png?alt=media'
+    );
+  }
+
+  getModelURL(productID: string) {
+    return (
+      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      productID +
+      '%2Fios_' +
+      productID +
+      '.usdz?alt=media'
     );
   }
 

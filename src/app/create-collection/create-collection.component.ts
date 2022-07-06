@@ -83,7 +83,6 @@ export class CreateCollectionComponent implements OnInit {
   err = '';
 
   async save() {
-    console.log(this.nftForm.valid);
 
     if (this.nftForm.valid) {
       this.saving = true;

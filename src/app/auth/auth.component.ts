@@ -25,7 +25,6 @@ export class AuthComponent implements OnInit {
   async ngOnInit() {
     this.showSpinner = true
     this.router.queryParams.subscribe(async (params) => {
-      console.log(params);
 
       let code = params.code;
       let jwt = params.signed_payload_jwt;

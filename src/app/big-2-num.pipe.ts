@@ -6,12 +6,9 @@ import { ethers } from 'ethers';
 })
 export class Big2NumPipe implements PipeTransform {
 
-  transform(value: ethers.BigNumber | null | undefined, fixed: number = 3) {
+  transform(value: string) {
 
-    if (value){
-      return Number(ethers.utils.formatEther(value)).toFixed(fixed);
-    }
-    return '0'
+    return atob(value)
   }
 
 }

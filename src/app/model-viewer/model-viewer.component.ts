@@ -14,7 +14,9 @@ export class ModelViewerComponent implements OnInit {
   @Input() camera?: boolean = false
   @Input() id?: string = 'model'
   @Input() poster?: string
+  @Input() ios_model?: string
 
+  
   obj?: any = {
     detail: {
       visible: false

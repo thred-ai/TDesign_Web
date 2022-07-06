@@ -32,7 +32,6 @@ export class CollectionTableComponent
     this.dataSource = new MatTableDataSource<NFT>(
       sortPipe.transform(pipe.transform(col.NFTs), 'tokenId-asc')
     );
-    console.log(this.dataSource);
     this.dataSource!.paginator = this.paginator!;
     this.cdr.detectChanges();
   }
@@ -55,18 +54,12 @@ export class CollectionTableComponent
   ];
 
   ngOnChanges() {
-    console.log('CHANGED');
-    console.log(this.collection);
-    console.log(this.col);
     this.collection = this.col!;
-    console.log(this.dataSource);
 
     this.cdr.detectChanges();
   }
 
   createNewNFT(contract?: Collection, asset?: NFT) {
-    console.log(contract);
-    console.log(asset);
     this.viewNFT.emit({
       contract,
       asset,

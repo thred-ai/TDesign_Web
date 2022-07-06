@@ -20,14 +20,14 @@
           [useSrcset]="true"
           [defaultImage]="'/assets/default.png'"
           [lazyLoad]="product?.img ?? '/assets/default.png'"
-          style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
+          style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em; object-position: top;"
         />
         <ng-template #noLazy>
           <img
             id="image"
             class="w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
             [src]="product?.img ?? '/assets/default.png'"
-            style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em"
+            style="object-fit: cover; aspect-ratio: 1; margin-bottom: 0.35em; object-position: top;"
           />
         </ng-template>
       </a>

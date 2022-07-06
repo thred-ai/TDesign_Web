@@ -40,6 +40,11 @@ import { ResizeService } from '../resize-events/resize.service';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { MatDialog } from '@angular/material/dialog';
 import { ethers } from 'ethers';
+import Axios, { AxiosResponse } from 'axios';
+import { setupCache } from 'axios-cache-interceptor';
+import JSZip from 'jszip';
+// same object, but with updated typings.
+const axios = setupCache(Axios);
 
 @Component({
   selector: 'app-home',
@@ -272,11 +277,22 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('header', { read: ElementRef, static: false }) el?: ElementRef;
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.loadService.homeComponent = this;
     Globals.sInfo.subscribe((s) => {
       this.storeInfo = s;
     });
+
+    // let s = await axios.get(
+    //   'https://ipfs.infura.io/ipfs/QmfV8CJqS7PKdKSQLxZJoQrfCC3eYiqjGRq4LEEhtaasrT',
+    // );
+
+    // console.log(s)
+    // const zip = new JSZip();
+    // let zipped = await zip.loadAsync(s);
+
+    // console.log(zipped.files['porsche_compressed.usdc']);
+
     this.init();
   }
 
@@ -290,7 +306,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       .join('');
   }
 
-  routeToProduct(productInfo: {nft: NFT, col: Collection}) {
+  routeToProduct(productInfo: { nft: NFT; col: Collection }) {
     let data = {
       docId: productInfo.nft.docID,
       url: `${document.referrer}${this.location.pathname.replace(
@@ -298,6 +314,8 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         ''
       )}`,
     };
+
+    console.log(data);
 
     let url = `https://${'shopmythred.com'}/${this.getStoreName().link}/nft/${
       productInfo.nft.docID
@@ -433,7 +451,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
       if (page && rows && rows != []) {
         // this.addTags(page);
-
 
         let arr = rows.map((r) => r.products ?? []) ?? [];
 

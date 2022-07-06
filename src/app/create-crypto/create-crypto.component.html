@@ -154,11 +154,7 @@
             The utilities the token will grant to the holder.
           </h5>
 
-          <p
-            class="big-design-title"
-            style="font-size: small"
-            *ngFor="let util of utility ?? []"
-          >
+          <div class="w-100" *ngFor="let util of utility ?? []">
             <mat-checkbox
               [color]="'primary'"
               [(ngModel)]="util.active"
@@ -167,8 +163,34 @@
               >{{ util.name }}</mat-checkbox
             >
 
-            <ng-template *ngIf="util.active"> </ng-template>
-          </p>
+            <div *ngIf="util.active && util.code == 'ar' && !data.asset" class="w-100 py-4">
+              <h2 class="big-design-input-title my-0">IOS AR File (.usdz)</h2>
+              <h5 class="big-design-input-subtitle mt-0">
+                Used as a fallback when the auto .usdz conversion fails on
+                certain devices
+              </h5>
+              <a
+                class="mt-0 big-design-{{
+                  nftForm.controls.ios_model.value ? 'alt-' : ''
+                }}button"
+                (click)="iosfileInput.click()"
+              >
+                {{
+                  nftForm.controls.ios_model.value
+                    ? "Replace File"
+                    : "Browse Files"
+                }}
+              </a>
+            </div>
+            <!-- <div *ngIf="util.active && util.code == 'ar'" class="w-100 py-3">
+                <div class="big-design-input-title">
+                  IOS AR File (.usdz)
+                </div>
+                  <a class="mt-2 big-design-{{nftForm.controls.ios_model.value ? 'alt-' : ''}}button" (click)="iosfileInput.click()">
+                    {{nftForm.controls.ios_model.value ? 'Replace File' : 'Browse Files'}}
+                  </a>
+              </div> -->
+          </div>
         </div>
 
         <!-- <h2 class="h2 my-0">NFT Traits</h2>
@@ -283,17 +305,16 @@
           (change)="fileChangeEvent($event, 'skybox')"
           style="display: none"
         />
+        <input
+          #iosfileInput
+          type="file"
+          (change)="fileChangeEvent($event, 'ios_model')"
+          style="display: none"
+        />
         <div
           class="d-inline-flex justify-content-center align-items-center"
           *ngIf="!data.asset; else assetStatus"
         >
-          <a
-            class="big-design-button me-2"
-            [hidden]="!nftForm.controls.file.value"
-            (click)="fileInput.click()"
-          >
-            Add Background
-          </a>
           <a
             class="big-design-button"
             [hidden]="!nftForm.controls.file.value"
@@ -351,7 +372,9 @@
               [camera]="true"
               [model]="nftForm.controls.file.value"
               [animate]="true"
-              [skybox]="nftForm.controls.skybox.value"
+              [skybox]="
+                'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
+              "
               [poster]="nftForm.controls.cover.value ?? '/assets/default.png'"
               [id]="'viewer'"
               [ar]="false"
@@ -360,13 +383,27 @@
           </div>
           <ngx-dropzone
             class="w-100 h-100 position-absolute bg-transparent border-0"
-            style="z-index: 100000; pointer-events: none"
+            style="z-index: 1000; pointer-events: none"
             (change)="dropped($event)"
             [multiple]="false"
             [disableClick]="true"
             #drop
           >
           </ngx-dropzone>
+          <div
+            [hidden]="!nftForm.controls.file.value"
+            class="position-absolute d-flex justify-content-start align-items-center flex-column"
+            style="right: 10px; top: 10px; bottom: 10px; z-index: 1001"
+          >
+            <a
+              class="big-design-alt-button p-1"
+              matTooltip="Change Skybox"
+              [matTooltipPosition]="'left'"
+              (click)="fileInput.click()"
+            >
+              <mat-icon> wallpaper </mat-icon>
+            </a>
+          </div>
           <!-- <div style="bottom: 10px; right: 10px">
           <a role="button" class="big-design-alt-button">Replace</a>
         </div> -->

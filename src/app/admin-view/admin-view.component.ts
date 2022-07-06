@@ -317,7 +317,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     );
 
     if (col) {
-      console.log(coords);
       coords.product = col?.NFTs[`${coords.productID}`];
       coords.collection = col;
       this.selectedCoord = coords;
@@ -2453,7 +2452,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       if (!this.bigcommerceMetadata) {
         this.loadService.getBigCommerceStore((info) => {
           this.bigcommerceMetadata = info ?? null;
-          console.log(info);
           if (info.logo.url) {
             Globals.storeInfo.profileLink = new URL(info.logo.url);
           }
@@ -2639,7 +2637,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
     let sub = modalRef.afterClosed().subscribe((resp) => {
       sub.unsubscribe();
-      console.log(resp);
       if (resp) {
         let col = resp as NFT;
 
@@ -2649,7 +2646,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         this.collections![same!].NFTs[col.docID!] = col;
         this.collections![same!].collectionCount! += 1;
 
-        console.log(this.collections);
 
         this.cdr.detectChanges();
 

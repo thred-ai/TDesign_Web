@@ -15,7 +15,6 @@ export class LiveEarthViewPipePipe implements PipeTransform {
       timestamp: Date;
     }> = [];
     n.forEach((p) => {
-      console.log(p);
       let same = markers?.findIndex(
         (k) =>
           p.address.city == k.address.city &&

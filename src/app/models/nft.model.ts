@@ -18,6 +18,7 @@ export class NFT {
   status?: number = 0;
   docID: string;
   utility: number[] = [];
+  ios_model?: string;
 
   get hashedAddress() {
     let contractId = this.address.substring(2, this.address.length);
@@ -31,7 +32,6 @@ export class NFT {
     let strTokenId = String(this.tokenId);
     let zero = ethers.constants.HashZero;
 
-    console.log(this.tokenId)
     return zero.substring(0, zero.length - strTokenId.length) + strTokenId;
   }
 
@@ -50,7 +50,8 @@ export class NFT {
     price?: number,
     status?: number,
     docID?: string,
-    utility?: number[]
+    utility?: number[],
+    ios_model?: string
   ) {
     this.name = name ?? 'NFT';
     this.description = description ?? ''; // ?? erc721Merchant;
@@ -67,5 +68,6 @@ export class NFT {
     this.status = status ?? 0;
     this.docID = docID ?? '';
     this.utility = utility ?? [];
+    this.ios_model = ios_model
   }
 }

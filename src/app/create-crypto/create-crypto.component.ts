@@ -60,7 +60,6 @@ export class CreateCryptoComponent implements OnInit {
     this.customCurrencyMaskConfig.prefix =
       pipe.transform(0, data.contract.currency ?? 'USD')?.replace('0.00', '') ??
       '$';
-    console.log(this.customCurrencyMaskConfig.prefix);
   }
 
   nftContract: Collection;
@@ -100,7 +99,7 @@ export class CreateCryptoComponent implements OnInit {
     file: [null, Validators.required],
     skybox: [null],
     cover: [null],
-    // url: [null],
+    ios_model: [null],
     royalty: [null],
   });
 
@@ -123,13 +122,13 @@ export class CreateCryptoComponent implements OnInit {
       this.nftForm.controls.royalty.disable();
     }
 
+
     if (this.data.asset) {
       let nft = this.data.asset as NFT;
       this.nftForm.controls.title.setValue(nft.name);
       this.nftForm.controls.description.setValue(nft.description);
       this.nftForm.controls.price.setValue(nft.price);
       this.nftForm.controls.file.setValue(nft.assetUrl);
-      console.log(nft.assetUrl);
       this.nftForm.controls.royalty.setValue(!con ? nft.royalty / 100 : null);
       this.nftForm.controls.cover.setValue(nft.img);
       this.nftForm.controls.skybox.setValue(
@@ -209,7 +208,7 @@ export class CreateCryptoComponent implements OnInit {
         ((this.nftForm.controls.royalty.value as number) ?? 0.0) * 100;
       let skyBox = (this.nftForm.controls.skybox.value as string) ?? '';
       let utility = this.utility.filter((f) => f.active) ?? [];
-
+      let ios_model = this.nftForm.controls.ios_model.value as File;
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       var uploadFile = this.convertBase64ToBlob(file);
 
@@ -228,6 +227,7 @@ export class CreateCryptoComponent implements OnInit {
         cost,
         skyBox,
         utility,
+        ios_model,
         (nft?: NFT) => {
           this.isLoading = false;
           this.dialogRef.close(nft);
@@ -335,26 +335,32 @@ export class CreateCryptoComponent implements OnInit {
   acceptedSkybox = '.hdr';
   acceptedCovers = '.png,.jpeg';
 
-  fileChangeEvent(event: any, mode = 'skybox'): void {
-    console.log(event);
+  async fileChangeEvent(event: any, mode = 'skybox') {
+
 
     const file = event.target.files[0];
+
+    let buffer = await file.arrayBuffer();
+    var blob = new Blob([buffer]);
+
     const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
+    reader.onload = (event: any) => {
+      var base64 = event.target.result;
       if (mode == 'skybox') {
         this.nftForm.controls.skybox.setValue(
-          (reader.result as string)?.replace(/^[\w\d;:\/]+base64\,/g, '')
+          (base64)?.replace(/^[\w\d;:\/]+base64\,/g, '')
         );
+      } else if (mode == 'ios_model') {
+        this.nftForm.controls.ios_model.setValue(file);
       } else {
-        this.nftForm.controls.cover.setValue(reader.result);
+        this.nftForm.controls.cover.setValue(base64);
       }
       this.cdr.detectChanges();
     };
+    reader.readAsDataURL(blob);
   }
 
   public async dropped(files: any) {
-    console.log(files);
     // this.files = files;
     for (const file of files.addedFiles) {
       // Is it a file?
@@ -363,7 +369,6 @@ export class CreateCryptoComponent implements OnInit {
 
       var type = file.type;
 
-      console.log(file);
 
       var acceptedFiles = this.acceptedModels;
       this.fileName = file.name;
@@ -379,7 +384,6 @@ export class CreateCryptoComponent implements OnInit {
 
       let arrs = acceptedFiles.replace(/\./g, '').split(',');
 
-      console.log(arrs);
 
       if (type == '') {
         arrs.forEach((t) => {
@@ -400,7 +404,6 @@ export class CreateCryptoComponent implements OnInit {
         }
       }
 
-      console.log(type);
       // You could upload it like this:
       // const formData = new FormData()
       // formData.append('logo', file, file.)
@@ -427,17 +430,6 @@ export class CreateCryptoComponent implements OnInit {
         var base64 = event.target.result;
 
         this.nftForm.controls.file.setValue(base64);
-
-        // var format = '3d';
-        // if (type.indexOf('image') > -1) {
-        //   format = 'image';
-        // } else if (type.indexOf('video') > -1) {
-        //   format = 'video';
-        // } else if (type.indexOf('glb') > -1 || type.indexOf('gltf') > -1) {
-        //   format = '3d';
-        // }
-
-        // this.nftForm.controls.format.setValue(format);
 
         this.cdr.detectChanges();
       };
