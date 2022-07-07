@@ -317,7 +317,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
     console.log(data);
 
-    let url = `https://${'shopmythred.com'}/${this.getStoreName().link}/nft/${
+    let url = `https://${Globals.ngrokId}/${this.getStoreName().link}/nft/${
       productInfo.nft.docID
     }?info=${this.utf8ToHex(JSON.stringify(data))}`;
 

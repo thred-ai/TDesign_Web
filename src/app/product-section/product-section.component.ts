@@ -21,6 +21,7 @@ export class ProductSectionComponent implements OnInit {
 
   @Input() storeInfo?: Store = undefined;
   @Input() selectedTheme?: any = undefined;
+  @Input() canOpen?: boolean = true;
 
   @Output() nftPressed = new EventEmitter<{
     nft: NFT,

@@ -16,6 +16,7 @@ export class ProductViewComponent implements OnInit {
   @Input() selectedTheme?: any = undefined;
   @Input() hidePrice?: boolean = false;
   @Input() lazy?: boolean = true;
+  @Input() canOpen?: boolean = true;
 
 
   @Output() nftPressed = new EventEmitter<{
