@@ -271,9 +271,66 @@
                     style="top: 1.2rem; left: 1.5rem; position: absolute"
                   >
                     <div class="h-100">
-                      <h1 class="big-design-title" style="color: white">
+                      <!-- <h1 class="big-design-title" style="color: white">
                         48 Hour Activity
-                      </h1>
+                      </h1> -->
+                      <mat-form-field
+                        class="big-design-title px-0"
+                        style="color: white; font-size: large"
+                        floatLabel="never"
+                        appearance="legacy"
+                      >
+                        <mat-date-range-input
+                          [formGroup]="dateRange"
+                          [rangePicker]="picker"
+                          [comparisonStart]="dateRange.value.start"
+                          style="color: white"
+                          role="button"
+                          class="text-white ms-1"
+                          [comparisonEnd]="dateRange.value.end"
+                          [max]="today"
+                        >
+                          <input
+                            matStartDate
+                            readonly
+                            (click)="picker.open()"
+                            placeholder="Start date"
+                            formControlName="start"
+                            #dateRangeStart
+                          />
+                          <input
+                            matEndDate
+                            readonly
+                            (click)="picker.open()"
+                            placeholder="End date"
+                            formControlName="end"
+                            #dateRangeEnd
+                            (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
+                          />
+                        </mat-date-range-input>
+
+                        <a
+                          mat-icon-button
+                          class="p-0 me-0 my-auto"
+                          matPrefix
+                          (click)="picker.open()"
+                        >
+                          <mat-icon
+                            class="m-0"
+                            style="
+                              color: rgb(188, 188, 188);
+                              font-size: x-large;
+                            "
+                            >event</mat-icon
+                          >
+                        </a>
+
+                        <mat-date-range-picker
+                          style="color: white"
+                          touchUi
+                          #picker
+                        ></mat-date-range-picker>
+                      </mat-form-field>
                       <a
                         class="side d-flex mt-2 align-items-center justify-content-start"
                         style="font-size: large"

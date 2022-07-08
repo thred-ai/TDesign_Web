@@ -20,7 +20,12 @@ import {
   transition,
   animate,
 } from '@angular/animations';
-import { Validators, FormBuilder } from '@angular/forms';
+import {
+  Validators,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from '../cropper/cropper.component';
 import { NgxSpinnerService } from 'ngx-spinner';
@@ -70,6 +75,11 @@ import { BillingAdminComponent } from '../billing-admin/billing-admin.component'
 import { EditPlanComponent } from '../edit-plan/edit-plan.component';
 import { StoreDomain } from '../models/store-domain.model';
 import { LocationPipe } from '../location.pipe';
+import {
+  MatDateFormats,
+  MAT_DATE_FORMATS,
+  MAT_NATIVE_DATE_FORMATS,
+} from '@angular/material/core';
 // artifacts/contracts/Market.sol/NFTMarket
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -80,6 +90,18 @@ export type ChartOptions = {
   colors: string[];
   legend: ApexLegend;
   fill: ApexFill;
+};
+
+export const GRI_DATE_FORMATS: MatDateFormats = {
+  ...MAT_NATIVE_DATE_FORMATS,
+  display: {
+    ...MAT_NATIVE_DATE_FORMATS.display,
+    dateInput: {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    } as Intl.DateTimeFormatOptions,
+  },
 };
 
 @Component({
@@ -95,6 +117,7 @@ export type ChartOptions = {
       transition('default => rotated', animate('200ms ease-in')),
     ]),
   ],
+  providers: [{ provide: MAT_DATE_FORMATS, useValue: GRI_DATE_FORMATS }],
 })
 export class AdminViewComponent implements OnInit, OnDestroy {
   public chartOptions?: Partial<ChartOptions>;
@@ -103,6 +126,16 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     affiliate: string;
     timestamp: Date;
   }>();
+
+  today = new Date();
+  month = this.today.getMonth();
+  year = this.today.getFullYear();
+  day = this.today.getDate();
+
+  dateRange = new FormGroup({
+    start: new FormControl(this.loadService.addDays(this.today, -2)),
+    end: new FormControl(new Date(this.year, this.month, this.day)),
+  });
 
   items: Array<Dict<any>> = [];
   miscItems: Array<Dict<any>> = [];
@@ -129,6 +162,22 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     '=1': '1 Sale',
     other: '# Sales',
   };
+
+  dateRangeChange(
+    dateRangeStart: HTMLInputElement,
+    dateRangeEnd: HTMLInputElement
+  ) {
+    if (dateRangeStart.value && dateRangeEnd.value) {
+      let start = dateRangeStart.value;
+      let end = dateRangeEnd.value;
+
+      console.log(start);
+      console.log(end);
+
+      this.loadStats();
+
+    }
+  }
 
   intValue?: number = undefined;
 
@@ -2439,15 +2488,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         });
       }
       if (!this.views) {
-        this.loadService.getMiscStats(user?.uid!, (views) => {
-          this.views = views ?? [];
-        });
-        // let data = [
-        //   {
-        //     name: 'Store Views',
-        //     series: Globals.views,
-        //   },
-        // ];
+        this.loadStats(user!.uid);
       }
       if (!this.bigcommerceMetadata) {
         this.loadService.getBigCommerceStore((info) => {
@@ -2555,6 +2596,18 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     };
   }
 
+  loadStats(uid = Globals.storeInfo.uid!) {
+    this.loadService.getMiscStats(
+      uid,
+      this.dateRange.controls.start.value,
+      this.dateRange.controls.end.value,
+      (views) => {
+        this.views = views ?? [];
+        this.cdr.detectChanges();
+      }
+    );
+  }
+
   async deleteProduct(product: NFT) {
     // this.openPopup(
     //   'Are you sure?',
@@ -2645,7 +2698,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         );
         this.collections![same!].NFTs[col.docID!] = col;
         this.collections![same!].collectionCount! += 1;
-
 
         this.cdr.detectChanges();
 

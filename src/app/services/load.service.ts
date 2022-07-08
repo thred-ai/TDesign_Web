@@ -1561,14 +1561,13 @@ export class LoadService {
 
     let ref = this.storage.ref(filePath);
 
-    if (mode == 0){
+    if (mode == 0) {
       const byteArray = Buffer.from(
         image.replace(/^[\w\d;:\/]+base64\,/g, ''),
         'base64'
       );
       await ref.put(byteArray);
-    }
-    else{
+    } else {
       await ref.put(image);
     }
 
@@ -1578,10 +1577,13 @@ export class LoadService {
     return url;
   }
 
-  private async uploadIOSModel(model: File, productID: string){
-    let task = await this.storage.upload(`/Products/${productID}}/ios_${productID}.usdz`, model)
-    console.log(task.metadata.fullPath)
-    return task.metadata.fullPath 
+  private async uploadIOSModel(model: File, productID: string) {
+    let task = await this.storage.upload(
+      `/Products/${productID}}/ios_${productID}.usdz`,
+      model
+    );
+    console.log(task.metadata.fullPath);
+    return task.metadata.fullPath;
   }
 
   private async uploadLayoutImages(image: string, type: string, uid?: string) {
@@ -1736,7 +1738,11 @@ export class LoadService {
         //   progress: (prog) => console.log(`received: ${prog}`),
         // });
 
-        const url4 = await this.saveNftImage(ios_model, `${collectionAddress}${(col.collectionCount ?? 0) + 1}`, 1)
+        const url4 = await this.saveNftImage(
+          ios_model,
+          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+          1
+        );
 
         const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
         // const url4 = `https://ipfs.infura.io/ipfs/${added3.path}`;
@@ -1933,7 +1939,6 @@ export class LoadService {
 
     var url = page.img;
 
-
     if (
       page.img &&
       this.isBase64(page.img?.replace(/^[\w\d;:\/]+base64\,/g, ''))
@@ -2050,13 +2055,19 @@ export class LoadService {
     );
   }
 
-  getMiscStats(uid: string, callback: (views?: Dict<any>[]) => any) {
+  getMiscStats(
+    uid: string,
+    date1: Date,
+    date2: Date,
+    callback: (views?: Dict<any>[]) => any
+  ) {
     var views: Dict<any>[] = [];
-    let date = this.addDays(new Date(), -2);
 
     let sub = this.db
       .collection('Users/' + uid + '/Daily_Info/', (ref) =>
-        ref.where('timestamp', '>=', date)
+        ref
+          .where('timestamp', '>=', date1)
+          .where('timestamp', '<=', new Date(date2.setHours(23, 59, 59, 999)))
       )
       .valueChanges()
       .subscribe((docDatas) => {

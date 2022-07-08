@@ -53,6 +53,7 @@ import { LOCALE_ID } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { NotificationComponent } from '../notification/notification.component'; // <-- import it
 import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 const routes: Routes = [
   {
@@ -116,6 +117,7 @@ const routes: Routes = [
     NgxDropzoneModule,
     BillingAdminModule,
     MatTooltipModule,
+    MatDatepickerModule,
     MonacoEditorModule.forRoot(),
     SharedModule,
   ],
