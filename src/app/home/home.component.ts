@@ -318,15 +318,18 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
 
     console.log(data);
 
-    window.parent.postMessage(
-      {
-        open: `${this.utf8ToHex(JSON.stringify(data))}`,
-        theme: this.selectedTheme(),
-        style: Globals.storeInfo.colorStyle,
-        font: Globals.storeInfo.fontName,
-      },
-      '*'
-    );
+    if (isPlatformBrowser(this.platformID)){
+      window.parent.postMessage(
+        {
+          open: `${this.utf8ToHex(JSON.stringify(data))}`,
+          theme: this.selectedTheme(),
+          style: Globals.storeInfo.colorStyle,
+          font: Globals.storeInfo.fontName,
+        },
+        '*'
+      );
+    }
+    
     // const modalRef = this.dialog.open(, {
     //   width: '97.5vw',
     //   height: '97.5vh',
