@@ -380,9 +380,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return indicator;
   }
 
-  routeToAbout() {
-    this.rootComponent.routeToAbout();
-  }
+  
 
   get provider() {
     return Globals.provider;
@@ -396,8 +394,11 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   traits: Dict<any>[] | undefined;
 
+  oldUrl = '';
+
+
   async ngOnInit() {
-    Globals.sInfo.pipe(skip(1)).subscribe((s) => {
+    Globals.sInfo.pipe().subscribe((s) => {
       this.storeInfo = s;
       // this.showSpinner();
       // this.rootComponent.setFavIcon(
@@ -405,15 +406,17 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       // );
     });
 
-    const storeInfo = this.getStoreName();
-    this.loadService.getUser(
-      storeInfo?.link,
-      undefined,
-      storeInfo?.isCustom,
-      (user) => {
-        this.cdr.detectChanges();
-      }
-    );
+    console.log("man")
+
+    // const storeInfo = this.getStoreName();
+    // this.loadService.getUser(
+    //   storeInfo?.link,
+    //   undefined,
+    //   storeInfo?.isCustom,
+    //   (user) => {
+    //     this.cdr.detectChanges();
+    //   }
+    // );
 
     // this.loadService.getPost(
     //   data.full,
@@ -480,26 +483,30 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     //   },
     //   queryParamsHandling: 'merge',
     // });
-    this.router.queryParams.subscribe((params) => {
-      let linkInfo = params.info as string;
-      let info = JSON.parse(this.hexToUtf8(linkInfo));
-      this.loadService.getPost(
-        info.docId,
-        (product?: NFT, collection?: Collection) => {
+    // this.router.queryParams.subscribe((params) => {
+    //   let linkInfo = params.info as string;
+    //   let info = JSON.parse(this.hexToUtf8(linkInfo));
+      
+    // });
+
+    let id = this.getProductID().full
+    
+    this.loadService.getPost(
+      id,
+      (product?: NFT, collection?: Collection) => {
+        setTimeout(() => {
+          this.productToBuy = Object.assign(new NFT(), product);
+          this.collection = Object.assign(new Collection(), collection);
+          // this.url = info.url ?? '';
+          this.cdr.detectChanges();
           setTimeout(() => {
-            this.productToBuy = Object.assign(new NFT(), product);
-            this.collection = Object.assign(new Collection(), collection);
-            this.url = info.url ?? '';
-            this.cdr.detectChanges();
-            setTimeout(() => {
-              this.loadService.getEvents(this.productToBuy!, async (txs) => {
-                this.nftLogs = txs;
-              });
-            }, 250);
+            this.loadService.getEvents(this.productToBuy!, async (txs) => {
+              this.nftLogs = txs;
+            });
           }, 250);
-        }
-      );
-    });
+        }, 250);
+      }
+    );
   }
 
   hexToUtf8(hex: string) {

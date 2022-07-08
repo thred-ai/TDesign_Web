@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { BillingAdminComponent } from './billing-admin.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { BillingAdminComponent } from './billing-admin.component';
     MatInputModule,
     ReactiveFormsModule,
     MatRadioModule,
+    MatTooltipModule,
     NgxStripeModule.forRoot('pk_live_m7nEWhyTHoxGspcxtJAci6pu002LUiOnJK'),
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],

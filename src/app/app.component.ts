@@ -58,9 +58,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   mode = 'All Products';
 
-  storeInfo?: Store = undefined
-
-
+  storeInfo?: Store = undefined;
 
   availableCurrencies() {
     return Globals.availableCurrencies;
@@ -164,11 +162,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       Link: '/' + 'STORE_NAME' + '/my-store',
       Function: this.routeToProfile,
     };
-    var option2 = {
-      Title: 'View Orders',
-      Link: '/' + 'STORE_NAME' + '/orders',
-      Function: this.routeToOrders,
-    };
 
     var option3 = {
       Title: 'Sign Out',
@@ -184,7 +177,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       };
     }
 
-    this.profileSettings = [option, option2, option3];
+    this.profileSettings = [option, option3];
   }
 
   async closeBtn(result: string) {
@@ -270,33 +263,38 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   async routeToProfile(selected?: string) {
     // if (Globals.storeInfo?.username) {
-      // this.loadService.myCallback = undefined;
-      // if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
-      //   // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
-      //   this.routingService.routeToProfile(
-      //     Globals.storeInfo?.username!,
-      //     this.getStoreName().isCustom,
-      //     selected,
-      //     'https://shopmythred.com/' + Globals.storeInfo?.username
-      //   );
-      // } else {
-        
-        this.loadService.getUser("", (await this.loadService.isLoggedIn())?.uid, this.getStoreName().isCustom, user => {
-          if (user?.username) {
-            if (this.isAdmin()) {
-              this.reloadCurrentRoute();
-              return;
-            } else {
-              this.routingService.routeToProfile(
-                user?.username!,
-                this.getStoreName().isCustom,
-                selected
-              );
-              return;
-            }
+    // this.loadService.myCallback = undefined;
+    // if (Globals.storeInfo?.uid != Globals.userInfo?.uid) {
+    //   // Globals.storeInfo = JSON.parse(JSON.stringify(Globals.userInfo));
+    //   this.routingService.routeToProfile(
+    //     Globals.storeInfo?.username!,
+    //     this.getStoreName().isCustom,
+    //     selected,
+    //     'https://shopmythred.com/' + Globals.storeInfo?.username
+    //   );
+    // } else {
+
+    this.loadService.getUser(
+      '',
+      (await this.loadService.isLoggedIn())?.uid,
+      this.getStoreName().isCustom,
+      (user) => {
+        if (user?.username) {
+          if (this.isAdmin()) {
+            this.reloadCurrentRoute();
+            return;
+          } else {
+            this.routingService.routeToProfile(
+              user?.username!,
+              this.getStoreName().isCustom,
+              selected
+            );
+            return;
           }
-        })
-      // }
+        }
+      }
+    );
+    // }
     // } else {
     //   this.loadService.myCallback = () => this.routeToProfile();
     //   this.loadService.getCustomer();
@@ -305,7 +303,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   cart?: Array<ProductInCart> = undefined;
 
-
   getStoreName() {
     var request = '';
     if (isPlatformServer(this.platformID)) {
@@ -313,7 +310,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     } else {
       request = globalThis.location.host;
     }
-    if (request != 'localhost:4200' && request != Globals.ngrokId && request != 'shopmythred.com') {
+    if (
+      request != 'localhost:4200' &&
+      request != Globals.ngrokId &&
+      request != 'shopmythred.com'
+    ) {
       return {
         isCustom: false,
         link: request,
@@ -346,29 +347,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       );
   }
 
-  routeToOrders() {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToOrders(
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
-  }
 
-  routeToShop() {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToShop(
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
-  }
-
-  routeToAbout() {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToAbout(
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
-  }
 
   routeToCart() {
     if (Globals.storeInfo?.username)
@@ -387,30 +366,12 @@ export class AppComponent implements OnInit, AfterViewInit {
       );
   }
 
-  routeToOrder(orderID: string) {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToOrder(
-        orderID,
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
+  routeToProductWindow(productID: string, username: string) {
+    if (username) {
+      this.routingService.routeToProduct(productID, username, false);
+    }
   }
 
-  routeToShipping() {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToShipping(
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
-  }
-
-  routeToBilling() {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToBilling(
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
-  }
 
   routeToBillingAdmin() {
     if (Globals.storeInfo?.username)
@@ -420,13 +381,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       );
   }
 
-  routeToReview() {
-    if (Globals.storeInfo?.username)
-      this.routingService.routeToReview(
-        Globals.storeInfo?.username,
-        this.getStoreName().isCustom
-      );
-  }
 
   async accountPressed(authMode = 1, prefillUser = false) {
     if (
@@ -469,7 +423,6 @@ export class AppComponent implements OnInit, AfterViewInit {
       modalRef.componentInstance.authMode = 1;
     }
   }
-
 
   storeLink(link: string) {
     return link.replace('STORE_NAME', this.storeInfo?.username ?? '');
@@ -608,6 +561,10 @@ export class AppComponent implements OnInit, AfterViewInit {
     return splitStr.join(' ');
   }
 
+  hexToUtf8(hex: string) {
+    return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
+  }
+
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
     @Inject(DOCUMENT) private doc: Document,
@@ -624,12 +581,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     private matIconRegistry: MatIconRegistry,
     private domSanitizer: DomSanitizer
   ) {
+
+
+    window.addEventListener('message', (event) => {
+      if (event.data.open) {
+        let info = JSON.parse(this.hexToUtf8(event.data.open));
+        let docID = info.docId;
+        let store = info.store as Store
+        Globals.storeInfo = store
+        Globals.sInfo.next(Globals.storeInfo)
+        console.log(docID)
+        this.routeToProduct(`${docID}`)
+      }
+      if (event.data.close){
+        console.log("close")
+        this.routeToHome()
+      }
+    });
+
+
     this.check();
 
     if (isPlatformBrowser(this.platformID)) {
       (<any>window).routeToLink = this.routeToLink.bind(this);
       (<any>window).globals = Globals;
-      (<any>window).hi = 'hi';
       AOS.init();
 
       this.matIconRegistry.addSvgIcon(
@@ -698,11 +673,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   setBodyColor(color?: string) {
     if (isPlatformBrowser(this.platformID)) {
       if (document.getElementById('body')) {
-        document
-          .getElementById('body')
-          ?.classList.add(
-            'bg-transparent'
-          );
+        document.getElementById('body')?.classList.add('bg-transparent');
       }
     }
   }
@@ -880,9 +851,9 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.loadService.rootComponent = this;
     this.authService.app = this;
 
-    Globals.sInfo.subscribe(s => {
-      this.storeInfo = s
-    })
+    Globals.sInfo.subscribe((s) => {
+      this.storeInfo = s;
+    });
 
     this.setOptions();
     this.setProvider();
@@ -916,12 +887,7 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.loadService.getCryptoRates((rates: Dict<any>[]) => {
       Globals.rates = rates;
     });
-
-    
   }
-
-
-  
 
   get provider() {
     return Globals.provider;

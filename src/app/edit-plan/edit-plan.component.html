@@ -45,7 +45,7 @@
               <i style="font-size: 15px"> Billed Monthly </i>
             </p>
             <div class="card-body mt-3 big-design-body">
-              <h3 role="button" class="text-white text-center big-design-title">
+              <h3 role="button" class="text-white text-center big-design-title" matTooltip="View on 'thredapps.com'">
                 View Details
               </h3>
               <div
@@ -56,6 +56,7 @@
                   (click)="startSubscription(plan)"
                   *ngIf="subInfo == '' && plan.available"
                   class="big-design-button light-btn"
+                  matTooltip="Activate this plan."
                 >
                   {{ saveId == plan.id ? "Activating" : "Select Plan" }}
                   <div
@@ -71,6 +72,7 @@
                 <button
                   *ngIf="subInfo == '' && !plan.available"
                   class="big-design-button light-btn"
+                  matTooltip="This plan is unavailable."
                 >
                   UNAVAILABLE
                 </button>
@@ -83,6 +85,7 @@
                     subInfo.plan.id == plan.id
                   "
                   class="big-design-button light-btn"
+                  matTooltip="Cancel this plan."
                 >
                   {{ saveId == plan.id ? "Cancelling" : "Cancel Plan" }}
                   <div
@@ -103,6 +106,7 @@
                     subInfo.plan.id == plan.id
                   "
                   class="big-design-button light-btn"
+                  matTooltip="Re-activate this plan."
                 >
                   {{ saveId == plan.id ? "Renewing" : "Renew Plan" }}
                   <div
@@ -119,6 +123,7 @@
                   (click)="switchToSubscription(plan)"
                   *ngIf="subInfo != '' && subInfo.plan.id != plan.id"
                   class="big-design-button light-btn"
+                  matTooltip="Switch current plan to this plan."
                 >
                   {{ saveId == plan.id ? "Switching" : "Switch to Plan" }}
                   <div

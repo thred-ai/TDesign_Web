@@ -59,18 +59,20 @@
         <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon text-dark">public</mat-icon>
           <span class="ms-2 text-dark big-design-body fw-bold">
-            Customer Activity
+            Analytics
           </span>
         </ng-template>
         <div
           class="px-3 pt-2 bg-light"
-          style="min-height: 100vh; overflow-y: scroll"
+          style="height: 100vh; overflow-y: scroll"
         >
           <div
             class="w-100 d-flex flex-column-reverse flex-md-row justify-content-between align-items-start h-100"
           >
-            <div class="w-100 w-md-50 h-md-100">
-              <div class="m-3" *ngIf="storeInfo.active">
+            <div
+              class="w-100 w-md-50 h-md-100 d-flex justify-content-start align-items-top flex-column"
+            >
+              <div class="m-3 mb-1" *ngIf="storeInfo.active">
                 <app-notification
                   [canClose]="false"
                   [title]="'Ready To Go!'"
@@ -80,7 +82,7 @@
                 >
                 </app-notification>
               </div>
-              <div class="m-3" *ngIf="billingInfo == ''">
+              <div class="m-3 my-1" *ngIf="billingInfo == ''">
                 <app-notification
                   [actionBtn]="'Update'"
                   [canClose]="false"
@@ -94,7 +96,7 @@
                 >
                 </app-notification>
               </div>
-              <div class="m-3" *ngIf="subInfo == ''">
+              <div class="m-3 my-1" *ngIf="subInfo == ''">
                 <app-notification
                   [actionBtn]="'Select Plan'"
                   [canClose]="false"
@@ -108,309 +110,186 @@
                 >
                 </app-notification>
               </div>
-              <div class="big-design-card m-3">
-                <div class="big-design-header">
-                  <p class="big-design-title">Top Engagement</p>
-                  <a
-                    class="big-design-button"
-                    (click)="scrollToLocation()"
-                    [hidden]="!(views | location)[0]"
-                  >
-                    View Location
-                  </a>
-                </div>
-                <div class="big-design-body">
-                  <p class="mt-3">
-                    {{ (views | location)[0]?.name }}
-                  </p>
-                  <div class="mt-3">
-                    <div
-                      class="d-flex align-items-center justify-content-start"
-                      style="font-size: medium"
-                    >
-                      <mat-icon
-                        [inline]="true"
-                        class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                        style="
-                          background-color: rgb(201, 33, 27);
-                          aspect-ratio: 1;
-                        "
-                      >
-                      </mat-icon>
-                      <p class="my-0 big-design-body" style="font-size: medium">
-                        {{
-                          (views | location: undefined:"VIEW")?.length ?? 0
-                            | i18nPlural: viewMapping
-                        }}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="mt-2">
-                    <div
-                      class="d-flex align-items-center justify-content-start"
-                      style="font-size: medium"
-                    >
-                      <mat-icon
-                        [inline]="true"
-                        class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                        style="
-                          background-color: rgb(0, 188, 75);
-                          aspect-ratio: 1;
-                        "
-                      >
-                      </mat-icon>
-                      <p class="my-0 big-design-body" style="font-size: medium">
-                        {{
-                          (views | location: undefined:"SALE")?.length ?? 0
-                            | i18nPlural: saleMapping
-                        }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="big-design-card m-3">
-                <div class="big-design-header">
-                  <p class="big-design-title">Top Views</p>
-                  <a
-                    class="big-design-button"
-                    (click)="scrollToLocation('VIEW')"
-                    [hidden]="!(views | location: 'VIEW')[0]"
-                  >
-                    View Location
-                  </a>
-                </div>
-                <div class="big-design-body">
-                  <p class="mt-3">
-                    {{ (views | location: "VIEW")[0]?.name }}
-                  </p>
-                  <div class="mt-3">
-                    <div
-                      class="d-flex align-items-center justify-content-start"
-                      style="font-size: medium"
-                    >
-                      <mat-icon
-                        [inline]="true"
-                        class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                        style="
-                          background-color: rgb(201, 33, 27);
-                          aspect-ratio: 1;
-                        "
-                      >
-                      </mat-icon>
-                      <p class="my-0 big-design-body" style="font-size: medium">
-                        {{
-                          (views | location: "VIEW":"VIEW")?.length ?? 0
-                            | i18nPlural: viewMapping
-                        }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="big-design-card m-3">
-                <div class="big-design-header">
-                  <p class="big-design-title">Top Sales</p>
-                  <a
-                    class="big-design-button"
-                    (click)="scrollToLocation('SALE')"
-                    [hidden]="!(views | location: 'SALE')[0]"
-                  >
-                    View Location
-                  </a>
-                </div>
-                <div class="big-design-body">
-                  <p class="mt-3">
-                    {{ (views | location: "SALE")[0]?.name }}
-                  </p>
-                  <div class="mt-2">
-                    <div
-                      class="d-flex align-items-center justify-content-start"
-                      style="font-size: medium"
-                    >
-                      <mat-icon
-                        [inline]="true"
-                        class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                        style="
-                          background-color: rgb(0, 188, 75);
-                          aspect-ratio: 1;
-                        "
-                      >
-                      </mat-icon>
-                      <p class="my-0 big-design-body" style="font-size: medium">
-                        {{
-                          (views | location: "SALE":"SALE")?.length ?? 0
-                            | i18nPlural: saleMapping
-                        }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div class="big-design-card m-3 my-1 px-0">
+                <app-data-table
+                  [analytics]="{
+                    name: 'Top Locations',
+                    data: (views | location)
+                  }"
+                  (viewLocation)="scrollToLocation($event)"
+                ></app-data-table>
               </div>
             </div>
 
-            <div class="w-100 w-md-50 vh-60 vh-md-100 p-3 pb-0 pb-md-3">
-              <div class="h-100 w-100 big-design-card p-0 bg-black">
-                <div class="big-design-body position-relative h-100 w-100">
-                  <iframe
-                    style="border-radius: 0.25rem"
-                    class="w-100 h-100 position-absolute"
-                    id="earthFrame"
-                    [srcdoc]="
-                      str
-                        | liveEarthViewPipe: views ?? []
-                        | liveEarthPipe: []
-                        | safeHtml
-                    "
-                  >
-                  </iframe>
+            <div
+              class="w-100 w-md-50 vh-60 vh-md-100 d-flex justify-content-between align-items-center flex-column"
+            >
+              <div class="p-3 pb-0 pb-md-3 h-100 w-100">
+                <div class="h-100 w-100 big-design-card p-0 bg-black">
+                  <div class="big-design-body position-relative h-100 w-100">
+                    <iframe
+                      style="border-radius: 0.25rem"
+                      class="w-100 h-100 position-absolute"
+                      id="earthFrame"
+                      [srcdoc]="
+                        str
+                          | liveEarthViewPipe: views ?? []
+                          | liveEarthPipe: []
+                          | safeHtml
+                      "
+                    >
+                    </iframe>
 
-                  <div
-                    class="d-inline-flex align-items-top justify-content-between"
-                    style="top: 1.2rem; left: 1.5rem; position: absolute"
-                  >
-                    <div class="h-100">
-                      <!-- <h1 class="big-design-title" style="color: white">
-                        48 Hour Activity
-                      </h1> -->
-                      <mat-form-field
-                        class="big-design-title px-0"
-                        style="color: white; font-size: large"
-                        floatLabel="never"
-                        appearance="legacy"
-                      >
-                        <mat-date-range-input
-                          [formGroup]="dateRange"
-                          [rangePicker]="picker"
-                          [comparisonStart]="dateRange.value.start"
-                          style="color: white"
-                          role="button"
-                          class="text-white ms-1"
-                          [comparisonEnd]="dateRange.value.end"
-                          [max]="today"
+                    <div
+                      class="d-inline-flex align-items-top justify-content-between"
+                      style="top: 1.2rem; left: 1.5rem; position: absolute"
+                    >
+                      <div class="h-100">
+                        <!-- <h1 class="big-design-title" style="color: white">
+                          48 Hour Activity
+                        </h1> -->
+                        <mat-form-field
+                          class="big-design-title px-0"
+                          style="color: white; font-size: large"
+                          floatLabel="never"
+                          appearance="legacy"
                         >
-                          <input
-                            matStartDate
-                            readonly
-                            (click)="picker.open()"
-                            placeholder="Start date"
-                            formControlName="start"
-                            #dateRangeStart
-                          />
-                          <input
-                            matEndDate
-                            readonly
-                            (click)="picker.open()"
-                            placeholder="End date"
-                            formControlName="end"
-                            #dateRangeEnd
-                            (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
-                          />
-                        </mat-date-range-input>
+                          <mat-date-range-input
+                            [formGroup]="dateRange"
+                            [rangePicker]="picker"
+                            [comparisonStart]="dateRange.value.start"
+                            style="color: white"
+                            role="button"
+                            class="text-white ms-1"
+                            [comparisonEnd]="dateRange.value.end"
+                            [max]="today"
+                          >
+                            <input
+                              matStartDate
+                              readonly
+                              (click)="picker.open()"
+                              role="button"
+                              placeholder="Start date"
+                              formControlName="start"
+                              #dateRangeStart
+                              matTooltip="Start Date"
+                            />
+                            <input
+                              matEndDate
+                              readonly
+                              (click)="picker.open()"
+                              role="button"
+                              placeholder="End date"
+                              formControlName="end"
+                              #dateRangeEnd
+                              matTooltip="End Date"
+                              (dateChange)="
+                                dateRangeChange(dateRangeStart, dateRangeEnd)
+                              "
+                            />
+                          </mat-date-range-input>
 
+                          <a
+                            mat-icon-button
+                            class="p-0 me-0 my-auto"
+                            matPrefix
+                            matTooltip="Edit Date Range"
+                            (click)="picker.open()"
+                          >
+                            <mat-icon
+                              class="m-0"
+                              style="
+                                color: rgb(188, 188, 188);
+                                font-size: x-large;
+                              "
+                              >event</mat-icon
+                            >
+                          </a>
+
+                          <mat-date-range-picker
+                            style="color: white"
+                            touchUi
+                            #picker
+                          ></mat-date-range-picker>
+                        </mat-form-field>
                         <a
-                          mat-icon-button
-                          class="p-0 me-0 my-auto"
-                          matPrefix
-                          (click)="picker.open()"
+                          class="side d-flex mt-2 align-items-center justify-content-start"
+                          style="font-size: large"
                         >
                           <mat-icon
-                            class="m-0"
+                            [inline]="true"
+                            class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
                             style="
-                              color: rgb(188, 188, 188);
-                              font-size: x-large;
+                              background-color: rgb(201, 33, 27);
+                              aspect-ratio: 1;
                             "
-                            >event</mat-icon
                           >
+                          </mat-icon>
+                          <p
+                            class="my-0 big-design-body"
+                            style="color: white; font-size: larger"
+                          >
+                            {{
+                              (views | views)?.length ?? 0
+                                | i18nPlural: viewMapping
+                            }}
+                          </p>
                         </a>
-
-                        <mat-date-range-picker
-                          style="color: white"
-                          touchUi
-                          #picker
-                        ></mat-date-range-picker>
-                      </mat-form-field>
-                      <a
-                        class="side d-flex mt-2 align-items-center justify-content-start"
-                        style="font-size: large"
-                      >
-                        <mat-icon
-                          [inline]="true"
-                          class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                          style="
-                            background-color: rgb(201, 33, 27);
-                            aspect-ratio: 1;
-                          "
+                        <a
+                          role="button"
+                          class="side d-flex mt-2 align-items-center justify-content-start"
+                          style="font-size: large"
                         >
-                          <!-- <span class="material-icons-outlined m-0 text-white">
-                  person_outline
-                </span> -->
-                        </mat-icon>
-                        <p
-                          class="my-0 big-design-body"
-                          style="color: white; font-size: larger"
-                        >
-                          {{
-                            (views | views)?.length ?? 0
-                              | i18nPlural: viewMapping
-                          }}
-                        </p>
-                      </a>
-                      <a
-                        role="button"
-                        class="side d-flex mt-2 align-items-center justify-content-start"
-                        style="font-size: large"
-                      >
-                        <mat-icon
-                          [inline]="true"
-                          class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                          style="
-                            background-color: rgb(0, 188, 75);
-                            aspect-ratio: 1;
-                          "
-                        >
-                          <!-- <span class="material-icons-outlined m-0 text-white">
-                  attach_money
-                </span> -->
-                        </mat-icon>
-                        <p
-                          class="my-0 big-design-body"
-                          style="color: white; font-size: larger"
-                        >
-                          {{
-                            (views | sales)?.length ?? 0
-                              | i18nPlural: saleMapping
-                          }}
-                        </p>
-                      </a>
+                          <mat-icon
+                            [inline]="true"
+                            class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                            style="
+                              background-color: rgb(0, 188, 75);
+                              aspect-ratio: 1;
+                            "
+                          >
+                            <!-- <span class="material-icons-outlined m-0 text-white">
+                    attach_money
+                  </span> -->
+                          </mat-icon>
+                          <p
+                            class="my-0 big-design-body"
+                            style="color: white; font-size: larger"
+                          >
+                            {{
+                              (views | sales)?.length ?? 0
+                                | i18nPlural: saleMapping
+                            }}
+                          </p>
+                        </a>
+                      </div>
                     </div>
-                  </div>
 
-                  <div
-                    *ngIf="selectedCoord"
-                    class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
-                    style="
-                      border-radius: 0.25rem;
-                      background-color: rgba(0, 0, 0, 0.406);
-                    "
-                    (click)="closeCard()"
-                  ></div>
-                  <div
-                    class="big-design-card bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s"
-                    *ngIf="selectedCoord"
-                    style="
-                      top: 10px;
-                      right: 10px;
-                      position: absolute;
-                      width: 275px;
-                    "
-                  >
-                    <app-view-coord
-                      [coord]="selectedCoord"
-                      (close)="closeCard()"
-                      (open)="createNewNFT($event)"
-                    ></app-view-coord>
+                    <div
+                      *ngIf="selectedCoord"
+                      class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+                      style="
+                        border-radius: 0.25rem;
+                        background-color: rgba(0, 0, 0, 0.406);
+                      "
+                      (click)="closeCard()"
+                    ></div>
+                    <div
+                      class="big-design-card bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s"
+                      *ngIf="selectedCoord"
+                      style="
+                        top: 10px;
+                        right: 10px;
+                        position: absolute;
+                        width: 275px;
+                      "
+                    >
+                      <app-view-coord
+                        [coord]="selectedCoord"
+                        (close)="closeCard()"
+                        (open)="createNewNFT($event)"
+                      ></app-view-coord>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -457,6 +336,7 @@
                   (click)="createNewProduct()"
                   class="big-design-alt-button ps-2"
                   style="right: 0px; margin-right: 0px"
+                  matTooltip="Create New Collection"
                 >
                   <mat-icon class="h-100 me-1" style="aspect-ratio: 1">
                     add
@@ -536,6 +416,7 @@
                       role="button"
                       (click)="viewPage(page)"
                       class="big-design-alt-button me-2"
+                      matTooltip="View on Storefront"
                     >
                       View
                     </a>
@@ -543,6 +424,7 @@
                       role="button"
                       (click)="showLayoutModal(page)"
                       class="big-design-button"
+                      matTooltip="View Details"
                     >
                       Edit
                     </a>
@@ -629,7 +511,7 @@
           <div class="big-design-card mx-2" *ngIf="billingInfo != undefined">
             <div class="big-design-header">
               <p class="big-design-title">Payment Method</p>
-              <a class="big-design-button" (click)="routeToBillingAdmin()">
+              <a class="big-design-button" (click)="routeToBillingAdmin()" matTooltip="View Details">
                 {{ billingInfo == "" ? "Add" : "Edit" }}
               </a>
             </div>
@@ -663,7 +545,7 @@
           <div class="big-design-card mt-3 mx-2" *ngIf="subInfo != undefined">
             <div class="big-design-header">
               <p class="big-design-title">Plan Type</p>
-              <a class="big-design-button" (click)="editPlan()">
+              <a class="big-design-button" (click)="editPlan()" matTooltip="View Details">
                 {{ "Edit" }}
               </a>
             </div>

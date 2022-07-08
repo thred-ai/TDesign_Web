@@ -54,6 +54,7 @@ import { SharedModule } from '../shared/shared.module';
 import { NotificationComponent } from '../notification/notification.component'; // <-- import it
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import { DataTableComponent } from '../data-table/data-table.component';
 
 const routes: Routes = [
   {
@@ -77,6 +78,7 @@ const routes: Routes = [
     StatusComponent,
     CollectionTableComponent,
     NotificationComponent,
+    DataTableComponent,
 
   ],
 

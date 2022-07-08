@@ -117,30 +117,6 @@ export class RoutingService {
     this.redirectTo(storeName + '/' + link);
   }
 
-  routeToOrders(storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('orders');
-      return;
-    }
-    this.redirectTo(storeName + '/' + 'orders');
-  }
-
-  routeToShop(storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('products', true);
-      return;
-    }
-    this.redirectTo(storeName + '/' + 'products');
-  }
-
-  routeToAbout(storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('about', true);
-      return;
-    }
-    this.redirectTo(storeName + '/' + 'about');
-  }
-
   routeToCart(storeName: string, isCustom: boolean = false) {
     if (isCustom) {
       this.redirectTo('cart');
@@ -158,16 +134,10 @@ export class RoutingService {
       this.redirectTo('nft/' + productID);
       return;
     }
+    console.log(productID)
     this.redirectTo(storeName + '/' + 'nft/' + productID);
   }
 
-  routeToOrder(orderID: string, storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('orders/' + orderID);
-      return;
-    }
-    this.redirectTo(storeName + '/' + 'orders/' + orderID);
-  }
 
   routeToProfile(
     storeName: string,
@@ -196,29 +166,6 @@ export class RoutingService {
     }
   }
 
-  routeToShipping(storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('/shipping-address');
-      return;
-    }
-    this.redirectTo(storeName + '/shipping-address');
-  }
-
-  routeToReview(storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('review-order');
-      return;
-    }
-    this.redirectTo(storeName + '/' + 'review-order');
-  }
-
-  routeToBilling(storeName: string, isCustom: boolean = false) {
-    if (isCustom) {
-      this.redirectTo('/billing-info');
-      return;
-    }
-    this.redirectTo(storeName + '/billing-info');
-  }
 
   routeToBillingAdmin(storeName: string, isCustom: boolean = false) {
     if (isCustom) {

@@ -22,42 +22,52 @@ export class LocationPipe implements PipeTransform {
 
     var l: Dict<{
       name: string;
-      count: number;
-      type: string
+      views: number;
+      sales: number;
+      coords: any;
+      count: number
     }> = {};
 
     r.forEach((k) => {
-      let v = l[`${k.id}`];
-
+      let v = l[`${k.name}`];
       let name = k.name;
       let type = k.type;
-      let count = 0;
+      let views = 0;
+      let sales = 0;
+      let count = 0
 
       if (v) {
-        count = v.count + 1;
+        if (type == 'VIEW') {
+          views = v.views + 1;
+          sales = v.sales;
+        } else if (type == 'SALE') {
+          sales = v.sales + 1;
+          views = v.views;
+        }
       } else {
-        count = 1;
+        if (type == 'VIEW') {
+          views = 1;
+        } else if (type == 'SALE') {
+          sales = 1;
+        }
       }
-      l[`${k.id}`] = {
+      count = views + (sales*2)
+      l[`${k.name}`] = {
         name,
-        count,
-        type
+        views,
+        sales,
+        coords: k.coords,
+        count
       };
     });
 
     if (Object.keys(l).length > 0) {
-      let most = Object.keys(l).reduce((a, b) =>
-        l[a].count > l[b].count ? a : b
+      let most = Object.values(l).sort((a, b) =>
+        a.count > b.count ? -1 : 1
       );
-      
-      if (filterVal2 && l[`${most}`].type != filterVal2){
-        return []
-      }
+      console.log(most);
 
-      let d = r.filter((f) => f.name == l[`${most}`].name);
-      
-      return d
-      
+      return most;
     }
     return [];
   }

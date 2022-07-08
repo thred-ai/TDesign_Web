@@ -1,17 +1,34 @@
-<div class="big-design-card big-design-status-{{iconColor}} p-0" style="overflow-x: hidden;">
-    <div class="big-design-notif-flex text-dark">
-      <div class="h-100 d-flex justify-content-start align-items-start">
-        <mat-icon class="big-design-notif-icon big-design-{{iconColor}}"> {{icon}} </mat-icon>
-        <div class="big-design-notif-content-body">
-          <div class="big-design-title big-design-notif-title">{{title}}</div>
-          <div class="big-design-title big-design-notif-content">{{subtitle}}</div>
-          <a *ngIf="actionBtn" class="big-design-button mt-2" role="button" (click)="actionBtnPressed.emit(true)">{{actionBtn}}</a>
+<div
+  class="big-design-card big-design-status-{{ iconColor }} p-0 m-0"
+  style="overflow-x: hidden"
+>
+  <div class="big-design-notif-flex text-dark">
+    <div class="h-100 d-flex justify-content-start align-items-start">
+      <mat-icon class="big-design-notif-icon big-design-{{ iconColor }}">
+        {{ icon }}
+      </mat-icon>
+      <div class="big-design-notif-content-body">
+        <div class="big-design-title big-design-notif-title">{{ title }}</div>
+        <div class="big-design-title big-design-notif-content">
+          {{ subtitle }}
         </div>
-      </div>
-      <div *ngIf="canClose" class="h-100">
-        <a role="button" class="big-design-notif-button" (click)="didClose.emit(true)">
-          <mat-icon> close </mat-icon>
-        </a>
+        <a
+          *ngIf="actionBtn"
+          class="big-design-button mt-2"
+          role="button"
+          (click)="actionBtnPressed.emit(true)"
+          >{{ actionBtn }}</a
+        >
       </div>
     </div>
+    <div *ngIf="canClose" class="h-100">
+      <a
+        role="button"
+        class="big-design-notif-button"
+        (click)="didClose.emit(true)"
+      >
+        <mat-icon> close </mat-icon>
+      </a>
+    </div>
   </div>
+</div>

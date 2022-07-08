@@ -313,17 +313,14 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         '/' + this.getStoreName().link + '/',
         ''
       )}`,
+      store: Globals.storeInfo
     };
 
     console.log(data);
 
-    let url = `https://${Globals.ngrokId}/${this.getStoreName().link}/nft/${
-      productInfo.nft.docID
-    }?info=${this.utf8ToHex(JSON.stringify(data))}`;
-
     window.parent.postMessage(
       {
-        open: url,
+        open: `${this.utf8ToHex(JSON.stringify(data))}`,
         theme: this.selectedTheme(),
         style: Globals.storeInfo.colorStyle,
         font: Globals.storeInfo.fontName,
@@ -357,13 +354,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     // });
   }
 
-  routeToShop() {
-    this.rootComponent.routeToShop();
-  }
-
-  routeToAbout() {
-    this.rootComponent.routeToAbout();
-  }
 
   selectedIndicator() {
     if (!Globals.storeInfo) {

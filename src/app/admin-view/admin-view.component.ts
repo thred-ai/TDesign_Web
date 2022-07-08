@@ -2376,13 +2376,11 @@ export class AdminViewComponent implements OnInit, OnDestroy {
     }
   }
 
-  scrollToLocation(val?: string) {
-    let locPipe = new LocationPipe();
+  scrollToLocation(val?: any) {
 
-    let locs = locPipe.transform(this.views, val);
-
-    if (locs.length > 0) {
-      let loc = locs[0];
+    console.log(val)
+    if (val) {
+      let loc = val;
       let coords = loc.coords;
 
       let frame = (document.getElementById('earthFrame') as HTMLIFrameElement)

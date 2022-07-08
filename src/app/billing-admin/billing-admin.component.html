@@ -4,7 +4,7 @@
       <p class="big-design-title">Billing Method</p>
 
       <div class="text-end">
-        <a class="big-design-alt-button me-1" (click)="addCard()">
+        <a class="big-design-alt-button me-1" (click)="addCard()" matTooltip="Save Payment Method">
           {{ saving ? "Saving" : "Save Billing Info" }}
           <div class="big-design-alt-button-spinner" [hidden]="!saving">
             <div></div>
