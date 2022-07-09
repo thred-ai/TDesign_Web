@@ -3,7 +3,7 @@
     row?.grid_row ?? 1
   }} justify-content-start mt-0 gx-3 gy-3"
 >
-  <div class="col" *ngFor="let product of (row?.products ?? []).concat((row?.products ?? []))">
+  <div class="col" *ngFor="let product of (row?.products ?? [])">
     <app-product-view
       *ngIf="items![product]"
       [product]="items![product].nft"
