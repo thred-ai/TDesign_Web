@@ -266,6 +266,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
   resize(height = document.documentElement.getBoundingClientRect().height) {
+    
     window.parent.postMessage(height, '*');
   }
 
@@ -319,7 +320,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(data);
 
     if (isPlatformBrowser(this.platformID)){
-      window.parent.postMessage(
+      window.parent.parent.postMessage(
         {
           open: `${this.utf8ToHex(JSON.stringify(data))}`,
           theme: this.selectedTheme(),

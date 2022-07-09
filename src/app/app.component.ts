@@ -583,7 +583,23 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) {
 
 
-    
+    if (isPlatformBrowser(this.platformID)){
+      window.addEventListener('message', (event) => {
+        if (event.data.open) {
+          let info = JSON.parse(this.hexToUtf8(event.data.open));
+          let docID = info.docId;
+          let store = info.store as Store
+          Globals.storeInfo = store
+          Globals.sInfo.next(Globals.storeInfo)
+          console.log(docID)
+          this.routeToProduct(`${docID}`)
+        }
+        if (event.data.close){
+          console.log("close")
+          this.routeToHome()//
+        }
+      });
+    }
 
 
     this.check();
@@ -833,24 +849,6 @@ export class AppComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR
-
-    if (isPlatformBrowser(this.platformID)){
-      window.addEventListener('message', (event) => {
-        if (event.data.open) {
-          let info = JSON.parse(this.hexToUtf8(event.data.open));
-          let docID = info.docId;
-          let store = info.store as Store
-          Globals.storeInfo = store
-          Globals.sInfo.next(Globals.storeInfo)
-          console.log(docID)
-          this.routeToProduct(`${docID}`)
-        }
-        if (event.data.close){
-          console.log("close")
-          this.routeToHome()
-        }
-      });
-    }
 
     this.loadService.rootComponent = this;
     this.authService.app = this;
