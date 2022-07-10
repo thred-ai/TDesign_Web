@@ -55,6 +55,7 @@ import { NotificationComponent } from '../notification/notification.component'; 
 import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { DataTableComponent } from '../data-table/data-table.component';
+import { PageTableComponent } from '../page-table/page-table.component';
 
 const routes: Routes = [
   {
@@ -79,6 +80,7 @@ const routes: Routes = [
     CollectionTableComponent,
     NotificationComponent,
     DataTableComponent,
+    PageTableComponent,
 
   ],
 

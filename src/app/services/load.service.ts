@@ -2134,6 +2134,11 @@ export class LoadService {
       collection: Collection;
     }> = {};
 
+    if (docIDs.length == 0){
+      callback(cols)
+      return
+    }
+
     let ids = this.splitToBulks(docIDs);
     var counter = 0;
     await Promise.all(

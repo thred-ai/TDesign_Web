@@ -388,86 +388,107 @@
           <mat-icon class="example-tab-icon"> web</mat-icon>
           <span class="ms-2 big-design-body fw-bold"> Pages </span>
         </ng-template>
-        <div class="w-100 pt-3 bg-light">
-          <div
-            class="row row-cols-1 row-cols-md-2 justify-content-start ps-4 w-100 align-items-start h-100"
-            style="overflow-x: hidden"
-          >
+        <div class="w-100 h-100 px-2">
+          <div class="w-100 pt-3 bg-light px-4">
             <div
-              class="col p-1 py-md-2 px-md-3"
-              *ngFor="let page of storeInfo?.pages ?? []"
+              class="d-flex justify-content-between align-items-center py-2"
+              style="width: 100%"
             >
-              <!-- (click)="showLayoutModal(page)" -->
-
-              <div
-                id="back"
-                role="button"
-                style="aspect-ratio: 2/1"
-                class="big-design-card"
+              <p
+                class="big-design-title"
+                style="
+                  font-weight: lighter;
+                  font-size: 2rem;
+                  font-weight: 300;
+                  line-height: 2.5rem;
+                "
               >
-                <div class="big-design-header">
-                  <p class="big-design-title">
-                    {{ page.title }}
-                  </p>
-                  <div
-                    class="d-inline-flex justify-content-end align-items-center"
-                  >
-                    <a
-                      role="button"
-                      (click)="viewPage(page)"
-                      class="big-design-alt-button me-2"
-                      matTooltip="View on Storefront"
-                    >
-                      View
-                    </a>
-                    <a
-                      role="button"
-                      (click)="showLayoutModal(page)"
-                      class="big-design-button"
-                      matTooltip="View Details"
-                    >
-                      Edit
-                    </a>
-                  </div>
-                  <!-- <div
-                    class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
-                  >
-                    
-                  
+                Pages
+              </p>
+              <p
+                (click)="showLayoutModal()"
+                class="big-design-alt-button ps-2"
+                style="right: 0px; margin-right: 0px"
+                matTooltip="Create New Page"
+              >
+                <mat-icon class="h-100 me-1" style="aspect-ratio: 1">
+                  add
+                </mat-icon>
+                Add new
+              </p>
+            </div>
 
-                    <a
-                  role="button"
-                  (click)="deletePage(page)"
-                  class="ms-2 btn btn btn-{{
-                    (storeInfo?.colorStyle)!.text_code
-                  }} rounded-circle p-2 d-flex align-items-center justify-content-center"
-                  style="aspect-ratio: 1"
-                >
-                  <mat-icon>delete</mat-icon>
-                </a>
-                  </div> -->
-                </div>
+            <div class="big-design-card px-0">
+              <app-page-table
+              [data]="storeInfo?.pages ?? []"
+              (viewPage)="showLayoutModal($event)"
+            >
+
+            </app-page-table>
+            </div>
+            
+            <!-- <div
+              class="row row-cols-1 row-cols-md-2 justify-content-between w-100 align-items-start h-100 m-0 gx-4 gy-2"
+              style="overflow-x: hidden"
+            >
+            
+              <div
+                class="col"
+                *ngFor="let page of storeInfo?.pages ?? []; index as i"
+              >
                 <div
-                  class="big-design-body w-100 h-100 rounded border mt-3"
-                  style="position: relative"
-                  style.background-color="{{ selectedTheme()!.bg_color }}"
+                  id="back"
+                  role="button"
+                  style="aspect-ratio: 2/1"
+                  class="big-design-card"
                 >
+                  <div class="big-design-header">
+                    <p class="big-design-title">
+                      {{ page.title }}
+                    </p>
+                    <div
+                      class="d-inline-flex justify-content-end align-items-center"
+                    >
+                      <a
+                        role="button"
+                        (click)="viewPage(page)"
+                        class="big-design-alt-button me-2"
+                        matTooltip="View on Storefront"
+                      >
+                        View
+                      </a>
+                      <a
+                        role="button"
+                        (click)="showLayoutModal(page)"
+                        class="big-design-button"
+                        matTooltip="View Details"
+                      >
+                        Edit
+                      </a>
+                    </div>
+                  </div>
                   <div
-                    class="w-100 h-100 rounded"
-                    style="overflow-y: hidden; position: absolute"
+                    class="big-design-body w-100 h-100 rounded border mt-3"
+                    style="position: relative"
+                    style.background-color="{{ selectedTheme()!.bg_color }}"
                   >
-                    <img
-                      class="w-100 h-auto"
-                      style="object-fit: contain"
-                      loading="lazy"
-                      [useSrcset]="true"
-                      [defaultImage]="'/assets/default.png'"
-                      [lazyLoad]="page.img ?? '/assets/default.png'"
-                    />
+                    <div
+                      class="w-100 h-100 rounded"
+                      style="overflow-y: hidden; position: absolute"
+                    >
+                      <img
+                        class="w-100 h-auto"
+                        style="object-fit: contain"
+                        loading="lazy"
+                        [useSrcset]="true"
+                        [defaultImage]="'/assets/default.png'"
+                        [lazyLoad]="page.img ?? '/assets/default.png'"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </mat-tab>
@@ -511,7 +532,11 @@
           <div class="big-design-card mx-2" *ngIf="billingInfo != undefined">
             <div class="big-design-header">
               <p class="big-design-title">Payment Method</p>
-              <a class="big-design-button" (click)="routeToBillingAdmin()" matTooltip="View Details">
+              <a
+                class="big-design-button"
+                (click)="routeToBillingAdmin()"
+                matTooltip="View Details"
+              >
                 {{ billingInfo == "" ? "Add" : "Edit" }}
               </a>
             </div>
@@ -545,7 +570,11 @@
           <div class="big-design-card mt-3 mx-2" *ngIf="subInfo != undefined">
             <div class="big-design-header">
               <p class="big-design-title">Plan Type</p>
-              <a class="big-design-button" (click)="editPlan()" matTooltip="View Details">
+              <a
+                class="big-design-button"
+                (click)="editPlan()"
+                matTooltip="View Details"
+              >
                 {{ "Edit" }}
               </a>
             </div>

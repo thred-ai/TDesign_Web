@@ -435,16 +435,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
 
-    let arr = this.data.page?.rows?.map((r: Row) => r.products ?? []) ?? [];
-
-    var ids = new Array<string>().concat.apply([], arr);
-
-    console.log(this.data.page.rows);
-
-    // this.loadService.getNFTsById(ids, (collections) => {
-    //   console.log(collections);
-    //   this.items = collections;
-    // });
 
     this.items = this.mapItems(this.admin?.collections ?? []);
 
@@ -454,7 +444,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.layoutForm.controls.name.setValue(this.data.page?.title);
 
-    this.pageDisplay = this.data.page.img ?? '';
+    this.pageDisplay = this.data.page?.img ?? '';
 
     this.layoutForm.controls.url.setValue(
       this.data.page?.url ? this.data.page?.url : null
@@ -1176,7 +1166,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           fullscreen,
           loader,
           seo,
-          this.data.page.bigcId
+          this.data.page?.bigcId
         );
 
         this.loadService.addLayout(
@@ -1191,6 +1181,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           this.storeInfo?.uid
         );
       } catch (error) {
+        console.log(error)
         this.saving = false;
       }
     }

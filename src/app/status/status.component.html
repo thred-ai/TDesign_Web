@@ -3,7 +3,7 @@
     status == 0 ? 'success' : 'secondary'
   }} my-auto"
   role="button"
-  matTooltip="This item is {{status == 0 ? 'for sale' : 'not for sale'}}"
+  matTooltip="{{status == 0 ? enabledText : disabledText}}"
 >
-  {{ status == 0 ? "Enabled" : "Disabled" }}
+  {{ status == 0 ? enabledTitle : disabledTitle }}
 </p>

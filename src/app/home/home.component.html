@@ -89,7 +89,7 @@
         </div>
       </div>
 
-      <div
+      <!-- <div
         class="w-100 m-0"
         *ngIf="row.type == 7"
         style="height: 100vh"
@@ -103,9 +103,9 @@
           [srcdoc]="row.htmlTemplate ?? '' | storePipe | safeHtml"
         >
         </iframe>
-      </div>
+      </div> -->
 
-      <div class="w-100 mx-0" *ngIf="row.type == 2">
+      <div class="w-100 mx-0 h-100" *ngIf="row.type == 2">
         <div
           class="px-3 my-0"
           [style.font-family]="storeInfo?.fontName!"
@@ -117,13 +117,4 @@
   </div>
 </section>
 
-<!-- Footer-->
-<!-- Bootstrap core JS-->
 
-<script
-  *ngIf="isBrowser()"
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-></script>
-
-<!-- Core theme JS-->
-<script *ngIf="isBrowser()" src="js/scripts.js"></script>
