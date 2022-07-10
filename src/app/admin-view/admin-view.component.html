@@ -62,233 +62,223 @@
             Analytics
           </span>
         </ng-template>
-        <div
-          class="px-3 pt-2 bg-light"
-          style="height: 100vh; overflow-y: scroll"
-        >
-          <div
-            class="w-100 d-flex flex-column-reverse flex-md-row justify-content-between align-items-start h-100"
-          >
+
+        <div class="px-2 bg-light">
+          <div class="w-100 pt-3 bg-light px-4">
             <div
-              class="w-100 w-md-50 h-md-100 d-flex justify-content-start align-items-top flex-column"
+              class="d-flex justify-content-between align-items-center py-2"
+              style="width: 100%"
             >
-              <div class="m-3 mb-1" *ngIf="storeInfo.active">
-                <app-notification
-                  [canClose]="false"
-                  [title]="'Ready To Go!'"
-                  [subtitle]="'Customers can view and buy your NFTs.'"
-                  [icon]="'check_circle'"
-                  [iconColor]="'success'"
+              <p
+                class="big-design-title"
+                style="
+                  font-weight: lighter;
+                  font-size: 2rem;
+                  font-weight: 300;
+                  line-height: 2.5rem;
+                "
+              >
+                Analytics
+              </p>
+
+              <mat-form-field
+                class="big-design-title px-0"
+                style="font-size: large"
+                floatLabel="never"
+                appearance="legacy"
+              >
+                <mat-date-range-input
+                  [formGroup]="dateRange"
+                  [rangePicker]="picker"
+                  [comparisonStart]="dateRange.value.start"
+                  role="button"
+                  class="ms-1"
+                  [comparisonEnd]="dateRange.value.end"
+                  [max]="today"
                 >
-                </app-notification>
-              </div>
-              <div class="m-3 my-1" *ngIf="billingInfo == ''">
-                <app-notification
-                  [actionBtn]="'Update'"
-                  [canClose]="false"
-                  [title]="'Action Required!'"
-                  [subtitle]="
-                    'Update the payment method used for your Thred plan.'
-                  "
-                  (actionBtnPressed)="routeToBillingAdmin()"
-                  [iconColor]="'danger'"
-                  [icon]="'error'"
+                  <input
+                    matStartDate
+                    readonly
+                    (click)="picker.open()"
+                    role="button"
+                    placeholder="Start date"
+                    formControlName="start"
+                    #dateRangeStart
+                    matTooltip="Start Date"
+                  />
+                  <input
+                    matEndDate
+                    readonly
+                    (click)="picker.open()"
+                    role="button"
+                    placeholder="End date"
+                    formControlName="end"
+                    #dateRangeEnd
+                    matTooltip="End Date"
+                    (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
+                  />
+                </mat-date-range-input>
+
+                <a
+                  mat-icon-button
+                  class="p-0 me-0 my-auto"
+                  matPrefix
+                  matTooltip="Edit Date Range"
+                  (click)="picker.open()"
                 >
-                </app-notification>
-              </div>
-              <div class="m-3 my-1" *ngIf="subInfo == ''">
-                <app-notification
-                  [actionBtn]="'Select Plan'"
-                  [canClose]="false"
-                  [title]="'Action Required!'"
-                  [subtitle]="
-                    'Select a Thred plan to begin selling NFTs on your store.'
-                  "
-                  (actionBtnPressed)="editPlan()"
-                  [iconColor]="'danger'"
-                  [icon]="'error'"
-                >
-                </app-notification>
-              </div>
-              <div class="big-design-card m-3 my-1 px-0">
-                <app-data-table
-                  [analytics]="{
-                    name: 'Top Locations',
-                    data: (views | location)
-                  }"
-                  (viewLocation)="scrollToLocation($event)"
-                ></app-data-table>
-              </div>
+                  <mat-icon class="m-0" style="font-size: x-large"
+                    >event</mat-icon
+                  >
+                </a>
+
+                <mat-date-range-picker touchUi #picker></mat-date-range-picker>
+              </mat-form-field>
             </div>
-
             <div
-              class="w-100 w-md-50 vh-60 vh-md-100 d-flex justify-content-between align-items-center flex-column"
+              class="w-100 h-100 d-flex flex-column-reverse flex-md-row justify-content-between align-items-start pb-md-4"
             >
-              <div class="p-3 pb-0 pb-md-3 h-100 w-100">
-                <div class="h-100 w-100 big-design-card p-0 bg-black">
-                  <div class="big-design-body position-relative h-100 w-100">
-                    <iframe
-                      style="border-radius: 0.25rem"
-                      class="w-100 h-100 position-absolute"
-                      id="earthFrame"
-                      [srcdoc]="
-                        str
-                          | liveEarthViewPipe: views ?? []
-                          | liveEarthPipe: []
-                          | safeHtml
-                      "
-                    >
-                    </iframe>
+              <div
+                class="w-100 w-md-50 h-md-100 d-flex justify-content-start align-items-top flex-column pe-md-2 pb-4"
+              >
+                <div class="my-2 mt-md-0" *ngIf="storeInfo.active">
+                  <app-notification
+                    [canClose]="false"
+                    [title]="'Ready To Go!'"
+                    [subtitle]="'Customers can view and buy your NFTs.'"
+                    [icon]="'check_circle'"
+                    [iconColor]="'success'"
+                  >
+                  </app-notification>
+                </div>
+                <div
+                  class="my-2 mt-md-0"
+                  *ngIf="storeInfo && !storeInfo.active"
+                >
+                  <app-notification
+                    [canClose]="false"
+                    [title]="'Action Required!'"
+                    [subtitle]="
+                      'Finish setting up your account in Account settings.'
+                    "
+                    [iconColor]="'danger'"
+                    [icon]="'error'"
+                  >
+                  </app-notification>
+                </div>
+                <div class="big-design-card my-0 px-0">
+                  <app-data-table
+                    [analytics]="{
+                      name: 'Activity',
+                      data: (views | location)
+                    }"
+                    (viewLocation)="scrollToLocation($event)"
+                  ></app-data-table>
+                </div>
+              </div>
 
-                    <div
-                      class="d-inline-flex align-items-top justify-content-between"
-                      style="top: 1.2rem; left: 1.5rem; position: absolute"
-                    >
-                      <div class="h-100">
-                        <!-- <h1 class="big-design-title" style="color: white">
-                          48 Hour Activity
-                        </h1> -->
-                        <mat-form-field
-                          class="big-design-title px-0"
-                          style="color: white; font-size: large"
-                          floatLabel="never"
-                          appearance="legacy"
-                        >
-                          <mat-date-range-input
-                            [formGroup]="dateRange"
-                            [rangePicker]="picker"
-                            [comparisonStart]="dateRange.value.start"
-                            style="color: white"
-                            role="button"
-                            class="text-white ms-1"
-                            [comparisonEnd]="dateRange.value.end"
-                            [max]="today"
-                          >
-                            <input
-                              matStartDate
-                              readonly
-                              (click)="picker.open()"
-                              role="button"
-                              placeholder="Start date"
-                              formControlName="start"
-                              #dateRangeStart
-                              matTooltip="Start Date"
-                            />
-                            <input
-                              matEndDate
-                              readonly
-                              (click)="picker.open()"
-                              role="button"
-                              placeholder="End date"
-                              formControlName="end"
-                              #dateRangeEnd
-                              matTooltip="End Date"
-                              (dateChange)="
-                                dateRangeChange(dateRangeStart, dateRangeEnd)
-                              "
-                            />
-                          </mat-date-range-input>
+              <div
+                style="height: 650px"
+                class="w-100 w-md-50 pb-md-1 d-flex justify-content-between align-items-center flex-column"
+              >
+                <div class="p-0 h-100 w-100">
+                  <div class="h-100 w-100 big-design-card p-0 bg-black">
+                    <div class="big-design-body position-relative h-100 w-100">
+                      <iframe
+                        style="border-radius: 0.25rem"
+                        class="w-100 h-100 position-absolute"
+                        id="earthFrame"
+                        [srcdoc]="
+                          str
+                            | liveEarthViewPipe: views ?? []
+                            | liveEarthPipe: []
+                            | safeHtml
+                        "
+                      >
+                      </iframe>
 
+                      <div
+                        class="d-inline-flex align-items-top justify-content-between"
+                        style="top: 1.2rem; left: 1.5rem; position: absolute"
+                      >
+                        <div class="h-100">
                           <a
-                            mat-icon-button
-                            class="p-0 me-0 my-auto"
-                            matPrefix
-                            matTooltip="Edit Date Range"
-                            (click)="picker.open()"
+                            class="side d-flex align-items-center justify-content-start"
+                            style="font-size: large"
                           >
                             <mat-icon
-                              class="m-0"
+                              [inline]="true"
+                              class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
                               style="
-                                color: rgb(188, 188, 188);
-                                font-size: x-large;
+                                background-color: rgb(201, 33, 27);
+                                aspect-ratio: 1;
                               "
-                              >event</mat-icon
                             >
+                            </mat-icon>
+                            <p
+                              class="my-0 big-design-body"
+                              style="color: white; font-size: larger"
+                            >
+                              {{
+                                (views | views)?.length ?? 0
+                                  | i18nPlural: viewMapping
+                              }}
+                            </p>
                           </a>
-
-                          <mat-date-range-picker
-                            style="color: white"
-                            touchUi
-                            #picker
-                          ></mat-date-range-picker>
-                        </mat-form-field>
-                        <a
-                          class="side d-flex mt-2 align-items-center justify-content-start"
-                          style="font-size: large"
-                        >
-                          <mat-icon
-                            [inline]="true"
-                            class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                            style="
-                              background-color: rgb(201, 33, 27);
-                              aspect-ratio: 1;
-                            "
+                          <a
+                            role="button"
+                            class="side d-flex mt-2 align-items-center justify-content-start"
+                            style="font-size: large"
                           >
-                          </mat-icon>
-                          <p
-                            class="my-0 big-design-body"
-                            style="color: white; font-size: larger"
-                          >
-                            {{
-                              (views | views)?.length ?? 0
-                                | i18nPlural: viewMapping
-                            }}
-                          </p>
-                        </a>
-                        <a
-                          role="button"
-                          class="side d-flex mt-2 align-items-center justify-content-start"
-                          style="font-size: large"
-                        >
-                          <mat-icon
-                            [inline]="true"
-                            class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                            style="
-                              background-color: rgb(0, 188, 75);
-                              aspect-ratio: 1;
-                            "
-                          >
-                            <!-- <span class="material-icons-outlined m-0 text-white">
+                            <mat-icon
+                              [inline]="true"
+                              class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
+                              style="
+                                background-color: rgb(0, 188, 75);
+                                aspect-ratio: 1;
+                              "
+                            >
+                              <!-- <span class="material-icons-outlined m-0 text-white">
                     attach_money
                   </span> -->
-                          </mat-icon>
-                          <p
-                            class="my-0 big-design-body"
-                            style="color: white; font-size: larger"
-                          >
-                            {{
-                              (views | sales)?.length ?? 0
-                                | i18nPlural: saleMapping
-                            }}
-                          </p>
-                        </a>
+                            </mat-icon>
+                            <p
+                              class="my-0 big-design-body"
+                              style="color: white; font-size: larger"
+                            >
+                              {{
+                                (views | sales)?.length ?? 0
+                                  | i18nPlural: saleMapping
+                              }}
+                            </p>
+                          </a>
+                        </div>
                       </div>
-                    </div>
 
-                    <div
-                      *ngIf="selectedCoord"
-                      class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
-                      style="
-                        border-radius: 0.25rem;
-                        background-color: rgba(0, 0, 0, 0.406);
-                      "
-                      (click)="closeCard()"
-                    ></div>
-                    <div
-                      class="big-design-card bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s"
-                      *ngIf="selectedCoord"
-                      style="
-                        top: 10px;
-                        right: 10px;
-                        position: absolute;
-                        width: 275px;
-                      "
-                    >
-                      <app-view-coord
-                        [coord]="selectedCoord"
-                        (close)="closeCard()"
-                        (open)="createNewNFT($event)"
-                      ></app-view-coord>
+                      <div
+                        *ngIf="selectedCoord"
+                        class="position-absolute w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+                        style="
+                          border-radius: 0.25rem;
+                          background-color: rgba(0, 0, 0, 0.406);
+                        "
+                        (click)="closeCard()"
+                      ></div>
+                      <div
+                        class="big-design-card bg-white animate__animated animate__fadeInRight animate__faster animate__delay-0s"
+                        *ngIf="selectedCoord"
+                        style="
+                          top: 10px;
+                          right: 10px;
+                          position: absolute;
+                          width: 275px;
+                        "
+                      >
+                        <app-view-coord
+                          [coord]="selectedCoord"
+                          (close)="closeCard()"
+                          (open)="createNewNFT($event)"
+                        ></app-view-coord>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -388,8 +378,8 @@
           <mat-icon class="example-tab-icon"> web</mat-icon>
           <span class="ms-2 big-design-body fw-bold"> Pages </span>
         </ng-template>
-        <div class="w-100 h-100 px-2">
-          <div class="w-100 pt-3 bg-light px-4">
+        <div class="w-100 h-100 px-2 bg-light">
+          <div class="w-100 pt-3 px-4">
             <div
               class="d-flex justify-content-between align-items-center py-2"
               style="width: 100%"
@@ -420,13 +410,12 @@
 
             <div class="big-design-card px-0">
               <app-page-table
-              [data]="storeInfo?.pages ?? []"
-              (viewPage)="showLayoutModal($event)"
-            >
-
-            </app-page-table>
+                [data]="storeInfo?.pages ?? []"
+                (viewPage)="showLayoutModal($event)"
+              >
+              </app-page-table>
             </div>
-            
+
             <!-- <div
               class="row row-cols-1 row-cols-md-2 justify-content-between w-100 align-items-start h-100 m-0 gx-4 gy-2"
               style="overflow-x: hidden"
@@ -496,13 +485,13 @@
       <mat-tab class="tab">
         <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon text-dark">
+          <mat-icon class="example-tab-icon text-{{storeInfo.active ? 'dark' : 'danger'}}">
             account_circle</mat-icon
           >
-          <span class="ms-2 text-dark big-design-body fw-bold"> Account </span>
+          <span class="ms-2 text-{{storeInfo.active ? 'dark' : 'danger'}} big-design-body fw-bold"> Account </span>
         </ng-template>
         <div class="comp p-4 bg-light">
-          <div class="mx-2" *ngIf="billingInfo == ''">
+          <div class="mx-2 my-3" *ngIf="billingInfo == ''">
             <app-notification
               [actionBtn]="'Update'"
               [canClose]="false"
@@ -514,7 +503,7 @@
             >
             </app-notification>
           </div>
-          <div class="mx-2" *ngIf="subInfo == ''">
+          <div class="mx-2 my-3" *ngIf="subInfo == ''">
             <app-notification
               [actionBtn]="'Select Plan'"
               [canClose]="false"

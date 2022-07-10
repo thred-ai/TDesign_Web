@@ -1,7 +1,7 @@
 .nft-img {
   width: 47.5px;
   height: 37.5px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .single-line {
