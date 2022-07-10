@@ -133,7 +133,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   day = this.today.getDate();
 
   dateRange = new FormGroup({
-    start: new FormControl(this.loadService.addDays(this.today, -2)),
+    start: new FormControl(this.loadService.addDays(this.today, (-(this.day))+1)),
     end: new FormControl(new Date(this.year, this.month, this.day)),
   });
 
