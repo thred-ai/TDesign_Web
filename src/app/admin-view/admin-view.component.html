@@ -1,4 +1,3 @@
-<!-- Navigation-->
 <router-outlet></router-outlet>
 
 <div
@@ -16,7 +15,6 @@
       style="overflow-y: hidden; background-color: white"
     >
       <mat-tab class="tab">
-        <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon text-dark">public</mat-icon>
           <span class="ms-2 text-dark big-design-body fw-bold">
@@ -198,9 +196,6 @@
                                 aspect-ratio: 1;
                               "
                             >
-                              <!-- <span class="material-icons-outlined m-0 text-white">
-                    attach_money
-                  </span> -->
                             </mat-icon>
                             <p
                               class="my-0 big-design-body"
@@ -255,7 +250,7 @@
               (storeInfo?.colorStyle)!.text_code
             }}"
           >
-            rocket_launch</mat-icon
+            token</mat-icon
           >
           <span class="ms-2 text-dark big-design-body fw-bold">
             Collections
@@ -333,7 +328,6 @@
       </mat-tab>
 
       <mat-tab class="tab">
-        <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
           <mat-icon class="example-tab-icon"> web</mat-icon>
           <span class="ms-2 big-design-body fw-bold"> Pages </span>
@@ -364,75 +358,11 @@
               >
               </app-page-table>
             </div>
-
-            <!-- <div
-              class="row row-cols-1 row-cols-md-2 justify-content-between w-100 align-items-start h-100 m-0 gx-4 gy-2"
-              style="overflow-x: hidden"
-            >
-            
-              <div
-                class="col"
-                *ngFor="let page of storeInfo?.pages ?? []; index as i"
-              >
-                <div
-                  id="back"
-                  role="button"
-                  style="aspect-ratio: 2/1"
-                  class="big-design-card"
-                >
-                  <div class="big-design-header">
-                    <p class="big-design-title">
-                      {{ page.title }}
-                    </p>
-                    <div
-                      class="d-inline-flex justify-content-end align-items-center"
-                    >
-                      <a
-                        role="button"
-                        (click)="viewPage(page)"
-                        class="big-design-alt-button me-2"
-                        matTooltip="View on Storefront"
-                      >
-                        View
-                      </a>
-                      <a
-                        role="button"
-                        (click)="showLayoutModal(page)"
-                        class="big-design-button"
-                        matTooltip="View Details"
-                      >
-                        Edit
-                      </a>
-                    </div>
-                  </div>
-                  <div
-                    class="big-design-body w-100 h-100 rounded border mt-3"
-                    style="position: relative"
-                    style.background-color="{{ selectedTheme()!.bg_color }}"
-                  >
-                    <div
-                      class="w-100 h-100 rounded"
-                      style="overflow-y: hidden; position: absolute"
-                    >
-                      <img
-                        class="w-100 h-auto"
-                        style="object-fit: contain"
-                        loading="lazy"
-                        [useSrcset]="true"
-                        [defaultImage]="'/assets/default.png'"
-                        [lazyLoad]="page.img ?? '/assets/default.png'"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </mat-tab>
 
       <mat-tab class="tab">
-        <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
           <mat-icon
             class="example-tab-icon text-{{
@@ -467,17 +397,6 @@
               >
                 Account
               </p>
-              <!-- <p
-                  (click)="showLayoutModal()"
-                  class="big-design-alt-button ps-2"
-                  style="right: 0px; margin-right: 0px"
-                  matTooltip="Create New Page"
-                >
-                  <mat-icon class="h-100 me-1" style="aspect-ratio: 1">
-                    add
-                  </mat-icon>
-                  Add new
-                </p> -->
             </div>
             <div class="mx-0 mb-3" *ngIf="billingInfo == ''">
               <app-notification
@@ -596,88 +515,4 @@
       </mat-tab>
     </mat-tab-group>
   </div>
-  <!-- <nav id="sidebar" [class.active]="classApplied" class="bg-light">
-    <div style="position: fixed; width: 150px; height: 100vh" class="bg-light">
-      <div class="my-2 d-flex justify-content-center align-items-center">
-        <div class="text-center">
-          <img class="w-100 px-3" src="assets/thred_logo_wide.png" />
-        </div>
-      </div>
-      <div class="w-100" style="overflow-y: auto">
-        <div
-          class="d-flex justify-content-center align-items-center my-3"
-          [hidden]="shouldHideLiveBtn()"
-          *ngIf="intValue == undefined"
-        >
-          <a
-            *ngIf="storeLive()"
-            role="button"
-            class="side d-flex text-light bg-success rounded-pill mb-0 align-items-center justify-content-center fw-bold"
-            style="font-size: 50px"
-          >
-            <mat-icon style="height: 50px; width: 50px; font-size: 50px">
-              <span class="material-icons-outlined"> check_circle </span>
-            </mat-icon>
-          </a>
-          <a
-            *ngIf="!storeLive()"
-            role="button"
-            class="side d-flex text-light bg-danger rounded-pill align-items-center justify-content-center fw-bold"
-            style="height: 50px; aspect-ratio: 1"
-            [ngbTooltip]="etipContent"
-          >
-            <ng-template #etipContent>
-              <div class="d-flex" *ngFor="let a of missingInfo()">
-                <mat-icon class="ms-2 me-2 text-danger">
-                  <span class="material-icons-outlined"> error_outline </span>
-                </mat-icon>
-                <p class="text-start">
-                  {{ a }}
-                </p>
-              </div>
-            </ng-template>
-            <mat-icon style="height: 50px; width: 50px; font-size: 50px">
-              <span class="material-icons-outlined"> error_outline </span>
-            </mat-icon>
-          </a>
-        </div>
-        <div class="w-100 mt-2" *ngFor="let panel of panels; index as s">
-          <ul class="list-unstyled components">
-            <li
-              *ngFor="let option of panel.Options; index as i"
-              [class.active]="getSelectedPanel()?.Title == option.Title"
-            >
-              <a
-                role="button"
-                (click)="selectSetting(i, s)"
-                class="side d-flex flex-column text-{{
-                  shouldRed(option)
-                    ? 'danger'
-                    : getSelectedPanel()?.Title == option.Title
-                    ? 'white'
-                    : (storeInfo?.colorStyle)!.text_code
-                }} text-center align-items-center justify-content-center"
-                style="font-size: 15px"
-              >
-                <div
-                  class="mx-auto d-flex flex-column align-items-center justify-content-center"
-                  style="aspect-ratio: 1; height: 100px"
-                >
-                  <mat-icon style="height: 50px; width: 50px; font-size: 50px">
-                    {{ option.Icon }}
-                  </mat-icon>
-                  {{ option.Title | titlecase }}
-                </div>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </nav> -->
 </div>
-<!-- <img
-  class="px-3"
-  style="position: fixed; left: 0px; width: 200px; bottom: 15px; z-index: 100"
-  src="assets/thred_logo_wide.png"
-/> -->
