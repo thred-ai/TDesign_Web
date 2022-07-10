@@ -6,46 +6,7 @@
   class="wrapper w-100 bg-light"
   style="min-height: 100vh"
 >
-  <!-- Page Content -->
   <div *ngIf="signedIn" id="content" class="tab w-100">
-    <!-- <header *ngIf="isBrowser()" class="border-bottom">
-      <div class="w-100 d-flex justify-content-between align-items-center mb-2">
-        <div class="d-flex justify-content-end w-100">
-          <a
-            class="btn rounded-pill mx-2 mb-0 card side bg-white text-{{
-              (storeInfo?.colorStyle)!.text_code
-            }}"
-            role="button"
-            (click)="toggleSidebar()"
-            style="text-shadow: 2px 2px 4px #42424281"
-          >
-            <mat-icon>menu_open</mat-icon>
-          </a>
-          <div
-            *ngIf="intValue != undefined"
-            class="m-2 my-0 text-start w-75 ms-3 d-none d-md-flex justify-content-start align-items-center"
-          >
-            <div class="progress w-100 ms-0">
-              <div
-                class="progress-bar progress-bar-striped progress-bar-animated bg-white"
-                role="progressbar"
-                aria-valuenow="intValue"
-                aria-valuemin="0"
-                aria-valuemax="100"
-                [style.width.%]="intValue"
-              ></div>
-            </div>
-            <p
-              class="mb-0 fw-bolder ms-3"
-              style="font-size: medium; white-space: nowrap"
-            >
-              Publishing Store...
-            </p>
-          </div>
-        </div>
-      </div>
-    </header> -->
-
     <mat-tab-group
       mat-stretch-tabs
       #menu
@@ -288,7 +249,6 @@
         </div>
       </mat-tab>
       <mat-tab class="tab">
-        <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
           <mat-icon
             class="example-tab-icon text-{{
@@ -408,7 +368,7 @@
               </p>
             </div>
 
-            <div class="big-design-card px-0">
+            <div class="big-design-card px-0 mt-1">
               <app-page-table
                 [data]="storeInfo?.pages ?? []"
                 (viewPage)="showLayoutModal($event)"
@@ -485,117 +445,162 @@
       <mat-tab class="tab">
         <!-- #docregion label-directive -->
         <ng-template mat-tab-label>
-          <mat-icon class="example-tab-icon text-{{storeInfo.active ? 'dark' : 'danger'}}">
+          <mat-icon
+            class="example-tab-icon text-{{
+              storeInfo.active ? 'dark' : 'danger'
+            }}"
+          >
             account_circle</mat-icon
           >
-          <span class="ms-2 text-{{storeInfo.active ? 'dark' : 'danger'}} big-design-body fw-bold"> Account </span>
+          <span
+            class="ms-2 text-{{
+              storeInfo.active ? 'dark' : 'danger'
+            }} big-design-body fw-bold"
+          >
+            Account
+          </span>
         </ng-template>
-        <div class="comp p-4 bg-light">
-          <div class="mx-2 my-3" *ngIf="billingInfo == ''">
-            <app-notification
-              [actionBtn]="'Update'"
-              [canClose]="false"
-              [title]="'Action Required!'"
-              [subtitle]="'Update the payment method used for your Thred plan.'"
-              (actionBtnPressed)="routeToBillingAdmin()"
-              [iconColor]="'danger'"
-              [icon]="'error'"
+
+        <div class="w-100 h-100 px-2 bg-light">
+          <div class="w-100 pt-3 px-4">
+            <div
+              class="d-flex justify-content-between align-items-center py-2 mb-1"
+              style="width: 100%"
             >
-            </app-notification>
-          </div>
-          <div class="mx-2 my-3" *ngIf="subInfo == ''">
-            <app-notification
-              [actionBtn]="'Select Plan'"
-              [canClose]="false"
-              [title]="'Action Required!'"
-              [subtitle]="
-                'Select a Thred plan to begin selling NFTs on your store.'
-              "
-              (actionBtnPressed)="editPlan()"
-              [iconColor]="'danger'"
-              [icon]="'error'"
-            >
-            </app-notification>
-          </div>
-
-          <div class="big-design-card mx-2" *ngIf="billingInfo != undefined">
-            <div class="big-design-header">
-              <p class="big-design-title">Payment Method</p>
-              <a
-                class="big-design-button"
-                (click)="routeToBillingAdmin()"
-                matTooltip="View Details"
-              >
-                {{ billingInfo == "" ? "Add" : "Edit" }}
-              </a>
-            </div>
-            <div class="big-design-body" *ngIf="billingInfo">
-              {{
-                (billingInfo?.brand | titlecase) +
-                  " ending in " +
-                  billingInfo?.number
-              }}
-              <br />
-              {{ billingInfo.name }}
-              <br />
-              {{
-                billingInfo.street +
-                  (billingInfo.unit == undefined ? "" : ". " + billingInfo.unit)
-              }}
-              <br />
-              {{
-                billingInfo?.city +
-                  ", " +
-                  billingInfo?.admin_area +
-                  ". " +
-                  billingInfo?.postal
-              }}
-            </div>
-            <div class="big-design-body" *ngIf="billingInfo == ''">
-              This card will be used for your Thred Merchant Plan.
-            </div>
-          </div>
-
-          <div class="big-design-card mt-3 mx-2" *ngIf="subInfo != undefined">
-            <div class="big-design-header">
-              <p class="big-design-title">Plan Type</p>
-              <a
-                class="big-design-button"
-                (click)="editPlan()"
-                matTooltip="View Details"
-              >
-                {{ "Edit" }}
-              </a>
-            </div>
-            <div class="big-design-body" *ngIf="plans && subInfo">
-              {{ plan(subInfo.plan.id)?.name }}
-
-              <div
-                *ngIf="
-                  subInfo != '' &&
-                  subInfo.plan.id == plan(subInfo.plan.id)!.id &&
-                  !subInfo!.cancel_at_period_end
+              <p
+                class="big-design-title"
+                style="
+                  font-weight: lighter;
+                  font-size: 2rem;
+                  font-weight: 300;
+                  line-height: 2.5rem;
                 "
               >
-                Renews: {{ planRenewalDate() }}
-              </div>
-              <div
-                *ngIf="
-                  subInfo != '' &&
-                  subInfo.plan.id == plan(subInfo.plan.id)!.id &&
-                  subInfo!.cancel_at_period_end
-                "
-              >
-                Cancels: {{ planEndDate() }}
-              </div>
-
-              {{
-                plan(subInfo.plan.id)?.price | currency: "USD":"symbol-narrow"
-              }}/month
-              <br />
+                Account
+              </p>
+              <!-- <p
+                  (click)="showLayoutModal()"
+                  class="big-design-alt-button ps-2"
+                  style="right: 0px; margin-right: 0px"
+                  matTooltip="Create New Page"
+                >
+                  <mat-icon class="h-100 me-1" style="aspect-ratio: 1">
+                    add
+                  </mat-icon>
+                  Add new
+                </p> -->
             </div>
-            <div class="big-design-body" *ngIf="subInfo == ''">
-              Select a Thred Merchant Plan to activate your store.
+            <div class="mx-0 mb-3" *ngIf="billingInfo == ''">
+              <app-notification
+                [actionBtn]="'Update'"
+                [canClose]="false"
+                [title]="'Action Required!'"
+                [subtitle]="
+                  'Update the payment method used for your Thred plan.'
+                "
+                (actionBtnPressed)="routeToBillingAdmin()"
+                [iconColor]="'danger'"
+                [icon]="'error'"
+              >
+              </app-notification>
+            </div>
+            <div class="mx-0 mb-3" *ngIf="subInfo == ''">
+              <app-notification
+                [actionBtn]="'Select Plan'"
+                [canClose]="false"
+                [title]="'Action Required!'"
+                [subtitle]="
+                  'Select a Thred plan to begin selling NFTs on your store.'
+                "
+                (actionBtnPressed)="editPlan()"
+                [iconColor]="'danger'"
+                [icon]="'error'"
+              >
+              </app-notification>
+            </div>
+
+            <div class="big-design-card mx-0" *ngIf="billingInfo != undefined">
+              <div class="big-design-header">
+                <p class="big-design-title">Payment Method</p>
+                <a
+                  class="big-design-button"
+                  (click)="routeToBillingAdmin()"
+                  matTooltip="View Details"
+                >
+                  {{ billingInfo == "" ? "Add" : "Edit" }}
+                </a>
+              </div>
+              <div class="big-design-body" *ngIf="billingInfo">
+                {{
+                  (billingInfo?.brand | titlecase) +
+                    " ending in " +
+                    billingInfo?.number
+                }}
+                <br />
+                {{ billingInfo.name }}
+                <br />
+                {{
+                  billingInfo.street +
+                    (billingInfo.unit == undefined
+                      ? ""
+                      : ". " + billingInfo.unit)
+                }}
+                <br />
+                {{
+                  billingInfo?.city +
+                    ", " +
+                    billingInfo?.admin_area +
+                    ". " +
+                    billingInfo?.postal
+                }}
+              </div>
+              <div class="big-design-body" *ngIf="billingInfo == ''">
+                This card will be used for your Thred Merchant Plan.
+              </div>
+            </div>
+
+            <div class="big-design-card mt-3 mx-0" *ngIf="subInfo != undefined">
+              <div class="big-design-header">
+                <p class="big-design-title">Plan Type</p>
+                <a
+                  class="big-design-button"
+                  (click)="editPlan()"
+                  matTooltip="View Details"
+                >
+                  {{ "Edit" }}
+                </a>
+              </div>
+              <div class="big-design-body" *ngIf="plans && subInfo">
+                {{ plan(subInfo.plan.id)?.name }}
+
+                <div
+                  *ngIf="
+                    subInfo != '' &&
+                    subInfo.plan.id == plan(subInfo.plan.id)!.id &&
+                    !subInfo!.cancel_at_period_end
+                  "
+                >
+                  Renews: {{ planRenewalDate() }}
+                </div>
+                <div
+                  *ngIf="
+                    subInfo != '' &&
+                    subInfo.plan.id == plan(subInfo.plan.id)!.id &&
+                    subInfo!.cancel_at_period_end
+                  "
+                >
+                  Cancels: {{ planEndDate() }}
+                </div>
+
+                {{
+                  plan(subInfo.plan.id)?.price
+                    | currency: "USD":"symbol-narrow"
+                }}/month
+                <br />
+              </div>
+              <div class="big-design-body" *ngIf="subInfo == ''">
+                Select a Thred Merchant Plan to activate your store.
+              </div>
             </div>
           </div>
         </div>
