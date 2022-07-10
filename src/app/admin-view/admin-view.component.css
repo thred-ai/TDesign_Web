@@ -130,7 +130,7 @@ ul ul a {
   display: none;
 } */
 
-::ng-deep .mat-form-field-wrapper{
+.mat-form-field-wrapper{
   margin-bottom: -1.25em;
   margin-top: -1.25em;
 }
