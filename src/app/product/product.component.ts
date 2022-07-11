@@ -490,12 +490,12 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let id = this.getProductID().full
 
-    
+    this.loadService.logView(id)
+
     this.loadService.getPost(
       id,
       (product?: NFT, collection?: Collection) => {
         setTimeout(() => {
-          this.loadService.logView(product?.docID)
           this.productToBuy = Object.assign(new NFT(), product);
           this.collection = Object.assign(new Collection(), collection);
           // this.url = info.url ?? '';
