@@ -2363,7 +2363,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         this.storeInfo?.bio ?? 'Check out my Thred Store!',
         'shopmythred.com/' + this.storeInfo?.username
       );
-      // this.loadService.logView()
 
       if (isPlatformBrowser(this.platformID)) {
         if (this.signedIn) {

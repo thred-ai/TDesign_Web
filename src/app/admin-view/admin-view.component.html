@@ -126,11 +126,13 @@
                 </div>
                 <div class="big-design-card my-0 px-0">
                   <app-data-table
+                  
                     [analytics]="{
                       name: 'Activity',
                       locData: (views | location),
                       nftData: (views | location: undefined:1:collections)
                     }"
+                    [collections]="collections"
                     (clicked)="
                       $event.mode == 0
                         ? scrollToLocation($event.data)

@@ -2,7 +2,11 @@
   <p class="big-design-title single-line d-block pb-2">
     {{ loc?.name }}
   </p>
-  <mat-form-field appearance="legacy" class="mat-form-field-no-padding py-0">
+  <mat-form-field
+    appearance="legacy"
+    class="mat-form-field-no-padding py-0"
+    *ngIf="(collections && filter.id == 1) || filter.id == 0"
+  >
     <mat-select
       [(ngModel)]="filter"
       class="big-design-input-text"
@@ -33,6 +37,7 @@
     [dataSource]="dataSource ?? []"
     class="shadow-none w-md-100 position-absolute"
     style="width: 650px"
+    *ngIf="(collections && filter.id == 1) || filter.id == 0"
   >
     <ng-container matColumnDef="views">
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">

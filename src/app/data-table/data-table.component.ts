@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { Collection } from '../models/collection.model';
 
 @Component({
   selector: 'app-data-table',
@@ -22,6 +23,8 @@ export class DataTableComponent implements OnInit {
     this.setDataSource()
     this.cdr.detectChanges();
   }
+
+  @Input() collections?: Collection[] = undefined
 
   setDataSource(){
     if (this.filter.id == 0){
@@ -39,7 +42,7 @@ export class DataTableComponent implements OnInit {
       id: 0
     },
     {
-      name: 'By NFT',
+      name: 'By Items',
       id: 1
     }
   ]

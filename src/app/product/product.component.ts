@@ -406,7 +406,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       // );
     });
 
-    console.log("man")
 
     // const storeInfo = this.getStoreName();
     // this.loadService.getUser(
@@ -490,6 +489,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     // });
 
     let id = this.getProductID().full
+
+    this.loadService.logView(id)
     
     this.loadService.getPost(
       id,
@@ -730,7 +731,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
 
-    let seller = ''; //`${product.seller}`;
     var signer = await Globals.provider?.getSigner();
 
     if (!signer) {
