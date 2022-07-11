@@ -115,11 +115,9 @@ export class LoadService {
 
   async logView(productId: string | null = null) {
     if (
-      !Globals.didLog &&
       Globals.storeInfo?.uid &&
       isPlatformBrowser(this.platformID)
     ) {
-      Globals.didLog = true;
       let coords = (await this.getCoords()) ?? this.defaultCoords;
       this.functions
         .httpsCallable('updateView')({
