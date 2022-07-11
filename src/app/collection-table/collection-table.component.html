@@ -29,7 +29,7 @@
       <td
         mat-cell
         *matCellDef="let element"
-        class="big-design-body w-md-25 text-truncate"
+        class="big-design-body text-truncate"
       >
         {{ element.tokenId }}
       </td>
@@ -43,9 +43,22 @@
       <td
         mat-cell
         *matCellDef="let element"
-        class="big-design-body w-md-25 text-truncate"
+        class="big-design-body text-truncate"
       >
         {{ element.price | currency: col!.currency:"symbol":"1.0-0" }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="utility">
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Utility
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="big-design-body text-truncate"
+      >
+        {{ 'AR' }}
       </td>
     </ng-container>
 
@@ -53,7 +66,7 @@
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
         Status
       </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body w-md-25">
+      <td mat-cell *matCellDef="let element" class="big-design-body">
         <app-status [status]="element.status"> </app-status>
       </td>
     </ng-container>
@@ -79,7 +92,7 @@
       <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
         Name
       </th>
-      <td mat-cell *matCellDef="let element" class="big-design-body w-md-25">
+      <td mat-cell *matCellDef="let element" class="big-design-body">
         <div class="d-flex justify-content-start align-items-center my-auto">
           <img
             class="nft-img rounded"
@@ -97,14 +110,13 @@
     </ng-container>
 
     <tr
-      class="border-top w-md-25"
+      class="border-top"
       style="height: 50px; background-color: rgb(246, 247, 252)"
       mat-header-row
       *matHeaderRowDef="displayedColumns2; sticky: true"
     ></tr>
     <tr
       mat-row
-      class="w-md-25"
       style="height: 70px"
       *matRowDef="let row; columns: displayedColumns2"
       (click)="createNewNFT(col, row)"

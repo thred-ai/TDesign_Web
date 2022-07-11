@@ -48,8 +48,9 @@ export class CollectionTableComponent
   displayedColumns2: string[] = [
     'image',
     'edition',
-    'price',
     'status',
+    'utility',
+    'price',
     'action',
   ];
 

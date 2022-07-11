@@ -26,8 +26,8 @@ export class PageTableComponent implements OnInit {
   displayedColumns2: string[] = [
     'name',
     'id',
-    'url',
     'status',
+    'url',
     'action',
   ];
 

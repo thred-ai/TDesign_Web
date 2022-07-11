@@ -25,7 +25,7 @@
         <div class="px-2 bg-light">
           <div class="w-100 pt-1 bg-light px-4">
             <div
-              class="d-flex justify-content-between align-items-center py-2"
+              class="d-flex justify-content-between align-items-center py-3"
               style="width: 100%"
             >
               <p
@@ -41,7 +41,7 @@
               </p>
 
               <mat-form-field
-                class="big-design-title px-0 py-0"
+                class="big-design-title px-0 mat-form-field-no-padding"
                 style="font-size: large"
                 floatLabel="never"
                 appearance="legacy"
@@ -128,9 +128,14 @@
                   <app-data-table
                     [analytics]="{
                       name: 'Activity',
-                      data: (views | location)
+                      locData: (views | location),
+                      nftData: (views | location: undefined:1:collections)
                     }"
-                    (viewLocation)="scrollToLocation($event)"
+                    (clicked)="
+                      $event.mode == 0
+                        ? scrollToLocation($event.data)
+                        : createNewNFT($event.data)
+                    "
                   ></app-data-table>
                 </div>
               </div>

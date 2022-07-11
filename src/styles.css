@@ -11497,6 +11497,11 @@ mat-sidenav-content {
   text-align: start;
 }
 
+.mat-form-field-no-padding .mat-form-field-wrapper {
+  margin-bottom: -1.25em;
+  margin-top: -1.25em;
+}
+
 .big-design-link-text {
   color: rgb(85, 120, 246);
   font-family: "Source Sans Pro", sans-serif;

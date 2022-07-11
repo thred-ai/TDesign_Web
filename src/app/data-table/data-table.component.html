@@ -1,114 +1,134 @@
 <div class="big-design-header px-4 pb-2 align-items-center">
-    <p class="big-design-title single-line d-block pb-2">
-      {{ loc?.name }}
-    </p>
-    <!-- <p
-      class="big-design-button"
-      style="width: fit-content"
+  <p class="big-design-title single-line d-block pb-2">
+    {{ loc?.name }}
+  </p>
+  <mat-form-field appearance="legacy" class="mat-form-field-no-padding py-0">
+    <mat-select
+      [(ngModel)]="filter"
+      class="big-design-input-text"
+      (selectionChange)="changed($event)"
     >
-      Create NFT
-    </p> -->
-  </div>
-  <div
-    class="big-design-body position-relative"
-    style="overflow-x: scroll; height: 475px"
-  >
-    <table
-      #table
-      mat-table
-      [dataSource]="dataSource ?? []"
-      class="shadow-none w-md-100 position-absolute"
-      style="width: 650px"
-    >
-  
-      <!-- Weight Column -->
-      <ng-container matColumnDef="views">
-        <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
-          Views
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element"
-          class="big-design-body"
-        >
-          {{ element.views}}
-        </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="sales">
-        <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
-          Sales
-        </th>
-        <td mat-cell *matCellDef="let element" class="big-design-body">
-          {{element.sales}}
-        </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="action">
-        <th
-          mat-header-cell
-          *matHeaderCellDef
-          class="big-design-body fw-bold"
-        ></th>
-        <td mat-cell *matCellDef="let element" class="text-end">
-          <a
-            class="big-design-button border-0 fw-bold me-0"
-            role="button"
-            matTooltip="View Location"
-          >
-            <mat-icon> travel_explore </mat-icon>
-          </a>
-        </td>
-      </ng-container>
-  
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
-          Location
-        </th>
-        <td mat-cell *matCellDef="let element" class="big-design-body">
-          {{element.name}}
-        </td>
-      </ng-container>
-  
-      <tr
-        class="border-top w-md-25"
-        style="height: 50px; background-color: rgb(246, 247, 252)"
-        mat-header-row
-        *matHeaderRowDef="displayedColumns2; sticky: true"
-      ></tr>
-      <tr
-        mat-row
-        class="w-md-25"
-        style="height: 70px"
-        *matRowDef="let row; columns: displayedColumns2"
-        (click)="viewLocation.emit(row)"
-      ></tr>
-  
-      <tr *matNoDataRow>
-        <td
-          class="mat-cell border-0"
-          style="height: 250px"
-          [attr.colspan]="displayedColumns2.length"
-        >
-          <p
-            class="w-100 text-center big-design-title my-2"
-            style="font-size: large"
-          >
-            No activity to show.
-          </p>
-        </td>
-      </tr>
-    </table>
-    <div class="w-100 position-absolute px-3" style="bottom: 0; margin-bottom: 0">
-      <mat-paginator
-        class="mat-elevation-z0 big-design-body"
-        #paginator
-        [pageSizeOptions]="[5]"
-        [hidePageSize]="true"
-        showFirstLastButtons
-        aria-label="Select page of tokens"
+      <mat-select-trigger
+        class="d-flex align-items-center big-design-input-text"
       >
-      </mat-paginator>
-    </div>
+        {{ filter.name }}
+      </mat-select-trigger>
+      <mat-option
+        class="big-design-input-text"
+        *ngFor="let f of filters"
+        [value]="f"
+      >
+        {{ f.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div
+  class="big-design-body position-relative"
+  style="overflow-x: scroll; height: 475px"
+>
+  <table
+    #table
+    mat-table
+    [dataSource]="dataSource ?? []"
+    class="shadow-none w-md-100 position-absolute"
+    style="width: 650px"
+  >
+    <ng-container matColumnDef="views">
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Views
+      </th>
+      <td mat-cell *matCellDef="let element" class="big-design-body">
+        {{ element.views }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="sales">
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        Sales
+      </th>
+      <td mat-cell *matCellDef="let element" class="big-design-body">
+        {{ element.sales }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="action">
+      <th
+        mat-header-cell
+        *matHeaderCellDef
+        class="big-design-body fw-bold"
+      ></th>
+      <td mat-cell *matCellDef="let element" class="text-end">
+        <a
+          *ngIf="filter.id == 0"
+          class="big-design-button border-0 fw-bold me-0"
+          role="button"
+          matTooltip="View Location"
+        >
+          <mat-icon> travel_explore </mat-icon>
+        </a>
+        <a
+          *ngIf="filter.id == 1"
+          class="big-design-button border-0 fw-bold me-0 text-secondary"
+          role="button"
+          matTooltip="View Details"
+        >
+          <mat-icon> more_horiz </mat-icon>
+        </a>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef class="big-design-body fw-bold">
+        {{ filter.id == 0 ? "Location" : "Name" }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element"
+        class="big-design-body nft-name text-truncate pe-4"
+      >
+        {{ element.name }}
+      </td>
+    </ng-container>
+
+    <tr
+      class="border-top w-md-25"
+      style="height: 50px; background-color: rgb(246, 247, 252)"
+      mat-header-row
+      *matHeaderRowDef="displayedColumns2; sticky: true"
+    ></tr>
+    <tr
+      mat-row
+      class="w-md-25"
+      style="height: 70px"
+      *matRowDef="let row; columns: displayedColumns2"
+      (click)="clicked.emit({ mode: filter.id, data: row })"
+    ></tr>
+
+    <tr *matNoDataRow>
+      <td
+        class="mat-cell border-0"
+        style="height: 250px"
+        [attr.colspan]="displayedColumns2.length"
+      >
+        <p
+          class="w-100 text-center big-design-title my-2"
+          style="font-size: large"
+        >
+          No activity to show.
+        </p>
+      </td>
+    </tr>
+  </table>
+  <div class="w-100 position-absolute px-3" style="bottom: 0; margin-bottom: 0">
+    <mat-paginator
+      class="mat-elevation-z0 big-design-body"
+      #paginator
+      [pageSizeOptions]="[5]"
+      [hidePageSize]="true"
+      showFirstLastButtons
+      aria-label="Select page of tokens"
+    >
+    </mat-paginator>
   </div>
-  
+</div>

@@ -19,13 +19,39 @@ export class DataTableComponent implements OnInit {
   loc?: any;
   @Input() set analytics(loc: any) {
     this.loc = loc;
-    this.dataSource = new MatTableDataSource<any>(loc.data);
-    this.dataSource!.paginator = this.paginator!;
+    this.setDataSource()
     this.cdr.detectChanges();
   }
 
+  setDataSource(){
+    if (this.filter.id == 0){
+      this.dataSource = new MatTableDataSource<any>(this.loc.locData);
+    }
+    else if (this.filter.id == 1){
+      this.dataSource = new MatTableDataSource<any>(this.loc.nftData);
+    }
+    this.dataSource!.paginator = this.paginator!;
+  }
 
-  @Output() viewLocation = new EventEmitter<any>();
+  filters = [
+    {
+      name: 'By Location',
+      id: 0
+    },
+    {
+      name: 'By NFT',
+      id: 1
+    }
+  ]
+
+  filter = this.filters[0]
+
+  changed(event: any){
+    this.setDataSource()
+  }
+
+
+  @Output() clicked = new EventEmitter<any>();
   @Output() openLocation = new EventEmitter<any>();
 
   dataSource?: MatTableDataSource<any>;
@@ -36,6 +62,8 @@ export class DataTableComponent implements OnInit {
     'sales',
     'action',
   ];
+
+  
 
   ngOnChanges() {
     this.analytics = this.loc!;

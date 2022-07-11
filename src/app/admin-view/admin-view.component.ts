@@ -2665,6 +2665,21 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   createNewNFT(selected: any) {
     // if (!this.isSignedIn()){ return }
+    if (selected.id){
+      let col = this.collections?.find(
+        (c) => c.NFTs[`${selected.id}`] != undefined
+      );
+      if (col) {
+        selected = {
+          asset: col?.NFTs[`${selected.id}`],
+          contract: col
+        }
+        this.cdr.detectChanges();
+      }
+      else{
+        return
+      }
+    }
     selected.utils = this.utilities ?? [];
     const modalRef = this.dialog.open(CreateCryptoComponent, {
       width: '97.5vw',

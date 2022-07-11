@@ -19,6 +19,10 @@
   background-color: #3c64f310;
 }
 
+.nft-name {
+  max-width: 130px;
+}
+
 .mat-cell {
   cursor: pointer;
 }
