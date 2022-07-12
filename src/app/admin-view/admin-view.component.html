@@ -307,6 +307,7 @@
                 <app-collection-table
                   [collection]="collection"
                   [count]="collection.collectionCount ?? 0"
+                  [utility]="utilities ?? []"
                   (viewNFT)="createNewNFT($event)"
                 >
                 </app-collection-table>

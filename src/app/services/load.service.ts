@@ -1551,38 +1551,47 @@ export class LoadService {
   }
 
   private async saveNftImage(image: any, productID: string, mode = 0) {
-    const filePath =
+    var filePath =
       'Products/' +
       productID +
-      '/' +
-      (mode == 0 ? 'link_' + productID + '.png' : 'ios_' + productID + '.usdz');
+      '/'
+    var uploadFile: any = ""
+    var url = ""
 
-    let ref = this.storage.ref(filePath);
-
-    if (mode == 0) {
-      const byteArray = Buffer.from(
+    if (mode == 0){
+      filePath += 'link_' + productID + '.png'
+      url = this.getURL(productID)
+      uploadFile = Buffer.from(
         image.replace(/^[\w\d;:\/]+base64\,/g, ''),
         'base64'
       );
-      await ref.put(byteArray);
-    } else {
-      await ref.put(image);
+    }
+    else if (mode == 1){
+      filePath += 'ios_' + productID + '.usdz'
+      url = this.getModelURL(productID)
+      uploadFile = image
+    }
+    else if (mode == 2){
+      filePath += 'model_' + productID + '.glb'
+      url = this.get3DURL(productID)
+      uploadFile = image
+    }
+    else if (mode == 3){
+      filePath += 'info_' + productID + '.json'
+      url = this.getJSONURL(productID)
+      uploadFile = image;
     }
 
-    const url =
-      mode == 0 ? this.getURL(productID) : this.getModelURL(productID);
+    if (uploadFile && uploadFile != ""){
+      let ref = this.storage.ref(filePath);
 
-    return url;
+      await ref.put(uploadFile);
+  
+      return url;
+    }
+    return undefined
   }
 
-  private async uploadIOSModel(model: File, productID: string) {
-    let task = await this.storage.upload(
-      `/Products/${productID}}/ios_${productID}.usdz`,
-      model
-    );
-    console.log(task.metadata.fullPath);
-    return task.metadata.fullPath;
-  }
 
   private async uploadLayoutImages(image: string, type: string, uid?: string) {
     const filePath = 'Users/' + uid + '/Layouts/' + type + '.png';
@@ -1709,7 +1718,7 @@ export class LoadService {
     collectionAddress: string,
     name: string,
     description: string,
-    model: Blob,
+    model: File,
     img: string,
     traits: Dict<any>[],
     royalty: number = 0,
@@ -1721,28 +1730,40 @@ export class LoadService {
   ) {
     //add token later
 
+    console.log("getting col")
     this.getCollection(collectionAddress, async (col?: Collection) => {
+      console.log(col)
       if (col) {
         const image = await this.saveNftImage(
           img,
-          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`
+          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+          0
         );
 
-        const added = await client.add(model, {
-          progress: (prog) => console.log(`received: ${prog}`),
-        });
+        // const added = await client.add(model, {
+        //   progress: (prog) => console.log(`received: ${prog}`),
+        // });
+
+        const url2 = await this.saveNftImage(
+          model,
+          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+          2
+        );
 
         // const added3 = await client.add(ios_model, {
         //   progress: (prog) => console.log(`received: ${prog}`),
         // });
 
-        const url4 = await this.saveNftImage(
-          ios_model,
-          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
-          1
-        );
+        var url4 = ''
+        if (ios_model && ios_model != null){
+          url4 = await this.saveNftImage(
+            ios_model,
+            `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+            1
+          ) ?? '';
+        }
 
-        const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
+        // const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
         // const url4 = `https://ipfs.infura.io/ipfs/${added3.path}`;
 
         var data1 = {
@@ -1758,8 +1779,15 @@ export class LoadService {
 
         const data2 = JSON.stringify(data1);
 
-        const added2 = await client.add(data2);
-        const url = `https://ipfs.infura.io/ipfs/${added2.path}`;
+        var blob = new Blob([data2], {type: "application/json"})
+
+        const url = await this.saveNftImage(
+          blob,
+          `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+          3
+        );
+        // const added2 = await client.add(data2);
+        // const url = `https://ipfs.infura.io/ipfs/${added2.path}`;
 
         let data = JSON.parse(
           JSON.stringify({
@@ -2277,6 +2305,26 @@ export class LoadService {
       '%2Fios_' +
       productID +
       '.usdz?alt=media'
+    );
+  }
+
+  get3DURL(productID: string) {
+    return (
+      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      productID +
+      '%2Fmodel_' +
+      productID +
+      '.glb?alt=media'
+    );
+  }
+
+  getJSONURL(productID: string) {
+    return (
+      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      productID +
+      '%2Finfo_' +
+      productID +
+      '.json?alt=media'
     );
   }
 

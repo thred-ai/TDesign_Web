@@ -49,6 +49,7 @@ import { SalesPipe } from '../sales.pipe';
 import { LocationPipe } from '../location.pipe';
 import { PaginatorPipe } from '../paginator.pipe';
 import { UtilityDataPipe } from '../utility-data.pipe';
+import { UtilityInfoPipe } from '../utility-info.pipe';
 
 @NgModule({
   imports: [
@@ -105,6 +106,7 @@ import { UtilityDataPipe } from '../utility-data.pipe';
     LocationPipe,
     PaginatorPipe,
     UtilityDataPipe,
+    UtilityInfoPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -155,7 +157,8 @@ import { UtilityDataPipe } from '../utility-data.pipe';
     SalesPipe,
     LocationPipe,
     PaginatorPipe,
-    UtilityDataPipe
+    UtilityDataPipe,
+    UtilityInfoPipe
   ]
 })
 export class ApplicationPipesModule {}

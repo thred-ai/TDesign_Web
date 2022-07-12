@@ -37,7 +37,8 @@ export class CollectionTableComponent
   }
 
   @Input() count: number = 0;
-
+  @Input() utility: any[] = [];
+  
   @Output() viewNFT = new EventEmitter<{
     contract?: Collection;
     asset?: NFT;

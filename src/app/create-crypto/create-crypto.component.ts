@@ -203,14 +203,13 @@ export class CreateCryptoComponent implements OnInit {
       let description = this.nftForm.controls.description.value as string;
       let cost = this.nftForm.controls.price.value as number;
       let contractNFT = this.nftContract.contract;
-      let file = this.nftForm.controls.file.value as string;
+      let file = this.nftForm.controls.file.value as File;
       let royalty =
         ((this.nftForm.controls.royalty.value as number) ?? 0.0) * 100;
       let skyBox = (this.nftForm.controls.skybox.value as string) ?? '';
       let utility = this.utility.filter((f) => f.active) ?? [];
       let ios_model = this.nftForm.controls.ios_model.value as File;
       let traits = (this.traits as Array<Dict<any>>) ?? [];
-      var uploadFile = this.convertBase64ToBlob(file);
 
       this.isLoading = true;
 
@@ -220,7 +219,7 @@ export class CreateCryptoComponent implements OnInit {
         contractNFT,
         name,
         description,
-        uploadFile,
+        file,
         img,
         traits,
         royalty,
@@ -229,6 +228,7 @@ export class CreateCryptoComponent implements OnInit {
         utility,
         ios_model,
         (nft?: NFT) => {
+          console.log("done")
           this.isLoading = false;
           this.dialogRef.close(nft);
         }
