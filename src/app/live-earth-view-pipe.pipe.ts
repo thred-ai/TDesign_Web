@@ -59,7 +59,7 @@ export class LiveEarthViewPipePipe implements PipeTransform {
         if (i.views == 0) {
           color = '"rgb(48, 184, 48)"';
         } else {
-          color = '"rgb(184, 48, 48)"';
+          color = '"#ff003f"';
         }
       }
       mystr += `

@@ -23,7 +23,7 @@
         [animate]="true"
         [poster]="productToBuy.img ?? '/assets/default.png'"
         [id]="'viewer'"
-        [ar]="true"
+        [ar]="productToBuy.utility | utilityInfo: false : 'ar'"
         [ios_model]="productToBuy.ios_model"
       >
       </app-model-viewer>
