@@ -2133,26 +2133,45 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           var myearth;
           var sprites = [];
           window.addEventListener("load", function () {
-            myearth = new Earth(
-              "myearth",
-              {
-                location: {
-                  lat: 20,
-                  lng: 20,
-                },
-                light: "none",
-                mapImage: "hologram/hologram-map.svg",
-                zoomable: true,
-                transparent: false,
-                autoRotate: true,
-                autoRotateSpeed: 1.0,
-                autoRotateDelay: 100,
-                autoRotateStart: 2000,
-              },
-              {
-                passive: true,
-              }
-            );
+            // myearth = new Earth(
+            //   "myearth",
+            //   {
+            //     location: {
+            //       lat: 20,
+            //       lng: 20,
+            //     },
+            //     light: "none",
+            //     mapImage: "hologram/hologram-map.svg",
+            //     zoomable: true,
+            //     transparent: false,
+            //     autoRotate: true,
+            //     autoRotateSpeed: 1.0,
+            //     autoRotateDelay: 100,
+            //     autoRotateStart: 2000,
+            //   },
+            //   {
+            //     passive: true,
+            //   }
+            // );
+
+            myearth = new Earth( "myearth", {
+              location: { lat: 47.5, lng: 10 },
+              
+              zoom: 1.15,
+              zoomMin: 1,
+              zoomMax: 1.8,
+              quality: ( window.innerWidth <= 1024 ) ? 4 : 5,
+              light: 'none',
+              zoomable: true,
+              transparent: true,		
+              mapLandColor : '#95abcf',
+              mapSeaColor : 'rgba(0,51,153,0.8)',
+              mapBorderColor : 'rgba(0,51,153,1)',
+              mapBorderWidth : 0.25,
+              mapStyles : '#FR, #ES, #DE, #IT, #BE, #NL, #LU, #DK, #SE, #FI, #IE, #PT, #GR, #EE, #LV, #LT, #PL, #CZ, #AT, #BG, #MT, #SK, #SI, #HR, #HU, #RO, #CY { fill: #e1f3fd; } #GL, #GF { fill: #a9c3e4; }'
+            } );
+
+
             myearth.addEventListener(
               "ready",
               function () {

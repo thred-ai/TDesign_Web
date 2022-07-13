@@ -52,7 +52,7 @@ export class LiveEarthViewPipePipe implements PipeTransform {
       var scale = 0;
 
       if (i.views > 0 && i.sales > 0) {
-        color = '"rgb(255,165,0)"';
+        color = '"#ce5eff"';
         scale = 0.5;
       } else {
         scale = 0.3;

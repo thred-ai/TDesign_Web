@@ -19,6 +19,7 @@ export class NFT {
   docID: string;
   utility: number[] = [];
   ios_model?: string;
+  tokenURL?: string
 
   get hashedAddress() {
     let contractId = this.address.substring(2, this.address.length);
@@ -51,7 +52,8 @@ export class NFT {
     status?: number,
     docID?: string,
     utility?: number[],
-    ios_model?: string
+    ios_model?: string,
+    tokenURL?: string,
   ) {
     this.name = name ?? 'NFT';
     this.description = description ?? ''; // ?? erc721Merchant;
@@ -69,5 +71,6 @@ export class NFT {
     this.docID = docID ?? '';
     this.utility = utility ?? [];
     this.ios_model = ios_model
+    this.tokenURL = tokenURL
   }
 }

@@ -1726,6 +1726,7 @@ export class LoadService {
     skybox: string,
     utility: any[],
     ios_model: File,
+    tokenURL: string | null = null,
     callback: (nft?: NFT) => any
   ) {
     //add token later
@@ -1803,6 +1804,7 @@ export class LoadService {
             price,
             utility,
             ios_model: url4,
+            tokenURL
           } as Dict<any>)
         );
 

@@ -15,6 +15,10 @@
   max-width: 130px;
 }
 
+.nft-max{
+  width: 130px;
+}
+
 .mat-row:hover > .mat-cell {
   background-color: #3c64f310;
 }
