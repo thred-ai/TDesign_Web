@@ -397,6 +397,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   oldUrl = '';
 
 
+  get customer(){
+    return Globals.customerId
+  }
+
   async ngOnInit() {
     Globals.sInfo.pipe().subscribe((s) => {
       this.storeInfo = s;
@@ -517,6 +521,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   mode = 0;
 
   buyItem() {
+    if (this.customer){
+      this.mode = 3
+      return
+    }
     this.mode = 1;
   }
 

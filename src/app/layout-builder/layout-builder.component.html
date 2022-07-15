@@ -37,7 +37,12 @@
         <mat-icon>web</mat-icon>
       </a> -->
       <div class="text-end">
-        <a role="button" (click)="close()" class="big-design-alt-button me-1" matTooltip="Save & Publish Page">
+        <a
+          role="button"
+          (click)="close()"
+          class="big-design-alt-button me-1"
+          matTooltip="Save & Publish Page"
+        >
           {{ saving ? "Saving" : mode == 0 ? "Save" : "Save Page" }}
           <div class="big-design-alt-button-spinner" [hidden]="!saving">
             <div></div>
@@ -913,186 +918,194 @@
   <mat-dialog-content
     *ngIf="mode == 1 && loaded"
     class="h-100 d-block d-md-flex pb-4"
+    style="overflow-y: hidden"
   >
     <div
       class="w-100 h-100 w-md-50 big-design-card mt-1 py-3"
-      style="overflow-y: scroll"
     >
-      <form [formGroup]="layoutForm" novalidate class="mx-3 mt-2 mb-0 h-100">
-        <div class="row row-cols-1 my-4">
-          <div class="col mt-0">
-            <div class="mt-2">
-              <h2 class="big-design-input-title my-0">URL</h2>
-              <h5 class="big-design-input-subtitle my-0">
-                The URL of your page
-              </h5>
-              <mat-form-field
-                class="w-100 mt-2"
-                style="font-size: small"
-                appearance="outline"
-                floatLabel="never"
-              >
-                <input
-                  formControlName="url"
-                  type="text"
-                  matInput
-                  placeholder="Page URL (ex. 'home')"
-                  class="text-dark my-auto big-design-input-text"
-                />
-                <h4
-                  matSuffix
-                  class="text-secondary big-design-input-text d-none d-md-block"
-                >
-                  {{ urlText(false) }}
-                </h4>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="col mt-0">
-            <div class="mt-0">
-              <h2 class="big-design-input-title my-0">Name</h2>
-              <h5 class="big-design-input-subtitle my-0">
-                The name of your page
-              </h5>
-              <mat-form-field
-                class="w-100 mt-2"
-                style="font-size: small"
-                appearance="outline"
-                floatLabel="never"
-              >
-                <input
-                  formControlName="name"
-                  type="text"
-                  matInput
-                  placeholder="Page Name (ex. 'New-Product')"
-                  class="text-dark big-design-input-text"
-                />
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="col mt-0">
-            <div class="mt-0 mb-0">
-              <h2 class="big-design-input-title my-0">Meta Title</h2>
-              <h5 class="big-design-input-subtitle my-0">
-                The meta title of your page
-              </h5>
-              <mat-form-field
-                class="w-100 mt-2"
-                style="font-size: small"
-                appearance="outline"
-                floatLabel="never"
-              >
-                <input
-                  formControlName="metaTitle"
-                  type="text"
-                  matInput
-                  placeholder="Meta Title"
-                  class="text-dark big-design-input-text"
-                />
-              </mat-form-field>
-              <h2 class="big-design-input-title my-0">Meta Description</h2>
-              <h5 class="big-design-input-subtitle my-0">
-                The meta description of your page
-              </h5>
-              <mat-form-field
-                class="w-100 mt-2"
-                style="font-size: small"
-                appearance="outline"
-                floatLabel="never"
-              >
-                <textarea
-                  formControlName="metaDesc"
-                  type="text"
-                  matInput
-                  placeholder="Meta Description"
-                  class="text-dark big-design-input-text"
-                  style="height: 100px"
-                ></textarea>
-              </mat-form-field>
-
-              <h2 class="big-design-input-title my-0">Meta Tags</h2>
-              <h5 class="big-design-input-subtitle my-0">
-                The meta tags of your page
-              </h5>
-              <mat-form-field
-                class="w-100 mt-2"
-                appearance="outline"
-                floatLabel="never"
-              >
-                <mat-chip-list #tagChipList aria-label="Keyword selection">
-                  <mat-chip
-                    *ngFor="let tag of layoutForm.controls.seoTags.value ?? []"
-                    [selectable]="selectable"
-                    [removable]="removable"
-                    (removed)="removeTag(tag)"
-                    class="category-chip"
-                  >
-                    <div class="category-chip__text big-design-input-text">
-                      {{ tag }}
-                    </div>
-                    <button
-                      matChipRemove
-                      class="d-flex justify-content-center align-items-center btn me-1"
-                      style="width: fit-content; aspect-ratio: 1/1"
-                      *ngIf="removable"
-                    >
-                      <mat-icon>cancel</mat-icon>
-                    </button>
-                  </mat-chip>
-                  <!-- *ngIf='!allSelected()' -->
-                  <input
-                    placeholder="Add Tag..."
-                    #productInput
-                    [formControl]="tagCtrl"
-                    [matChipInputFor]="tagChipList"
-                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                    (matChipInputTokenEnd)="addTag($event)"
-                  />
-                </mat-chip-list>
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="col mt-0">
-            <h2 class="big-design-input-title my-0">Visibility</h2>
-            <h5 class="mt-0 big-design-input-subtitle">
-              When set to 'Visible', your page will be accessible from your
-              store's navigation menu.
-            </h5>
-            <mat-radio-group class="mb-4" formControlName="isFullscreen">
-              <div>
-                <mat-radio-button
-                  class="big-design-input-text"
-                  [value]="false"
-                  (change)="radioChange($event)"
-                  >Visible</mat-radio-button
-                >
-              </div>
+      <div class="big-design-body h-100" style="overflow-y: scroll">
+        <form [formGroup]="layoutForm" novalidate class="mx-2 mt-2 mb-0 h-100">
+          <div class="row row-cols-1 my-4">
+            <div class="col mt-0">
               <div class="mt-2">
-                <mat-radio-button
-                  class="big-design-input-text"
-                  [value]="true"
-                  (change)="radioChange($event)"
-                  >Hidden</mat-radio-button
+                <h2 class="big-design-input-title my-0">URL</h2>
+                <h5 class="big-design-input-subtitle my-0">
+                  The URL of your page
+                </h5>
+                <mat-form-field
+                  class="w-100 mt-2"
+                  style="font-size: small"
+                  appearance="outline"
+                  floatLabel="never"
                 >
+                  <input
+                    formControlName="url"
+                    type="text"
+                    matInput
+                    placeholder="Page URL (ex. 'home')"
+                    class="text-dark my-auto big-design-input-text"
+                  />
+                  <h4
+                    matSuffix
+                    class="text-secondary big-design-input-text d-none d-md-block"
+                  >
+                    {{ urlText(false) }}
+                  </h4>
+                </mat-form-field>
               </div>
-            </mat-radio-group>
-          </div>
-          <div class="col my-3">
-            <hr />
-          </div>
-          <div class="col mt-0 mb-4">
-            <a class="big-design-button" (click)="deletePage()" matTooltip="Remove Page from Storefront">
-              {{ deleting ? "Deleting" : "Delete Page" }}
-              <div class="big-design-button-spinner" [hidden]="!deleting">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
+            </div>
+            <div class="col mt-0">
+              <div class="mt-0">
+                <h2 class="big-design-input-title my-0">Name</h2>
+                <h5 class="big-design-input-subtitle my-0">
+                  The name of your page
+                </h5>
+                <mat-form-field
+                  class="w-100 mt-2"
+                  style="font-size: small"
+                  appearance="outline"
+                  floatLabel="never"
+                >
+                  <input
+                    formControlName="name"
+                    type="text"
+                    matInput
+                    placeholder="Page Name (ex. 'New-Product')"
+                    class="text-dark big-design-input-text"
+                  />
+                </mat-form-field>
               </div>
-            </a>
+            </div>
+            <div class="col mt-0">
+              <div class="mt-0 mb-0">
+                <h2 class="big-design-input-title my-0">Meta Title</h2>
+                <h5 class="big-design-input-subtitle my-0">
+                  The meta title of your page
+                </h5>
+                <mat-form-field
+                  class="w-100 mt-2"
+                  style="font-size: small"
+                  appearance="outline"
+                  floatLabel="never"
+                >
+                  <input
+                    formControlName="metaTitle"
+                    type="text"
+                    matInput
+                    placeholder="Meta Title"
+                    class="text-dark big-design-input-text"
+                  />
+                </mat-form-field>
+                <h2 class="big-design-input-title my-0">Meta Description</h2>
+                <h5 class="big-design-input-subtitle my-0">
+                  The meta description of your page
+                </h5>
+                <mat-form-field
+                  class="w-100 mt-2"
+                  style="font-size: small"
+                  appearance="outline"
+                  floatLabel="never"
+                >
+                  <textarea
+                    formControlName="metaDesc"
+                    type="text"
+                    matInput
+                    placeholder="Meta Description"
+                    class="text-dark big-design-input-text"
+                    style="height: 100px"
+                  ></textarea>
+                </mat-form-field>
+
+                <h2 class="big-design-input-title my-0">Meta Tags</h2>
+                <h5 class="big-design-input-subtitle my-0">
+                  The meta tags of your page
+                </h5>
+                <mat-form-field
+                  class="w-100 mt-2"
+                  appearance="outline"
+                  floatLabel="never"
+                >
+                  <mat-chip-list #tagChipList aria-label="Keyword selection">
+                    <mat-chip
+                      *ngFor="
+                        let tag of layoutForm.controls.seoTags.value ?? []
+                      "
+                      [selectable]="selectable"
+                      [removable]="removable"
+                      (removed)="removeTag(tag)"
+                      class="category-chip"
+                    >
+                      <div class="category-chip__text big-design-input-text">
+                        {{ tag }}
+                      </div>
+                      <button
+                        matChipRemove
+                        class="d-flex justify-content-center align-items-center btn me-1"
+                        style="width: fit-content; aspect-ratio: 1/1"
+                        *ngIf="removable"
+                      >
+                        <mat-icon>cancel</mat-icon>
+                      </button>
+                    </mat-chip>
+                    <!-- *ngIf='!allSelected()' -->
+                    <input
+                      placeholder="Add Tag..."
+                      #productInput
+                      [formControl]="tagCtrl"
+                      [matChipInputFor]="tagChipList"
+                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                      (matChipInputTokenEnd)="addTag($event)"
+                    />
+                  </mat-chip-list>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="col mt-0">
+              <h2 class="big-design-input-title my-0">Visibility</h2>
+              <h5 class="mt-0 big-design-input-subtitle">
+                When set to 'Visible', your page will be accessible from your
+                store's navigation menu.
+              </h5>
+              <mat-radio-group class="mb-4" formControlName="isFullscreen">
+                <div>
+                  <mat-radio-button
+                    class="big-design-input-text"
+                    [value]="false"
+                    (change)="radioChange($event)"
+                    >Visible</mat-radio-button
+                  >
+                </div>
+                <div class="mt-2">
+                  <mat-radio-button
+                    class="big-design-input-text"
+                    [value]="true"
+                    (change)="radioChange($event)"
+                    >Hidden</mat-radio-button
+                  >
+                </div>
+              </mat-radio-group>
+            </div>
+            <div class="col my-3">
+              <hr />
+            </div>
+            <div class="col mt-0 mb-4">
+              <a
+                class="big-design-button"
+                (click)="deletePage()"
+                matTooltip="Remove Page from Storefront"
+              >
+                {{ deleting ? "Deleting" : "Delete Page" }}
+                <div class="big-design-button-spinner" [hidden]="!deleting">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </a>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
     <div class="w-100 w-md-50 h-100">
       <div class="h-100 w-100 px-md-5 mx-auto mt-0" style="overflow-y: scroll">
@@ -1104,7 +1117,12 @@
         >
           <div class="big-design-header">
             <p class="big-design-title">Page Builder</p>
-            <a role="button" (click)="mode = 0" class="big-design-button" matTooltip="Edit Body Content of the Page">
+            <a
+              role="button"
+              (click)="mode = 0"
+              class="big-design-button"
+              matTooltip="Edit Body Content of the Page"
+            >
               Edit Content</a
             >
             <!-- <div

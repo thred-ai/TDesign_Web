@@ -7142,6 +7142,10 @@ mat-sidenav-content {
   height: 60vh !important;
 }
 
+.vh-80 {
+  height: 80vh !important;
+}
+
 .min-vh-100 {
   min-height: 100vh !important;
 }

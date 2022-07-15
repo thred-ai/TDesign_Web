@@ -5,170 +5,190 @@
 <!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
 
 <!-- && (storeInfo?.active || loggedIn); else elseActive -->
-<div class="p-2 bg-transparent w-100" style="height: 90vh; overflow-y: scroll">
-  <div class="w-100 h-100" [hidden]="!(storeInfo && productToBuy && collection) || !(productToBuy.tokenId > 0)">
-
+<div
+  class="p-2 px-{{
+    mode == 1 || mode == 2 || mode == 3 ? '0' : '2'
+  }} bg-transparent w-100"
+  style="height: 90vh; overflow-y: scroll"
+>
   <div
-    class="bg-transparent d-flex justify-content-center justify-content-md-start align-items-top align-items-md-center flex-column flex-md-row h-md-100 w-100 p-2 pt-4"
+    class="w-100 h-100"
+    [hidden]="
+      !(storeInfo && productToBuy && collection) || !(productToBuy.tokenId > 0)
+    "
   >
     <div
-      class="h-md-100 big-design-card w-100 w-md-auto p-0"
-      style="aspect-ratio: 1"
-      style.background-color="{{ selectedTheme()!.bg_color }}"
-      *ngIf="productToBuy"
+      class="bg-transparent d-flex justify-content-center justify-content-md-start align-items-top align-items-md-center flex-column flex-md-row h-md-100 w-100 p-2 pt-4"
     >
-      <app-model-viewer
-        [camera]="true"
-        [model]="productToBuy.assetUrl"
-        [animate]="true"
-        [poster]="productToBuy.img ?? '/assets/default.png'"
-        [id]="'viewer'"
-        [ar]="productToBuy.utility | utilityInfo: false : 'ar'"
-        [ios_model]="productToBuy.ios_model"
+      <div
+        class="h-md-100 big-design-card w-100 w-md-auto p-0 d-{{
+          mode == 1 || mode == 2 || mode == 3 ? 'none' : 'block'
+        }} d-md-block"
+        style="aspect-ratio: 1"
+        style.background-color="{{ selectedTheme()!.bg_color }}"
+        *ngIf="productToBuy"
       >
-      </app-model-viewer>
-    </div>
-    <div
-      class="big-design-card h-md-100 w-100 text-center text-md-start shadow-none ms-md-2 position-relative p-0 animate__animated animate__fadeIn animate__faster animate__delay-0s"
-      style.background-color="{{ selectedTheme()!.bg_color }}"
-      [style.font-family]="storeInfo?.fontName"
-    >
-      <div class="position-absolute p-md-4 w-100 h-100">
-        <div
-          class="d-flex flex-column justify-content-start align-items-center w-100"
+        <app-model-viewer
+          [camera]="true"
+          [model]="productToBuy.assetUrl"
+          [animate]="true"
+          [poster]="productToBuy.img ?? '/assets/default.png'"
+          [id]="'viewer'"
+          [ar]="productToBuy.utility | utilityInfo: false:'ar'"
+          [ios_model]="productToBuy.ios_model"
         >
-          <p class="mt-0 w-100" style="font-size: 30px; line-height: 1.4em">
-            {{ collection?.name }}:
-            <br />
-            {{ productToBuy?.name }}
-          </p>
+        </app-model-viewer>
+      </div>
+      <div
+        class="big-design-card h-md-100 w-100 text-center text-md-start shadow-none ms-md-2 position-relative p-0 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+        style.background-color="{{ selectedTheme()!.bg_color }}"
+        [style.font-family]="storeInfo?.fontName"
+      >
+        <div
+          class="position-absolute p-md-4 w-100 h-100 d-{{
+            mode == 1 || mode == 2 || mode == 3 ? 'none' : 'block'
+          }} d-md-block"
+        >
           <div
-            class="w-100 d-flex justify-content-center flex-column-reverse align-items-center flex-md-row justify-content-md-start align-items-md-start py-2"
+            class="d-flex flex-column justify-content-start align-items-center w-100"
           >
-          <div class="w-100 w-md-auto">
+            <p class="mt-0 w-100" style="font-size: 30px; line-height: 1.4em">
+              {{ collection?.name }}:
+              <br />
+              {{ productToBuy?.name }}
+            </p>
             <div
-              class="card bg-dark rounded-pill p-3 w-100 px-4"
-              role="button"
-              *ngIf="productToBuy?.status == 0"
-              (click)="buyItem()"
+              class="w-100 d-flex justify-content-center flex-column-reverse align-items-center flex-md-row justify-content-md-start align-items-md-start py-2"
             >
-              <p class="w-100 my-auto text-light" style="font-size: 20px">
-                Buy Now
-              </p>
-            </div>
-            <div
-              class="card bg-secondary rounded-pill p-3 w-100 px-4"
-              *ngIf="productToBuy?.status == 1"
-            >
-              <p class="w-100 my-auto text-light" style="font-size: 20px">
-                Not For Sale
-              </p>
-            </div>
-          </div>
-            <div
-              class="card border-0 border-md rounded-pill bg-white p-3 px-4 ms-md-2 mt-3 mt-md-auto "
-              style="width: fit-content"
-            >
-              <p class="w-100 my-auto" style="font-size: 20px">
-                {{ productToBuy?.price | currency: collection?.currency : "symbol"
-                : "1.0-0" }}
-              </p>
-            </div>
-          </div>
-
-          <mat-tab-group
-            mat-stretch-tabs
-            #menu
-            class="w-100 h-100 mt-4"
-            dynamicHeight
-            animationDuration="0ms"
-          >
-            <mat-tab class="my-0 bg-danger">
-              <!-- #docregion label-directive -->
-              <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon text-dark"
-                  >call_to_action</mat-icon
+              <div class="w-100 w-md-auto">
+                <div
+                  class="card bg-dark rounded-pill p-3 w-100 px-4"
+                  role="button"
+                  *ngIf="productToBuy?.status == 0"
+                  (click)="buyItem()"
                 >
-                <span class="ms-2 text-dark big-design-body fw-bold">
-                  Info
-                </span>
-              </ng-template>
-              <div class="w-100 h-100 p-2">
-                <div class="py-4 pb-3 w-100 big-design-card">
-                  <div class="big-design-header">
-                    <h2 class="big-design-title">
-                      {{ collection?.collectionCount }}
-                      {{
-                        collection?.collectionCount | i18nPlural: editionMapping
-                      }}
-                    </h2>
-                  </div>
-                  <div
-                    class="big-design-body"
-                    style="max-height: 30vh; overflow-y: scroll"
-                  >
-                    {{ productToBuy?.description }}
-                  </div>
+                  <p class="w-100 my-auto text-light" style="font-size: 20px">
+                    Buy Now
+                  </p>
+                </div>
+                <div
+                  class="card bg-secondary rounded-pill p-3 w-100 px-4"
+                  *ngIf="productToBuy?.status == 1"
+                >
+                  <p class="w-100 my-auto text-light" style="font-size: 20px">
+                    Not For Sale
+                  </p>
                 </div>
               </div>
-            </mat-tab>
-            <mat-tab class="tab bg-success">
-              <!-- #docregion label-directive -->
-              <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon text-dark"
-                  >analytics</mat-icon
-                >
-                <span class="ms-2 text-dark big-design-body fw-bold">
-                  History
-                </span>
-              </ng-template>
-              <div class="w-100 h-100 p-2">
-                <div class="py-4 pb-3 big-design-card">
-                  <div class="big-design-header">
-                    <h2 class="big-design-title">Item Activity</h2>
-                  </div>
-                  <div
-                    class="big-design-body w-100"
-                    style="max-height: 30vh; overflow: scroll"
+              <div
+                class="card border-0 border-md rounded-pill bg-white p-3 px-4 ms-md-2 mt-3 mt-md-auto"
+                style="width: fit-content"
+              >
+                <p class="w-100 my-auto" style="font-size: 20px">
+                  {{
+                    productToBuy?.price
+                      | currency: collection?.currency:"symbol":"1.0-0"
+                  }}
+                </p>
+              </div>
+            </div>
+
+            <mat-tab-group
+              mat-stretch-tabs
+              #menu
+              class="w-100 h-100 mt-4"
+              dynamicHeight
+              animationDuration="0ms"
+            >
+              <mat-tab class="my-0 bg-danger">
+                <!-- #docregion label-directive -->
+                <ng-template mat-tab-label>
+                  <mat-icon class="example-tab-icon text-dark"
+                    >call_to_action</mat-icon
                   >
-                    <table
-                      *ngIf="(nftLogs.length ?? 0) > 0"
-                      mat-table
-                      [dataSource]="nftLogs"
-                      class="w-md-100 text-{{
-                        (storeInfo?.colorStyle)!.text_code
-                      }} bg-white"
+                  <span class="ms-2 text-dark big-design-body fw-bold">
+                    Info
+                  </span>
+                </ng-template>
+                <div class="w-100 h-100 p-2">
+                  <div class="py-4 pb-3 w-100 big-design-card">
+                    <div class="big-design-header">
+                      <h2 class="big-design-title">
+                        {{ collection?.collectionCount }}
+                        {{
+                          collection?.collectionCount
+                            | i18nPlural: editionMapping
+                        }}
+                      </h2>
+                    </div>
+                    <div
+                      class="big-design-body"
+                      style="max-height: 30vh; overflow-y: scroll"
                     >
-                      <!--- Note that these columns can be defined in any order.
+                      {{ productToBuy?.description }}
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab class="tab bg-success">
+                <!-- #docregion label-directive -->
+                <ng-template mat-tab-label>
+                  <mat-icon class="example-tab-icon text-dark"
+                    >analytics</mat-icon
+                  >
+                  <span class="ms-2 text-dark big-design-body fw-bold">
+                    History
+                  </span>
+                </ng-template>
+                <div class="w-100 h-100 p-2">
+                  <div class="py-4 pb-3 big-design-card">
+                    <div class="big-design-header">
+                      <h2 class="big-design-title">Item Activity</h2>
+                    </div>
+                    <div
+                      class="big-design-body w-100"
+                      style="max-height: 30vh; overflow: scroll"
+                    >
+                      <table
+                        *ngIf="(nftLogs.length ?? 0) > 0"
+                        mat-table
+                        [dataSource]="nftLogs"
+                        class="w-md-100 text-{{
+                          (storeInfo?.colorStyle)!.text_code
+                        }} bg-white"
+                      >
+                        <!--- Note that these columns can be defined in any order.
                     The actual rendered columns are set as a property on the row definition" -->
 
-                      <!-- Position Column -->
-                      <ng-container matColumnDef="symbol">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{ (storeInfo?.colorStyle)!.text_code }}"
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          Event
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style.color="{{ selectedTheme()!.color }}"
-                        >
-                          <mat-icon
-                            class="m-0 p-0 hover-icon"
-                            style="overflow: hidden"
-                            [ngbTooltip]="etipContent"
+                        <!-- Position Column -->
+                        <ng-container matColumnDef="symbol">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }}"
+                            [style.font-family]="storeInfo?.fontName!"
                           >
-                            {{ element.icon }}
-                            <ng-template #etipContent>
-                              {{ element.logEvent }}
-                            </ng-template>
-                          </mat-icon>
+                            Event
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style.color="{{ selectedTheme()!.color }}"
+                          >
+                            <mat-icon
+                              class="m-0 p-0 hover-icon"
+                              style="overflow: hidden"
+                              [ngbTooltip]="etipContent"
+                            >
+                              {{ element.icon }}
+                              <ng-template #etipContent>
+                                {{ element.logEvent }}
+                              </ng-template>
+                            </mat-icon>
 
-                          <!-- <mat-icon
+                            <!-- <mat-icon
                     class="m-0 p-0"
                     style="overflow: hidden"
                     svgIcon="{{
@@ -178,367 +198,393 @@
                     }}"
                   >
                   </mat-icon> -->
-                        </td>
-                      </ng-container>
+                          </td>
+                        </ng-container>
 
-                      <!-- Name Column -->
-                      <ng-container matColumnDef="from">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            (storeInfo?.colorStyle)!.text_code
-                          }} padding"
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          From
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style.color="{{ selectedTheme()!.color }}"
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          {{ element.from | address }}
-                        </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="to">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            (storeInfo?.colorStyle)!.text_code
-                          }} padding"
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          To
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style.color="{{ selectedTheme()!.color }}"
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          {{ element.to | address }}
-                        </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="price">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            (storeInfo?.colorStyle)!.text_code
-                          }} padding"
-                          [style.font-family]="storeInfo?.fontName!"
-                        >
-                          Price
-                        </th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          style.color="{{ selectedTheme()!.color }}"
-                        >
-                          <div
-                            class="d-flex justify-content-start align-items-center w-100"
-                          >
-                            <p
-                              class="m-0 h-100 fw-bolder"
-                              style="font-size: large"
-                              [style.font-family]="storeInfo?.fontName!"
-                            >
-                              {{
-                                element.price | currency: collection?.currency : "symbol"
-                                : "1.0-0"
-                              }}
-                            </p>
-                          </div>
-                        </td>
-                      </ng-container>
-
-                      <ng-container matColumnDef="date">
-                        <th
-                          mat-header-cell
-                          *matHeaderCellDef
-                          class="text-{{
-                            (storeInfo?.colorStyle)!.text_code
-                          }} padding"
-                          [style.font-family]="storeInfo?.fontName!"
-                        ></th>
-                        <td
-                          mat-cell
-                          *matCellDef="let element"
-                          class="text-secondary"
-                        >
-                          <div
-                            class="d-flex justify-content-center align-items-center"
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="from">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }} padding"
                             [style.font-family]="storeInfo?.fontName!"
                           >
-                            <!-- {{
+                            From
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style.color="{{ selectedTheme()!.color }}"
+                            [style.font-family]="storeInfo?.fontName!"
+                          >
+                            {{ element.from | address }}
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="to">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }} padding"
+                            [style.font-family]="storeInfo?.fontName!"
+                          >
+                            To
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style.color="{{ selectedTheme()!.color }}"
+                            [style.font-family]="storeInfo?.fontName!"
+                          >
+                            {{ element.to | address }}
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="price">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }} padding"
+                            [style.font-family]="storeInfo?.fontName!"
+                          >
+                            Price
+                          </th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            style.color="{{ selectedTheme()!.color }}"
+                          >
+                            <div
+                              class="d-flex justify-content-start align-items-center w-100"
+                            >
+                              <p
+                                class="m-0 h-100 fw-bolder"
+                                style="font-size: large"
+                                [style.font-family]="storeInfo?.fontName!"
+                              >
+                                {{
+                                  element.price
+                                    | currency
+                                      : collection?.currency
+                                      : "symbol"
+                                      : "1.0-0"
+                                }}
+                              </p>
+                            </div>
+                          </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="date">
+                          <th
+                            mat-header-cell
+                            *matHeaderCellDef
+                            class="text-{{
+                              (storeInfo?.colorStyle)!.text_code
+                            }} padding"
+                            [style.font-family]="storeInfo?.fontName!"
+                          ></th>
+                          <td
+                            mat-cell
+                            *matCellDef="let element"
+                            class="text-secondary"
+                          >
+                            <div
+                              class="d-flex justify-content-center align-items-center"
+                              [style.font-family]="storeInfo?.fontName!"
+                            >
+                              <!-- {{
                           (element | eventTimestamp: provider | async)
                             ?.timestamp
                             | dateConstruct
                             | dateAgo
                         }} -->
-                            <mat-icon
-                              style="overflow: hidden"
-                              class="p-0 text-{{
-                                (storeInfo?.colorStyle)!.text_code
-                              }}"
-                              (click)="viewTxPolygonScan(element)"
-                              [ngbTooltip]="gtipContent"
-                            >
-                              launch
-                              <ng-template #gtipContent>
-                                View on Polygonscan
-                              </ng-template>
-                            </mat-icon>
-                          </div>
-                        </td>
-                      </ng-container>
-                      <tr
-                        mat-header-row
-                        *matHeaderRowDef="displayedColumns"
-                      ></tr>
-                      <tr
-                        mat-row
-                        *matRowDef="let row; columns: displayedColumns"
-                      ></tr>
-                    </table>
-                    <div class="mb-0" *ngIf="(nftLogs.length ?? 0) == 0">
-                      <p
-                        class="text-start mb-0"
-                        style.color="{{ selectedTheme()!.color }}"
+                              <mat-icon
+                                style="overflow: hidden"
+                                class="p-0 text-{{
+                                  (storeInfo?.colorStyle)!.text_code
+                                }}"
+                                (click)="viewTxPolygonScan(element)"
+                                [ngbTooltip]="gtipContent"
+                              >
+                                launch
+                                <ng-template #gtipContent>
+                                  View on Polygonscan
+                                </ng-template>
+                              </mat-icon>
+                            </div>
+                          </td>
+                        </ng-container>
+                        <tr
+                          mat-header-row
+                          *matHeaderRowDef="displayedColumns"
+                        ></tr>
+                        <tr
+                          mat-row
+                          *matRowDef="let row; columns: displayedColumns"
+                        ></tr>
+                      </table>
+                      <div class="mb-0" *ngIf="(nftLogs.length ?? 0) == 0">
+                        <p
+                          class="text-start mb-0"
+                          style.color="{{ selectedTheme()!.color }}"
+                        >
+                          No History
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+              <mat-tab class="tab">
+                <!-- #docregion label-directive -->
+                <ng-template mat-tab-label>
+                  <mat-icon class="example-tab-icon text-dark">share</mat-icon>
+                  <span class="ms-2 text-dark big-design-body fw-bold">
+                    Share
+                  </span>
+                </ng-template>
+                <div class="w-100 h-100 p-2">
+                  <div class="py-4 pb-3 w-100 big-design-card">
+                    <div class="big-design-header">
+                      <h2 class="big-design-title">Share Link</h2>
+                    </div>
+                    <div
+                      class="big-design-body"
+                      style="max-height: 30vh; overflow-y: scroll"
+                      role="button"
+                    >
+                      <a
+                        class="d-flex justify-content-start align-items-center text-dark"
+                        style="text-decoration: none"
+                        role="button"
+                        (click)="copyURL()"
                       >
-                        No History
+                        <mat-icon class="me-1" [inline]="true">
+                          content_copy
+                        </mat-icon>
+                        Copy a link to this collection.
+                      </a>
+                      <p
+                        class="text-success text-start"
+                        style="font-size: small"
+                        *ngIf="copied"
+                      >
+                        Copied to clipboard.
                       </p>
                     </div>
                   </div>
                 </div>
-              </div>
-            </mat-tab>
-            <mat-tab class="tab">
-              <!-- #docregion label-directive -->
-              <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon text-dark">share</mat-icon>
-                <span class="ms-2 text-dark big-design-body fw-bold">
-                  Share
-                </span>
-              </ng-template>
-              <div class="w-100 h-100 p-2">
-                <div class="py-4 pb-3 w-100 big-design-card">
-                  <div class="big-design-header">
-                    <h2 class="big-design-title">Share Link</h2>
-                  </div>
-                  <div
-                    class="big-design-body"
-                    style="max-height: 30vh; overflow-y: scroll"
-                    role="button"
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </div>
+
+        <div
+          class="w-100 big-design-card position-absolute vh-80 h-md-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+          style="z-index: 10000"
+          *ngIf="mode == 1 || mode == 2 || mode == 3"
+        >
+          <div class="w-100" *ngIf="mode == 1">
+            <div class="big-design-header">
+              <h2 class="big-design-title">Sign in to account</h2>
+              <a class="text-dark" role="button" (click)="closeItem()">
+                <mat-icon> close </mat-icon>
+              </a>
+            </div>
+            <div class="big-design-body">
+              <form [formGroup]="signInForm">
+                <div class="w-100" [style.font-family]="storeInfo?.fontName">
+                  <p class="my-0 big-design-input-title text-start">
+                    Email address
+                  </p>
+                  <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                  <mat-form-field
+                    class="w-100"
+                    appearance="outline"
+                    floatLabel="never"
+                    style="font-size: small"
                   >
+                    <input
+                      matInput
+                      class="bg-transparent big-design-input-text"
+                      type="email"
+                      name="email"
+                      formControlName="email"
+                      [disabled]="true"
+                      placeholder="Email address"
+                    />
+                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                  </mat-form-field>
+                </div>
+                <div class="w-100" [style.font-family]="storeInfo?.fontName">
+                  <p class="my-0 big-design-input-title text-start">Password</p>
+                  <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                  <mat-form-field
+                    class="w-100"
+                    appearance="outline"
+                    floatLabel="never"
+                    style="font-size: small"
+                  >
+                    <input
+                      matInput
+                      class="bg-transparent big-design-input-text"
+                      type="password"
+                      name="password"
+                      formControlName="password"
+                      [disabled]="true"
+                      placeholder="Password"
+                    />
+                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                  </mat-form-field>
+                </div>
+                <div
+                  class="big-design-header mt-2 mt-md-0"
+                  [style.font-family]="storeInfo?.fontName"
+                >
+                  <div
+                    class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-top"
+                  >
+                    <a class="btn btn-dark rounded-pill w-100 w-md-auto">
+                      Continue
+                    </a>
                     <a
-                      class="d-flex justify-content-start align-items-center text-dark"
+                      class="text-dark ms-md-2 w-100 w-md-auto my-2 my-md-0"
+                      style="text-decoration: none"
+                      (click)="signUpMode()"
+                      role="button"
+                    >
+                      Create account
+                    </a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="w-100" *ngIf="mode == 2">
+            <div class="big-design-header">
+              <h2 class="big-design-title">Create new account</h2>
+              <a class="text-dark" role="button" (click)="closeItem()">
+                <mat-icon> close </mat-icon>
+              </a>
+            </div>
+            <div class="big-design-body">
+              <form [formGroup]="signUpForm">
+                <div class="w-100" [style.font-family]="storeInfo?.fontName">
+                  <p class="my-0 big-design-input-title text-start">
+                    Email address
+                  </p>
+                  <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                  <mat-form-field
+                    class="w-100"
+                    appearance="outline"
+                    floatLabel="never"
+                    style="font-size: small"
+                  >
+                    <input
+                      matInput
+                      class="bg-transparent big-design-input-text"
+                      type="email"
+                      name="email"
+                      formControlName="email"
+                      [disabled]="true"
+                      placeholder="Email address"
+                    />
+                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                  </mat-form-field>
+                </div>
+                <div class="w-100" [style.font-family]="storeInfo?.fontName">
+                  <p class="my-0 big-design-input-title text-start">Password</p>
+                  <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                  <mat-form-field
+                    class="w-100"
+                    appearance="outline"
+                    floatLabel="never"
+                    style="font-size: small"
+                  >
+                    <input
+                      matInput
+                      class="bg-transparent big-design-input-text"
+                      type="password"
+                      name="password"
+                      formControlName="password"
+                      [disabled]="true"
+                      placeholder="Password"
+                    />
+                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                  </mat-form-field>
+                </div>
+                <div class="w-100" [style.font-family]="storeInfo?.fontName">
+                  <p class="my-0 big-design-input-title text-start">
+                    Confirm Password
+                  </p>
+                  <!-- <h5 class="mt-0 big-design-input-subtitle">
+                Collection the token will belong to.
+              </h5> -->
+                  <mat-form-field
+                    class="w-100"
+                    appearance="outline"
+                    floatLabel="never"
+                    style="font-size: small"
+                  >
+                    <input
+                      matInput
+                      class="bg-transparent big-design-input-text"
+                      type="password"
+                      name="password"
+                      formControlName="confirmPassword"
+                      [disabled]="true"
+                      placeholder="Confirm password"
+                    />
+                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
+                  </mat-form-field>
+                </div>
+                <div
+                  class="big-design-header mt-2 mt-md-0"
+                  [style.font-family]="storeInfo?.fontName"
+                >
+                  <div
+                    class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-top"
+                  >
+                    <a class="btn btn-dark rounded-pill w-100 w-md-auto">
+                      Continue
+                    </a>
+                    <a
+                      class="ms-md-2 w-100 w-md-auto my-2 my-md-0 text-dark"
+                      (click)="buyItem()"
                       style="text-decoration: none"
                       role="button"
-                      (click)="copyURL()"
                     >
-                      <mat-icon class="me-1" [inline]="true">
-                        content_copy
-                      </mat-icon>
-                      Copy a link to this collection.
+                      Sign in
                     </a>
-                    <p
-                      class="text-success text-start"
-                      style="font-size: small"
-                      *ngIf="copied"
-                    >
-                      Copied to clipboard.
-                    </p>
                   </div>
                 </div>
-              </div>
-            </mat-tab>
-          </mat-tab-group>
-        </div>
-      </div>
-
-      <div
-        class="w-100 big-design-card position-absolute vh-60 h-md-100 animate__animated animate__fadeInUp animate__faster animate__delay-0s"
-        style="z-index: 10000"
-        *ngIf="mode == 1 || mode == 2 || mode == 3"
-      >
-        <div class="w-100" *ngIf="mode == 1">
-          <div class="big-design-header">
-            <h2 class="big-design-title">Sign in to account</h2>
-            <a class="text-dark" role="button" (click)="closeItem()">
-              <mat-icon> close </mat-icon>
-            </a>
+              </form>
+            </div>
           </div>
-          <div class="big-design-body">
-            <form [formGroup]="signInForm">
-              <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                <p class="my-0 big-design-input-title text-start">Email address</p>
-                <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                <mat-form-field
-                  class="w-100"
-                  appearance="outline"
-                  floatLabel="never"
-                  style="font-size: small"
-                >
-                  <input
-                    matInput
-                    class="bg-transparent big-design-input-text"
-                    type="email"
-                    name="email"
-                    formControlName="email"
-                    [disabled]="true"
-                    placeholder="Email address"
-                  />
-                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                </mat-form-field>
-              </div>
-              <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                <p class="my-0 big-design-input-title text-start">Password</p>
-                <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                <mat-form-field
-                  class="w-100"
-                  appearance="outline"
-                  floatLabel="never"
-                  style="font-size: small"
-                  
-                >
-                  <input
-                    matInput
-                    class="bg-transparent big-design-input-text"
-                    type="password"
-                    name="password"
-                    formControlName="password"
-                    [disabled]="true"
-                    placeholder="Password"
-                  />
-                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                </mat-form-field>
-              </div>
-              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName">
-                <div class="w-100 w-md-auto">
-                  <a class="btn btn-dark w-100 w-md-auto">
-                    Continue
-                  </a>
-                  <a class="btn btn-outline-dark ms-md-2 w-100 w-md-auto my-2 my-md-0" (click)="signUpMode()">
-                    Create account
-                  </a>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="w-100" *ngIf="mode == 2">
-          <div class="big-design-header">
-            <h2 class="big-design-title">Create new account</h2>
-            <a class="text-dark" role="button" (click)="closeItem()">
-              <mat-icon> close </mat-icon>
-            </a>
-          </div>
-          <div class="big-design-body">
-            <form [formGroup]="signUpForm">
-              <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                <p class="my-0 big-design-input-title text-start">Email address</p>
-                <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                <mat-form-field
-                  class="w-100"
-                  appearance="outline"
-                  floatLabel="never"
-                  style="font-size: small"
-                >
-                  <input
-                    matInput
-                    class="bg-transparent big-design-input-text"
-                    type="email"
-                    name="email"
-                    formControlName="email"
-                    [disabled]="true"
-                    placeholder="Email address"
-                  />
-                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                </mat-form-field>
-              </div>
-              <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                <p class="my-0 big-design-input-title text-start">Password</p>
-                <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                <mat-form-field
-                  class="w-100"
-                  appearance="outline"
-                  floatLabel="never"
-                  style="font-size: small"
-                  
-                >
-                  <input
-                    matInput
-                    class="bg-transparent big-design-input-text"
-                    type="password"
-                    name="password"
-                    formControlName="password"
-                    [disabled]="true"
-                    placeholder="Password"
-                  />
-                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                </mat-form-field>
-              </div>
-              <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                <p class="my-0 big-design-input-title text-start">Confirm Password</p>
-                <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                <mat-form-field
-                  class="w-100"
-                  appearance="outline"
-                  floatLabel="never"
-                  style="font-size: small"
-                  
-                >
-                  <input
-                    matInput
-                    class="bg-transparent big-design-input-text"
-                    type="password"
-                    name="password"
-                    formControlName="confirmPassword"
-                    [disabled]="true"
-                    placeholder="Confirm password"
-                  />
-                  <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                </mat-form-field>
-              </div>
-              <div class="big-design-header mt-2" [style.font-family]="storeInfo?.fontName">
-                <div class="w-100 w-md-auto">
-                  <a class="btn btn-dark w-100 w-md-auto">
-                    Continue
-                  </a>
-                  <a class="btn btn-outline-dark ms-md-2 w-100 w-md-auto my-2 my-md-0" (click)="buyItem()">
-                    Sign in
-                  </a>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="w-100" *ngIf="mode == 3">
-          <div class="big-design-header">
-            <h2 class="big-design-title">Checkout</h2>
-            <a class="text-dark" role="button" (click)="closeItem()">
-              <mat-icon> close </mat-icon>
-            </a>
+          <div class="w-100" *ngIf="mode == 3">
+            <div class="big-design-header">
+              <h2 class="big-design-title">Checkout</h2>
+              <a class="text-dark" role="button" (click)="closeItem()">
+                <mat-icon> close </mat-icon>
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>

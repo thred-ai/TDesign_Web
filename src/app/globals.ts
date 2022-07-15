@@ -19,13 +19,15 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class Globals {
-  public static ngrokId = '7b47-137-122-64-156.ngrok.io';
+  public static ngrokId = 'b504-2607-fea8-bd80-500-7076-caec-dd2e-5470.ngrok.io';
 
   public static sInfo = new BehaviorSubject<Store>(new Store());
 
   public static uInfo = new BehaviorSubject<Store>(new Store());
 
   public static storeInfo = new Store();
+
+  public static customerId?: string
 
   public static availableCurrencies: Array<Country> = [];
 
