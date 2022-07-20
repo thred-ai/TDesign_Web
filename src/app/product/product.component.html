@@ -28,16 +28,19 @@
         style.background-color="{{ selectedTheme()!.bg_color }}"
         *ngIf="productToBuy"
       >
-        <app-model-viewer
-          [camera]="true"
-          [model]="productToBuy.assetUrl"
-          [animate]="true"
-          [poster]="productToBuy.img ?? '/assets/default.png'"
-          [id]="'viewer'"
-          [ar]="productToBuy.utility | utilityInfo: false:'ar'"
-          [ios_model]="productToBuy.ios_model"
-        >
-        </app-model-viewer>
+        <div class="big-design-body rounded h-100 w-100">
+          <app-model-viewer
+            [camera]="true"
+            [model]="productToBuy.assetUrl"
+            [animate]="true"
+            [poster]="productToBuy.img ?? '/assets/default.png'"
+            [id]="'viewer'"
+            [ar]="productToBuy.utility | utilityInfo: false:'ar'"
+            [ios_model]="productToBuy.ios_model"
+            [skybox]="productToBuy.skybox"
+          >
+          </app-model-viewer>
+        </div>
       </div>
       <div
         class="big-design-card h-md-100 w-100 text-center text-md-start shadow-none ms-md-2 position-relative p-0 animate__animated animate__fadeIn animate__faster animate__delay-0s"
@@ -388,199 +391,19 @@
         <div
           class="w-100 big-design-card position-absolute vh-80 h-md-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
           style="z-index: 10000"
-          *ngIf="mode == 1 || mode == 2 || mode == 3"
+          *ngIf="mode == 1"
         >
-          <div class="w-100" *ngIf="mode == 1">
-            <div class="big-design-header">
-              <h2 class="big-design-title">Sign in to account</h2>
-              <a class="text-dark" role="button" (click)="closeItem()">
-                <mat-icon> close </mat-icon>
-              </a>
-            </div>
-            <div class="big-design-body">
-              <form [formGroup]="signInForm">
-                <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                  <p class="my-0 big-design-input-title text-start">
-                    Email address
-                  </p>
-                  <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                  <mat-form-field
-                    class="w-100"
-                    appearance="outline"
-                    floatLabel="never"
-                    style="font-size: small"
-                  >
-                    <input
-                      matInput
-                      class="bg-transparent big-design-input-text"
-                      type="email"
-                      name="email"
-                      formControlName="email"
-                      [disabled]="true"
-                      placeholder="Email address"
-                    />
-                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                  </mat-form-field>
-                </div>
-                <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                  <p class="my-0 big-design-input-title text-start">Password</p>
-                  <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                  <mat-form-field
-                    class="w-100"
-                    appearance="outline"
-                    floatLabel="never"
-                    style="font-size: small"
-                  >
-                    <input
-                      matInput
-                      class="bg-transparent big-design-input-text"
-                      type="password"
-                      name="password"
-                      formControlName="password"
-                      [disabled]="true"
-                      placeholder="Password"
-                    />
-                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                  </mat-form-field>
-                </div>
-                <div
-                  class="big-design-header mt-2 mt-md-0"
-                  [style.font-family]="storeInfo?.fontName"
-                >
-                  <div
-                    class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-top"
-                  >
-                    <a class="btn btn-dark rounded-pill w-100 w-md-auto">
-                      Continue
-                    </a>
-                    <a
-                      class="text-dark ms-md-2 w-100 w-md-auto my-2 my-md-0"
-                      style="text-decoration: none"
-                      (click)="signUpMode()"
-                      role="button"
-                    >
-                      Create account
-                    </a>
-                  </div>
-                </div>
-              </form>
-            </div>
+          <div class="big-design-header">
+            <h2 class="big-design-title">Checkout</h2>
+            <a class="text-dark" role="button" (click)="closeItem()">
+              <mat-icon> close </mat-icon>
+            </a>
           </div>
-          <div class="w-100" *ngIf="mode == 2">
-            <div class="big-design-header">
-              <h2 class="big-design-title">Create new account</h2>
-              <a class="text-dark" role="button" (click)="closeItem()">
-                <mat-icon> close </mat-icon>
-              </a>
-            </div>
-            <div class="big-design-body">
-              <form [formGroup]="signUpForm">
-                <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                  <p class="my-0 big-design-input-title text-start">
-                    Email address
-                  </p>
-                  <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                  <mat-form-field
-                    class="w-100"
-                    appearance="outline"
-                    floatLabel="never"
-                    style="font-size: small"
-                  >
-                    <input
-                      matInput
-                      class="bg-transparent big-design-input-text"
-                      type="email"
-                      name="email"
-                      formControlName="email"
-                      [disabled]="true"
-                      placeholder="Email address"
-                    />
-                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                  </mat-form-field>
-                </div>
-                <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                  <p class="my-0 big-design-input-title text-start">Password</p>
-                  <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                  <mat-form-field
-                    class="w-100"
-                    appearance="outline"
-                    floatLabel="never"
-                    style="font-size: small"
-                  >
-                    <input
-                      matInput
-                      class="bg-transparent big-design-input-text"
-                      type="password"
-                      name="password"
-                      formControlName="password"
-                      [disabled]="true"
-                      placeholder="Password"
-                    />
-                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                  </mat-form-field>
-                </div>
-                <div class="w-100" [style.font-family]="storeInfo?.fontName">
-                  <p class="my-0 big-design-input-title text-start">
-                    Confirm Password
-                  </p>
-                  <!-- <h5 class="mt-0 big-design-input-subtitle">
-                Collection the token will belong to.
-              </h5> -->
-                  <mat-form-field
-                    class="w-100"
-                    appearance="outline"
-                    floatLabel="never"
-                    style="font-size: small"
-                  >
-                    <input
-                      matInput
-                      class="bg-transparent big-design-input-text"
-                      type="password"
-                      name="password"
-                      formControlName="confirmPassword"
-                      [disabled]="true"
-                      placeholder="Confirm password"
-                    />
-                    <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
-                  </mat-form-field>
-                </div>
-                <div
-                  class="big-design-header mt-2 mt-md-0"
-                  [style.font-family]="storeInfo?.fontName"
-                >
-                  <div
-                    class="w-100 d-flex flex-column flex-md-row justify-content-between align-items-top"
-                  >
-                    <a class="btn btn-dark rounded-pill w-100 w-md-auto">
-                      Continue
-                    </a>
-                    <a
-                      class="ms-md-2 w-100 w-md-auto my-2 my-md-0 text-dark"
-                      (click)="buyItem()"
-                      style="text-decoration: none"
-                      role="button"
-                    >
-                      Sign in
-                    </a>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="w-100" *ngIf="mode == 3">
-            <div class="big-design-header">
-              <h2 class="big-design-title">Checkout</h2>
-              <a class="text-dark" role="button" (click)="closeItem()">
-                <mat-icon> close </mat-icon>
-              </a>
+          <div
+            class="big-design-body"
+          >
+            <div *ngFor="let method of methods | paymentMethodFilter">
+              <app-payment-method [data]="method"> </app-payment-method>
             </div>
           </div>
         </div>

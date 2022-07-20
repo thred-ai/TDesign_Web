@@ -1,0 +1,7 @@
+.method-block{
+    height: 70px;
+}
+
+.method-block:hover {
+    background-color: #3c64f310;
+  }

@@ -24,6 +24,7 @@ import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyl
 import { NftInfoComponent } from './nft-info/nft-info.component'; // <-- import it
 import { SharedModule } from '../shared/shared.module'; // <-- import it
 import { MatTabsModule } from '@angular/material/tabs';
+import { PaymentMethodComponent } from '../payment-method/payment-method.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,7 @@ const routes: Routes = [
     NftBuyComponent,
     NftUpdateComponent,
     NftInfoComponent,
+    PaymentMethodComponent,
   ],
   imports: [
     CommonModule,

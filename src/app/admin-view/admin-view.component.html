@@ -436,7 +436,7 @@
 
             <div class="big-design-card mx-0" *ngIf="billingInfo != undefined">
               <div class="big-design-header">
-                <p class="big-design-title">Payment Method</p>
+                <p class="big-design-title">Billing</p>
                 <a
                   class="big-design-button"
                   (click)="routeToBillingAdmin()"
@@ -515,6 +515,46 @@
               </div>
               <div class="big-design-body" *ngIf="subInfo == ''">
                 Select a Thred Merchant Plan to activate your store.
+              </div>
+            </div>
+
+            <div class="big-design-card mx-0" *ngIf="billingInfo != undefined">
+              <div class="big-design-header">
+                <p class="big-design-title">Payment Methods</p>
+                <a
+                  class="big-design-button"
+                  (click)="routeToBillingAdmin()"
+                  matTooltip="View Details"
+                >
+                  {{ billingInfo == "" ? "Add" : "Edit" }}
+                </a>
+              </div>
+              <div class="big-design-body" *ngIf="billingInfo">
+                {{
+                  (billingInfo?.brand | titlecase) +
+                    " ending in " +
+                    billingInfo?.number
+                }}
+                <br />
+                {{ billingInfo.name }}
+                <br />
+                {{
+                  billingInfo.street +
+                    (billingInfo.unit == undefined
+                      ? ""
+                      : ". " + billingInfo.unit)
+                }}
+                <br />
+                {{
+                  billingInfo?.city +
+                    ", " +
+                    billingInfo?.admin_area +
+                    ". " +
+                    billingInfo?.postal
+                }}
+              </div>
+              <div class="big-design-body" *ngIf="billingInfo == ''">
+                This card will be used for your Thred Merchant Plan.
               </div>
             </div>
           </div>

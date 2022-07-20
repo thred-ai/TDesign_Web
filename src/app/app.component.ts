@@ -565,6 +565,8 @@ export class AppComponent implements OnInit, AfterViewInit {
     return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
   }
 
+
+
   constructor(
     @Inject(PLATFORM_ID) private platformID: Object,
     @Inject(DOCUMENT) private doc: Document,
@@ -584,6 +586,8 @@ export class AppComponent implements OnInit, AfterViewInit {
 
 
     if (isPlatformBrowser(this.platformID)){
+      
+
       window.addEventListener('message', (event) => {
         if (event.data.open) {
           let info = JSON.parse(this.hexToUtf8(event.data.open));
@@ -853,6 +857,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     // this.setFavIcon("https://www.thredapps.com/favicon.ico")
     // OR
+
+
 
     this.loadService.rootComponent = this;
     this.authService.app = this;

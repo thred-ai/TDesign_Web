@@ -114,10 +114,7 @@ export class LoadService {
   };
 
   async logView(productId: string | null = null) {
-    if (
-      Globals.storeInfo?.uid &&
-      isPlatformBrowser(this.platformID)
-    ) {
+    if (Globals.storeInfo?.uid && isPlatformBrowser(this.platformID)) {
       let coords = (await this.getCoords()) ?? this.defaultCoords;
       this.functions
         .httpsCallable('updateView')({
@@ -1472,6 +1469,23 @@ export class LoadService {
       );
   }
 
+  async getPaymentMethods(callback: (info?: any[]) => any) {
+    let uid = (await this.isLoggedIn())?.uid;
+
+    this.functions
+      .httpsCallable('getPaymentMethods')({ uid })
+      .pipe(first())
+      .subscribe(
+        (resp) => {
+          callback(resp);
+        },
+        (err) => {
+          callback([]);
+          console.error({ err });
+        }
+      );
+  }
+
   async getBigCommerceStore(callback: (info?: any) => any) {
     this.functions
       .httpsCallable('getBigCommerceStore')({})
@@ -1551,47 +1565,44 @@ export class LoadService {
   }
 
   private async saveNftImage(image: any, productID: string, mode = 0) {
-    var filePath =
-      'Products/' +
-      productID +
-      '/'
-    var uploadFile: any = ""
-    var url = ""
+    var filePath = 'Products/' + productID + '/';
+    var uploadFile: any = '';
+    var url = '';
 
-    if (mode == 0){
-      filePath += 'link_' + productID + '.png'
-      url = this.getURL(productID)
+    if (mode == 0) {
+      filePath += 'link_' + productID + '.png';
+      url = this.getURL(productID);
       uploadFile = Buffer.from(
         image.replace(/^[\w\d;:\/]+base64\,/g, ''),
         'base64'
       );
-    }
-    else if (mode == 1){
-      filePath += 'ios_' + productID + '.usdz'
-      url = this.getModelURL(productID)
-      uploadFile = image
-    }
-    else if (mode == 2){
-      filePath += 'model_' + productID + '.glb'
-      url = this.get3DURL(productID)
-      uploadFile = image
-    }
-    else if (mode == 3){
-      filePath += 'info_' + productID + '.json'
-      url = this.getJSONURL(productID)
+    } else if (mode == 1) {
+      filePath += 'ios_' + productID + '.usdz';
+      url = this.getModelURL(productID);
+      uploadFile = image;
+    } else if (mode == 2) {
+      filePath += 'model_' + productID + '.glb';
+      url = this.get3DURL(productID);
+      uploadFile = image;
+    } else if (mode == 3) {
+      filePath += 'info_' + productID + '.json';
+      url = this.getJSONURL(productID);
+      uploadFile = image;
+    } else if (mode == 4) {
+      filePath += 'skybox_' + productID + '.hdr';
+      url = this.getSkyBoxURL(productID);
       uploadFile = image;
     }
 
-    if (uploadFile && uploadFile != ""){
+    if (uploadFile && uploadFile != '') {
       let ref = this.storage.ref(filePath);
 
       await ref.put(uploadFile);
-  
+
       return url;
     }
-    return undefined
+    return undefined;
   }
-
 
   private async uploadLayoutImages(image: string, type: string, uid?: string) {
     const filePath = 'Users/' + uid + '/Layouts/' + type + '.png';
@@ -1723,7 +1734,7 @@ export class LoadService {
     traits: Dict<any>[],
     royalty: number = 0,
     price: number = 0,
-    skybox: string,
+    skybox: File,
     utility: any[],
     ios_model: File,
     tokenURL: string | null = null,
@@ -1731,9 +1742,9 @@ export class LoadService {
   ) {
     //add token later
 
-    console.log("getting col")
+    console.log('getting col');
     this.getCollection(collectionAddress, async (col?: Collection) => {
-      console.log(col)
+      console.log(col);
       if (col) {
         const image = await this.saveNftImage(
           img,
@@ -1745,6 +1756,16 @@ export class LoadService {
         //   progress: (prog) => console.log(`received: ${prog}`),
         // });
 
+        var skyBoxUrl = '';
+        if (skybox && skybox != null) {
+          skyBoxUrl =
+            (await this.saveNftImage(
+              skybox,
+              `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+              4
+            )) ?? '';
+        }
+
         const url2 = await this.saveNftImage(
           model,
           `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
@@ -1755,13 +1776,14 @@ export class LoadService {
         //   progress: (prog) => console.log(`received: ${prog}`),
         // });
 
-        var url4 = ''
-        if (ios_model && ios_model != null){
-          url4 = await this.saveNftImage(
-            ios_model,
-            `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
-            1
-          ) ?? '';
+        var url4 = '';
+        if (ios_model && ios_model != null) {
+          url4 =
+            (await this.saveNftImage(
+              ios_model,
+              `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
+              1
+            )) ?? '';
         }
 
         // const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
@@ -1772,7 +1794,7 @@ export class LoadService {
           description,
           image,
           model: url2,
-          skybox,
+          skybox: skyBoxUrl,
           traits: traits && traits !== [] ? traits : undefined,
           utility,
           ios_model: url4,
@@ -1780,7 +1802,7 @@ export class LoadService {
 
         const data2 = JSON.stringify(data1);
 
-        var blob = new Blob([data2], {type: "application/json"})
+        var blob = new Blob([data2], { type: 'application/json' });
 
         const url = await this.saveNftImage(
           blob,
@@ -1796,7 +1818,7 @@ export class LoadService {
             name,
             description,
             model: url2,
-            skybox: skybox,
+            skybox: skyBoxUrl,
             img: image,
             info: JSON.parse(data2),
             infoUrl: url,
@@ -1804,7 +1826,7 @@ export class LoadService {
             price,
             utility,
             ios_model: url4,
-            tokenURL
+            tokenURL,
           } as Dict<any>)
         );
 
@@ -2162,9 +2184,9 @@ export class LoadService {
       collection: Collection;
     }> = {};
 
-    if (docIDs.length == 0){
-      callback(cols)
-      return
+    if (docIDs.length == 0) {
+      callback(cols);
+      return;
     }
 
     let ids = this.splitToBulks(docIDs);
@@ -2292,41 +2314,52 @@ export class LoadService {
 
   getURL(productID: string) {
     return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Products/' +
       productID +
-      '%2Flink_' +
+      '/link_' +
       productID +
-      '.png?alt=media'
+      '.png'
     );
   }
 
   getModelURL(productID: string) {
     return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Products/' +
       productID +
-      '%2Fios_' +
+      '/ios_' +
       productID +
-      '.usdz?alt=media'
+      '.usdz'
     );
   }
 
   get3DURL(productID: string) {
     return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Products/' +
       productID +
-      '%2Fmodel_' +
+      '/model_' +
       productID +
-      '.glb?alt=media'
+      '.glb'
     );
   }
 
+  getSkyBoxURL(productID: string) {
+    return (
+      'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Products/' +
+      productID +
+      '/skybox_' +
+      productID +
+      '.hdr'
+    );
+  }
+  // https://storage.cloud.google.com/clothingapp-ed125.appspot.com/Products/0x499E4f4228A267c9c537EAeb747FE8081fF650B39/skybox_0x499E4f4228A267c9c537EAeb747FE8081fF650B39.hdr
+
   getJSONURL(productID: string) {
     return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Products%2F' +
+      'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Products/' +
       productID +
-      '%2Finfo_' +
+      '/info_' +
       productID +
-      '.json?alt=media'
+      '.json'
     );
   }
 

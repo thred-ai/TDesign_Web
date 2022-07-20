@@ -50,6 +50,7 @@ import { LocationPipe } from '../location.pipe';
 import { PaginatorPipe } from '../paginator.pipe';
 import { UtilityDataPipe } from '../utility-data.pipe';
 import { UtilityInfoPipe } from '../utility-info.pipe';
+import { PaymentMethodFilterPipe } from '../payment-method-filter.pipe';
 
 @NgModule({
   imports: [
@@ -107,6 +108,7 @@ import { UtilityInfoPipe } from '../utility-info.pipe';
     PaginatorPipe,
     UtilityDataPipe,
     UtilityInfoPipe,
+    PaymentMethodFilterPipe,
   ],
   exports: [
     SafeTextRowsPipe,
@@ -158,7 +160,8 @@ import { UtilityInfoPipe } from '../utility-info.pipe';
     LocationPipe,
     PaginatorPipe,
     UtilityDataPipe,
-    UtilityInfoPipe
+    UtilityInfoPipe,
+    PaymentMethodFilterPipe
   ]
 })
 export class ApplicationPipesModule {}

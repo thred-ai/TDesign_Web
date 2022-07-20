@@ -47,6 +47,7 @@ import { Store } from '../models/store.model';
 import { NftInfoComponent } from './nft-info/nft-info.component';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { FormBuilder, Validators } from '@angular/forms';
+
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -496,12 +497,22 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.loadService.logView(id)
 
+    if (Globals.customerId){
+      const tokenDecodablePart = Globals.customerId.split(".")[1];
+      const d = JSON.parse(Buffer.from(tokenDecodablePart, "base64").toString());
+      console.log(d)
+    }
+
     this.loadService.getPost(
       id,
       (product?: NFT, collection?: Collection) => {
         setTimeout(() => {
           this.productToBuy = Object.assign(new NFT(), product);
           this.collection = Object.assign(new Collection(), collection);
+          this.loadService.getPaymentMethods(m => {
+            console.log(m)
+            this.methods = m ?? []
+          })
           // this.url = info.url ?? '';
           this.cdr.detectChanges();
           setTimeout(() => {
@@ -514,6 +525,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  methods: any[] = []
+
   hexToUtf8(hex: string) {
     return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
   }
@@ -521,15 +534,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   mode = 0;
 
   buyItem() {
-    if (this.customer){
-      this.mode = 3
-      return
-    }
     this.mode = 1;
-  }
-
-  signUpMode() {
-    this.mode = 2;
   }
 
   closeItem() {
@@ -890,17 +895,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 
-  getURL(uid: string, productID: string) {
-    return (
-      'https://firebasestorage.googleapis.com/v0/b/clothingapp-ed125.appspot.com/o/Users%2F' +
-      uid +
-      '%2FProducts%2F' +
-      productID +
-      '%2Flink_' +
-      productID +
-      '.png?alt=media'
-    );
-  }
+
 
   getCurrencyForCountry(shouldShowName: boolean, country?: Country) {
     var returnItem = country?.currency_symbol ?? '$';

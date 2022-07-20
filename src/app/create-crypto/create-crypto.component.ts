@@ -34,6 +34,16 @@ import { NgxDropzoneComponent } from 'ngx-dropzone';
 import { CurrencyPipe } from '@angular/common';
 import { local } from 'web3modal';
 
+class SafeObjectUrl {
+  url: any;
+  constructor(url: string) {
+    this.url = url;
+  }
+  get unsafeUrl() {
+    return this.url;
+  }
+}
+
 @Component({
   selector: 'app-create-crypto',
   templateUrl: './create-crypto.component.html',
@@ -133,7 +143,7 @@ export class CreateCryptoComponent implements OnInit {
       this.nftForm.controls.description.setValue(nft.description);
       this.nftForm.controls.price.setValue(nft.price);
       this.nftForm.controls.file.setValue(nft.assetUrl);
-      this.fileDisplay = nft.assetUrl
+      this.fileDisplay = nft.assetUrl;
       this.nftForm.controls.royalty.setValue(!con ? nft.royalty / 100 : null);
       this.nftForm.controls.cover.setValue(nft.img);
       this.nftForm.controls.tokenURL.setValue(nft.tokenURL);
@@ -141,6 +151,8 @@ export class CreateCryptoComponent implements OnInit {
         nft.skybox ??
           'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
       );
+      this.skyBoxDisplay = nft.skybox;
+      console.log(nft.skybox)
 
       this.utility.forEach((u) => {
         if (this.data.asset.info.utility?.find((a: any) => a.code == u.code)) {
@@ -212,12 +224,12 @@ export class CreateCryptoComponent implements OnInit {
       let file = this.nftForm.controls.file.value as File;
       let royalty =
         ((this.nftForm.controls.royalty.value as number) ?? 0.0) * 100;
-      let skyBox = (this.nftForm.controls.skybox.value as string) ?? '';
+      let skyBox = this.nftForm.controls.skybox.value as File;
       let utility = this.utility.filter((f) => f.active) ?? [];
       let ios_model = this.nftForm.controls.ios_model.value as File;
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       let tokenURL = this.nftForm.controls.tokenURL.value as string;
-      
+
       this.isLoading = true;
 
       let img = this.save3DThumbnail();
@@ -343,27 +355,43 @@ export class CreateCryptoComponent implements OnInit {
   acceptedSkybox = '.hdr';
   acceptedCovers = '.png,.jpeg';
 
+  createSafeObjectURL(blob: Blob) {
+    return new SafeObjectUrl(URL.createObjectURL(blob));
+  }
+
+  createSafeObjectUrlFromArrayBuffer(contents: ArrayBuffer) {
+    return this.createSafeObjectURL(new Blob([new Uint8Array(contents)]));
+  }
+
+  async createBlobUrlFromEnvironmentImage(file: File) {
+    const arrayBuffer = await file.arrayBuffer();
+    const safeObjectUrl = this.createSafeObjectUrlFromArrayBuffer(arrayBuffer);
+    const unsafeUrl = file.name.match(/\.(hdr)$/i)
+      ? safeObjectUrl.unsafeUrl + '#.hdr'
+      : safeObjectUrl.unsafeUrl;
+    return unsafeUrl;
+  }
+
   async fileChangeEvent(event: any, mode = 'skybox') {
-    const file = event.target.files[0];
+    const file = event.target.files[0] as File;
 
-    let buffer = await file.arrayBuffer();
-    var blob = new Blob([buffer]);
-
-    const reader = new FileReader();
-    reader.onload = (event: any) => {
-      var base64 = event.target.result;
-      if (mode == 'skybox') {
-        this.nftForm.controls.skybox.setValue(
-          base64?.replace(/^[\w\d;:\/]+base64\,/g, '')
-        );
-      } else if (mode == 'ios_model') {
-        this.nftForm.controls.ios_model.setValue(file);
-      } else {
-        this.nftForm.controls.cover.setValue(base64);
-      }
-      this.cdr.detectChanges();
-    };
-    reader.readAsDataURL(blob);
+    // const reader = new FileReader();
+    // reader.onload = async (event: any) => {
+    //   var base64 = event.target.result;
+    //   console.log(base64)
+    if (mode == 'skybox') {
+      const unsafeUrl = await this.createBlobUrlFromEnvironmentImage(file);
+      this.skyBoxDisplay = unsafeUrl;
+      this.nftForm.controls.skybox.setValue(file);
+    } else if (mode == 'ios_model') {
+      this.nftForm.controls.ios_model.setValue(file);
+    }
+    // else {
+    //   this.nftForm.controls.cover.setValue(base64);
+    // }
+    this.cdr.detectChanges();
+    // };
+    // reader.readAsDataURL(blob);
   }
 
   public async dropped(files: any) {
@@ -434,7 +462,7 @@ export class CreateCryptoComponent implements OnInit {
         var base64 = event.target.result;
 
         this.nftForm.controls.file.setValue(file);
-        this.fileDisplay = base64
+        this.fileDisplay = base64;
         this.cdr.detectChanges();
       };
 
@@ -442,7 +470,8 @@ export class CreateCryptoComponent implements OnInit {
     }
   }
 
-  fileDisplay = ''
+  fileDisplay = '';
+  skyBoxDisplay = '';
 
   public fileOver(event: any) {}
 

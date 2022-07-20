@@ -23,7 +23,10 @@
     </a>
   </div>
 </div>
-<mat-dialog-content class="h-100 d-block d-md-flex pb-4" style="overflow-y: hidden">
+<mat-dialog-content
+  class="h-100 d-block d-md-flex pb-4"
+  style="overflow-y: hidden"
+>
   <div class="w-100 h-100 w-md-50 big-design-card my-2">
     <div class="h-100 w-100 big-design-body" style="overflow-y: scroll">
       <form class="mt-3 mt-md-0 w-100" [formGroup]="nftForm">
@@ -46,7 +49,6 @@
               formControlName="title"
               placeholder="Token Name"
             />
-            <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
           </mat-form-field>
         </div>
         <div class="w-100">
@@ -70,7 +72,6 @@
               [disabled]="true"
               placeholder="Collection"
             />
-            <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
           </mat-form-field>
         </div>
         <div class="w-100">
@@ -186,10 +187,7 @@
               </a>
             </div>
 
-            <div
-              *ngIf="util.active && util.code == 'gate'"
-              class="w-100 py-2"
-            >
+            <div *ngIf="util.active && util.code == 'gate'" class="w-100 py-2">
               <h2 class="big-design-input-title my-0">Linked Page</h2>
               <h5 class="big-design-input-subtitle mt-0">
                 The URL of the page this token is linked to.
@@ -209,96 +207,10 @@
                   placeholder="URL"
                   formControlName="tokenURL"
                 />
-                <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
               </mat-form-field>
             </div>
-            <!-- <div *ngIf="util.active && util.code == 'ar'" class="w-100 py-3">
-                <div class="big-design-input-title">
-                  IOS AR File (.usdz)
-                </div>
-                  <a class="mt-2 big-design-{{nftForm.controls.ios_model.value ? 'alt-' : ''}}button" (click)="iosfileInput.click()">
-                    {{nftForm.controls.ios_model.value ? 'Replace File' : 'Browse Files'}}
-                  </a>
-              </div> -->
           </div>
         </div>
-
-        <!-- <h2 class="h2 my-0">NFT Traits</h2>
-        <h5 class="mt-0">Add Traits to your NFT</h5>
-        <a role="button" class="big-design-button mb-2" (click)="addTrait()">
-          Add Trait
-        </a>
-        <div
-          class="wrap-input1 w-100 rounded"
-          style="overflow-y: scroll; max-height: 250px"
-        >
-          <div
-            *ngFor="let trait of traits ?? []; index as i"
-            class="shadow bg-white mx-3 px-1"
-          >
-            <div
-              class="d-md-flex align-items-center justify-content-between h-100 text-center py-0 bg-warning"
-            >
-              <div
-                class="d-flex align-items-center justify-content-start h-100 py-0 bg-danger"
-              >
-                <mat-form-field appearance="outline" class="my-0">
-                  <input
-                    matInput
-                    class="text-center fw-bolder bg-success"
-                    type="text"
-                    [(ngModel)]="trait.trait_type"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="Name"
-                  />
-                </mat-form-field>
-
-                <mat-form-field
-                  class="ms-md-1"
-                  appearance="outline"
-                >
-                  <input
-                    matInput
-                    class="bg-transparent text-center text-secondary"
-                    type="text"
-                    [(ngModel)]="trait.value"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="Value"
-                  />
-                </mat-form-field>
-              </div>
-              <a
-                class="big-design-alt-button"
-                role="button"
-                (click)="removeTrait(i)"
-              >
-                Remove
-              </a>
-            </div>
-          </div>
-        </div> -->
-
-        <!-- <div class="col mt-4">
-          <h2 class="h2 my-0">Lazy Minting</h2>
-          <h5 class="mt-0">
-            Lazy minting allows you to mint your NFT at the time of purchase,
-            allowing you to avoid upfront Gas Fees.
-          </h5>
-          <mat-radio-group formControlName="lazyMint">
-            <div>
-              <mat-radio-button [value]="true" (change)="radioChange($event)"
-                >Lazy Mint</mat-radio-button
-              >
-            </div>
-            <div class="mt-2">
-              <mat-radio-button [value]="false" (change)="radioChange($event)"
-                >Don't Lazy Mint</mat-radio-button
-              >
-            </div>
-          </mat-radio-group>
-        </div> -->
-
-        <!-- utilityData -->
       </form>
     </div>
     <div
@@ -355,10 +267,12 @@
           </a>
         </div>
         <ng-template #assetStatus>
-          <a *ngIf="data.asset.status == 0" class="big-design-button"> Remove from Sale </a>
+          <a *ngIf="data.asset.status == 0" class="big-design-button">
+            Remove from Sale
+          </a>
         </ng-template>
       </div>
-      <div class="big-design-body w-100 h-100 mt-0 rounded" style="flex: 1">
+      <div class="big-design-body w-100 h-100 mt-3 rounded" style="flex: 1">
         <ngx-dropzone
           class="w-100 h-100"
           style="border-color: #2852ea"
@@ -376,17 +290,6 @@
             </p>
             <a role="button" class="mt-0 big-design-alt-button">Browse Files</a>
           </ngx-dropzone-label>
-          <!-- <ngx-dropzone-preview
-          class="w-100 h-100"
-          *ngIf="nftForm.controls.file.value"
-        >
-          <ngx-dropzone-label
-            >{{ "Model: " }} ({{ fileName }})</ngx-dropzone-label
-            <div class="w-100 h-100">
-          >
-            
-          </div>
-        </ngx-dropzone-preview> -->
         </ngx-dropzone>
         <div
           class="w-100 h-100 position-relative"
@@ -396,16 +299,11 @@
           "
         >
           <div class="position-absolute w-100 h-100">
-            <!-- <p class="big-design-title w-100 text-center mb-2">
-            {{ fileName }}
-          </p> -->
             <app-model-viewer
               [camera]="true"
               [model]="fileDisplay"
               [animate]="true"
-              [skybox]="
-                'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
-              "
+              [skybox]="skyBoxDisplay"
               [poster]="nftForm.controls.cover.value ?? '/assets/default.png'"
               [id]="'viewer'"
               [ar]="false"
@@ -422,8 +320,8 @@
           >
           </ngx-dropzone>
           <div
-            [hidden]="!nftForm.controls.file.value"
-            class="position-absolute d-flex justify-content-start align-items-center flex-column"
+            *ngIf="!data.asset"
+            class="position-absolute d-flex justify-content-end align-items-center flex-column"
             style="right: 10px; top: 10px; bottom: 10px; z-index: 1001"
           >
             <a
@@ -434,119 +332,17 @@
             >
               <mat-icon> wallpaper </mat-icon>
             </a>
+            <a
+              class="big-design-alt-button p-1 mt-2"
+              matTooltip="Clear Model"
+              [matTooltipPosition]="'left'"
+              (click)="nftForm.controls.file.setValue(null)"
+            >
+              <mat-icon> close </mat-icon>
+            </a>
           </div>
-          <!-- <div style="bottom: 10px; right: 10px">
-          <a role="button" class="big-design-alt-button">Replace</a>
-        </div> -->
         </div>
       </div>
-
-      <!--     
-      <ngx-file-drop
-        dropZoneLabel="Drop files here"
-        (onFileDrop)="dropped($event, 'model')"
-        (onFileOver)="fileOver($event)"
-        (onFileLeave)="fileLeave($event)"
-        accept="{{ acceptedModels }}"
-      >
-        <ng-template
-          ngx-file-drop-content-tmp
-          let-openFileSelector="openFileSelector"
-        >
-          <div
-            class="w-100 h-100 d-flex justify-content-center align-items-center"
-          >
-            <div class="text-center">
-              <div
-                class="d-flex justify-content-center align-items-center fw-bolder"
-                style="font-size: medium"
-              >
-                Drop 3D Model Here
-              </div>
-              <a
-                role="button"
-                class="btn mt-2 btn-dark rounded-pill"
-                (click)="openFileSelector()"
-                >Browse Files</a
-              >
-            </div>
-          </div>
-        </ng-template>
-      </ngx-file-drop> -->
-
-      <!-- <ngx-file-drop
-        dropZoneLabel="Drop files here"
-        (onFileDrop)="dropped($event, 'skybox')"
-        (onFileOver)="fileOver($event)"
-        (onFileLeave)="fileLeave($event)"
-        accept="{{ acceptedSkybox }}"
-      >
-        <ng-template
-          ngx-file-drop-content-tmp
-          let-openFileSelector="openFileSelector"
-        >
-          <div
-            class="w-100 h-100 d-flex justify-content-center align-items-center"
-          >
-            <div class="text-center">
-              <div
-                class="d-flex justify-content-center align-items-center fw-bolder"
-                style="font-size: medium"
-              >
-                Drop SkyBox File Here (.hdr)
-              </div>
-              <a
-                role="button"
-                class="btn mt-2 btn-dark rounded-pill"
-                (click)="openFileSelector()"
-                >Browse Files</a
-              >
-            </div>
-          </div>
-        </ng-template>
-      </ngx-file-drop> -->
-
-      <!-- <ngx-file-drop
-        dropZoneLabel="Drop files here"
-        (onFileDrop)="dropped($event, 'cover')"
-        (onFileOver)="fileOver($event)"
-        (onFileLeave)="fileLeave($event)"
-        accept="{{ acceptedCovers }}"
-      >
-        <ng-template
-          ngx-file-drop-content-tmp
-          let-openFileSelector="openFileSelector"
-        >
-          <div
-            class="w-100 h-100 d-flex justify-content-center align-items-center"
-          >
-            <div class="text-center">
-              <div
-                class="d-flex justify-content-center align-items-center fw-bolder"
-                style="font-size: medium"
-              >
-                Drop Cover Image Here
-              </div>
-              <a
-                role="button"
-                class="btn mt-2 btn-dark rounded-pill"
-                (click)="openFileSelector()"
-                >Browse Files</a
-              >
-            </div>
-          </div>
-        </ng-template>
-      </ngx-file-drop> -->
-
-      <!-- <a
-            role="button"
-            class="btn mt-2 btn-dark rounded-pill"
-            
-            (click)="openFileSelector()"
-            >Browse Files</a
-          > -->
     </div>
   </div>
 </mat-dialog-content>
-
-<!-- (load)='passVars(iframe2)' -->
