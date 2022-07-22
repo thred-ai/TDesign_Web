@@ -1469,10 +1469,10 @@ export class LoadService {
       );
   }
 
-  async getPaymentMethods(callback: (info?: any[]) => any) {
-    let uid = (await this.isLoggedIn())?.uid;
+  async getPaymentMethods(uid = Globals.storeInfo.uid, callback: (info?: any[]) => any) {
 
-    this.functions
+    if (uid && uid !== ''){
+      this.functions
       .httpsCallable('getPaymentMethods')({ uid })
       .pipe(first())
       .subscribe(
@@ -1484,6 +1484,7 @@ export class LoadService {
           console.error({ err });
         }
       );
+    }
   }
 
   async getBigCommerceStore(callback: (info?: any) => any) {

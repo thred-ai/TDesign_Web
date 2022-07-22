@@ -189,6 +189,21 @@ apple-pay-button {
   }
 }
 
+.cc-img {
+  margin: 0 auto;
+}
+
+.payment-wrapper{
+  background-color: #E0E0E0;
+}
+
+.expiration {
+  border: 1px solid #bbbbbb;
+}
+.expiration input {
+  border: 0;
+}
+
 .rounded-panel {
   border-radius: 20px;
   object-fit: contain;

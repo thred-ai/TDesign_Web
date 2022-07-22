@@ -1,0 +1,96 @@
+<div class="p-0 p-md-2 px-md-5 w-100 h-100">
+  <div class="h-100 w-100">
+    <div class="py-3 px-md-3 w-100">
+      <form role="form" [formGroup]="billingForm">
+        <div class="w-100 py-2">
+          <div class="w-100">
+            <div class="form-group">
+              <label>Company (Optional)</label>
+              <div class="input-group rounded">
+                <input
+                  maxlength="20"
+                  formControlName="company"
+                  type="text"
+                  #ccNumber
+                  class="form-control"
+                  placeholder="Company Name"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="d-flex justify-content-between align-items-center flex-column flex-md-row py-2 w-100"
+        >
+          <div class="pe-md-1 w-100">
+            <div class="form-group w-100">
+              <label>Address Line 1</label>
+              <input
+                type="text"
+                formControlName="address"
+                #ccExpiry
+                class="form-control"
+                placeholder="Address"
+              />
+            </div>
+          </div>
+          <div class="mt-3 mt-md-0 ps-md-1 w-100">
+            <div class="form-group w-100">
+              <label>Address Line 2 (Optional)</label>
+              <input type="text" class="form-control" formControlName="address2" placeholder="Address Line 2" />
+            </div>
+          </div>
+        </div>
+        <div
+          class="d-flex justify-content-between align-items-center flex-column flex-md-row py-2 w-100"
+        >
+          <div class="pe-md-1 w-100">
+            <div class="form-group w-100">
+              <label>City</label>
+              <input
+                type="text"
+                formControlName="city"
+                #ccExpiry
+                class="form-control"
+                placeholder="City"
+              />
+            </div>
+          </div>
+          <div class="mt-3 mt-md-0 ps-md-1 w-100">
+            <div class="form-group w-100">
+              <label>State/Province</label>
+              <input type="text" class="form-control" formControlName="state" placeholder="State/Province" />
+            </div>
+          </div>
+        </div>
+        <div class="py-2 w-100">
+          <div class="w-100">
+            <div class="form-group">
+              <label>ZIP Code</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="ZIP Code"
+                formControlName="postalCode"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="bg-transparent px-md-3 w-100">
+      <div class="w-100">
+        <div class="w-100 text-center">
+          <div class="card bg-dark rounded p-3 px-4 w-auto" role="button" (click)="save()">
+            <p
+              class="w-100 my-auto text-light fw-bolder"
+              style="font-size: 20px"
+            >
+              Next Step
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

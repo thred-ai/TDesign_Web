@@ -103,7 +103,7 @@
               dynamicHeight
               animationDuration="0ms"
             >
-              <mat-tab class="my-0 bg-danger">
+              <mat-tab class="my-0">
                 <!-- #docregion label-directive -->
                 <ng-template mat-tab-label>
                   <mat-icon class="example-tab-icon text-dark"
@@ -133,7 +133,7 @@
                   </div>
                 </div>
               </mat-tab>
-              <mat-tab class="tab bg-success">
+              <mat-tab class="tab">
                 <!-- #docregion label-directive -->
                 <ng-template mat-tab-label>
                   <mat-icon class="example-tab-icon text-dark"
@@ -390,22 +390,108 @@
 
         <div
           class="w-100 big-design-card position-absolute vh-80 h-md-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
-          style="z-index: 10000"
-          *ngIf="mode == 1"
+          style="z-index: 10000; overflow-y: scroll"
+          *ngIf="mode == 1 || mode == 2 || mode == 3"
         >
-          <div class="big-design-header">
-            <h2 class="big-design-title">Checkout</h2>
-            <a class="text-dark" role="button" (click)="closeItem()">
-              <mat-icon> close </mat-icon>
-            </a>
+          <div class="w-100 h-100" *ngIf="mode == 1">
+            <div
+              *ngIf="methods; else loadingMethods"
+              class="h-100 w-100 d-flex flex-column justify-content-between align-items-center"
+            >
+              <div class="big-design-header">
+                <h2 class="big-design-title">Choose Payment Method</h2>
+                <a class="text-dark" role="button" (click)="closeItem()">
+                  <mat-icon> close </mat-icon>
+                </a>
+              </div>
+              <div class="big-design-body w-100 h-100 p-3 px-1 px-md-3">
+                <div class="big-design-card p-0 payment-wrapper">
+                  <app-payment-method
+                    *ngFor="let method of methods | paymentMethodFilter"
+                    [data]="method"
+                    (selectMethod)="toBilling($event)"
+                  >
+                  </app-payment-method>
+                </div>
+              </div>
+            </div>
+            <ng-template #loadingMethods>
+              <div
+                class="w-100 h-100 d-flex justify-content-center align-items-center"
+              >
+                <div class="big-design-spinner" style="z-index: 100">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </ng-template>
           </div>
           <div
-            class="big-design-body"
+            class="w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+            *ngIf="mode == 2"
           >
-            <div *ngFor="let method of methods | paymentMethodFilter">
-              <app-payment-method [data]="method"> </app-payment-method>
+            <div
+              class="h-100 w-100 d-flex flex-column justify-content-between align-items-center"
+            >
+              <div class="big-design-header">
+                <h2 class="big-design-title">Payment</h2>
+                <a class="text-dark" role="button" (click)="closeItem()">
+                  <mat-icon> close </mat-icon>
+                </a>
+              </div>
+              <div class="big-design-body w-100 h-100 px-1">
+                <app-payment-collection
+                (continue)="toBillingAddress($event)"
+                >
+
+                </app-payment-collection>
+              </div>
             </div>
+            <ng-template #loadingInfo>
+              <div
+                class="w-100 h-100 d-flex justify-content-center align-items-center"
+              >
+                <div class="big-design-spinner" style="z-index: 100">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </ng-template>
           </div>
+            <div class="w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s" *ngIf="mode == 3">
+            <div
+              class="h-100 w-100 d-flex flex-column justify-content-between align-items-center"
+            >
+              <div class="big-design-header">
+                <h2 class="big-design-title">Billing Details</h2>
+                <a class="text-dark" role="button" (click)="closeItem()">
+                  <mat-icon> close </mat-icon>
+                </a>
+              </div>
+              <div class="big-design-body w-100 h-100 px-1">
+                <app-billing-checkout>
+
+                </app-billing-checkout>
+              </div>
+            </div>
+            <ng-template #loadingBilling>
+              <div
+                class="w-100 h-100 d-flex justify-content-center align-items-center"
+              >
+                <div class="big-design-spinner" style="z-index: 100">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            </ng-template>
+
+            </div>
         </div>
       </div>
     </div>

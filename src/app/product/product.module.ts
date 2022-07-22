@@ -25,6 +25,11 @@ import { NftInfoComponent } from './nft-info/nft-info.component'; // <-- import 
 import { SharedModule } from '../shared/shared.module'; // <-- import it
 import { MatTabsModule } from '@angular/material/tabs';
 import { PaymentMethodComponent } from '../payment-method/payment-method.component';
+import { BillingAdminModule } from '../billing-admin/billing-admin.module';
+import { BillingCheckoutComponent } from '../billing-checkout/billing-checkout.component';
+import { NgxStripeModule } from 'ngx-stripe';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { PaymentCollectionComponent } from '../payment-collection/payment-collection.component';
 
 const routes: Routes = [
   {
@@ -41,6 +46,8 @@ const routes: Routes = [
     NftUpdateComponent,
     NftInfoComponent,
     PaymentMethodComponent,
+    BillingCheckoutComponent,
+    PaymentCollectionComponent,
   ],
   imports: [
     CommonModule,
@@ -63,6 +70,9 @@ const routes: Routes = [
     MatRadioModule,
     RouterModule.forChild(routes),
     SharedModule,
+    BillingAdminModule,
+    NgxStripeModule,
+    MatDatepickerModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

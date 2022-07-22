@@ -7,6 +7,7 @@ import {
   ViewChild,
   HostListener,
   OnDestroy,
+  ElementRef,
 } from '@angular/core';
 
 import {
@@ -381,8 +382,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return indicator;
   }
 
-  
-
   get provider() {
     return Globals.provider;
   }
@@ -397,9 +396,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   oldUrl = '';
 
-
-  get customer(){
-    return Globals.customerId
+  get customer() {
+    return Globals.customerId;
   }
 
   async ngOnInit() {
@@ -410,7 +408,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       //     s?.profileLink?.toString() ?? ''
       // );
     });
-
 
     // const storeInfo = this.getStoreName();
     // this.loadService.getUser(
@@ -490,51 +487,94 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.router.queryParams.subscribe((params) => {
     //   let linkInfo = params.info as string;
     //   let info = JSON.parse(this.hexToUtf8(linkInfo));
-      
+
     // });
 
-    let id = this.getProductID().full
+    let id = this.getProductID().full;
 
-    this.loadService.logView(id)
+    this.loadService.logView(id);
 
-    if (Globals.customerId){
-      const tokenDecodablePart = Globals.customerId.split(".")[1];
-      const d = JSON.parse(Buffer.from(tokenDecodablePart, "base64").toString());
-      console.log(d)
+    if (Globals.customerId) {
+      const tokenDecodablePart = Globals.customerId.split('.')[1];
+      const d = JSON.parse(
+        Buffer.from(tokenDecodablePart, 'base64').toString()
+      );
+      console.log(d);
     }
 
-    this.loadService.getPost(
-      id,
-      (product?: NFT, collection?: Collection) => {
+    this.loadService.getPost(id, (product?: NFT, collection?: Collection) => {
+      setTimeout(() => {
+        this.productToBuy = Object.assign(new NFT(), product);
+        this.collection = Object.assign(new Collection(), collection);
+        console.log(this.productToBuy)
+        this.loadService.getPaymentMethods(this.productToBuy.uid, (m) => {
+          console.log(m);
+          if (!this.methods || this.methods.length == 0){
+            this.methods = m ?? [];
+          }
+        });
+        // this.url = info.url ?? '';
+        this.cdr.detectChanges();
         setTimeout(() => {
-          this.productToBuy = Object.assign(new NFT(), product);
-          this.collection = Object.assign(new Collection(), collection);
-          this.loadService.getPaymentMethods(m => {
-            console.log(m)
-            this.methods = m ?? []
-          })
-          // this.url = info.url ?? '';
-          this.cdr.detectChanges();
-          setTimeout(() => {
-            this.loadService.getEvents(this.productToBuy!, async (txs) => {
-              this.nftLogs = txs;
-            });
-          }, 250);
+          this.loadService.getEvents(this.productToBuy!, async (txs) => {
+            this.nftLogs = txs;
+          });
         }, 250);
-      }
-    );
+      }, 250);
+    });
   }
 
-  methods: any[] = []
+  methods?: any[];
+  billingDetails = {
+    billing_address: {
+      first_name: undefined,
+      last_name: undefined,
+      street_1: undefined,
+      city: undefined,
+      state: undefined,
+      zip: undefined,
+      country: undefined,
+      country_iso2: undefined,
+      email: undefined,
+    },
+    payment: {
+      instrument: {
+        type: 'card',
+        cardholder_name: undefined,
+        number: undefined,
+        expiry_month: 0,
+        expiry_year: 0,
+        verification_value: undefined,
+        issue_month: 0,
+        issue_year: 0,
+        issue_number: 0,
+      },
+      payment_method_id: undefined,
+    },
+  };
+
 
   hexToUtf8(hex: string) {
     return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
   }
 
+
   mode = 0;
 
   buyItem() {
     this.mode = 1;
+  }
+
+  toBilling(method: any) {
+    console.log(method);
+    this.billingDetails.payment.payment_method_id = method.code;
+    this.mode = 2;
+  }
+
+  toBillingAddress(details: any) {
+    console.log(details);
+    this.billingDetails.payment.instrument = details;
+    this.mode = 3;
   }
 
   closeItem() {
@@ -894,8 +934,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   numberWithCommas(x: string) {
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
-
-
 
   getCurrencyForCountry(shouldShowName: boolean, country?: Country) {
     var returnItem = country?.currency_symbol ?? '$';
