@@ -5,6 +5,8 @@ import {
   PLATFORM_ID,
   ChangeDetectorRef,
   ViewChild,
+  EventEmitter,
+  Output,
 } from '@angular/core';
 import { Globals } from '../globals';
 import { Dict, LoadService } from '../services/load.service';
@@ -13,10 +15,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Title, Meta } from '@angular/platform-browser';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { BillingInfo } from '../models/billing-address.model';
-import {
-  StripeCardComponent,
-  StripeService,
-} from 'ngx-stripe';
+import { StripeCardComponent, StripeService } from 'ngx-stripe';
 
 import {
   StripeCardElementOptions,
@@ -25,11 +24,9 @@ import {
 @Component({
   selector: 'app-billing-checkout',
   templateUrl: './billing-checkout.component.html',
-  styleUrls: ['./billing-checkout.component.css']
+  styleUrls: ['./billing-checkout.component.css'],
 })
-
 export class BillingCheckoutComponent implements OnInit {
-
   @ViewChild(StripeCardComponent) card1?: StripeCardComponent;
 
   // cardOptions: StripeCardElementOptions = {
@@ -68,17 +65,16 @@ export class BillingCheckoutComponent implements OnInit {
 
   elementsOptions: StripeElementsOptions = {
     locale: 'en',
-    
   };
-
 
   billingForm = this.fb.group({
     company: null,
     address: [null, Validators.required],
-    address2: null,
     country: [null, Validators.required],
     city: [null, Validators.required],
     state: [null, Validators.required],
+    cardholder: [null, Validators.required],
+    email: [null, Validators.required],
     postalCode: [
       null,
       [Validators.required, Validators.minLength(5), Validators.maxLength(8)],
@@ -197,7 +193,6 @@ export class BillingCheckoutComponent implements OnInit {
 
     this.billingForm.controls.company.setValue(this.billingInfo?.company ?? '');
     this.billingForm.controls.address.setValue(this.billingInfo?.street ?? '');
-    this.billingForm.controls.address2.setValue(this.billingInfo?.unit ?? '');
     this.billingForm.controls.country.setValue(
       (this.billingInfo?.country ?? '').trim() != ''
         ? this.billingInfo?.country
@@ -211,6 +206,8 @@ export class BillingCheckoutComponent implements OnInit {
       this.billingInfo?.postal ?? ''
     );
   }
+
+  @Output() continue = new EventEmitter<any>();
 
   selectedIndicator() {
     if (!Globals.storeInfo) {
@@ -238,103 +235,109 @@ export class BillingCheckoutComponent implements OnInit {
   }
 
   async callback() {
-      // this.cardOptions.style!.base!.color = this.selectedTheme().color;
-      // this.cardOptions.style!.base!.iconColor = this.selectedTheme().color;
-      // this.cardOptions.style!.base!['::placeholder']!.color =
-      //   this.selectedTheme().color;
+    // this.cardOptions.style!.base!.color = this.selectedTheme().color;
+    // this.cardOptions.style!.base!.iconColor = this.selectedTheme().color;
+    // this.cardOptions.style!.base!['::placeholder']!.color =
+    //   this.selectedTheme().color;
 
-      // if (!this.billingInfo){
-      //   this.loadService.getBillingInfo((billingInfo) => {
-      //     if (Globals.storeInfo?.username && billingInfo) {
-      //       this.billingInfo = new BillingInfo(
-      //         billingInfo.billing_details.name,
-      //         undefined,
-      //         billingInfo.card.last4,
-      //         billingInfo.card.brand,
-      //         billingInfo.billing_details.address.line1,
-      //         billingInfo.billing_details.address.city,
-      //         billingInfo.billing_details.address.country,
-      //         billingInfo.billing_details.address.state,
-      //         billingInfo.billing_details.address.line2,
-      //         billingInfo.billing_details.address.postal_code,
-      //         billingInfo.card.country
-      //       );
-      //     }
-      //     this.setForm();
-      //     this.cdr.detectChanges();
-      //   });
-      // }
-      // else{
-        this.setForm();
-      // }
+    // if (!this.billingInfo){
+    //   this.loadService.getBillingInfo((billingInfo) => {
+    //     if (Globals.storeInfo?.username && billingInfo) {
+    //       this.billingInfo = new BillingInfo(
+    //         billingInfo.billing_details.name,
+    //         undefined,
+    //         billingInfo.card.last4,
+    //         billingInfo.card.brand,
+    //         billingInfo.billing_details.address.line1,
+    //         billingInfo.billing_details.address.city,
+    //         billingInfo.billing_details.address.country,
+    //         billingInfo.billing_details.address.state,
+    //         billingInfo.billing_details.address.line2,
+    //         billingInfo.billing_details.address.postal_code,
+    //         billingInfo.card.country
+    //       );
+    //     }
+    //     this.setForm();
+    //     this.cdr.detectChanges();
+    //   });
+    // }
+    // else{
+    this.setForm();
+    // }
   }
 
   validCard = false;
   err = '';
   billingInfo?: BillingInfo = undefined;
 
-  saving = false
+  saving = false;
 
   async save() {
-
-    if (this.billingForm.valid && this.validCard) {
+    if (this.billingForm.valid) {
       let f = this.billingForm.controls;
 
-      this.billingInfo = new BillingInfo(
-        f.cardholder.value,
-        f.company.value,
-        undefined,
-        undefined,
-        f.address.value,
-        f.city.value,
-        f.country.value,
-        f.state.value,
-        f.address2.value,
-        f.postalCode.value,
-        this.getCountryCode(f.country.value)
+      // this.billingInfo = new BillingInfo(
+      //   f.cardholder.value,
+      //   f.company.value,
+      //   undefined,
+      //   undefined,
+      //   f.address.value,
+      //   f.city.value,
+      //   f.country.value,
+      //   f.state.value,
+      //   f.address2.value,
+      //   f.postalCode.value,
+      //   this.getCountryCode(f.country.value)
+      // );
+
+      // if (f.country.value == 'CA' || f.country.value == 'Canada') {
+      //   this.billingInfo.admin_area =
+      //     Globals.caProvinces.find((province) => {
+      //       return (
+      //         province.name == f.state.value ||
+      //         province.abbreviation == f.state.value
+      //       );
+      //     })?.abbreviation ?? 'ON';
+      // }
+      console.log(f.country.value);
+
+      let name = ((f.cardholder.value ?? '').split(' ') as string[]) ?? [];
+
+      let first = name[0];
+      let last = name[name.length - 1];
+
+      let country = (f.country.value as string) ?? '';
+
+      let match = Globals.countries.find(
+        (c) =>
+          c.name.trim().replace(/\s+/g, '').toLowerCase() ==
+          country.trim().replace(/\s+/g, '').toLowerCase()
       );
 
-      if (f.country.value == 'CA' || f.country.value == 'Canada') {
-        this.billingInfo.admin_area =
-          Globals.caProvinces.find((province) => {
-            return (
-              province.name == f.state.value ||
-              province.abbreviation == f.state.value
-            );
-          })?.abbreviation ?? 'ON';
-      }
-
-      if (isPlatformBrowser(this.platformID)) {
-        this.saving = true
-      }
-
-      console.log(this.card1)
-
-      // this.loadService.linkCard(
-      //   this.billingInfo,
-      //   { card: this.card1, stripe: this.stripeService },
-      //   (err?: any) => {
-      //     this.saving = false
-      //     if (err) {
-      //       this.err = err;
-      //     } else {
-      //       //this.activeModal.close(this.billingInfo)
-      //     }
-      //   }
-      // );
+      let billing_address = {
+        first_name: first,
+        last_name: last,
+        street_1: f.address.value,
+        city: f.city.value,
+        state: f.state.value,
+        zip: f.postalCode.value,
+        country: match?.name,
+        country_iso2: match?.abbreviation,
+        email: f.email.value,
+      };
+      this.continue.emit(billing_address);
+    } else {
+      console.log('invalid');
     }
   }
 
   init() {
     // this.cardOptions.style!.base!.color = this.selectedTheme().color;
-    this.billingInfo = undefined
-    this.callback()
+    this.billingInfo = undefined;
+    this.callback();
   }
 
-
-  closeDialog(){
-  }
-
+  closeDialog() {}
 
   getStoreName() {
     var request = '';
@@ -343,7 +346,11 @@ export class BillingCheckoutComponent implements OnInit {
     } else {
       request = globalThis.location.host;
     }
-    if (request != 'localhost:4200' && request != Globals.ngrokId && request != 'shopmythred.com') {
+    if (
+      request != 'localhost:4200' &&
+      request != Globals.ngrokId &&
+      request != 'shopmythred.com'
+    ) {
       return {
         isCustom: true,
         link: request,
@@ -396,7 +403,7 @@ export class BillingCheckoutComponent implements OnInit {
     private metaService: Meta,
     private loadService: LoadService,
     private fb: FormBuilder,
-    private stripeService: StripeService,
+    private stripeService: StripeService
   ) {}
   ngAfterViewInit(): void {}
 
@@ -410,5 +417,4 @@ export class BillingCheckoutComponent implements OnInit {
   ngOnInit(): void {
     this.init();
   }
-
 }

@@ -8,7 +8,7 @@ export class PaymentMethodFilterPipe implements PipeTransform {
   transform(value: any[]): any[] {
 
     return value.filter(v => {
-      return !(v.code == 'bigcommerce_store_credit' || v.code == 'bigcommerce_gift_certificate')
+      return (v.name.toLowerCase() == 'stripe') || (v.name.toLowerCase() == 'test payment provider')
     }).reverse()
 
     // this.test_mode = method.test_mode

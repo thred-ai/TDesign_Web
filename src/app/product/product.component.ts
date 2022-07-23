@@ -506,10 +506,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       setTimeout(() => {
         this.productToBuy = Object.assign(new NFT(), product);
         this.collection = Object.assign(new Collection(), collection);
-        console.log(this.productToBuy)
+        console.log(this.productToBuy);
         this.loadService.getPaymentMethods(this.productToBuy.uid, (m) => {
           console.log(m);
-          if (!this.methods || this.methods.length == 0){
+          if (!this.methods || this.methods.length == 0) {
             this.methods = m ?? [];
           }
         });
@@ -553,11 +553,9 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     },
   };
 
-
   hexToUtf8(hex: string) {
     return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
   }
-
 
   mode = 0;
 
@@ -568,17 +566,41 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   toBilling(method: any) {
     console.log(method);
     this.billingDetails.payment.payment_method_id = method.code;
-    this.mode = 2;
-  }
-
-  toBillingAddress(details: any) {
-    console.log(details);
-    this.billingDetails.payment.instrument = details;
     this.mode = 3;
   }
 
+  toCheckout(details: any) {
+    this.billingDetails.billing_address = details;
+    this.mode = 4;
+
+    let data = {
+      uid: this.productToBuy?.uid,
+      productId: this.productToBuy?.docID,
+      billingDetails: this.billingDetails
+    }
+
+   this.loadService.processOrder(data, (error?: string) => {
+    console.log(error)
+    this.mode = 0
+   })
+
+    // setTimeout(() => {
+      
+    // }, 3000);
+
+    console.log(this.billingDetails);
+  }
+
+  toPaymentMethod(details: any) {
+    console.log(details);
+    this.billingDetails.payment.instrument = details;
+    this.mode = 2;
+  }
+
   closeItem() {
-    this.mode = 0;
+    if (this.mode == 0) return;
+
+    this.mode -= 1;
   }
 
   ngAfterViewInit(): void {}

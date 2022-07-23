@@ -1502,6 +1502,21 @@ export class LoadService {
       );
   }
 
+  async processOrder(data: any, callback: (error?: string) => any) {
+    this.functions
+      .httpsCallable('processOrder')(data)
+      .pipe(first()) 
+      .subscribe(
+        (resp) => {
+          callback(resp);
+        },
+        (err) => {
+          callback("This item is not available");
+          console.error({ err });
+        }
+      );
+  }
+
   isUndefined(element: any) {
     return element == undefined || element == null || element == '';
   }

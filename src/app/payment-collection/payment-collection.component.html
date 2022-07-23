@@ -5,7 +5,13 @@
         <img
           class="img w-100 text-center"
           style="object-fit: contain"
-          src="http://www.prepbootstrap.com/Content/images/shared/misc/creditcardicons.png"
+          loading="lazy"
+          [useSrcset]="true"
+          [defaultImage]="'/assets/default.png'"
+          [lazyLoad]="
+            'https://www.prepbootstrap.com/Content/images/shared/misc/creditcardicons.png' ??
+            '/assets/default.png'
+          "
         />
       </div>
     </div>
@@ -49,7 +55,12 @@
           <div class="mt-3 mt-md-0 ps-md-1 w-100">
             <div class="form-group w-100">
               <label>CV Code</label>
-              <input type="tel" class="form-control" formControlName="cvc" placeholder="CVC" />
+              <input
+                type="tel"
+                class="form-control"
+                formControlName="cvc"
+                placeholder="CVC"
+              />
             </div>
           </div>
         </div>
@@ -71,12 +82,16 @@
     <div class="bg-transparent px-md-3 w-100">
       <div class="w-100">
         <div class="w-100 text-center">
-          <div class="card bg-dark rounded p-3 px-4 w-auto" role="button" (click)="save()">
+          <div
+            class="card bg-dark rounded p-3 px-4 w-auto"
+            role="button"
+            (click)="save()"
+          >
             <p
               class="w-100 my-auto text-light fw-bolder"
               style="font-size: 20px"
             >
-              Next Step
+              Process Payment
             </p>
           </div>
         </div>
