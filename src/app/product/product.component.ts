@@ -570,22 +570,22 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toCheckout(details: any) {
-    this.billingDetails.billing_address = details;
+    this.billingDetails.payment.instrument = details;
     this.mode = 4;
 
     let data = {
       uid: this.productToBuy?.uid,
-      productId: this.productToBuy?.docID,
-      billingDetails: this.billingDetails
-    }
+      productID: this.productToBuy?.docID,
+      billingDetails: this.billingDetails,
+    };
 
-   this.loadService.processOrder(data, (error?: string) => {
-    console.log(error)
-    this.mode = 0
-   })
+    this.loadService.processOrder(data, (error?: string) => {
+      console.log(error);
+      this.mode = 0;
+    });
 
     // setTimeout(() => {
-      
+
     // }, 3000);
 
     console.log(this.billingDetails);
@@ -593,7 +593,8 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toPaymentMethod(details: any) {
     console.log(details);
-    this.billingDetails.payment.instrument = details;
+    this.billingDetails.billing_address = details;
+
     this.mode = 2;
   }
 
