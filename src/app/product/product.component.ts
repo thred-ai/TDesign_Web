@@ -499,27 +499,34 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       const d = JSON.parse(
         Buffer.from(tokenDecodablePart, 'base64').toString()
       );
-      console.log(d);
     }
 
     this.loadService.getPost(id, (product?: NFT, collection?: Collection) => {
-      setTimeout(() => {
+      setTimeout(async () => {
         this.productToBuy = Object.assign(new NFT(), product);
         this.collection = Object.assign(new Collection(), collection);
-        console.log(this.productToBuy);
         this.loadService.getPaymentMethods(this.productToBuy.uid, (m) => {
-          console.log(m);
           if (!this.methods || this.methods.length == 0) {
             this.methods = m ?? [];
           }
         });
+
+        if (this.productToBuy.minted) {
+          this.owner =
+            (await this.loadService.getItemOwner(
+              this.productToBuy,
+              this.collection
+            )) ?? '';
+        } else {
+          this.owner = '';
+        }
         // this.url = info.url ?? '';
         this.cdr.detectChanges();
-        setTimeout(() => {
-          this.loadService.getEvents(this.productToBuy!, async (txs) => {
-            this.nftLogs = txs;
-          });
-        }, 250);
+        // setTimeout(() => {
+        //   this.loadService.getEvents(this.productToBuy!, async (txs) => {
+        //     this.nftLogs = txs;
+        //   });
+        // }, 250);
       }, 250);
     });
   }
@@ -557,6 +564,19 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return decodeURIComponent('%' + hex.match(/.{1,2}/g)?.join('%'));
   }
 
+  viewOrderDetails() {
+    let url = `https://${Globals.ngrokId}/claim/${
+      this.productToBuy?.docID
+    }`;
+    window.parent.parent.postMessage(
+      {
+        type: 'transfer',
+        url,
+      },
+      '*'
+    );
+  }
+
   mode = 0;
 
   buyItem() {
@@ -564,8 +584,10 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   toBilling(method: any) {
-    console.log(method);
-    this.billingDetails.payment.payment_method_id = method.code;
+    this.billingDetails.payment.payment_method_id = method.code.replace(
+      '2',
+      ''
+    );
     this.mode = 3;
   }
 
@@ -579,20 +601,29 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
       billingDetails: this.billingDetails,
     };
 
-    this.loadService.processOrder(data, (error?: string) => {
+    this.loadService.processOrder(data, async (error?: string) => {
       console.log(error);
+      if (error == null) {
+        this.owner = '0xd31c54efd3a4b5e6a993aaa4618d3700a12ff752'
+        // this.owner =
+        //   (await this.loadService.getItemOwner(
+        //     this.productToBuy!,
+        //     this.collection!
+        //   )) ?? '';
+        this.productToBuy!.minted = true;
+        this.mode = 5;
+        this.cdr.detectChanges();
+        return;
+      }
       this.mode = 0;
     });
 
     // setTimeout(() => {
 
     // }, 3000);
-
-    console.log(this.billingDetails);
   }
 
   toPaymentMethod(details: any) {
-    console.log(details);
     this.billingDetails.billing_address = details;
 
     this.mode = 2;
@@ -899,11 +930,15 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
 
   copied = false;
   url = '';
+  owner?: string;
 
   copyURL() {
     this.copied = true;
-    console.log(this.url);
     this.clipboard.copy(this.url);
+  }
+
+  copyWalletURL() {
+    this.clipboard.copy(this.owner ?? '');
   }
 
   addTags(title: string, imgUrl: string, description: string, url: string) {

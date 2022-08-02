@@ -115,7 +115,7 @@ export class CreateCollectionComponent implements OnInit {
             abi,
             bytecode,
             domain,
-            royaltyAddress,
+            royaltyAddress != '' ? royaltyAddress : ethers.constants.AddressZero,
             generate,
             (col?: Collection) => {
               this.saving = false;

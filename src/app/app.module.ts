@@ -39,12 +39,14 @@ import { LazyLoadImageModule } from 'ng-lazyload-image'; // <-- include ScrollHo
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ItemClaimComponent } from './item-claim/item-claim.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PhoneMaskDirective,
     AuthComponent,
+    ItemClaimComponent,
   ],
   imports: [
     CommonModule,

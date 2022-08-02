@@ -17,7 +17,7 @@ export class UtilityInfoPipe implements PipeTransform {
       return util != '' ? util : shorten ? 'None' : 'No Utilities';
     }
     else{
-      return value.find(v => v.id == checkForVal) ?? false
+      return value?.find(v => v.code == checkForVal) ?? false
     }
   }
 }

@@ -944,6 +944,20 @@ export class LoadService {
     return data2;
   }
 
+  async getItemOwner(item: NFT, collection: Collection){
+    let provider = new ethers.providers.JsonRpcProvider(
+      this.rpcEndpoint
+    )
+    const contract = new ethers.Contract(
+      ethers.utils.getAddress(item.address),
+      collection.ABI,
+      provider
+    );
+    let owner = await contract.ownerOf(item.tokenId);
+    console.log(owner)
+    return owner;
+  }
+
   async getCreatedById(
     provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
       this.rpcEndpoint
@@ -1186,6 +1200,32 @@ export class LoadService {
         .doc('Delivery_Address')
         .set(data);
     }
+  }
+
+  async transferNFT(
+    signer: ethers.Signer,
+    item: NFT,
+    code: string,
+    callback: (transferred: boolean) => any
+  ) {
+    let address = await signer.getAddress()
+    this.functions
+      .httpsCallable('transferItem')({
+        signer: address,
+        item: item.docID,
+        uid: item.uid,
+        code: code
+      })
+      .pipe(first())
+      .subscribe(
+        async (resp) => {
+          callback(resp);
+        },
+        (err) => {
+          callback(false)
+          console.log(err);
+        }
+      );
   }
 
   getTraitRarity(
@@ -1758,20 +1798,13 @@ export class LoadService {
   ) {
     //add token later
 
-    console.log('getting col');
     this.getCollection(collectionAddress, async (col?: Collection) => {
-      console.log(col);
       if (col) {
         const image = await this.saveNftImage(
           img,
           `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
           0
         );
-
-        // const added = await client.add(model, {
-        //   progress: (prog) => console.log(`received: ${prog}`),
-        // });
-
         var skyBoxUrl = '';
         if (skybox && skybox != null) {
           skyBoxUrl =
@@ -1788,10 +1821,6 @@ export class LoadService {
           2
         );
 
-        // const added3 = await client.add(ios_model, {
-        //   progress: (prog) => console.log(`received: ${prog}`),
-        // });
-
         var url4 = '';
         if (ios_model && ios_model != null) {
           url4 =
@@ -1801,9 +1830,6 @@ export class LoadService {
               1
             )) ?? '';
         }
-
-        // const url2 = `https://ipfs.infura.io/ipfs/${added.path}`;
-        // const url4 = `https://ipfs.infura.io/ipfs/${added3.path}`;
 
         var data1 = {
           name,
@@ -1825,8 +1851,6 @@ export class LoadService {
           `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
           3
         );
-        // const added2 = await client.add(data2);
-        // const url = `https://ipfs.infura.io/ipfs/${added2.path}`;
 
         let data = JSON.parse(
           JSON.stringify({
@@ -1950,6 +1974,8 @@ export class LoadService {
     }
     return k.toString();
   }
+
+  
 
   async deletePage(page: Page, callback: (success: boolean) => any) {
     this.functions

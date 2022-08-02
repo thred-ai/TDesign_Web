@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class Globals {
-  public static ngrokId = 'ca35-2607-fea8-7ddd-3900-6937-cc25-f1bd-dc26.ngrok.io';
+  public static ngrokId = 'cb38-2607-fea8-bd80-500-b91d-2951-dc26-3170.ngrok.io';
 
   public static sInfo = new BehaviorSubject<Store>(new Store());
 
@@ -101,8 +101,7 @@ export class Globals {
               'https://kovan.infura.io/v3/' +
               '90806fec200c42fdbf783260b38f0a73',
             137:
-              'https://polygon-mainnet.infura.io/v3/' +
-              '90806fec200c42fdbf783260b38f0a73',
+              'https://polygon-mainnet.g.alchemy.com/v2/zZ_J8XGhVME0rH8TX0aiqEX8C37rlPIG',
             80001: 'https://rpc-mumbai.matic.today',
           },
           qrcodeModalOptions: {

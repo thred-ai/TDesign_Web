@@ -25,6 +25,9 @@ export class PaymentMethodComponent implements OnInit {
     if (method.name == 'Stripe'){
       this.name = 'Credit Card'
     }
+    else if (method.name == 'Stripe2'){
+      this.name = 'Debit Card'
+    }
     else{
       this.name = method.name
     }

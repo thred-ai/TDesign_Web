@@ -36,7 +36,9 @@ export class ModelViewerComponent implements OnInit {
 
   constructor(
     public cdr: ChangeDetectorRef
-  ) { }
+  ) { 
+
+  }
 
   ngOnInit(): void {
 

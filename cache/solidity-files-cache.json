@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ERC721Merchant/ERC721Merchant.sol": {
-      "lastModificationDate": 1655529223315,
-      "contentHash": "cdef1727290be2d9f4b3fbaca3a83330",
+      "lastModificationDate": 1659362960252,
+      "contentHash": "f94adf9bb9cda8625303f68b9e6bc8b8",
       "sourceName": "contracts/ERC721Merchant/ERC721Merchant.sol",
       "solcConfig": {
         "version": "0.8.3",
@@ -34,10 +34,12 @@
         "hardhat/console.sol",
         "@openzeppelin/contracts/access/AccessControl.sol",
         "./IERC721Merchant.sol",
-        "@openzeppelin/contracts/token/common/ERC2981.sol"
+        "@openzeppelin/contracts/token/common/ERC2981.sol",
+        "@openzeppelin/contracts/security/ReentrancyGuard.sol",
+        "@openzeppelin/contracts/utils/Counters.sol"
       ],
       "versionPragmas": [
-        ">=0.7.0 <0.9.0"
+        ">=0.7.0"
       ],
       "artifacts": [
         "ERC721Merchant"
@@ -159,8 +161,8 @@
       ]
     },
     "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ERC721Merchant/IERC721Merchant.sol": {
-      "lastModificationDate": 1655268545648,
-      "contentHash": "e781cad344ed2a7ba8a96f73d627f98e",
+      "lastModificationDate": 1659362920108,
+      "contentHash": "ed6caf59d2ea5393b3f1b6d3f47bb1ca",
       "sourceName": "contracts/ERC721Merchant/IERC721Merchant.sol",
       "solcConfig": {
         "version": "0.8.3",
@@ -188,7 +190,7 @@
       },
       "imports": [],
       "versionPragmas": [
-        ">=0.7.0 <0.9.0"
+        ">=0.7.0"
       ],
       "artifacts": [
         "IERC721Merchant"
@@ -682,8 +684,8 @@
       "artifacts": []
     },
     "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ThredMarketplace/ThredMarketplace.sol": {
-      "lastModificationDate": 1655271736736,
-      "contentHash": "b386c4c706fce832b429f92e830f13cd",
+      "lastModificationDate": 1659208620268,
+      "contentHash": "60db91024e5d08e1ddeb53bd3d79b2ae",
       "sourceName": "contracts/ThredMarketplace/ThredMarketplace.sol",
       "solcConfig": {
         "version": "0.8.3",

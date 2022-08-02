@@ -7,7 +7,7 @@
     [attr.autoplay]="animate"
     [attr.skybox-image]="skybox"
     [attr.environment-image]="skybox"
-    [attr.ar]="ar"
+    [attr.ar]="ar ? true : undefined"
     [attr.ios-src]="ios_model"
     [attr.ar-modes]="ar ? 'scene-viewer quick-look' : undefined"
     id="{{ id }}"

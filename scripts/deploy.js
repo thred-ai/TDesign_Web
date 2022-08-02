@@ -53,7 +53,7 @@ async function main() {
   // const nft = await NFT.deploy(_ethers.constants.AddressZero, [],[nft2.address]);
   // await nft.deployed();
 
-  // const NFT3 = await ethers.getContractFactory("ERC721Merchant");
+  const NFT3 = await ethers.getContractFactory("ERC721Merchant");
   // const nft3 = await NFT3.deploy("Thred", "THRD", '0xd31c54eFD3A4B5E6a993AaA4618D3700a12ff752');
   // await nft3.deployed();
 

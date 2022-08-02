@@ -593,17 +593,13 @@ export class AppComponent implements OnInit, AfterViewInit {
           let info = JSON.parse(this.hexToUtf8(event.data.open));
           let docID = info.docId;
           let store = info.store as Store
-          console.log(event.data)
           let customer = event.data.customer as string
           Globals.customerId = customer
-          console.log(customer)
           Globals.storeInfo = store
           Globals.sInfo.next(Globals.storeInfo)
-          console.log(docID)
           this.routeToProduct(`${docID}`)
         }
         if (event.data.close){
-          console.log("close")
           this.routeToHome()//
         }
       });
@@ -649,17 +645,6 @@ export class AppComponent implements OnInit, AfterViewInit {
         console.log(error);
       }
     }
-
-    // if (await this.loadService.isUnlocked()){
-    //   console.log('wallet unlocked')
-    // }
-    // else{
-    //   const provider = await this.loadService.initializeProvider()
-
-    //   Globals.provider = provider
-
-    //   console.log('wallet linked')
-    // }
   }
 
   async check() {

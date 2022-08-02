@@ -66,7 +66,6 @@ export class NftAdminUpdateComponent implements OnInit {
     }
     // this.nftForm.controls.isListed.setValue(this.nft?.forSale ?? false);
 
-    console.log(this.nft);
   }
 
   provider?: ethers.providers.Web3Provider;

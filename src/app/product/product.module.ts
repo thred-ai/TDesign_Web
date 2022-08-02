@@ -30,6 +30,7 @@ import { BillingCheckoutComponent } from '../billing-checkout/billing-checkout.c
 import { NgxStripeModule } from 'ngx-stripe';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { PaymentCollectionComponent } from '../payment-collection/payment-collection.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const routes: Routes = [
   {
@@ -72,7 +73,8 @@ const routes: Routes = [
     SharedModule,
     BillingAdminModule,
     NgxStripeModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatTooltipModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   providers: [Globals],

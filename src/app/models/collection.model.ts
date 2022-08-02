@@ -82,17 +82,7 @@ export class Collection implements ICollection {
     return symbol;
   }
 
-  async ownerOf(
-    tokenId: number,
-    endpoint: string,
-    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      endpoint
-    )
-  ) {
-    let contract = new ethers.Contract(this.contract, this.ABI, provider);
-    let owner = await contract.ownerOf(tokenId);
-    return owner;
-  }
+
 
   constructor(
     name?: string,

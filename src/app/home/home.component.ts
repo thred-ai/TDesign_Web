@@ -284,15 +284,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       this.storeInfo = s;
     });
 
-    // let s = await axios.get(
-    //   'https://ipfs.infura.io/ipfs/QmfV8CJqS7PKdKSQLxZJoQrfCC3eYiqjGRq4LEEhtaasrT',
-    // );
-
-    // console.log(s)
-    // const zip = new JSZip();
-    // let zipped = await zip.loadAsync(s);
-
-    // console.log(zipped.files['porsche_compressed.usdc']);
 
     this.init();
   }
@@ -316,8 +307,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
       )}`,
       store: Globals.storeInfo
     };
-
-    console.log(data);
 
     if (isPlatformBrowser(this.platformID)){
       window.parent.parent.postMessage(

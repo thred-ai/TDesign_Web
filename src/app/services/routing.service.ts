@@ -134,7 +134,6 @@ export class RoutingService {
       this.redirectTo('nft/' + productID);
       return;
     }
-    console.log(productID)
     this.redirectTo(storeName + '/' + 'nft/' + productID);
   }
 

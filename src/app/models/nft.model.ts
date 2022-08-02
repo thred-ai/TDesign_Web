@@ -10,7 +10,7 @@ export class NFT {
   assetUrl: string;
   skybox: string;
   tokenId: number;
-  info: Dict<any>[];
+  info: Dict<any>;
   uid: string;
   address: string;
   royalty: number = 0;
@@ -19,7 +19,8 @@ export class NFT {
   docID: string;
   utility: number[] = [];
   ios_model?: string;
-  tokenURL?: string
+  tokenURL?: string;
+  minted: boolean = false;
 
   get hashedAddress() {
     let contractId = this.address.substring(2, this.address.length);
@@ -54,6 +55,7 @@ export class NFT {
     utility?: number[],
     ios_model?: string,
     tokenURL?: string,
+    minted: boolean = false
   ) {
     this.name = name ?? 'NFT';
     this.description = description ?? ''; // ?? erc721Merchant;
@@ -70,7 +72,8 @@ export class NFT {
     this.status = status ?? 0;
     this.docID = docID ?? '';
     this.utility = utility ?? [];
-    this.ios_model = ios_model
-    this.tokenURL = tokenURL
+    this.ios_model = ios_model;
+    this.tokenURL = tokenURL;
+    this.minted = minted;
   }
 }

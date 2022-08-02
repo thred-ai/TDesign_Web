@@ -1,14 +1,7 @@
-<!-- Navigation-->
 <router-outlet></router-outlet>
 
-<!-- Section -->
-<!-- <div style="max-height: 100%;" style.background-color="{{selectedTheme()!.bg_color}}"> -->
-
-<!-- && (storeInfo?.active || loggedIn); else elseActive -->
 <div
-  class="p-2 px-{{
-    mode == 1 || mode == 2 || mode == 3 ? '0' : '2'
-  }} bg-transparent w-100"
+  class="p-2 px-{{ mode == 0 ? '2' : '0' }} bg-transparent w-100"
   style="height: 90vh; overflow-y: scroll"
 >
   <div
@@ -22,7 +15,7 @@
     >
       <div
         class="h-md-100 big-design-card w-100 w-md-auto p-0 d-{{
-          mode == 1 || mode == 2 || mode == 3 ? 'none' : 'block'
+          mode == 0 ? 'block' : 'none'
         }} d-md-block"
         style="aspect-ratio: 1"
         style.background-color="{{ selectedTheme()!.bg_color }}"
@@ -35,7 +28,7 @@
             [animate]="true"
             [poster]="productToBuy.img ?? '/assets/default.png'"
             [id]="'viewer'"
-            [ar]="productToBuy.utility | utilityInfo: false:'ar'"
+            [ar]="productToBuy.info!.utility | utilityInfo: false:'ar'"
             [ios_model]="productToBuy.ios_model"
             [skybox]="productToBuy.skybox"
           >
@@ -49,7 +42,7 @@
       >
         <div
           class="position-absolute p-md-4 w-100 h-100 d-{{
-            mode == 1 || mode == 2 || mode == 3 || mode == 4 ? 'none' : 'block'
+            mode == 0 ? 'block' : 'none'
           }} d-md-block"
         >
           <div
@@ -104,7 +97,6 @@
               animationDuration="0ms"
             >
               <mat-tab class="my-0">
-                <!-- #docregion label-directive -->
                 <ng-template mat-tab-label>
                   <mat-icon class="example-tab-icon text-dark"
                     >call_to_action</mat-icon
@@ -115,17 +107,45 @@
                 </ng-template>
                 <div class="w-100 h-100 p-2">
                   <div class="py-4 pb-3 w-100 big-design-card">
-                    <div class="big-design-header">
-                      <h2 class="big-design-title">
+                    <div class="big-design-header flex-column flex-md-row">
+                      <h2 class="big-design-title m-0 m-md-auto w-100">
                         {{ collection?.collectionCount }}
                         {{
                           collection?.collectionCount
                             | i18nPlural: editionMapping
                         }}
                       </h2>
+                      <div
+                        class="w-100 text-start text-md-end d-flex justify-content-start justify-content-md-end align-items-center animate__animated animate__fadeIn animate__faster animate__delay-0s"
+                        *ngIf="
+                          (productToBuy?.minted ?? false) && owner != undefined;
+                          else noMint
+                        "
+                      >
+                        Owner:
+                        {{ owner | address }}
+                        <mat-icon
+                          class="d-inline-flex justify-content-center align-items-center"
+                          style="font-size: 15px"
+                          role="button"
+                          matTooltip="Copy Item Owner"
+                          (click)="copyWalletURL()"
+                        >
+                          content_copy
+                        </mat-icon>
+                      </div>
+                      <ng-template #noMint>
+                        <div
+                          class="w-100 text-start text-md-end"
+                          *ngIf="owner != undefined"
+                        >
+                          Not Minted
+                        </div>
+                      </ng-template>
                     </div>
+                    <hr />
                     <div
-                      class="big-design-body"
+                      class="big-design-body text-start"
                       style="max-height: 30vh; overflow-y: scroll"
                     >
                       {{ productToBuy?.description }}
@@ -133,8 +153,8 @@
                   </div>
                 </div>
               </mat-tab>
-              <mat-tab class="tab">
-                <!-- #docregion label-directive -->
+
+              <!-- <mat-tab class="tab">
                 <ng-template mat-tab-label>
                   <mat-icon class="example-tab-icon text-dark"
                     >analytics</mat-icon
@@ -160,10 +180,6 @@
                           (storeInfo?.colorStyle)!.text_code
                         }} bg-white"
                       >
-                        <!--- Note that these columns can be defined in any order.
-                    The actual rendered columns are set as a property on the row definition" -->
-
-                        <!-- Position Column -->
                         <ng-container matColumnDef="symbol">
                           <th
                             mat-header-cell
@@ -190,21 +206,9 @@
                                 {{ element.logEvent }}
                               </ng-template>
                             </mat-icon>
-
-                            <!-- <mat-icon
-                    class="m-0 p-0"
-                    style="overflow: hidden"
-                    svgIcon="{{
-                      info
-                        | collectionPipe: collection?.contract
-                        | matIcon
-                    }}"
-                  >
-                  </mat-icon> -->
                           </td>
                         </ng-container>
 
-                        <!-- Name Column -->
                         <ng-container matColumnDef="from">
                           <th
                             mat-header-cell
@@ -301,12 +305,6 @@
                               class="d-flex justify-content-center align-items-center"
                               [style.font-family]="storeInfo?.fontName!"
                             >
-                              <!-- {{
-                          (element | eventTimestamp: provider | async)
-                            ?.timestamp
-                            | dateConstruct
-                            | dateAgo
-                        }} -->
                               <mat-icon
                                 style="overflow: hidden"
                                 class="p-0 text-{{
@@ -343,9 +341,9 @@
                     </div>
                   </div>
                 </div>
-              </mat-tab>
+              </mat-tab> -->
+
               <mat-tab class="tab">
-                <!-- #docregion label-directive -->
                 <ng-template mat-tab-label>
                   <mat-icon class="example-tab-icon text-dark">share</mat-icon>
                   <span class="ms-2 text-dark big-design-body fw-bold">
@@ -368,7 +366,11 @@
                         role="button"
                         (click)="copyURL()"
                       >
-                        <mat-icon class="me-1" [inline]="true">
+                        <mat-icon
+                          class="me-1"
+                          [inline]="true"
+                          matTooltip="Copy Collection URL"
+                        >
                           content_copy
                         </mat-icon>
                         Copy a link to this collection.
@@ -391,7 +393,7 @@
         <div
           class="w-100 big-design-card position-absolute vh-80 h-md-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
           style="z-index: 10000; overflow-y: scroll"
-          *ngIf="mode == 1 || mode == 2 || mode == 3 || mode == 4"
+          *ngIf="mode != 0"
         >
           <div class="w-100 h-100" *ngIf="mode == 2">
             <div
@@ -479,6 +481,60 @@
                 <div></div>
                 <div></div>
                 <div></div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="w-100 h-100 animate__animated animate__fadeIn animate__faster animate__delay-0s"
+            *ngIf="mode == 5"
+          >
+            <div
+              class="w-100 h-100 d-flex flex-column justify-content-center align-items-center"
+            >
+              <div
+                class="m-0 m-md-5 px-md-2 d-flex flex-column justify-content-center align-items-center"
+              >
+                <img
+                  loading="lazy"
+                  [useSrcset]="true"
+                  [defaultImage]="'/assets/default.png'"
+                  [lazyLoad]="'assets/order_success.png'"
+                  style="aspect-ratio: 1; object-fit: contain; height: 75px"
+                />
+
+                <h1
+                  class="w-100 text-center fw-bolder mt-3"
+                  style="color: #34cc73; font-size: xx-large"
+                >
+                  Success
+                </h1>
+                <p
+                  class="w-100 text-center mt-2 text-secondary"
+                  style="
+                    font-size: small;
+                    font-weight: lighter;
+                    line-height: 1.5em;
+                  "
+                >
+                  Check your email:
+                  <span class="text-dark">{{
+                    billingDetails.billing_address.email
+                  }}</span>
+                  <br />
+                  for details on your NFT order.
+                </p>
+                <div
+                  class="card bg-dark rounded p-3 px-4 w-auto mt-2"
+                  role="button"
+                  (click)="viewOrderDetails()"
+                >
+                  <p
+                    class="w-100 my-auto text-light fw-bolder"
+                    style="font-size: 20px"
+                  >
+                    View Details
+                  </p>
+                </div>
               </div>
             </div>
           </div>

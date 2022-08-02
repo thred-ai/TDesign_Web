@@ -133,7 +133,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   day = this.today.getDate();
 
   dateRange = new FormGroup({
-    start: new FormControl(this.loadService.addDays(this.today, (-(this.day))+1)),
+    start: new FormControl(this.loadService.addDays(this.today, -this.day + 1)),
     end: new FormControl(new Date(this.year, this.month, this.day)),
   });
 
@@ -171,11 +171,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       let start = dateRangeStart.value;
       let end = dateRangeEnd.value;
 
-      console.log(start);
-      console.log(end);
-
       this.loadStats();
-
     }
   }
 
@@ -2395,8 +2391,6 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   scrollToLocation(val?: any) {
-
-    console.log(val)
     if (val) {
       let loc = val;
       let coords = loc.coords;
@@ -2683,19 +2677,18 @@ export class AdminViewComponent implements OnInit, OnDestroy {
 
   createNewNFT(selected: any) {
     // if (!this.isSignedIn()){ return }
-    if (selected.id){
+    if (selected.id) {
       let col = this.collections?.find(
         (c) => c.NFTs[`${selected.id}`] != undefined
       );
       if (col) {
         selected = {
           asset: col?.NFTs[`${selected.id}`],
-          contract: col
-        }
+          contract: col,
+        };
         this.cdr.detectChanges();
-      }
-      else{
-        return
+      } else {
+        return;
       }
     }
     selected.utils = this.utilities ?? [];
@@ -2727,7 +2720,10 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         let same = this.collections?.findIndex(
           (c) => c.contract == col.address
         );
-        this.collections![same!].NFTs[col.docID!] = col;
+        if (this.collections![same!].NFTs == undefined) {
+          this.collections![same!].NFTs == {};
+        }
+        this.collections![same!].NFTs[`${col.docID!}`] = col;
         this.collections![same!].collectionCount! += 1;
 
         this.cdr.detectChanges();

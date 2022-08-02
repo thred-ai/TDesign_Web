@@ -76,7 +76,6 @@ export class PaymentCollectionComponent implements OnInit {
 
   creditCardNumberSpacing() {
     const input = this.ccNumberField?.nativeElement;
-    console.log(input);
     const { selectionStart } = input;
     const { cardNumber } = this.paymentForm.controls;
 
@@ -112,7 +111,6 @@ export class PaymentCollectionComponent implements OnInit {
 
   creditCardExpiryFormat() {
     const input = this.ccExpiryField?.nativeElement;
-    console.log(input);
     const { selectionStart } = input;
     const expiryDate = this.paymentForm.controls.expiryDate;
 
@@ -134,7 +132,6 @@ export class PaymentCollectionComponent implements OnInit {
       position += partition;
     });
 
-    console.log(numbers);
     expiryDate.setValue(numbers.join('/'));
 
     /* Handle caret position if user edits the number later */

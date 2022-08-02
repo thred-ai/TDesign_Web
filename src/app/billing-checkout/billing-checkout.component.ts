@@ -299,7 +299,6 @@ export class BillingCheckoutComponent implements OnInit {
       //       );
       //     })?.abbreviation ?? 'ON';
       // }
-      console.log(f.country.value);
 
       let name = ((f.cardholder.value ?? '').split(' ') as string[]) ?? [];
 
