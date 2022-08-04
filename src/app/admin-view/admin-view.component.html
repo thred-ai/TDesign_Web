@@ -126,7 +126,6 @@
                 </div>
                 <div class="big-design-card my-0 px-0">
                   <app-data-table
-                  
                     [analytics]="{
                       name: 'Activity',
                       locData: (views | location),
@@ -173,10 +172,7 @@
                             <mat-icon
                               [inline]="true"
                               class="me-2 my-0 d-flex justify-content-center align-items-center px-1 rounded-circle"
-                              style="
-                                background-color: #ff003f;
-                                aspect-ratio: 1;
-                              "
+                              style="background-color: #ff003f; aspect-ratio: 1"
                             >
                             </mat-icon>
                             <p
@@ -314,20 +310,56 @@
             </div>
           </div>
 
-          <div class="comp" *ngIf="collections && collections!.length == 0">
-            <div class="big-design-card">
-              <div class="big-design-header">
-                <p class="big-design-title">No NFT Collections</p>
-                <a class="big-design-button" (click)="createNewProduct()">
-                  Create New
-                </a>
+          <div
+            *ngIf="collections && collections!.length == 0"
+            class="px-2 mt-0 pt-0 w-100"
+          >
+            <div class="w-100 h-100 py-5 pt-3 px-4">
+              <div
+                class="d-flex justify-content-between align-items-center py-2"
+                style="width: 100%"
+              >
+                <p
+                  class="big-design-title"
+                  style="
+                    font-weight: lighter;
+                    font-size: 2rem;
+                    font-weight: 300;
+                    line-height: 2.5rem;
+                  "
+                >
+                  Collections
+                </p>
+                <p
+                  (click)="createNewProduct()"
+                  class="big-design-alt-button ps-2"
+                  style="right: 0px; margin-right: 0px"
+                  matTooltip="Create New Collection"
+                >
+                  <mat-icon class="h-100 me-1" style="aspect-ratio: 1">
+                    add
+                  </mat-icon>
+                  Add new
+                </p>
               </div>
-              <div class="big-design-body">
-                <img
-                  class="rounded w-100 mt-3"
-                  style="object-fit: contain"
-                  src="assets/car_preview.gif"
-                />
+              <div class="mb-4 mt-1 big-design-card px-0" style="height: 400px" role="button" (click)="createNewProduct()">
+                <div
+                  class="big-design-body px-4 pb-2 d-flex justify-content-center align-items-center h-100 w-100"
+                >
+                  <p
+                    class="w-100 text-center big-design-title my-2"
+                    style="font-size: large"
+                  >
+                    No Collections
+                  </p>
+                </div>
+                <!-- <app-collection-table
+                  [collection]="collection"
+                  [count]="collection.collectionCount ?? 0"
+                  [utility]="utilities ?? []"
+                  (viewNFT)="createNewNFT($event)"
+                >
+                </app-collection-table> -->
               </div>
             </div>
           </div>
@@ -518,7 +550,7 @@
               </div>
             </div>
 
-            <div class="big-design-card mx-0" *ngIf="billingInfo != undefined">
+            <!-- <div class="big-design-card mx-0" *ngIf="billingInfo != undefined">
               <div class="big-design-header">
                 <p class="big-design-title">Payment Methods</p>
                 <a
@@ -556,7 +588,9 @@
               <div class="big-design-body" *ngIf="billingInfo == ''">
                 This card will be used for your Thred Merchant Plan.
               </div>
-            </div>
+            </div> -->
+
+
           </div>
         </div>
       </mat-tab>

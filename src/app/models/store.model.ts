@@ -261,42 +261,42 @@ export class Store {
     this.popups = popups ?? [];
 
     this.pages = pages ?? [
-      new Page(
-        'home',
-        'Home',
-        undefined,
-        '1',
-        'home',
-        homeRows ?? [new Row('NEW COLLECTION', undefined, 0, 0, undefined, 4)],
+      // new Page(
+      //   'home',
+      //   'Home',
+      //   undefined,
+      //   '1',
+      //   'home',
+      //   homeRows ?? [new Row('NEW COLLECTION', undefined, 0, 0, undefined, 4)],
         
-      ),
-      new Page('about', 'About', undefined, '2', 'about', [
-        new Row(
-          'ABOUT US',
-          undefined,
-          undefined,
-          2,
-          undefined,
-          1,
-          '<div style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;text-align: center;"><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;font-family: &quot;' +
-            this.fontName +
-            '&quot;; font-size: 36px;"><br></font></span></div><div class="text-' +
-            this.colorStyle.text_code +
-            '" style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;text-align: center;"><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;font-family: &quot;' +
-            this.fontName +
-            '&quot;; font-size: 18px;">' +
-            this.bio +
-            '</font></span></div>',
-          undefined,
-          [],
-          []
-        ),
-        // new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
-        // new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
-      ]),
-      new Page('collections', 'Collections', '3', undefined, 'collections', [
-        new Row('All Collections', undefined, 2, 0, undefined, 4),
-      ]),
+      // ),
+      // new Page('about', 'About', undefined, '2', 'about', [
+      //   new Row(
+      //     'ABOUT US',
+      //     undefined,
+      //     undefined,
+      //     2,
+      //     undefined,
+      //     1,
+      //     '<div style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;text-align: center;"><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;font-family: &quot;' +
+      //       this.fontName +
+      //       '&quot;; font-size: 36px;"><br></font></span></div><div class="text-' +
+      //       this.colorStyle.text_code +
+      //       '" style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;text-align: center;"><span style="overflow-wrap: break-word;overflow-wrap: break-word;overflow-wrap: break-word;font-family: &quot;' +
+      //       this.fontName +
+      //       '&quot;; font-size: 18px;">' +
+      //       this.bio +
+      //       '</font></span></div>',
+      //     undefined,
+      //     [],
+      //     []
+      //   ),
+      //   // new Row(undefined, undefined, undefined, 1, [this.homeLink?.toString() ?? ""], 1),
+      //   // new Row('HOTTEST PRODUCTS', undefined, 1, 0, undefined, 4),
+      // ]),
+      // new Page('collections', 'Collections', '3', undefined, 'collections', [
+      //   new Row('All Collections', undefined, 2, 0, undefined, 4),
+      // ]),
     ];
 
     this.orders = orders ?? 0;

@@ -735,6 +735,7 @@ export class LoadService {
                 callback(uid, undefined);
                 return;
               } else {
+                console.log(resp)
                 let user = await this.auth.signInWithCustomToken(resp);
                 callback(user.user?.uid, undefined);
               }
@@ -1512,6 +1513,7 @@ export class LoadService {
   async getPaymentMethods(uid = Globals.storeInfo.uid, callback: (info?: any[]) => any) {
 
     if (uid && uid !== ''){
+      console.log(uid)
       this.functions
       .httpsCallable('getPaymentMethods')({ uid })
       .pipe(first())

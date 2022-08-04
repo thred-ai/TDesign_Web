@@ -2572,6 +2572,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
   }
 
   downloadAllStoreInfo(storeName: string, isCustom = false) {
+    console.log(storeName)
     this.loadService.getUser(storeName, undefined, isCustom, (store) => {
       this.callback();
     });
