@@ -565,7 +565,7 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   viewOrderDetails() {
-    let url = `https://${Globals.ngrokId}/claim/${
+    let url = `https://${'shopmythred.com'}/claim/${
       this.productToBuy?.docID
     }`;
     window.parent.parent.postMessage(
