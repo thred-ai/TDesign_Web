@@ -79,6 +79,7 @@
               <div
                 class="card border-0 border-md rounded-pill bg-white p-3 px-4 ms-md-2 mt-3 mt-md-auto"
                 style="width: fit-content"
+                *ngIf="productToBuy?.status == 0"
               >
                 <p class="w-100 my-auto" style="font-size: 20px">
                   {{
