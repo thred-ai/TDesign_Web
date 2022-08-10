@@ -283,8 +283,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     Globals.sInfo.subscribe((s) => {
       this.storeInfo = s;
     });
-
-
     this.init();
   }
 
