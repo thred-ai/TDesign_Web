@@ -63,7 +63,10 @@ export class CreateCryptoComponent implements OnInit {
   ) {
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
-    this.utility = data.utils.filter((u: any) => u.active) ?? [];
+    this.utility =
+      (this.data.asset
+        ? data.utils
+        : this.data.utils?.filter((u: any) => u.active)) ?? [];
     // currency: col!.currency
     let pipe = new CurrencyPipe(localId);
 
@@ -152,7 +155,7 @@ export class CreateCryptoComponent implements OnInit {
           'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Resources/site-demo/street.hdr'
       );
       this.skyBoxDisplay = nft.skybox;
-      console.log(nft.skybox)
+      console.log(nft.skybox);
 
       this.utility.forEach((u) => {
         if (this.data.asset.info.utility?.find((a: any) => a.code == u.code)) {
