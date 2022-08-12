@@ -11,6 +11,8 @@
   <h2 class="big-design-input-title">New Collection</h2>
 
   <div class="d-flex justify-content-end align-items-top">
+
+    
     <a role="button" (click)="save()" class="big-design-alt-button me-1">
       {{ saving ? "Saving" : "Save" }}
       <div class="big-design-alt-button-spinner" [hidden]="!saving">
@@ -20,6 +22,7 @@
         <div></div>
       </div>
     </a>
+
     <a role="button" (click)="closeDialog()" class="big-design-button ms-1">
       Close
     </a>

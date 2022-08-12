@@ -11486,6 +11486,11 @@ mat-sidenav-content {
   }
 }
 
+.mat-form-field-no-padding .mat-form-field-wrapper {
+  margin-bottom: -1.25em;
+  margin-top: -1.25em;
+}
+
 .big-design-card {
   padding: 1.5rem;
   border-radius: 0.25rem;
@@ -11501,10 +11506,6 @@ mat-sidenav-content {
   text-align: start;
 }
 
-.mat-form-field-no-padding .mat-form-field-wrapper {
-  margin-bottom: -1.25em;
-  margin-top: -1.25em;
-}
 
 .big-design-link-text {
   color: rgb(85, 120, 246);
@@ -11795,11 +11796,6 @@ mat-sidenav-content {
   background-color: rgb(10, 56, 217);
 }
 
-.light-btn {
-  color: white;
-  border-color: white;
-}
-
 @keyframes lds-ring {
   0% {
     transform: rotate(0deg);
@@ -11807,4 +11803,9 @@ mat-sidenav-content {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.light-btn {
+  color: white;
+  border-color: white;
 }
