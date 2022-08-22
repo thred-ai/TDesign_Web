@@ -1,12 +1,8 @@
 import { NFT } from './nft.model';
 import { ethers } from 'ethers';
 import { Dict } from '../services/load.service';
-import { Globals } from '../globals';
-import { environment } from 'src/environments/environment';
-import { A } from '@angular/cdk/keycodes';
 var abi = require('human-standard-token-abi');
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
-const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 export interface ICollection {
   name: string;

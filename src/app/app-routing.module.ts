@@ -3,6 +3,7 @@ import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { AuthComponent } from './auth/auth.component';
 import { Globals } from './globals';
 import { ItemClaimComponent } from './item-claim/item-claim.component';
+import { TokenGateMenuComponent } from './token-gate-menu/token-gate-menu.component';
 
 var routes: Routes = [
   // {
@@ -15,6 +16,7 @@ var routes: Routes = [
   { path: 'api/auth', component: AuthComponent, pathMatch: 'full' },
   { path: 'api/load', component: AuthComponent, pathMatch: 'full' },
   { path: 'claim/:product', component: ItemClaimComponent, pathMatch: 'full' },
+  { path: 'tg/:url', component: TokenGateMenuComponent, pathMatch: 'full' },
   { path: ':user', redirectTo: '/:user/home', pathMatch: 'full' },
   {
     path: ':user/nft/:product',

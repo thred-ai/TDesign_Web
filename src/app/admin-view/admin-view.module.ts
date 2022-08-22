@@ -41,7 +41,6 @@ import { CreateCryptoComponent } from '../create-crypto/create-crypto.component'
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { CreateCollectionComponent } from '../create-collection/create-collection.component';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { NftAdminUpdateComponent } from '../nft-admin-update/nft-admin-update.component'; // <-- import it
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { BillingAdminModule } from '../billing-admin/billing-admin.module';
 import { EditPlanComponent } from '../edit-plan/edit-plan.component';
@@ -73,7 +72,6 @@ const routes: Routes = [
     MapPopupComponent,
     CreateCryptoComponent,
     CreateCollectionComponent,
-    NftAdminUpdateComponent,
     EditPlanComponent,
     ViewCoordComponent,
     StatusComponent,

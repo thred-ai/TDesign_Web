@@ -266,8 +266,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
   resize(height = document.documentElement.getBoundingClientRect().height) {
-    
-    window.parent.postMessage(height, '*');
+    window.parent.postMessage({ height }, '*');
   }
 
   ngOnDestroy(): void {
@@ -303,10 +302,10 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         '/' + this.getStoreName().link + '/',
         ''
       )}`,
-      store: Globals.storeInfo
+      store: Globals.storeInfo,
     };
 
-    if (isPlatformBrowser(this.platformID)){
+    if (isPlatformBrowser(this.platformID)) {
       window.parent.parent.postMessage(
         {
           open: `${this.utf8ToHex(JSON.stringify(data))}`,
@@ -317,7 +316,7 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
         '*'
       );
     }
-    
+
     // const modalRef = this.dialog.open(, {
     //   width: '97.5vw',
     //   height: '97.5vh',
@@ -344,7 +343,6 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
     //   }
     // });
   }
-
 
   selectedIndicator() {
     if (!Globals.storeInfo) {

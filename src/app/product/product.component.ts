@@ -38,8 +38,6 @@ import { Collection } from '../models/collection.model';
 import { ethers, BigNumber } from 'ethers';
 import { MatAccordion } from '@angular/material/expansion/accordion';
 import { MatDialogRef, MatDialog } from '@angular/material/dialog';
-import { NftBuyComponent } from '../nft-buy/nft-buy.component';
-import { NftUpdateComponent } from '../nft-update/nft-update.component';
 import { from, Subscription } from 'rxjs';
 import detectEthereumProvider from '@metamask/detect-provider';
 import axios from 'axios';
@@ -258,35 +256,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.rootComponent.loggedIn;
   }
 
-  async updateNFT() {
-    let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
-
-    try {
-      await this.setProvider();
-    } catch (error) {
-      console.log(error);
-    }
-
-    const modalRef = this.dialog.open(NftUpdateComponent, {
-      width: '97.5vw',
-      height: '87.5vh',
-      maxHeight: '100vh',
-      maxWidth: '100vw',
-      panelClass: 'app-full-bleed-dialog',
-      data: {
-        nft: product,
-        collection: this.collection,
-        provider: Globals.provider,
-      },
-    });
-    let sub = modalRef.afterClosed().subscribe((resp) => {
-      sub.unsubscribe();
-      if (resp as NFT) {
-        this.productToBuy = resp as NFT;
-      } else {
-      }
-    });
-  }
 
   viewTxPolygonScan(log: NftLog) {
     if (!log.txHash) {
@@ -831,102 +800,6 @@ export class ProductComponent implements OnInit, AfterViewInit, OnDestroy {
     Globals.provider = await Globals.initializeProvider();
   }
 
-  async addToCart() {
-    // if (this.productToBuy.product == undefined)return;
-
-    // this.productToBuy.product = JSON.parse(JSON.stringify(this.productToBuy.product))
-
-    let product = JSON.parse(JSON.stringify(this.productToBuy)) as NFT;
-
-    var signer = await Globals.provider?.getSigner();
-
-    if (!signer) {
-      try {
-        await this.setProvider();
-        signer = await Globals.provider?.getSigner();
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    const modalRef = this.dialog.open(NftBuyComponent, {
-      width: '750px',
-      maxHeight: '100vh',
-      maxWidth: '100vw',
-      panelClass: 'app-full-bleed-dialog',
-      data: {
-        nft: product,
-        collection: this.collection,
-        signer: signer,
-      },
-    });
-    let sub = modalRef.afterClosed().subscribe(async (resp) => {
-      sub.unsubscribe();
-      if (resp) {
-        this.productToBuy = resp.nft as NFT;
-        this.loadService.openSnackBar('Transaction Sent!');
-        if (this.productToBuy?.tokenId && resp.tx) {
-          // await resp.tx.wait()
-          // this.loadService.openSnackBar('NFT Purchased!')
-          // this.productToBuy.seller = await this.collection?.ownerOf(
-          //   this.productToBuy.tokenID,
-          //   Globals.provider
-          // );
-          // this.nftLogs.push(
-          //   new NftLog('sale', this.productToBuy.seller, seller, 0, product.price, new Date(), resp.tx.hash)
-          // );
-          // this.nftLogs.push(
-          //   new NftLog('transfer', seller, product.seller, 0, '', new Date(), resp.tx.hash)
-          // );
-          this.cdr.detectChanges();
-        }
-      } else {
-      }
-    });
-
-    // let mappedData = {
-    //   WALLET: product.owner,
-    //   Timestamp: new Date(),
-    //   Post_ID: product.contractID + String(product.tokenID),
-    // };
-
-    // if (await this.loadService.authenticated()) {
-    //   await this.loadService.addToCart(mappedData);
-    // } else {
-    //   let ngbModalOptions: NgbModalOptions = {
-    //     size: 'lg',
-    //   };
-
-    //   const modalRef = this.modalService.open(LoginComponent, ngbModalOptions);
-
-    //   let sub = modalRef.dismissed.subscribe((result: string) => {
-    //     if (result == 'success') {
-    //       this.closeBtn();
-    //     }
-    //     sub.unsubscribe();
-    //   });
-
-    //   modalRef.componentInstance.authMode = 1;
-    // }
-
-    // let data = {
-    //     "Cart_List" : FieldValue.arrayUnion([mappedData])
-    // }
-
-    // // Analytics.logEvent("added_to_cart", parameters: [
-    // //     "name": "Add to Cart",
-    // //     "full_text": "User added to cart"
-    // // ])
-
-    // Firestore.firestore().collection("Users/\(uid)/Cart_Info").document("Cart_List").setData(data, merge: true, completion: { error in
-    //     if let err = error{
-    //         completed()
-    //         print(err.localizedDescription)
-    //     }
-    //     else{
-    //         completed()
-    //     }
-    // })
-  }
 
   copied = false;
   url = '';

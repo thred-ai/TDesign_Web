@@ -19,6 +19,7 @@ export class ItemClaimComponent implements OnInit {
   collection?: Collection;
   claimed = false;
   loadingInfo = false;
+  loading?: boolean = false;
 
   constructor(
     private loadService: LoadService,
@@ -65,7 +66,6 @@ export class ItemClaimComponent implements OnInit {
 
   provider?: ethers.providers.Web3Provider;
   address?: string;
-  loading?: boolean = false;
 
   disconnectWallet() {
     this.provider = undefined;

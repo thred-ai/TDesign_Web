@@ -683,57 +683,6 @@
       ],
       "artifacts": []
     },
-    "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ThredMarketplace/ThredMarketplace.sol": {
-      "lastModificationDate": 1659208620268,
-      "contentHash": "60db91024e5d08e1ddeb53bd3d79b2ae",
-      "sourceName": "contracts/ThredMarketplace/ThredMarketplace.sol",
-      "solcConfig": {
-        "version": "0.8.3",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata",
-                "storageLayout"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/ERC20.sol",
-        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
-        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
-        "hardhat/console.sol",
-        "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol",
-        "@openzeppelin/contracts/utils/Strings.sol",
-        "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
-        "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol",
-        "@openzeppelin/contracts/utils/math/SafeMath.sol",
-        "@openzeppelin/contracts/utils/Counters.sol",
-        "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
-        "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol",
-        "../ERC721Merchant/ERC721Merchant.sol",
-        "../ERC1155Merchant/ERC1155Merchant.sol"
-      ],
-      "versionPragmas": [
-        ">=0.7.0"
-      ],
-      "artifacts": [
-        "ThredMarketplace"
-      ]
-    },
     "/Users/artakoroushnia/Desktop/SHOPMYTHRED/node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol": {
       "lastModificationDate": 1647022675446,
       "contentHash": "bab063ddd80e9cc9e313361fef7ef07f",
@@ -1684,6 +1633,53 @@
       ],
       "artifacts": [
         "ContextUpgradeable"
+      ]
+    },
+    "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ThredInfra/ThredInfra.sol": {
+      "lastModificationDate": 1661142042536,
+      "contentHash": "77d0db27d71cf4ed8f2f384a1521f8e2",
+      "sourceName": "contracts/ThredInfra/ThredInfra.sol",
+      "solcConfig": {
+        "version": "0.8.3",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
+        "hardhat/console.sol",
+        "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol",
+        "@openzeppelin/contracts/utils/Strings.sol",
+        "@openzeppelin/contracts/utils/math/SafeMath.sol",
+        "@openzeppelin/contracts/utils/Counters.sol",
+        "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
+        "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol",
+        "../ERC721Merchant/ERC721Merchant.sol",
+        "../ERC1155Merchant/ERC1155Merchant.sol"
+      ],
+      "versionPragmas": [
+        ">=0.7.0"
+      ],
+      "artifacts": [
+        "ThredInfra"
       ]
     }
   }

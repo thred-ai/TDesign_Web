@@ -7,9 +7,7 @@ import { Collection } from '../models/collection.model';
 import { LoadService, Dict } from '../services/load.service';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { thredMarketplace } from 'config';
 const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
-const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 @Component({
   selector: 'app-create-collection',

@@ -15,12 +15,10 @@ import { DragScrollModule } from 'ngx-drag-scroll';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ApplicationPipesModule } from '../shared/applicationPipes.module';
 import { MatTableModule } from '@angular/material/table';
-import { NftBuyComponent } from '../nft-buy/nft-buy.component';
-import { NftUpdateComponent } from '../nft-update/nft-update.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxCurrencyModule } from 'ngx-currency';
 import { MatRadioModule } from '@angular/material/radio';
-import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { NftInfoComponent } from './nft-info/nft-info.component'; // <-- import it
 import { SharedModule } from '../shared/shared.module'; // <-- import it
 import { MatTabsModule } from '@angular/material/tabs';
@@ -43,8 +41,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ProductComponent,
-    NftBuyComponent,
-    NftUpdateComponent,
     NftInfoComponent,
     PaymentMethodComponent,
     BillingCheckoutComponent,

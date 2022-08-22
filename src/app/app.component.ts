@@ -337,6 +337,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       );
   }
 
+  routeToTG() {
+    if (Globals.storeInfo?.username)
+      this.routingService.routeToHome(
+        Globals.storeInfo?.username,
+        this.getStoreName().isCustom
+      );
+  }
+
   routeToImgLink(link?: string) {
     this.setOptions();
     if (Globals.storeInfo?.username && link)
@@ -821,14 +829,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   async setProvider() {
-    if (window.ethereum && (window.ethereum as any).selectedAddress) {
-      Globals.provider = new ethers.providers.Web3Provider(
-        window.ethereum,
-        'any'
-      );
+    // if (window.ethereum && (window.ethereum as any).selectedAddress) {
+    //   Globals.provider = new ethers.providers.Web3Provider(
+    //     window.ethereum,
+    //     'any'
+    //   );
 
-      // console.log(Globals.provider)
-    }
+    //   // console.log(Globals.provider)
+    // }
   }
 
   get loggedIn() {

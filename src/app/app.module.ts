@@ -40,6 +40,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatNativeDateModule } from '@angular/material/core';
 import { ItemClaimComponent } from './item-claim/item-claim.component';
+import { TokenGateMenuComponent } from './token-gate-menu/token-gate-menu.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -47,13 +49,14 @@ import { ItemClaimComponent } from './item-claim/item-claim.component';
     PhoneMaskDirective,
     AuthComponent,
     ItemClaimComponent,
+    TokenGateMenuComponent
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     AppRoutingModule,
-
+    MatTooltipModule,
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,

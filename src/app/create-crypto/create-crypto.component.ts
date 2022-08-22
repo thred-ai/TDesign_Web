@@ -20,7 +20,6 @@ import { CurrencyMaskInputMode } from 'ngx-currency';
 import { NFT } from '../models/nft.model';
 import { Globals } from '../globals';
 import { ethers, BigNumber } from 'ethers';
-const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
 
 import { LazyMinter, NFTVoucher } from 'LazyMinter';
 import { Dict, LoadService } from '../services/load.service';
@@ -29,7 +28,7 @@ import { Collection } from '../models/collection.model';
 import { Store } from '../models/store.model';
 import { NgxSpinnerService } from 'ngx-spinner';
 import axios from 'axios';
-import { thredMarketplace } from 'config';
+import { thredInfra } from 'config';
 import { NgxDropzoneComponent } from 'ngx-dropzone';
 import { CurrencyPipe } from '@angular/common';
 import { local } from 'web3modal';

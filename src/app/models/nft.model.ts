@@ -1,5 +1,5 @@
 import { Dict } from '../services/load.service';
-import { erc721Merchant, thredMarketplace } from 'config';
+import { erc721Merchant, thredInfra } from 'config';
 import { ethers } from 'ethers';
 
 export class NFT {

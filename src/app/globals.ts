@@ -12,6 +12,9 @@ import { StoreTheme } from './models/theme.model';
 import { Dict } from './services/load.service';
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import Authereum from "authereum";
+
 import Web3Modal from 'web3modal';
 import { BehaviorSubject } from 'rxjs';
 
@@ -19,7 +22,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class Globals {
-  public static ngrokId = 'cb38-2607-fea8-bd80-500-b91d-2951-dc26-3170.ngrok.io';
+  public static ngrokId = '7f4a-137-122-64-156.ngrok.io';
 
   public static sInfo = new BehaviorSubject<Store>(new Store());
 
@@ -120,6 +123,9 @@ export class Globals {
           description: 'Scan with a wallet to connect',
         },
       },
+      authereum: {
+        package: Authereum // required
+      }
     };
 
     const web3Modal = new Web3Modal({

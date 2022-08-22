@@ -43,7 +43,7 @@ import { Popup } from '../models/popup.model';
 import { Row } from '../models/row.model';
 import { Page } from '../models/page.model';
 import { HttpClient } from '@angular/common/http';
-import { nftaddress, thredMarketplace } from 'config';
+import { nftaddress, thredInfra } from 'config';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { environment } from 'src/environments/environment';
@@ -54,14 +54,9 @@ import detectEthereumProvider from '@metamask/detect-provider';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NetworkCheckPipe } from '../network-check.pipe';
-import { LazyMinter } from 'LazyMinter';
-import { create } from 'ipfs-http-client';
 import { Plan } from '../models/plan.model';
-import { DateConstructPipe } from '../date-construct.pipe';
-const client = create('https://ipfs.infura.io:5001/api/v0' as any); // eslint-disable-line no-use-before-define
 
-const ERC721_MERCHANT = require('artifacts/contracts/ERC721Merchant/ERC721Merchant.sol/ERC721Merchant.json');
-const THRED_MARKET = require('artifacts/contracts/ThredMarketplace/ThredMarketplace.sol/ThredMarketplace.json');
+const THRED_CONTRACT = require('artifacts/contracts/ThredInfra/ThredInfra.sol/ThredInfra.json');
 
 export interface Dict<T> {
   [key: string]: T;
@@ -735,7 +730,7 @@ export class LoadService {
                 callback(uid, undefined);
                 return;
               } else {
-                console.log(resp)
+                console.log(resp);
                 let user = await this.auth.signInWithCustomToken(resp);
                 callback(user.user?.uid, undefined);
               }
@@ -924,146 +919,46 @@ export class LoadService {
     });
   }
 
-  async getCollectionInfo(
-    contract: string,
-    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
-    )
+  async checkTokenGate(
+    assets: Dict<{
+      nft: NFT;
+      collection: Collection;
+    }>,
+    provider?: ethers.providers.Web3Provider
   ) {
-    if (isPlatformServer(this.platformID)) {
-      return undefined;
-    }
-
-    const marketContract = new ethers.Contract(
-      thredMarketplace,
-      THRED_MARKET.abi,
-      provider
+    let items: readonly {
+      contractAddress: string;
+      ownerAddress: string;
+      tokenId: number;
+    }[] = Object.freeze(
+      Object.values(assets).map((a) => {
+        return {
+          contractAddress: ethers.utils.getAddress(a.collection.contract),
+          ownerAddress: ethers.utils.getAddress(ethers.constants.AddressZero),
+          tokenId: a.nft.tokenId,
+        };
+      })
     );
 
-    const data2 = await marketContract.fetchCollectionInfo(contract, 0);
+    let signer = Object.freeze(provider?.getSigner());
 
-    return data2;
+    const contract = Object.freeze(
+      new ethers.Contract(thredInfra, THRED_CONTRACT.abi, signer)
+    );
+
+    return contract.checkTokenGate(items, await signer?.getAddress());
   }
 
-  async getItemOwner(item: NFT, collection: Collection){
-    let provider = new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
-    )
+  async getItemOwner(item: NFT, collection: Collection) {
+    let provider = new ethers.providers.JsonRpcProvider(this.rpcEndpoint);
     const contract = new ethers.Contract(
       ethers.utils.getAddress(item.address),
       collection.ABI,
       provider
     );
     let owner = await contract.ownerOf(item.tokenId);
-    console.log(owner)
+    console.log(owner);
     return owner;
-  }
-
-  async getCreatedById(
-    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
-    ),
-    assets: {
-      tokenId: number;
-      contractAddress: any;
-    }[]
-  ) {
-    if (isPlatformServer(this.platformID)) {
-      return undefined;
-    }
-
-    const marketContract = new ethers.Contract(
-      thredMarketplace,
-      THRED_MARKET.abi,
-      provider
-    );
-
-    const data3 = await marketContract.fetchCollectionAssetsById(assets);
-
-    const i = data3[0];
-
-    if (i.seller == ethers.constants.AddressZero || i.minted == false) {
-      return;
-    }
-
-    let variations = i.variations ?? [];
-    let item = {
-      price: variations[0].price,
-      tokenId: i.tokenId.toNumber(),
-      seller: variations[0].seller,
-      owner: i.owner,
-      forSale: variations[0].forSale,
-      royalty: i.royalty,
-      contract: i.nftContract,
-      token: i.tokenContract,
-      isNative: i.isNative,
-      itemId: i.itemId,
-      minted: i.minted,
-    };
-    return {
-      tokens: item,
-    };
-  }
-
-  async getCreated(
-    contract: Collection,
-    nft: NFT,
-    provider: ethers.providers.Provider = new ethers.providers.JsonRpcProvider(
-      this.rpcEndpoint
-    )
-  ) {
-    if (isPlatformServer(this.platformID)) {
-      return undefined;
-    }
-
-    const marketContract = new ethers.Contract(
-      thredMarketplace,
-      THRED_MARKET.abi,
-      provider
-    );
-
-    const nftContract = new ethers.Contract(
-      contract.contract,
-      contract.ABI,
-      provider
-    );
-    const data3 = await marketContract.fetchCollectionAsset(
-      contract.contract,
-      nft.tokenId
-    );
-
-    const i = data3[0];
-
-    if (i.seller == ethers.constants.AddressZero || i.minted == false) {
-      return;
-    }
-    const tokenUri = await nftContract.tokenURI(Number(i.tokenId.toString()));
-
-    const meta = await axios.get(tokenUri);
-    let variations = i.variations ?? [];
-    let item = {
-      price: variations[0].price,
-      tokenId: i.tokenId.toNumber(),
-      seller: variations[0].seller,
-      owner: i.owner,
-      forSale: variations[0].forSale,
-      royalty: i.royalty,
-      image: meta.data.image,
-      content: await this.getFormat(meta.data.image),
-      name: meta.data.name,
-      description: meta.data.description,
-      contract: i.nftContract,
-      token: i.tokenContract,
-      isNative: i.isNative,
-      uri: tokenUri,
-      itemId: i.itemId,
-      minted: i.minted,
-    };
-    return {
-      // name: data1,
-      // symbol: data2,
-      tokens: item,
-    };
   }
 
   async getFormat(image: string, noLoad = false): Promise<string> {
@@ -1209,13 +1104,13 @@ export class LoadService {
     code: string,
     callback: (transferred: boolean) => any
   ) {
-    let address = await signer.getAddress()
+    let address = await signer.getAddress();
     this.functions
       .httpsCallable('transferItem')({
         signer: address,
         item: item.docID,
         uid: item.uid,
-        code: code
+        code: code,
       })
       .pipe(first())
       .subscribe(
@@ -1223,30 +1118,7 @@ export class LoadService {
           callback(resp);
         },
         (err) => {
-          callback(false)
-          console.log(err);
-        }
-      );
-  }
-
-  getTraitRarity(
-    nft: NFT,
-    collection: Collection,
-    callback: (traits: Dict<any>[]) => any
-  ) {
-    this.functions
-      .httpsCallable('getTraitRarity')({
-        token: nft.tokenId,
-        abi: THRED_MARKET.abi,
-        thredMarketplace,
-        address: collection.contract,
-      })
-      .pipe(first())
-      .subscribe(
-        async (resp) => {
-          callback(resp);
-        },
-        (err) => {
+          callback(false);
           console.log(err);
         }
       );
@@ -1510,22 +1382,24 @@ export class LoadService {
       );
   }
 
-  async getPaymentMethods(uid = Globals.storeInfo.uid, callback: (info?: any[]) => any) {
-
-    if (uid && uid !== ''){
-      console.log(uid)
+  async getPaymentMethods(
+    uid = Globals.storeInfo.uid,
+    callback: (info?: any[]) => any
+  ) {
+    if (uid && uid !== '') {
+      console.log(uid);
       this.functions
-      .httpsCallable('getPaymentMethods')({ uid })
-      .pipe(first())
-      .subscribe(
-        (resp) => {
-          callback(resp);
-        },
-        (err) => {
-          callback([]);
-          console.error({ err });
-        }
-      );
+        .httpsCallable('getPaymentMethods')({ uid })
+        .pipe(first())
+        .subscribe(
+          (resp) => {
+            callback(resp);
+          },
+          (err) => {
+            callback([]);
+            console.error({ err });
+          }
+        );
     }
   }
 
@@ -1547,13 +1421,13 @@ export class LoadService {
   async processOrder(data: any, callback: (error?: string) => any) {
     this.functions
       .httpsCallable('processOrder')(data)
-      .pipe(first()) 
+      .pipe(first())
       .subscribe(
         (resp) => {
           callback(resp);
         },
         (err) => {
-          callback("This item is not available");
+          callback('This item is not available');
           console.error({ err });
         }
       );
@@ -1587,7 +1461,7 @@ export class LoadService {
       abi,
       bytecode,
       domain,
-      thredMarketplace,
+      thredInfra,
       royaltyAddress,
       generatePage,
     };
@@ -1977,8 +1851,6 @@ export class LoadService {
     return k.toString();
   }
 
-  
-
   async deletePage(page: Page, callback: (success: boolean) => any) {
     this.functions
       .httpsCallable('deletePage')({
@@ -2340,8 +2212,8 @@ export class LoadService {
       ? ethers.constants.AddressZero
       : ethers.utils.getAddress(currency.token);
 
-    let admins = [thredMarketplace];
-    let minters = [wallet.address, thredMarketplace];
+    let admins = [thredInfra];
+    let minters = [wallet.address, thredInfra];
 
     const data = factory.getDeployTransaction(
       name,
