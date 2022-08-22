@@ -15,6 +15,7 @@ import { Dict } from '../services/load.service';
 export class TokenGateMenuComponent implements OnInit {
   loadingInfo = false;
   loading?: boolean = false;
+  success?: boolean = undefined;
   pageInfo: any;
   ids: string[] = [];
   items?:
@@ -67,20 +68,37 @@ export class TokenGateMenuComponent implements OnInit {
         let provider = await Globals.initializeProvider();
         this.provider = provider;
         this.address = await provider?.getSigner().getAddress();
-
-        this.loading = true;
-
-        const verified = Object.freeze({
-          url: this.pageInfo.url,
-          access: await this.loadService.checkTokenGate(this.items!, provider),
-        });
-
-        this.loading = false;
-
-        window.parent.postMessage(verified, '*');
       } catch (error) {
         console.log(error);
       }
+    }
+    this.loading = true;
+
+    try {
+      const verified = Object.freeze({
+        url: this.pageInfo.url,
+        access: await this.loadService.checkTokenGate(
+          this.items!,
+          this.provider
+        ),
+      });
+      this.loading = false;
+      this.success = verified.access;
+
+      setTimeout(() => {
+        if (!verified) {
+          this.success = undefined;
+          return;
+        }
+        window.parent.postMessage(verified, '*');
+      }, 1500);
+    } catch (error) {
+      this.loading = false;
+      this.success = false
+
+      setTimeout(() => {
+        this.success = undefined;
+      }, 1500);
     }
   }
 }
