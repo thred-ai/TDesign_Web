@@ -139,9 +139,6 @@ export class CreateCryptoComponent implements OnInit {
     }
   }
 
-  pageName(url: string){
-    return this.pages.find(p => p.url == url).url
-  }
 
   nftContract: Collection;
   provider?: ethers.providers.Web3Provider;
