@@ -309,13 +309,12 @@ export class CreateCryptoComponent implements OnInit {
       let ios_model = this.nftForm.controls.ios_model.value as File;
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       let tokenURL = this.nftForm.controls.tokenURL.value as string;
-      let urls = { ...this.selectedPages ?? [] }
-
+      let urls = { ...this.selectedPages.map(s => `${s}/`) ?? [] }
 
       console.log(urls)
 
-      return;
-
+      return 
+      
       this.isLoading = true;
 
       let img = this.save3DThumbnail();
