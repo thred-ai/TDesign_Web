@@ -67,6 +67,8 @@ export class CreateCryptoComponent implements OnInit {
   ) {
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
+
+    
     this.utility =
       (this.data.asset
         ? data.utils
