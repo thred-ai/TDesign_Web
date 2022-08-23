@@ -83,7 +83,7 @@ export class CreateCryptoComponent implements OnInit {
       map((fruit: string | null) =>
         fruit
           ? this._filter(fruit)
-          : this.pages.map(p => p.url).slice()
+          : this.pages.slice()
       )
     );
   }
