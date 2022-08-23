@@ -2539,6 +2539,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
       }
       if (!this.utilities) {
         this.loadService.getUtilities(async (utils?: Array<any>) => {
+          console.log(utils)
           if (!this.utilities) {
             this.utilities = utils ?? [];
           }
