@@ -68,11 +68,11 @@ export class CreateCryptoComponent implements OnInit {
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
 
-    
+
     this.utility =
       (this.data.asset
         ? data.utils
-        : data.utils?.filter((u: any) => u.active)) ?? [];
+        : data.utils?.filter((u: any) => u.available)) ?? [];
     // currency: col!.currency
     let pipe = new CurrencyPipe(localId);
 
