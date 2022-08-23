@@ -86,7 +86,7 @@ export class TokenGateMenuComponent implements OnInit {
       this.success = verified.access;
 
       setTimeout(() => {
-        if (!verified) {
+        if (!verified.access) {
           this.success = undefined;
           return;
         }
