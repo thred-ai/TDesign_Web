@@ -70,7 +70,7 @@ export class CreateCryptoComponent implements OnInit {
     this.utility =
       (this.data.asset
         ? data.utils
-        : this.data.utils?.filter((u: any) => u.active)) ?? [];
+        : data.utils?.filter((u: any) => u.active)) ?? [];
     // currency: col!.currency
     let pipe = new CurrencyPipe(localId);
 
