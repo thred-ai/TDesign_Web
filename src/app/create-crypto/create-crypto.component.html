@@ -232,7 +232,7 @@
                 />
               </mat-chip-list>
               <mat-autocomplete
-              [hidden]="(filteredPages | async).length > 0"
+              [hidden]="((filteredPages | async) ?? []).length > 0"
                 #auto="matAutocomplete"
                 (optionSelected)="selected($event)"
               >
