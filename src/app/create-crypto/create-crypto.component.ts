@@ -83,7 +83,7 @@ export class CreateCryptoComponent implements OnInit {
       map((fruit: string | null) =>
         fruit
           ? this._filter(fruit)
-          : this.pages.slice()
+          : this.pages.map(p => p.url).slice()
       )
     );
   }
@@ -107,7 +107,7 @@ export class CreateCryptoComponent implements OnInit {
     return returnArr;
   }
 
-  selectedPages: any[] = [];
+  selectedPages: string[] = [];
 
   add(event: MatChipInputEvent): void {
     const value = event.value || '';
@@ -131,12 +131,16 @@ export class CreateCryptoComponent implements OnInit {
     this.pageCtrl.setValue(null);
   }
 
-  remove(fruit: any): void {
+  remove(fruit: string): void {
     const index = this.selectedPages.indexOf(fruit);
 
     if (index >= 0) {
       this.selectedPages.splice(index, 1);
     }
+  }
+
+  pageName(url: string){
+    return this.pages.find(p => p.url == url)
   }
 
   nftContract: Collection;

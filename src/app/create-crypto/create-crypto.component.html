@@ -209,7 +209,7 @@
                   class="category-chip big-design-input-text"
                 >
                   <div class="category-chip__text">
-                    {{ page.url }}
+                    {{ pageName(page) }}
                   </div>
                   <button
                     matChipRemove
@@ -242,7 +242,7 @@
                 >
                   <mat-option
                     *cdkVirtualFor="let page of filteredPages | async"
-                    [value]="page"
+                    [value]="page.url"
                   >
                     <div
                       class="d-flex justify-content-start align-items-center w-100"
