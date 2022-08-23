@@ -89,6 +89,7 @@ export class CreateCryptoComponent implements OnInit {
   }
 
   private _filter(value: string): any[] {
+    console.log(value)
     const filterValue = value.toLowerCase();
 
     let newPages = this.pages.filter(
