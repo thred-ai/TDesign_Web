@@ -78,40 +78,43 @@ export class CreateCryptoComponent implements OnInit {
       pipe.transform(0, data.contract.currency ?? 'USD')?.replace('0.00', '') ??
       '$';
 
-      this.filteredPages = this.pageCtrl.valueChanges.pipe(
-        startWith(null),
-        map((fruit: string | null) =>
-          fruit
-            ? this._filter(fruit)
-            : Object.values(this.pages)
-                .map((c) => c.name)
-                .slice()
-        )
-      );
+    this.filteredPages = this.pageCtrl.valueChanges.pipe(
+      startWith(null),
+      map((fruit: string | null) =>
+        fruit
+          ? this._filter(fruit)
+          : Object.values(this.pages)
+              .map((c) => c.name)
+              .slice()
+      )
+    );
   }
 
   private _filter(value: string): any[] {
     const filterValue = ((value as string) ?? '').toLowerCase();
 
-
-    let page = this.pages.find(p => p.url.replace("/", "").toLowerCase().includes(filterValue) || p.name.toLowerCase().includes(filterValue))
-
+    let newPages = this.pages.filter(
+      (p) =>
+        p.url.replace('/', '').toLowerCase().includes(filterValue) ||
+        p.name.toLowerCase().includes(filterValue)
+    );
 
     var returnArr = new Array<any>();
 
-    if (page) {
-      returnArr.push(page);
-    }
+    newPages.forEach(p => {
+      returnArr.push(p);
+    })
+
     return returnArr;
   }
 
-  selectedPages: any[] = []
+  selectedPages: any[] = [];
 
   add(event: MatChipInputEvent): void {
-    const value = (event.value || '')
+    const value = event.value || '';
 
     this.selectedPages.push(value);
-    
+
     // Clear the input value
     event.chipInput!.clear();
     this.pageCtrl.setValue(null);
@@ -122,9 +125,7 @@ export class CreateCryptoComponent implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
 
   selected(event: MatAutocompleteSelectedEvent): void {
-  
-    this.pages.push(event.option.value);
-
+    this.selectedPages.push(event.option.value);
 
     this.productInput!.nativeElement.value = '';
 
@@ -186,7 +187,7 @@ export class CreateCryptoComponent implements OnInit {
   coverName?: string;
 
   utility: any[] = [];
-  pages: any[] = []
+  pages: any[] = [];
 
   // <p><mat-checkbox formControlName="pepperoni">Pepperoni</mat-checkbox></p>
   // <p><mat-checkbox formControlName="extracheese">Extra Cheese</mat-checkbox></p>
@@ -230,10 +231,10 @@ export class CreateCryptoComponent implements OnInit {
 
       this.nftForm.disable();
     } else {
-      this.laodService.getPages(info => {
-        this.pages = info ?? []
-        console.log(info)
-      })
+      this.laodService.getPages((info) => {
+        this.pages = info ?? [];
+        console.log(info);
+      });
     }
     // if (this.nftContract.currency)
     //   this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`;

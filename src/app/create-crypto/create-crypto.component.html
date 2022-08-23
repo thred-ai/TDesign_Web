@@ -202,7 +202,7 @@
             >
               <mat-chip-list #chipList aria-label="Product selection">
                 <mat-chip
-                  *ngFor="let page of pages ?? []"
+                  *ngFor="let page of selectedPages ?? []"
                   [selectable]="selectable"
                   [removable]="removable"
                   (removed)="remove(page)"
