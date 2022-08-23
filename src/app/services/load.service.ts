@@ -1685,6 +1685,7 @@ export class LoadService {
     utility: any[],
     ios_model: File,
     tokenURL: string | null = null,
+    tgUrls: any,
     callback: (nft?: NFT) => any
   ) {
     //add token later
@@ -1731,6 +1732,7 @@ export class LoadService {
           traits: traits && traits !== [] ? traits : undefined,
           utility,
           ios_model: url4,
+          tgUrls
         };
 
         const data2 = JSON.stringify(data1);
@@ -1758,6 +1760,7 @@ export class LoadService {
             utility,
             ios_model: url4,
             tokenURL,
+            tgUrls
           } as Dict<any>)
         );
 
