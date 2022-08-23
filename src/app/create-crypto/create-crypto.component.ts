@@ -83,9 +83,7 @@ export class CreateCryptoComponent implements OnInit {
       map((fruit: string | null) =>
         fruit
           ? this._filter(fruit)
-          : Object.values(this.pages)
-              .map((c) => c.name)
-              .slice()
+          : this.pages.slice()
       )
     );
   }
