@@ -197,7 +197,6 @@
               <mat-form-field
               class="w-100"
               appearance="outline"
-              [disabled]="data.asset"
               
             >
               <mat-chip-list #chipList aria-label="Product selection">
@@ -225,6 +224,7 @@
                   placeholder="Products"
                   #pageInput
                   [formControl]="pageCtrl"
+                  [disabled]="data.asset"
                   [matAutocomplete]="auto"
                   [matChipInputFor]="chipList"
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -263,24 +263,6 @@
                 </cdk-virtual-scroll-viewport>
               </mat-autocomplete>
             </mat-form-field>
-
-<!-- 
-              <mat-form-field
-                class="w-100"
-                appearance="outline"
-                floatLabel="never"
-                style="font-size: small"
-                [disabled]="data.asset"
-              >
-                <input
-                  matInput
-                  class="bg-transparent big-design-input-text"
-                  type="text"
-                  name="url"
-                  placeholder="URL"
-                  formControlName="tokenURL"
-                />
-              </mat-form-field> -->
             </div>
           </div>
         </div>

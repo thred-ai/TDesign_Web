@@ -232,6 +232,10 @@ export class CreateCryptoComponent implements OnInit {
         }
       });
 
+      let urls = Object.keys(nft.tgUrls)
+
+      this.selectedPages = urls ?? []
+
       this.nftForm.disable();
     } else {
       this.laodService.getPages((info) => {
