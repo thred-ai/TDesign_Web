@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { create } from 'ipfs-http-client';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 // import { Options } from 'ipfs-core/src/types';
 import {
   NgxFileDropEntry,
@@ -32,6 +32,11 @@ import { thredInfra } from 'config';
 import { NgxDropzoneComponent } from 'ngx-dropzone';
 import { CurrencyPipe } from '@angular/common';
 import { local } from 'web3modal';
+import { Observable } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ENTER, COMMA } from '@angular/cdk/keycodes';
 
 class SafeObjectUrl {
   url: any;
@@ -72,6 +77,66 @@ export class CreateCryptoComponent implements OnInit {
     this.customCurrencyMaskConfig.prefix =
       pipe.transform(0, data.contract.currency ?? 'USD')?.replace('0.00', '') ??
       '$';
+
+      this.filteredPages = this.pageCtrl.valueChanges.pipe(
+        startWith(null),
+        map((fruit: string | null) =>
+          fruit
+            ? this._filter(fruit)
+            : Object.values(this.pages)
+                .map((c) => c.name)
+                .slice()
+        )
+      );
+  }
+
+  private _filter(value: string): any[] {
+    const filterValue = ((value as string) ?? '').toLowerCase();
+
+
+    let page = this.pages.find(p => p.url.replace("/", "").toLowerCase().includes(filterValue) || p.name.toLowerCase().includes(filterValue))
+
+
+    var returnArr = new Array<any>();
+
+    if (page) {
+      returnArr.push(page);
+    }
+    return returnArr;
+  }
+
+  selectedPages: any[] = []
+
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '')
+
+    this.selectedPages.push(value);
+    
+    // Clear the input value
+    event.chipInput!.clear();
+    this.pageCtrl.setValue(null);
+  }
+
+  @ViewChild('pageInput') productInput?: ElementRef<HTMLInputElement>;
+
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+  
+    this.pages.push(event.option.value);
+
+
+    this.productInput!.nativeElement.value = '';
+
+    this.pageCtrl.setValue(null);
+  }
+
+  remove(fruit: any): void {
+    const index = this.selectedPages.indexOf(fruit);
+
+    if (index >= 0) {
+      this.selectedPages.splice(index, 1);
+    }
   }
 
   nftContract: Collection;
@@ -166,6 +231,7 @@ export class CreateCryptoComponent implements OnInit {
       this.nftForm.disable();
     } else {
       this.laodService.getPages(info => {
+        this.pages = info ?? []
         console.log(info)
       })
     }
@@ -178,6 +244,10 @@ export class CreateCryptoComponent implements OnInit {
   royaltyPlaceholder = 'Royalties %';
 
   traits = new Array<any>();
+  selectable = true;
+  removable = true;
+  pageCtrl = new FormControl();
+  filteredPages: Observable<any[]>;
 
   addTrait() {
     let trait = {

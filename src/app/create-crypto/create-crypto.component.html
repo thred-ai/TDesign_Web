@@ -194,7 +194,7 @@
               </h5>
 
 
-              <!-- <mat-form-field
+              <mat-form-field
               class="w-100"
               appearance="outline"
               [disabled]="data.asset"
@@ -202,14 +202,14 @@
             >
               <mat-chip-list #chipList aria-label="Product selection">
                 <mat-chip
-                  *ngFor="let product of prods ?? []"
+                  *ngFor="let page of pages ?? []"
                   [selectable]="selectable"
                   [removable]="removable"
-                  (removed)="remove(product)"
+                  (removed)="remove(page)"
                   class="category-chip big-design-input-text"
                 >
                   <div class="category-chip__text">
-                    {{ productName(product) }}
+                    {{ page.url }}
                   </div>
                   <button
                     matChipRemove
@@ -223,8 +223,8 @@
                 <input
                   class="big-design-input-text"
                   placeholder="Products"
-                  #productInput
-                  [formControl]="productCtrl"
+                  #pageInput
+                  [formControl]="pageCtrl"
                   [matAutocomplete]="auto"
                   [matChipInputFor]="chipList"
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -241,32 +241,30 @@
                   itemSize="35"
                 >
                   <mat-option
-                    *cdkVirtualFor="let product of filteredProducts | async"
-                    [value]="product.docID"
+                    *cdkVirtualFor="let page of filteredPages | async"
+                    [value]="page"
                   >
                     <div
                       class="d-flex justify-content-start align-items-center w-100"
                     >
-                      <img
+                      <!-- <img
                         id="image"
-                        class="{{
-                          (storeInfo?.colorStyle)!.back_code
-                        }} me-2 rounded big-design-input-text"
+                        class="me-2 rounded big-design-input-text"
                         [src]="product.img ?? ''"
                         style="
                           object-fit: cover;
                           width: 35px;
                           aspect-ratio: 1;
                         "
-                      />
-                      {{ product.name }}
+                      /> -->
+                      {{ page.name }}
                     </div>
                   </mat-option>
                 </cdk-virtual-scroll-viewport>
               </mat-autocomplete>
-            </mat-form-field> -->
+            </mat-form-field>
 
-
+<!-- 
               <mat-form-field
                 class="w-100"
                 appearance="outline"
@@ -282,7 +280,7 @@
                   placeholder="URL"
                   formControlName="tokenURL"
                 />
-              </mat-form-field>
+              </mat-form-field> -->
             </div>
           </div>
         </div>
