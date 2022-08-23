@@ -232,6 +232,7 @@ export class CreateCryptoComponent implements OnInit {
       let urls = Object.values(nft.tgUrls)
 
       this.selectedPages = urls ?? []
+      this.removable = false
 
       this.nftForm.disable();
     } else {
