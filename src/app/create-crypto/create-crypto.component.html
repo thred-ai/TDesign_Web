@@ -188,9 +188,9 @@
             </div>
 
             <div *ngIf="util.active && util.code == 'gate'" class="w-100 py-2">
-              <h2 class="big-design-input-title my-0">Linked URLs</h2>
+              <h2 class="big-design-input-title my-0">Linked Pages</h2>
               <h5 class="big-design-input-subtitle mt-0">
-                The URLs of the page this token is linked to.
+                URLs of the pages this token is linked to.
               </h5>
 
 
@@ -221,7 +221,7 @@
                 </mat-chip>
                 <input
                   class="big-design-input-text"
-                  placeholder="Products"
+                  placeholder="Page URLs"
                   #pageInput
                   [formControl]="pageCtrl"
                   [disabled]="data.asset"
