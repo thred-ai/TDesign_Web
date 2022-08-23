@@ -237,8 +237,8 @@
               >
                 <cdk-virtual-scroll-viewport
                   class="autocomplete-test-viewport"
-                  [hidden]="((filteredPages | async) ?? []).length == 0"
-                  [ngStyle]="{ height: '200px' }"
+                  *ngIf="((filteredPages | async) ?? []).length > 0"
+                  [ngStyle]="{ height: '150px' }"
                   itemSize="35"
                 >
                   <mat-option
