@@ -232,12 +232,12 @@
                 />
               </mat-chip-list>
               <mat-autocomplete
-              [hidden]="((filteredPages | async) ?? []).length > 0"
                 #auto="matAutocomplete"
                 (optionSelected)="selected($event)"
               >
                 <cdk-virtual-scroll-viewport
                   class="autocomplete-test-viewport"
+                  [hidden]="((filteredPages | async) ?? []).length == 0"
                   [ngStyle]="{ height: '200px' }"
                   itemSize="35"
                 >
