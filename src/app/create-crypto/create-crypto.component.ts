@@ -229,7 +229,7 @@ export class CreateCryptoComponent implements OnInit {
         }
       });
 
-      let urls = Object.keys(nft.tgUrls)
+      let urls = Object.values(nft.tgUrls)
 
       this.selectedPages = urls ?? []
 
