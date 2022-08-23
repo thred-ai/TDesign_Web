@@ -188,10 +188,85 @@
             </div>
 
             <div *ngIf="util.active && util.code == 'gate'" class="w-100 py-2">
-              <h2 class="big-design-input-title my-0">Linked Page</h2>
+              <h2 class="big-design-input-title my-0">Linked URLs</h2>
               <h5 class="big-design-input-subtitle mt-0">
-                The URL of the page this token is linked to.
+                The URLs of the page this token is linked to.
               </h5>
+
+
+              <!-- <mat-form-field
+              class="w-100"
+              appearance="outline"
+              [disabled]="data.asset"
+              
+            >
+              <mat-chip-list #chipList aria-label="Product selection">
+                <mat-chip
+                  *ngFor="let product of prods ?? []"
+                  [selectable]="selectable"
+                  [removable]="removable"
+                  (removed)="remove(product)"
+                  class="category-chip big-design-input-text"
+                >
+                  <div class="category-chip__text">
+                    {{ productName(product) }}
+                  </div>
+                  <button
+                    matChipRemove
+                    class="d-flex justify-content-center align-items-center btn me-1"
+                    style="width: fit-content; aspect-ratio: 1/1"
+                    *ngIf="removable"
+                  >
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </mat-chip>
+                <input
+                  class="big-design-input-text"
+                  placeholder="Products"
+                  #productInput
+                  [formControl]="productCtrl"
+                  [matAutocomplete]="auto"
+                  [matChipInputFor]="chipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  (matChipInputTokenEnd)="add($event)"
+                />
+              </mat-chip-list>
+              <mat-autocomplete
+                #auto="matAutocomplete"
+                (optionSelected)="selected($event)"
+              >
+                <cdk-virtual-scroll-viewport
+                  class="autocomplete-test-viewport"
+                  [ngStyle]="{ height: '200px' }"
+                  itemSize="35"
+                >
+                  <mat-option
+                    *cdkVirtualFor="let product of filteredProducts | async"
+                    [value]="product.docID"
+                  >
+                    <div
+                      class="d-flex justify-content-start align-items-center w-100"
+                    >
+                      <img
+                        id="image"
+                        class="{{
+                          (storeInfo?.colorStyle)!.back_code
+                        }} me-2 rounded big-design-input-text"
+                        [src]="product.img ?? ''"
+                        style="
+                          object-fit: cover;
+                          width: 35px;
+                          aspect-ratio: 1;
+                        "
+                      />
+                      {{ product.name }}
+                    </div>
+                  </mat-option>
+                </cdk-virtual-scroll-viewport>
+              </mat-autocomplete>
+            </mat-form-field> -->
+
+
               <mat-form-field
                 class="w-100"
                 appearance="outline"

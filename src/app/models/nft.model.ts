@@ -21,6 +21,7 @@ export class NFT {
   ios_model?: string;
   tokenURL?: string;
   minted: boolean = false;
+  tgUrls: Dict<string>;
 
   get hashedAddress() {
     let contractId = this.address.substring(2, this.address.length);
@@ -55,6 +56,7 @@ export class NFT {
     utility?: number[],
     ios_model?: string,
     tokenURL?: string,
+    tgUrls?: Dict<string>,
     minted: boolean = false
   ) {
     this.name = name ?? 'NFT';
@@ -65,7 +67,8 @@ export class NFT {
     this.skybox = skybox ?? '';
     this.assetUrl = assetUrl ?? '';
     this.tokenId = tokenId ?? 0;
-    this.info = info ?? [];
+    this.info = info ?? {};
+    this.tgUrls = tgUrls ?? {}
     this.uid = uid ?? '';
     this.address = address ?? '';
     this.price = price ?? 0;

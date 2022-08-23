@@ -81,7 +81,14 @@ contract ThredInfra is
         for (uint256 i = 0; i < itemCount; i++) {
             Item memory item = items[i];
             IERC721 nft = IERC721(item.contractAddress);
-            address owner = nft.ownerOf(item.tokenId);
+            address owner;
+
+            try nft.ownerOf(item.tokenId) returns (address result) {
+                owner = result;
+            }
+            catch {
+                owner = address(0);
+            }
             Item memory currentItem = Item(
                 item.contractAddress,
                 owner,

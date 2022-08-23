@@ -121,6 +121,7 @@ export class CreateCryptoComponent implements OnInit {
   coverName?: string;
 
   utility: any[] = [];
+  pages: any[] = []
 
   // <p><mat-checkbox formControlName="pepperoni">Pepperoni</mat-checkbox></p>
   // <p><mat-checkbox formControlName="extracheese">Extra Cheese</mat-checkbox></p>
@@ -164,6 +165,9 @@ export class CreateCryptoComponent implements OnInit {
 
       this.nftForm.disable();
     } else {
+      this.laodService.getPages(info => {
+        console.log(info)
+      })
     }
     // if (this.nftContract.currency)
     //   this.customCurrencyMaskConfig.suffix = ` ${this.nftContract.currency}`;

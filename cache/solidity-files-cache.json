@@ -1636,8 +1636,8 @@
       ]
     },
     "/Users/artakoroushnia/Desktop/SHOPMYTHRED/contracts/ThredInfra/ThredInfra.sol": {
-      "lastModificationDate": 1661142042536,
-      "contentHash": "77d0db27d71cf4ed8f2f384a1521f8e2",
+      "lastModificationDate": 1661204895737,
+      "contentHash": "1bc4a3e24a28cf4b5a70dacb568b4567",
       "sourceName": "contracts/ThredInfra/ThredInfra.sol",
       "solcConfig": {
         "version": "0.8.3",

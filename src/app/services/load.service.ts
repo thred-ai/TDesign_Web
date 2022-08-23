@@ -1403,6 +1403,21 @@ export class LoadService {
     }
   }
 
+  async getPages(callback: (info?: any[]) => any) {
+    this.functions
+      .httpsCallable('getPages')({})
+      .pipe(first())
+      .subscribe(
+        (resp) => {
+          callback(resp);
+        },
+        (err) => {
+          callback([]);
+          console.error({ err });
+        }
+      );
+  }
+
   async getBigCommerceStore(callback: (info?: any) => any) {
     this.functions
       .httpsCallable('getBigCommerceStore')({})
