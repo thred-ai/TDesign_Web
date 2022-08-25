@@ -20,7 +20,7 @@ export class PaymentMethodFilterPipe implements PipeTransform {
     return arr
       .filter((v) => {
         return (
-          v.name.toLowerCase() == 'stripe' || v.name.toLowerCase() == 'stripe2'
+          v.name.toLowerCase() == 'stripe' || v.name.toLowerCase() == 'stripe2' || v.code == 'bigpaypay'
         );
       })
       .reverse();
