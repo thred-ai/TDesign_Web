@@ -15,7 +15,7 @@ export class PaymentMethodFilterPipe implements PipeTransform {
           test_mode: arr[index].test_mode,
         };
         arr.splice(0, 0, copy);
-      }
+      }//
     }
     return arr
       .filter((v) => {
