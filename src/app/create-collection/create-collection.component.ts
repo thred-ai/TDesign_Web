@@ -109,6 +109,7 @@ export class CreateCollectionComponent implements OnInit {
       } catch (error) {
         royaltyAddress = ethers.constants.AddressZero
       }
+     
       var deployedCollection: Collection | undefined = undefined;
 
       try {
