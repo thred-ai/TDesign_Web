@@ -73,7 +73,7 @@ export class CreateCryptoComponent implements OnInit {
       (this.data.asset
         ? data.utils
         : data.utils?.filter((u: any) => u.available)) ?? [];
-    // currency: col!.currency
+    // currency: col!.currency/
     let pipe = new CurrencyPipe(localId);
 
     this.customCurrencyMaskConfig.prefix =

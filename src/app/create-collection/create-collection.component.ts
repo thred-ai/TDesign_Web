@@ -103,6 +103,12 @@ export class CreateCollectionComponent implements OnInit {
       //     ? token.contract
       //     : ethers.constants.AddressZero;
 
+      try {
+        let r = ethers.utils.getAddress(royaltyAddress)
+        royaltyAddress = r
+      } catch (error) {
+        royaltyAddress = ethers.constants.AddressZero
+      }
       var deployedCollection: Collection | undefined = undefined;
 
       try {
