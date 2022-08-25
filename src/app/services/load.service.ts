@@ -1476,7 +1476,7 @@ export class LoadService {
       abi,
       bytecode,
       domain,
-      thredInfra,
+      thredMarketplace: thredInfra,
       royaltyAddress,
       generatePage,
     };
