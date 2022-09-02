@@ -9,7 +9,7 @@ export class PaymentMethodFilterPipe implements PipeTransform {
     if (!(value.find((v) => v.name.toLowerCase() == 'stripe2'))){
       let index = value.findIndex((v) => v.name.toLowerCase() == 'stripe');
       if (index > -1) {
-        let copy = {
+        let copy = { //
           code: 'stripeupe2',
           name: arr[index].name + '2',
           test_mode: arr[index].test_mode,
