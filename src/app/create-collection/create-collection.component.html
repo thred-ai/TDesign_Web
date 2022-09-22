@@ -11,8 +11,6 @@
   <h2 class="big-design-input-title">New Collection</h2>
 
   <div class="d-flex justify-content-end align-items-top">
-
-    
     <a role="button" (click)="save()" class="big-design-alt-button me-1">
       {{ saving ? "Saving" : "Save" }}
       <div class="big-design-alt-button-spinner" [hidden]="!saving">
@@ -35,10 +33,31 @@
       [formGroup]="nftForm"
     >
       <div class="wrap-input1 w-100">
+        <h2 class="my-0 big-design-input-title">Style</h2>
+        <h5 class="mt-0 big-design-input-subtitle">The Collection's Style</h5>
+        <mat-form-field class="w-100" appearance="outline" floatLabel="never">
+          <mat-select formControlName="style">
+            <mat-select-trigger class="d-flex align-items-center">
+              <!-- <mat-icon svgIcon="{{ nftForm.controls.currency.value.symbol }}" class="me-2"></mat-icon> -->
+              {{ nftForm.controls.style.value.name }}
+            </mat-select-trigger>
+            <!-- <mat-optgroup
+            class="text-dark bg-light"
+            *ngFor="let s of styles ?? []"
+            [label]="s.name"
+          > -->
+            <mat-option *ngFor="let s of styles" [value]="s">
+              <!-- <mat-icon svgIcon="{{ token.symbol }}"></mat-icon> -->
+              {{ s.name }}
+            </mat-option>
+            <!-- </mat-optgroup> -->
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="wrap-input1 w-100">
         <h2 class="my-0 big-design-input-title">Name</h2>
-        <h5 class="mt-0 big-design-input-subtitle">
-          The Collection's Name
-        </h5>
+        <h5 class="mt-0 big-design-input-subtitle">The Collection's Name</h5>
         <mat-form-field class="w-100" appearance="outline" floatLabel="never">
           <input
             matInput
@@ -73,7 +92,7 @@
       <div class="wrap-input1 w-100">
         <h2 class="my-0 big-design-input-title">Royalties</h2>
         <h5 class="mt-0 big-design-input-subtitle">
-          Wallet address for Royalty Fees to be transferred to (Optional). 
+          Wallet address for Royalty Fees to be transferred to (Optional).
         </h5>
         <mat-form-field class="w-100" appearance="outline" floatLabel="never">
           <input
@@ -87,6 +106,7 @@
           <!-- <span class="shadow-input1 py-3 px-2 px-lg-4 px-md-4"></span> -->
         </mat-form-field>
       </div>
+
       <div class="wrap-input1 w-100">
         <h2 class="my-0 big-design-input-title">Generate Page</h2>
         <h5 class="mt-0 big-design-input-subtitle">
@@ -94,43 +114,23 @@
         </h5>
         <mat-radio-group formControlName="generatePage">
           <div>
-            <mat-radio-button [value]="true" [color]="'primary'" (change)="radioChange($event)"
+            <mat-radio-button
+              [value]="true"
+              [color]="'primary'"
+              (change)="radioChange($event)"
               >Create Page</mat-radio-button
             >
           </div>
           <div class="mt-2">
-            <mat-radio-button [value]="false" [color]="'primary'" (change)="radioChange($event)"
+            <mat-radio-button
+              [value]="false"
+              [color]="'primary'"
+              (change)="radioChange($event)"
               >Don't Create Page</mat-radio-button
             >
           </div>
         </mat-radio-group>
       </div>
-      <!-- <div class="wrap-input1 w-100">
-        <mat-form-field class="w-100" appearance="outline">
-          <mat-label>Blockchain</mat-label>
-          <mat-select formControlName="currency">
-            <mat-select-trigger
-            class="d-flex align-items-center"
-          >
-          <mat-icon svgIcon="{{ nftForm.controls.currency.value.symbol }}" class="me-2"></mat-icon>
-            {{ nftForm.controls.currency.value.name }}
-          </mat-select-trigger>
-            <mat-optgroup
-              class="text-dark bg-light"
-              *ngFor="let c of storeInfo?.tokens ?? []"
-              [label]="c.name"
-            >
-              <mat-option
-                *ngFor="let token of c.variations"
-                [value]="token"
-              >
-                <mat-icon svgIcon="{{ token.symbol }}"></mat-icon>
-                {{ token.name }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-select>
-        </mat-form-field>
-      </div> -->
     </form>
     <p *ngIf="err != ''" class="text-danger my-1 text-center fw-bold">
       {{ err }}

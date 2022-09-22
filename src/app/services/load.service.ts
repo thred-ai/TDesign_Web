@@ -1468,6 +1468,7 @@ export class LoadService {
     domain: string,
     royaltyAddress: string,
     generatePage: boolean,
+    style: string,
     callback: (collection?: Collection) => any
   ) {
     let data = {
@@ -1479,6 +1480,7 @@ export class LoadService {
       thredMarketplace: thredInfra,
       royaltyAddress,
       generatePage,
+      style
     };
 
     this.functions
@@ -1729,7 +1731,7 @@ export class LoadService {
           image,
           model: url2,
           skybox: skyBoxUrl,
-          traits: traits && traits !== [] ? traits : undefined,
+          traits: traits && traits.length != 0 ? traits : undefined,
           utility,
           ios_model: url4,
           tgUrls

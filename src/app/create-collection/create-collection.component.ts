@@ -29,6 +29,17 @@ export class CreateCollectionComponent implements OnInit {
 
   storeInfo?: Store;
 
+  styles = [
+    {
+      name: 'Image (.png, .jpg)',
+      code: '2D'
+    },
+    {
+      name: '3D Model (.glb)',
+      code: '3D'
+    }
+  ]
+
   selectedThemeFn() {
     let co = Globals.storeInfo?.colorStyle?.btn_color;
     let bco = Globals.storeInfo?.colorStyle?.bg_color;
@@ -76,6 +87,7 @@ export class CreateCollectionComponent implements OnInit {
     this.selectedTheme = this.selectedThemeFn();
 
     this.storeInfo = Globals.storeInfo;
+    this.nftForm.controls.style.setValue(this.styles[0])
   }
 
   err = '';
@@ -86,6 +98,7 @@ export class CreateCollectionComponent implements OnInit {
       this.saving = true;
 
       let name = (this.nftForm.controls.title.value as string) ?? '';
+      let style = (this.nftForm.controls.style.value as any)?.code ?? '2D';
       let symbol =
         (this.nftForm.controls.symbol.value as string) ?? ''.toUpperCase();
       let royaltyAddress =
@@ -124,6 +137,7 @@ export class CreateCollectionComponent implements OnInit {
             domain,
             royaltyAddress != '' ? royaltyAddress : ethers.constants.AddressZero,
             generate,
+            style,
             (col?: Collection) => {
               this.saving = false;
               if (col as Collection) {
@@ -156,6 +170,7 @@ export class CreateCollectionComponent implements OnInit {
   nftForm = this.fb.group({
     title: [null, Validators.required],
     symbol: [null, Validators.required],
+    style: [null, Validators.required],
     royaltyAddress: [null],
     generatePage: [true]
   });

@@ -20,6 +20,7 @@ export interface ICollection {
   uid?: string;
   timestamp?: Date;
   available?: boolean;
+  style?: string
 
   getRarity(nft: NFT): string;
 
@@ -41,6 +42,7 @@ export class Collection implements ICollection {
   timestamp?: Date;
   available?: boolean;
   ABI: string;
+  style?: string
 
 
   getRarity(nft: NFT) {
@@ -92,7 +94,8 @@ export class Collection implements ICollection {
     domain: string = 'THRED-NFT',
     royalty?: string,
     available?: boolean,
-    ABI?: string
+    ABI?: string,
+    style?: string
   ) {
 
     this.name = name ?? '';
@@ -112,6 +115,7 @@ export class Collection implements ICollection {
     this.timestamp = timestamp;
     this.available = available;
     this.ABI = ABI ?? ERC721_MERCHANT.abi;
+    this.style = style ?? '3D'
   }
 
   nftCount(collectionCount: number, contract: string) {

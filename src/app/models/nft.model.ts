@@ -22,6 +22,7 @@ export class NFT {
   tokenURL?: string;
   minted: boolean = false;
   tgUrls: Dict<string>;
+  style?: string
 
   get hashedAddress() {
     let contractId = this.address.substring(2, this.address.length);
@@ -57,7 +58,8 @@ export class NFT {
     ios_model?: string,
     tokenURL?: string,
     tgUrls?: Dict<string>,
-    minted: boolean = false
+    minted: boolean = false,
+    style?: string
   ) {
     this.name = name ?? 'NFT';
     this.description = description ?? ''; // ?? erc721Merchant;
@@ -78,5 +80,6 @@ export class NFT {
     this.ios_model = ios_model;
     this.tokenURL = tokenURL;
     this.minted = minted;
+    this.style = style ?? '3D'
   }
 }
