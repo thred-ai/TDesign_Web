@@ -2724,7 +2724,7 @@ export class AdminViewComponent implements OnInit, OnDestroy {
           (c) => c.contract == col.address
         );
         if (this.collections![same!].NFTs == undefined) {
-          this.collections![same!].NFTs == {};
+          this.collections![same!].NFTs = {};
         }
         this.collections![same!].NFTs[`${col.docID!}`] = col;
         this.collections![same!].collectionCount! += 1;

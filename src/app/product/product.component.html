@@ -22,17 +22,29 @@
         *ngIf="productToBuy"
       >
         <div class="big-design-body rounded h-100 w-100">
-          <app-model-viewer
-            [camera]="true"
-            [model]="productToBuy.assetUrl"
-            [animate]="true"
-            [poster]="productToBuy.img ?? '/assets/default.png'"
-            [id]="'viewer'"
-            [ar]="productToBuy.info!.utility | utilityInfo: false:'ar'"
-            [ios_model]="productToBuy.ios_model"
-            [skybox]="productToBuy.skybox"
+          <div
+            class="w-100 h-100"
+            *ngIf="productToBuy.style == '3D'; else imgDisplay"
           >
-          </app-model-viewer>
+            <app-model-viewer
+              [camera]="true"
+              [model]="productToBuy.assetUrl"
+              [animate]="true"
+              [poster]="productToBuy.img ?? '/assets/default.png'"
+              [id]="'viewer'"
+              [ar]="productToBuy.info!.utility | utilityInfo: false:'ar'"
+              [ios_model]="productToBuy.ios_model"
+              [skybox]="productToBuy.skybox"
+            >
+            </app-model-viewer>
+          </div>
+          <ng-template #imgDisplay>
+            <img
+              [src]="productToBuy.assetUrl"
+              class="w-100 h-100"
+              style="object-fit: cover"
+            />
+          </ng-template>
         </div>
       </div>
       <div

@@ -874,7 +874,8 @@ export class LoadService {
               d.domain,
               d.royalty,
               d.available,
-              d.ABI
+              d.ABI,
+              d.style
             )
           );
         });
@@ -910,7 +911,8 @@ export class LoadService {
           d.domain,
           d.royalty,
           d.available,
-          d.ABI
+          d.ABI,
+          d.style
         );
         callback(c);
       } else {
@@ -1477,10 +1479,10 @@ export class LoadService {
       abi,
       bytecode,
       domain,
-      thredMarketplace: thredInfra,
+      thredInfra,
       royaltyAddress,
       generatePage,
-      style
+      style,
     };
 
     this.functions
@@ -1513,7 +1515,7 @@ export class LoadService {
     // await this.saveStoreInfo(mappedData, uid);
   }
 
-  private async saveNftImage(image: any, productID: string, mode = 0) {
+  private async saveNftImage(image: any, productID: string, mode = 5) {
     var filePath = 'Products/' + productID + '/';
     var uploadFile: any = '';
     var url = '';
@@ -1525,6 +1527,12 @@ export class LoadService {
         image.replace(/^[\w\d;:\/]+base64\,/g, ''),
         'base64'
       );
+    }
+    if (mode == 5) {
+      filePath += 'link_' + productID + '.png';
+      url = this.getURL(productID);
+      uploadFile = image;
+      console.log(uploadFile);
     } else if (mode == 1) {
       filePath += 'ios_' + productID + '.usdz';
       url = this.getModelURL(productID);
@@ -1532,6 +1540,10 @@ export class LoadService {
     } else if (mode == 2) {
       filePath += 'model_' + productID + '.glb';
       url = this.get3DURL(productID);
+      uploadFile = image;
+    } else if (mode == 6) {
+      filePath += 'model_' + productID + '.png';
+      url = this.getImageURL(productID);
       uploadFile = image;
     } else if (mode == 3) {
       filePath += 'info_' + productID + '.json';
@@ -1688,17 +1700,20 @@ export class LoadService {
     ios_model: File,
     tokenURL: string | null = null,
     tgUrls: any,
+    style: string,
     callback: (nft?: NFT) => any
   ) {
     //add token later
 
     this.getCollection(collectionAddress, async (col?: Collection) => {
       if (col) {
+        console.log(style);
         const image = await this.saveNftImage(
           img,
           `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
-          0
+          style == '3D' ? 0 : 5
         );
+
         var skyBoxUrl = '';
         if (skybox && skybox != null) {
           skyBoxUrl =
@@ -1712,7 +1727,7 @@ export class LoadService {
         const url2 = await this.saveNftImage(
           model,
           `${collectionAddress}${(col.collectionCount ?? 0) + 1}`,
-          2
+          style == '3D' ? 2 : 6
         );
 
         var url4 = '';
@@ -1734,7 +1749,8 @@ export class LoadService {
           traits: traits && traits.length != 0 ? traits : undefined,
           utility,
           ios_model: url4,
-          tgUrls
+          tgUrls,
+          style,
         };
 
         const data2 = JSON.stringify(data1);
@@ -1762,7 +1778,8 @@ export class LoadService {
             utility,
             ios_model: url4,
             tokenURL,
-            tgUrls
+            tgUrls,
+            style,
           } as Dict<any>)
         );
 
@@ -2275,6 +2292,16 @@ export class LoadService {
       '/model_' +
       productID +
       '.glb'
+    );
+  }
+
+  getImageURL(productID: string) {
+    return (
+      'https://storage.googleapis.com/clothingapp-ed125.appspot.com/Products/' +
+      productID +
+      '/model_' +
+      productID +
+      '.png'
     );
   }
 

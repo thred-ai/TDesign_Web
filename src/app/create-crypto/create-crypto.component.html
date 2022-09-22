@@ -193,61 +193,61 @@
                 URLs of the pages this token is linked to.
               </h5>
 
-
-              <mat-form-field
-              class="w-100"
-              appearance="outline"
-              
-            >
-              <mat-chip-list #chipList aria-label="Product selection">
-                <mat-chip
-                  *ngFor="let page of selectedPages ?? []"
-                  [selectable]="selectable"
-                  [removable]="removable"
-                  (removed)="remove(page)"
-                  class="category-chip big-design-input-text"
-                >
-                  <div class="category-chip__text">
-                    {{ page }}
-                  </div>
-                  <button
-                    matChipRemove
-                    class="d-flex justify-content-center align-items-center btn me-1"
-                    style="width: fit-content; aspect-ratio: 1/1"
-                    *ngIf="removable"
+              <mat-form-field class="w-100" appearance="outline">
+                <mat-chip-list #chipList aria-label="Product selection">
+                  <mat-chip
+                    *ngFor="let page of selectedPages ?? []"
+                    [selectable]="selectable"
+                    [removable]="removable"
+                    (removed)="remove(page)"
+                    class="category-chip big-design-input-text"
                   >
-                    <mat-icon>cancel</mat-icon>
-                  </button>
-                </mat-chip>
-                <input
-                  class="big-design-input-text"
-                  placeholder="Page URLs"
-                  #pageInput
-                  [formControl]="pageCtrl"
-                  [disabled]="data.asset"
-                  [matAutocomplete]="auto"
-                  [matChipInputFor]="chipList"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  (matChipInputTokenEnd)="add($event)"
-                />
-              </mat-chip-list>
-              <mat-autocomplete
-                #auto="matAutocomplete"
-                (optionSelected)="selected($event)"
-              >
-                <cdk-virtual-scroll-viewport
-                  class="autocomplete-test-viewport"
-                  [ngStyle]="{ height: ((filteredPages | async) ?? []).length > 0 ? '150px' : '0px' }"
-                  itemSize="35"
-                >
-                  <mat-option
-                    *cdkVirtualFor="let page of filteredPages | async"
-                    [value]="page.url"
-                  >
-                    <div
-                      class="d-flex justify-content-start align-items-center w-100"
+                    <div class="category-chip__text">
+                      {{ page }}
+                    </div>
+                    <button
+                      matChipRemove
+                      class="d-flex justify-content-center align-items-center btn me-1"
+                      style="width: fit-content; aspect-ratio: 1/1"
+                      *ngIf="removable"
                     >
-                      <!-- <img
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip>
+                  <input
+                    class="big-design-input-text"
+                    placeholder="Page URLs"
+                    #pageInput
+                    [formControl]="pageCtrl"
+                    [disabled]="data.asset"
+                    [matAutocomplete]="auto"
+                    [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    (matChipInputTokenEnd)="add($event)"
+                  />
+                </mat-chip-list>
+                <mat-autocomplete
+                  #auto="matAutocomplete"
+                  (optionSelected)="selected($event)"
+                >
+                  <cdk-virtual-scroll-viewport
+                    class="autocomplete-test-viewport"
+                    [ngStyle]="{
+                      height:
+                        ((filteredPages | async) ?? []).length > 0
+                          ? '150px'
+                          : '0px'
+                    }"
+                    itemSize="35"
+                  >
+                    <mat-option
+                      *cdkVirtualFor="let page of filteredPages | async"
+                      [value]="page.url"
+                    >
+                      <div
+                        class="d-flex justify-content-start align-items-center w-100"
+                      >
+                        <!-- <img
                         id="image"
                         class="me-2 rounded big-design-input-text"
                         [src]="product.img ?? ''"
@@ -257,12 +257,12 @@
                           aspect-ratio: 1;
                         "
                       /> -->
-                      {{ page.name }}
-                    </div>
-                  </mat-option>
-                </cdk-virtual-scroll-viewport>
-              </mat-autocomplete>
-            </mat-form-field>
+                        {{ page.name }}
+                      </div>
+                    </mat-option>
+                  </cdk-virtual-scroll-viewport>
+                </mat-autocomplete>
+              </mat-form-field>
             </div>
           </div>
         </div>
@@ -289,7 +289,7 @@
       >
         <p class="big-design-title">
           {{
-            data.asset ? "Edition " + data.asset.tokenId + "" : "Model Preview"
+            data.asset ? "Edition " + data.asset.tokenId + "" : "NFT Preview"
           }}
           <br />
           <a *ngIf="data.asset" class="big-design-body mt-4">
@@ -338,7 +338,7 @@
           [multiple]="false"
         >
           <ngx-dropzone-label class="big-design-title text-dark">
-            Drop 3D Model Here
+            Drop NFT File Here
             <br />
             <p style="font-size: small">
               Accepted formats: {{ acceptedModels }}
@@ -354,16 +354,21 @@
           "
         >
           <div class="position-absolute w-100 h-100">
-            <app-model-viewer
-              [camera]="true"
-              [model]="fileDisplay"
-              [animate]="true"
-              [skybox]="skyBoxDisplay"
-              [poster]="nftForm.controls.cover.value ?? '/assets/default.png'"
-              [id]="'viewer'"
-              [ar]="false"
-            >
-            </app-model-viewer>
+            <div class="w-100 h-100" *ngIf="nftContract.style == '3D'; else imgDisplay">
+              <app-model-viewer
+                [camera]="true"
+                [model]="fileDisplay"
+                [animate]="true"
+                [skybox]="skyBoxDisplay"
+                [poster]="nftForm.controls.cover.value ?? '/assets/default.png'"
+                [id]="'viewer'"
+                [ar]="false"
+              >
+              </app-model-viewer>
+            </div>
+            <ng-template #imgDisplay>
+              <img [src]="fileDisplay" class="w-100 h-100" style="object-fit: cover">
+            </ng-template>
           </div>
           <ngx-dropzone
             class="w-100 h-100 position-absolute bg-transparent border-0"
@@ -383,13 +388,14 @@
               class="big-design-alt-button p-1"
               matTooltip="Change Skybox"
               [matTooltipPosition]="'left'"
+              *ngIf="nftContract.style == '3D'"
               (click)="fileInput.click()"
             >
               <mat-icon> wallpaper </mat-icon>
             </a>
             <a
               class="big-design-alt-button p-1 mt-2"
-              matTooltip="Clear Model"
+              matTooltip="Clear {{nftContract.style == '3D' ? 'Model' : 'File'}}"
               [matTooltipPosition]="'left'"
               (click)="nftForm.controls.file.setValue(null)"
             >

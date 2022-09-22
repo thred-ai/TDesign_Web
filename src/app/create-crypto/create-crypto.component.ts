@@ -37,11 +37,14 @@ import { startWith, map } from 'rxjs/operators';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
+import { SafeUrlPipe } from '../safe-url.pipe';
+import { DomSanitizer } from '@angular/platform-browser';
 
 class SafeObjectUrl {
   url: any;
   constructor(url: string) {
     this.url = url;
+
   }
   get unsafeUrl() {
     return this.url;
@@ -63,17 +66,28 @@ export class CreateCryptoComponent implements OnInit {
     public dialogRef: MatDialogRef<CreateCryptoComponent>,
     private cdr: ChangeDetectorRef,
     private laodService: LoadService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private sanitizer: DomSanitizer
   ) {
     this.nftContract = data.contract;
     this.storeInfo = Globals.storeInfo;
 
-
     this.utility =
-      (this.data.asset
-        ? data.utils
-        : data.utils?.filter((u: any) => u.available)) ?? [];
+    (this.data.asset
+      ? data.utils
+      : data.utils?.filter((u: any) => u.available)) ?? [];
+
+    if (this.nftContract.style == '2D'){
+      this.acceptedModels = '.png,.jpeg';
+      this.utility = this.utility.filter(u => u.code != 'ar')
+    }
+    else{
+      this.acceptedModels = '.glb,.gltf';
+    }
+
+
     // currency: col!.currency/
+    console.log(this.utility)
     let pipe = new CurrencyPipe(localId);
 
     this.customCurrencyMaskConfig.prefix =
@@ -231,7 +245,8 @@ export class CreateCryptoComponent implements OnInit {
         }
       });
 
-      let urls = Object.values(nft.tgUrls)
+      console.log(nft.tgUrls)
+      let urls = Object.values(nft.tgUrls ?? [])
 
       this.selectedPages = urls ?? []
       this.removable = false
@@ -314,11 +329,11 @@ export class CreateCryptoComponent implements OnInit {
       let traits = (this.traits as Array<Dict<any>>) ?? [];
       let tokenURL = this.nftForm.controls.tokenURL.value as string;
       let urls = { ...this.selectedPages ?? [] }
-
+      let style = this.nftContract.style ?? '3D'
 
       this.isLoading = true;
 
-      let img = this.save3DThumbnail();
+      let img = this.nftContract.style == '3D' ? this.save3DThumbnail() : file;
 
       this.laodService.saveNFT(
         contractNFT,
@@ -334,6 +349,7 @@ export class CreateCryptoComponent implements OnInit {
         ios_model,
         tokenURL,
         urls,
+        style,
         (nft?: NFT) => {
           console.log('done');
           this.isLoading = false;
@@ -438,7 +454,7 @@ export class CreateCryptoComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
-  acceptedModels = '.glb,.gltf';
+  acceptedModels = '.png,.jpeg';
   acceptedSkybox = '.hdr';
   acceptedCovers = '.png,.jpeg';
 
@@ -544,20 +560,32 @@ export class CreateCryptoComponent implements OnInit {
 
       // this.nftForm.controls.format.setValue(null);
 
-      var reader = new FileReader();
-      reader.onload = (event: any) => {
-        var base64 = event.target.result;
+      if (this.nftContract.style == '3D'){
+        var reader = new FileReader();
+        reader.onload = (event: any) => {
+          var base64 = event.target.result;
+  
+          this.nftForm.controls.file.setValue(file);
+          this.fileDisplay = base64;
+          this.cdr.detectChanges();
+        };
+  
+        reader.readAsDataURL(blob);
+      }
+      else{
+        console.log(file)
+        const unsafeUrl = await this.createBlobUrlFromEnvironmentImage(file);
+        let pipe = new SafeUrlPipe(this.sanitizer)
 
+        const safe = pipe.transform(unsafeUrl)
         this.nftForm.controls.file.setValue(file);
-        this.fileDisplay = base64;
+        this.fileDisplay = safe;
         this.cdr.detectChanges();
-      };
-
-      reader.readAsDataURL(blob);
+      }
     }
   }
 
-  fileDisplay = '';
+  fileDisplay: any = '';
   skyBoxDisplay = '';
 
   public fileOver(event: any) {}
