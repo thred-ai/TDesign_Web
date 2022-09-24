@@ -1,8 +1,5 @@
 <div
-  class="bg-{{
-    (storeInfo?.colorStyle)!.back_code
-  }} rounded-15 border border-secondary w-100 h-100 product-hover"
-  [class.border-secondary]="(storeInfo?.colorStyle)!.text_code == 'light'"
+  class="bg-white rounded-15 border border-secondary w-100 h-100 product-hover"
   style="overflow: hidden"
   *ngIf="product && collection"
 >
@@ -16,7 +13,7 @@
           *ngIf="lazy; else noLazy"
           loading="lazy"
           id="image"
-          class="w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+          class="w-100 white"
           [useSrcset]="true"
           [defaultImage]="'/assets/default.png'"
           [lazyLoad]="product?.img ?? '/assets/default.png'"
@@ -30,7 +27,7 @@
         <ng-template #noLazy>
           <img
             id="image"
-            class="w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+            class="w-100 white"
             [src]="product?.img ?? '/assets/default.png'"
             style="
               object-fit: cover;
@@ -51,18 +48,14 @@
           *ngIf="canOpen"
         >
           <div
-            class="position-absolute position-absolute w-100 h-100 bg-{{
-              (storeInfo?.colorStyle)!.back_code
-            }}"
+            class="position-absolute position-absolute w-100 h-100 bg-white"
             role="button"
             style="z-index: 1000; text-decoration: none; opacity: 0.75"
           ></div>
           <a
             style="z-index: 1001"
             [style.font-family]="storeInfo?.fontName!"
-            class="position-absolute btn btn-{{
-              (storeInfo?.colorStyle)!.text_code
-            }} rounded-pill px-3 py-2"
+            class="position-absolute btn btn-dark rounded-pill px-3 py-2"
           >
             View item
           </a>

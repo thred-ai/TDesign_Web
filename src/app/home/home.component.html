@@ -20,7 +20,7 @@
         style.color="{{ (storeInfo | storeTheme)!.color }}"
       >
         <p
-          class="text-center text-{{ (storeInfo?.colorStyle)!.text_code }}"
+          class="text-center text-dark"
           style="line-height: 1.2em;"
           [style.font-family]="storeInfo?.fontName!"
         >
@@ -58,7 +58,7 @@
             >
               <img
                 loading="lazy"
-                class="h-auto w-100 {{ (storeInfo?.colorStyle)!.back_code }}"
+                class="h-auto w-100 white"
                 [useSrcset]="true"
                 [defaultImage]="'/assets/default.png'"
                 [lazyLoad]="img"

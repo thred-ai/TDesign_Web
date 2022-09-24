@@ -18,6 +18,7 @@ var routes: Routes = [
   { path: 'claim/:product', component: ItemClaimComponent, pathMatch: 'full' },
   { path: 'tg/:url', component: TokenGateMenuComponent, pathMatch: 'full' },
   { path: ':user', redirectTo: '/:user/home', pathMatch: 'full' },
+  
   {
     path: ':user/nft/:product',
     loadChildren: () =>

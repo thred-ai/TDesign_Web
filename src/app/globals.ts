@@ -22,6 +22,9 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class Globals {
+
+  public static channel = 'thred'
+
   public static ngrokId = '572a-2607-fea8-bd80-500-9417-3598-5d59-a6d8.ngrok.io';
 
   public static sInfo = new BehaviorSubject<Store>(new Store());

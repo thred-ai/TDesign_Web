@@ -121,9 +121,7 @@
                         style.color="{{ selectedTheme!.color }}"
                       >
                         <p
-                          class="text-center text-{{
-                            (storeInfo?.colorStyle)!.text_code
-                          }}"
+                          class="text-center text-dark"
                           style="line-height: 1.2em"
                           [style.font-family]="storeInfo?.fontName!"
                         >
@@ -149,12 +147,7 @@
                           "
                         >
                           <div
-                            class="bg-{{
-                              (storeInfo?.colorStyle)!.back_code
-                            }} shadow rounded border border-secondary"
-                            [class.border-secondary]="
-                              storeInfo!.colorStyle!.text_code == 'light'
-                            "
+                            class="bg-white shadow rounded border border-secondary"
                             style="overflow: hidden"
                             *ngIf="items![product]"
                           >
@@ -163,9 +156,7 @@
                                 <img
                                   loading="lazy"
                                   id="image"
-                                  class="h-100 w-100 {{
-                                    (storeInfo?.colorStyle)!.back_code
-                                  }}"
+                                  class="h-100 w-100"
                                   [useSrcset]="true"
                                   [defaultImage]="'/assets/default.png'"
                                   [lazyLoad]="
@@ -213,9 +204,7 @@
                             <a class="ms-0 me-0" role="button">
                               <img
                                 loading="lazy"
-                                class="h-auto w-100 {{
-                                  (storeInfo?.colorStyle)!.back_code
-                                }}"
+                                class="h-auto w-100 white"
                                 [useSrcset]="true"
                                 [defaultImage]="'/assets/default.png'"
                                 [lazyLoad]="img"
@@ -446,9 +435,7 @@
                       >
                         <img
                           loading="lazy"
-                          class="ani-style w-100 {{
-                            (storeInfo?.colorStyle)!.back_code
-                          }}"
+                          class="ani-style w-100 white"
                           [useSrcset]="true"
                           [defaultImage]="'/assets/default.png'"
                           [lazyLoad]="image.img"
@@ -616,9 +603,7 @@
                         >
                           <img
                             id="image"
-                            class="{{
-                              (storeInfo?.colorStyle)!.back_code
-                            }} me-2 rounded big-design-input-text"
+                            class="white me-2 rounded big-design-input-text"
                             [src]="product.img ?? ''"
                             style="
                               object-fit: cover;
@@ -722,9 +707,7 @@
                     style.color="{{ selectedTheme!.color }}"
                   >
                     <p
-                      class="text-center text-{{
-                        (storeInfo?.colorStyle)!.text_code
-                      }}"
+                      class="text-center text-dark"
                       style="line-height: 1.2em"
                       [style.font-family]="storeInfo?.fontName!"
                     >
@@ -1099,23 +1082,6 @@
             >
               Edit Content</a
             >
-            <!-- <div
-                    class="d-flex align-items-center justify-content-start justify-content-lg-between mt-2 mt-lg-0"
-                  >
-                    
-                  
-
-                    <a
-                  role="button"
-                  (click)="deletePage(page)"
-                  class="ms-2 btn btn btn-{{
-                    (storeInfo?.colorStyle)!.text_code
-                  }} rounded-circle p-2 d-flex align-items-center justify-content-center"
-                  style="aspect-ratio: 1"
-                >
-                  <mat-icon>delete</mat-icon>
-                </a>
-                  </div> -->
           </div>
           <div class="big-design-body w-100 h-200 rounded border mt-3">
             <div
