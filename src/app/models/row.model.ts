@@ -10,6 +10,7 @@ export class Row {
     imgLinks?: Array<string>
     grid_row?: number
     html?: string
+    backgroundColor?: string
     animations?: string
     buttons?: Array<Button>
     vids?: Array<string>
@@ -23,6 +24,7 @@ export class Row {
       imgs?: Array<string>,
       grid_row?: number,
       html?: string,
+      backgroundColor?: string,
       animations?: string,
       imgLinks?: Array<string>,
       buttons?: Array<Button>,
@@ -37,6 +39,7 @@ export class Row {
       this.imgs = imgs ?? []
       this.grid_row = grid_row ?? 0
       this.html = html ?? ''
+      this.backgroundColor = backgroundColor ?? ''
       this.animations = animations ?? ''
       this.imgLinks = imgLinks ?? []
       this.buttons = buttons ?? []

@@ -138,6 +138,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     title: [null],
     htmlText: [null],
     html: [null],
+    backgroundColor: ['#FFFFFF'],
     imgs: [[]],
     type: [null],
     grid: [null],
@@ -265,6 +266,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     return this.prods.find((j) => {
       return j == '1' || j == '0' || j == '2';
     });
+  }
+
+  selectColor(value: string, isPrimary: boolean) {
+    if (isPrimary) {
+      this.rowForm.controls.backgroundColor.setValue(value ?? "#FFFFFF");
+    } else {
+      // this.rowForm.controls.backgroundColor.setValue(value ?? "#FFFFFF");
+    }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -544,6 +553,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     }
 
     this.rowForm.controls.htmlText.setValue(matchingRow.html ?? '');
+
+    this.rowForm.controls.backgroundColor.setValue(matchingRow.backgroundColor ?? '#FFFFFF');
 
     const promises = (matchingRow.imgs ?? []).map(
       async (image: string, index: number) => {
@@ -850,6 +861,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           /style="/g,
           'style="overflow-wrap: break-word;'
         );
+        let backgroundColor = this.rowForm.controls.backgroundColor.value ?? '#FFFFFF'
         let htmlTemplate = this.rowForm.controls.html.value ?? '';
 
         let imgs = (this.images ?? [])
@@ -886,6 +898,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             Object.assign([], imgs),
             matchGrid,
             html,
+            backgroundColor,
             '',
             imgLinks,
             btns,
@@ -939,6 +952,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       /style="/g,
       'style="overflow-wrap: break-word;'
     );
+    let backgroundColor = this.rowForm.controls.backgroundColor.value ?? '#FFFFFF'
 
     let imgs = (this.images ?? [])
       .filter((i) => i.img != undefined && i.img.trim() != '')
@@ -967,6 +981,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       Object.assign([], imgs),
       matchGrid,
       html,
+      backgroundColor,
       '',
       imgLinks,
       btns,
@@ -999,7 +1014,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   addBlock() {
     let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    rows.push(new Row('', [], undefined, 0, [], 1, '', '', [], [], [], ''));
+    rows.push(new Row('', [], undefined, 0, [], 1, '', '#FFFFFF', '', [],  [], [], ''));
     this.layoutForm.controls.rows.setValue(rows);
 
     this.edit(rows.length - 1);

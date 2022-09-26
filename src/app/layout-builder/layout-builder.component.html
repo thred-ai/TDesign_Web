@@ -101,7 +101,10 @@
                       (mouseover)="changeStyle($event, i)"
                       (mouseout)="changeStyle($event, i)"
                       style="position: relative"
-                      style.background-color="{{ selectedTheme!.bg_color }}"
+                      [style.background-color]="
+                        ((aRow.index == i ? aRow?.row : undefined) ?? row)
+                          .backgroundColor
+                      "
                     >
                       <div
                         *ngIf="
@@ -132,15 +135,15 @@
                         </p>
                       </div>
                       <div
-                        class="row mx-0 gx-1 gx-lg-1 row-cols-1 row-cols-md-{{
+                        class="row mx-0 gx-1 gx-lg-1 gy-1 row-cols-1 row-cols-md-{{
                           (aRow.index == i ? aRow?.row : undefined)?.grid_row ??
                             row.grid_row ??
                             1
-                        }} justify-content-start mt-1"
+                        }} justify-content-start"
                         style="pointer-events: none"
                       >
                         <div
-                          class="col mb-2"
+                          class="col"
                           *ngFor="
                             let product of (aRow.index == i ? aRow?.row : row)
                               .products ?? []
@@ -414,6 +417,38 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
+
+                <!-- colors -->
+                <div class="card h-auto mb-3">
+                  <a
+                    role="button"
+                    class="btn d-flex justify-content-between align-items-center"
+                    [cpPosition]="'bottom'"
+                    [cpPositionRelativeToArrow]="false"
+                    (colorPickerSelect)="selectColor($event, true)"
+                    [cpOutputFormat]="'rgba'"
+                    [cpOKButton]="true"
+                    [cpOKButtonText]="'SET COLOR'"
+                    [cpOKButtonClass]="'big-design-alt-button'"
+                    [cpSaveClickOutside]="false"
+                    [colorPicker]="rowForm.controls.backgroundColor.value"
+                  >
+                    <p
+                      class="big-design-input-text my-auto p-0"
+                      style="font-size: 14px"
+                    >
+                      Background Color
+                    </p>
+                    <div
+                      class="rounded-circle border border-secondary"
+                      style="height: 20px; aspect-ratio: 1"
+                      [style.background-color]="
+                        rowForm.controls.backgroundColor.value
+                      "
+                    ></div>
+                  </a>
+                </div>
+
                 <div
                   cdkDropList
                   class="rounded shadow bg-light w-100 h-100"
@@ -668,13 +703,9 @@
           <div
             class="w-100 h-100 big-design-body p-0"
             style="overflow-y: scroll"
-            style.background-color="{{ selectedTheme!.bg_color }}"
             id="capture"
           >
-            <section
-              class="py-0 w-100 mb-0"
-              style.background-color="{{ selectedTheme!.bg_color }}"
-            >
+            <section class="py-0 w-100 mb-0">
               <!-- (cdkDropListDropped)="drop($event)" -->
               <div
                 cdkDropList
@@ -683,7 +714,6 @@
               >
                 <div
                   class="pb-0 block"
-                  style.background-color="{{ selectedTheme!.bg_color }}"
                   *ngFor="
                     let row of layoutForm.controls.rows.value ?? [];
                     index as i
@@ -693,7 +723,14 @@
                   role="button"
                   (click)="edit(i)"
                   [class.highlight]="hoverIndex != undefined && hoverIndex == i"
+                  [style.background-color]="
+                    ((aRow.index == i ? aRow?.row : undefined) ?? row)
+                      .backgroundColor
+                  "
                 >
+                  <!-- {{ ((aRow.index == i ? aRow?.row : undefined) ??
+                    row).backgroundColor }} -->
+
                   <!-- <div class="example-custom-placeholder" *cdkDragPlaceholder></div> -->
                   <div
                     *ngIf="
@@ -877,9 +914,7 @@
     class="h-100 d-block d-md-flex pb-4"
     style="overflow-y: hidden"
   >
-    <div
-      class="w-100 h-100 w-md-50 big-design-card mt-1 py-3"
-    >
+    <div class="w-100 h-100 w-md-50 big-design-card mt-1 py-3">
       <div class="big-design-body h-100" style="overflow-y: scroll">
         <form [formGroup]="layoutForm" novalidate class="mx-2 mt-2 mb-0 h-100">
           <div class="row row-cols-1 my-4">
