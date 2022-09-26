@@ -449,6 +449,29 @@
                   </a>
                 </div>
 
+                <mat-form-field class="w-100" appearance="outline">
+                  <mat-select
+                    class="big-design-input-text"
+                    formControlName="corners"
+                    (selectionChange)="changed($event)"
+                  >
+                    <mat-select-trigger
+                      class="d-flex align-items-center big-design-input-text"
+                      *ngIf="rowForm.controls.corners.value"
+                    >
+                      {{ cornerName(rowForm.controls.corners.value) }} Corners
+                    </mat-select-trigger>
+                    <mat-option
+                      *ngFor="let c of corners"
+                      class="big-design-input-text"
+                      [value]="c.code"
+                    >
+                      <!-- <mat-icon >{{type.icon}}</mat-icon> -->
+                      {{ c.name }} Corners
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
                 <div
                   cdkDropList
                   class="rounded shadow bg-light w-100 h-100"
@@ -713,7 +736,9 @@
                 (cdkDropListDropped)="drop($event)"
               >
                 <div
-                  class="pb-0 block"
+                  class="pb-0 block {{
+                    ((aRow.index == i ? aRow?.row : undefined) ?? row).corners
+                  }}-corners"
                   *ngFor="
                     let row of layoutForm.controls.rows.value ?? [];
                     index as i

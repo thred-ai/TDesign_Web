@@ -11,6 +11,7 @@ export class Row {
     grid_row?: number
     html?: string
     backgroundColor?: string
+    corners?: string
     animations?: string
     buttons?: Array<Button>
     vids?: Array<string>
@@ -25,6 +26,7 @@ export class Row {
       grid_row?: number,
       html?: string,
       backgroundColor?: string,
+      corners?: string,
       animations?: string,
       imgLinks?: Array<string>,
       buttons?: Array<Button>,
@@ -40,6 +42,7 @@ export class Row {
       this.grid_row = grid_row ?? 0
       this.html = html ?? ''
       this.backgroundColor = backgroundColor ?? ''
+      this.corners = corners ?? '0'
       this.animations = animations ?? ''
       this.imgLinks = imgLinks ?? []
       this.buttons = buttons ?? []

@@ -138,7 +138,8 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     title: [null],
     htmlText: [null],
     html: [null],
-    backgroundColor: ['#FFFFFF'],
+    backgroundColor: [null],
+    corners: ['0'],
     imgs: [[]],
     type: [null],
     grid: [null],
@@ -168,6 +169,17 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     toolbar: [['misc', ['undo', 'redo', 'codeview']]],
     fontNames: this.storeFonts(),
   };
+
+  corners = [
+    {
+      name: 'Sharp',
+      code: '0',
+    },
+    {
+      name: 'Rounded',
+      code: 'rounded',
+    },
+  ];
 
   title = 'LAUNCHING LAYOUT BUILDER';
 
@@ -269,8 +281,9 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   }
 
   selectColor(value: string, isPrimary: boolean) {
+    console.log(this.rowForm.controls.backgroundColor);
     if (isPrimary) {
-      this.rowForm.controls.backgroundColor.setValue(value ?? "#FFFFFF");
+      this.rowForm.controls.backgroundColor.setValue(value ?? '#FFFFFF');
     } else {
       // this.rowForm.controls.backgroundColor.setValue(value ?? "#FFFFFF");
     }
@@ -444,7 +457,6 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.selectedTheme = this.selectedThemeFn();
 
-
     this.items = this.mapItems(this.admin?.collections ?? []);
 
     this.layoutForm.controls.rows.setValue(
@@ -554,7 +566,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
     this.rowForm.controls.htmlText.setValue(matchingRow.html ?? '');
 
-    this.rowForm.controls.backgroundColor.setValue(matchingRow.backgroundColor ?? '#FFFFFF');
+    this.rowForm.controls.backgroundColor.setValue(
+      matchingRow.backgroundColor ?? '#FFFFFF'
+    );
+    this.rowForm.controls.corners.setValue(matchingRow.corners ?? '0');
 
     const promises = (matchingRow.imgs ?? []).map(
       async (image: string, index: number) => {
@@ -820,6 +835,10 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     this.setRow();
   }
 
+  cornerName(c: string) {
+    return this.corners.find((x) => x.code == c)?.name ?? 'Sharp';
+  }
+
   editorOptions = {
     theme: 'hc-black',
     language: 'html',
@@ -832,17 +851,14 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
     folding: false,
   };
 
-  deleting = false
+  deleting = false;
 
-  deletePage(){
-    this.deleting = true
-    this.loadService.deletePage(
-      this.data.page,
-      (success) => {
-        this.dialogRef.close("DELETE")
-        this.deleting = false
-      },
-    );
+  deletePage() {
+    this.deleting = true;
+    this.loadService.deletePage(this.data.page, (success) => {
+      this.dialogRef.close('DELETE');
+      this.deleting = false;
+    });
   }
 
   finishedEditing(isDelete: boolean = false) {
@@ -861,7 +877,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           /style="/g,
           'style="overflow-wrap: break-word;'
         );
-        let backgroundColor = this.rowForm.controls.backgroundColor.value ?? '#FFFFFF'
+        let backgroundColor =
+          this.rowForm.controls.backgroundColor.value ?? '#FFFFFF';
+        console.log(backgroundColor);
+        let corners = this.rowForm.controls.corners.value ?? '0';
+
         let htmlTemplate = this.rowForm.controls.html.value ?? '';
 
         let imgs = (this.images ?? [])
@@ -899,6 +919,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
             matchGrid,
             html,
             backgroundColor,
+            corners,
             '',
             imgLinks,
             btns,
@@ -952,8 +973,11 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       /style="/g,
       'style="overflow-wrap: break-word;'
     );
-    let backgroundColor = this.rowForm.controls.backgroundColor.value ?? '#FFFFFF'
+    let backgroundColor =
+      this.rowForm.controls.backgroundColor.value ?? '#FFFFFF';
+    let corners = this.rowForm.controls.corners.value ?? '0';
 
+    console.log(backgroundColor);
     let imgs = (this.images ?? [])
       .filter((i) => i.img != undefined && i.img.trim() != '')
       .map((i) => i.img);
@@ -982,6 +1006,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
       matchGrid,
       html,
       backgroundColor,
+      corners,
       '',
       imgLinks,
       btns,
@@ -1014,7 +1039,24 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
 
   addBlock() {
     let rows = (this.layoutForm.controls.rows.value as Array<Row>) ?? [];
-    rows.push(new Row('', [], undefined, 0, [], 1, '', '#FFFFFF', '', [],  [], [], ''));
+    rows.push(
+      new Row(
+        '',
+        [],
+        undefined,
+        0,
+        [],
+        1,
+        '',
+        '#FFFFFF',
+        '0',
+        '',
+        [],
+        [],
+        [],
+        ''
+      )
+    );
     this.layoutForm.controls.rows.setValue(rows);
 
     this.edit(rows.length - 1);
@@ -1196,7 +1238,7 @@ export class LayoutBuilderComponent implements OnInit, OnDestroy {
           this.storeInfo?.uid
         );
       } catch (error) {
-        console.log(error)
+        console.log(error);
         this.saving = false;
       }
     }

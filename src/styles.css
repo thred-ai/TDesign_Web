@@ -11703,6 +11703,10 @@ mat-sidenav-content {
   font-family: "Source Sans Pro", sans-serif;
 }
 
+.rounded-corners {
+  border-radius: 10px !important;
+}
+
 .big-design-input-subtitle {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 0.95em;

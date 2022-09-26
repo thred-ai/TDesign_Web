@@ -13,7 +13,7 @@
 >
   <div class="w-100 h-100">
     <div
-      class="w-100"
+      class="w-100 {{ row.corners }}-corners"
       [style.background-color]="row.backgroundColor"
       *ngFor="let row of homeRows ?? []; index as i"
     >
