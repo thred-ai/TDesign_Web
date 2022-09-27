@@ -55,6 +55,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { DataTableComponent } from '../data-table/data-table.component';
 import { PageTableComponent } from '../page-table/page-table.component';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 const routes: Routes = [
   {
@@ -122,6 +123,7 @@ const routes: Routes = [
     MatDatepickerModule,
     MonacoEditorModule.forRoot(),
     SharedModule,
+    MatExpansionModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

@@ -247,11 +247,7 @@
       </mat-tab>
       <mat-tab class="tab">
         <ng-template mat-tab-label>
-          <mat-icon
-            class="example-tab-icon text-dark"
-          >
-            token</mat-icon
-          >
+          <mat-icon class="example-tab-icon text-dark"> token</mat-icon>
           <span class="ms-2 text-dark big-design-body fw-bold">
             Collections
           </span>
@@ -289,22 +285,67 @@
                   Add new
                 </p>
               </div>
-
-              <div
-                class="mb-4 mt-1 big-design-card px-0"
-                *ngFor="
-                  let collection of collections ?? []
-                    | collectionFilter: 'timestamp-asc'
-                "
+              <mat-accordion
+                class="example-headers-align rounded-panel"
+                #accordion="matAccordion"
+                [multi]="true"
               >
-                <app-collection-table
-                  [collection]="collection"
-                  [count]="collection.collectionCount ?? 0"
-                  [utility]="utilities ?? []"
-                  (viewNFT)="createNewNFT($event)"
+                <mat-expansion-panel
+                  [hideToggle]="false"
+                  #el
+                  style="object-fit: contain; overflow: hidden"
+                  class="mb-4 mt-1 big-design-card px-0"
+                  [expanded]="true"
+                  #mapanel="matExpansionPanel"
+                  *ngFor="
+                    let collection of collections ?? []
+                      | collectionFilter: 'timestamp-asc'
+                  "
                 >
-                </app-collection-table>
-              </div>
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      <div
+                        class="big-design-header align-items-center align-items-center"
+                      >
+                      <div class="d-inline-flex justify-content-start align-items-center">
+                        <p
+                        class="big-design-title single-line d-flex align-items-center justify-content-center my-auto h-100 py-2"
+                      >
+                        {{ collection?.name }}
+                      </p>
+                     
+                      </div>
+                        <p
+                          (click)="
+                            $event.stopPropagation(); createNewNFT(collection)
+                          "
+                          class="big-design-button my-auto"
+                          style="width: fit-content"
+                          matTooltip="Add New Item to Collection"
+                        >
+                          Create NFT
+                        </p>
+                      </div>
+                    </mat-panel-title>
+                    <!-- <mat-panel-description>
+                    {{ panel.subtitle }}
+                  </mat-panel-description> -->
+                  <!-- <mat-icon>
+                    {{ panel.isExpanded ? "expand_less" : "expand_more" }}
+                  </mat-icon> -->
+                  </mat-expansion-panel-header>
+
+                  <ng-template matExpansionPanelContent>
+                    <app-collection-table
+                      [collection]="collection"
+                      [count]="collection.collectionCount ?? 0"
+                      [utility]="utilities ?? []"
+                      (viewNFT)="createNewNFT($event)"
+                    >
+                    </app-collection-table>
+                  </ng-template>
+                </mat-expansion-panel>
+              </mat-accordion>
             </div>
           </div>
 
@@ -340,7 +381,12 @@
                   Add new
                 </p>
               </div>
-              <div class="mb-4 mt-1 big-design-card px-0" style="height: 400px" role="button" (click)="createNewProduct()">
+              <div
+                class="mb-4 mt-1 big-design-card px-0"
+                style="height: 400px"
+                role="button"
+                (click)="createNewProduct()"
+              >
                 <div
                   class="big-design-body px-4 pb-2 d-flex justify-content-center align-items-center h-100 w-100"
                 >
@@ -587,8 +633,6 @@
                 This card will be used for your Thred Merchant Plan.
               </div>
             </div> -->
-
-
           </div>
         </div>
       </mat-tab>
