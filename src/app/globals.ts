@@ -13,7 +13,7 @@ import { Dict } from './services/load.service';
 import { ethers } from 'ethers';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-import Authereum from "authereum";
+import Authereum from 'authereum';
 
 import Web3Modal from 'web3modal';
 import { BehaviorSubject } from 'rxjs';
@@ -22,10 +22,10 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class Globals {
+  public static channel = 'thred';
 
-  public static channel = 'thred'
-
-  public static ngrokId = '572a-2607-fea8-bd80-500-9417-3598-5d59-a6d8.ngrok.io';
+  public static ngrokId =
+    '572a-2607-fea8-bd80-500-9417-3598-5d59-a6d8.ngrok.io';
 
   public static sInfo = new BehaviorSubject<Store>(new Store());
 
@@ -33,7 +33,7 @@ export class Globals {
 
   public static storeInfo = new Store();
 
-  public static customerId?: string
+  public static customerId?: string;
 
   public static availableCurrencies: Array<Country> = [];
 
@@ -94,6 +94,7 @@ export class Globals {
   }
 
   public static async initializeProvider() {
+    console.log('hey');
     const providerOptions = {
       walletconnect: {
         package: WalletConnectProvider,
@@ -106,8 +107,7 @@ export class Globals {
             42:
               'https://kovan.infura.io/v3/' +
               '90806fec200c42fdbf783260b38f0a73',
-            137:
-              'https://polygon-mainnet.g.alchemy.com/v2/zZ_J8XGhVME0rH8TX0aiqEX8C37rlPIG',
+            137: 'https://polygon-mainnet.g.alchemy.com/v2/zZ_J8XGhVME0rH8TX0aiqEX8C37rlPIG',
             80001: 'https://rpc-mumbai.matic.today',
           },
           qrcodeModalOptions: {
@@ -127,13 +127,13 @@ export class Globals {
         },
       },
       authereum: {
-        package: Authereum // required
-      }
+        package: Authereum, // required
+      },
     };
 
     const web3Modal = new Web3Modal({
       network: 'mainnet', // optional
-      cacheProvider: true, // optional
+      cacheProvider: false, // optional
       providerOptions, // required
     });
 
@@ -142,7 +142,44 @@ export class Globals {
     try {
       const connection = await web3Modal.connect();
       provider = new ethers.providers.Web3Provider(connection);
+
+      console.log('man');
+      console.log(await provider.getSigner().getAddress())
+
+      const chainId = 137; // Polygon Mainnet
+
+      let network = await provider.getNetwork();
+      if (network.chainId !== chainId) {
+        try {
+          await provider.send('wallet_switchEthereumChain', [
+            { chainId: ethers.utils.hexValue(chainId) },
+          ]);
+        } catch (error) {
+          // This error code indicates that the chain has not been added to MetaMask
+          let err = error as any;
+          if (err.code === 4902) {
+            await provider.send('wallet_addEthereumChain', [
+              {
+                chainName: 'Polygon Mainnet',
+                chainId: ethers.utils.hexValue(chainId),
+                nativeCurrency: {
+                  name: 'MATIC',
+                  decimals: 18,
+                  symbol: 'MATIC',
+                },
+                rpcUrls: [
+                  'https://polygon-rpc.com/',
+                ],
+              },
+            ]);
+          }
+        }
+      }
+      console.log("obtuse")
     } catch (error) {
+      console.log(error);
+      console.log('oy');
+
       provider = undefined;
     }
     return provider;

@@ -46,11 +46,20 @@
         </h1>
         <p
           class="w-100 text-center mt-2 text-secondary"
+          *ngIf="mode == 0"
           style="font-size: small; font-weight: lighter; line-height: 1.5em"
         >
           Your wallet
           <span class="text-dark"> {{ address | address }}</span>
           was authenticated
+          <br />
+        </p>
+        <p
+          class="w-100 text-center mt-2 text-secondary"
+          *ngIf="mode == 1"
+          style="font-size: small; font-weight: lighter; line-height: 1.5em"
+        >
+          Your code has been authenticated
           <br />
         </p>
       </div>
@@ -77,10 +86,19 @@
         <p
           class="w-100 text-center mt-2 text-secondary"
           style="font-size: small; font-weight: lighter; line-height: 1.5em"
+          *ngIf="mode == 0"
         >
           Your wallet
           <span class="text-dark"> {{ address | address }}</span>
           was not authenticated
+          <br />
+        </p>
+        <p
+          class="w-100 text-center mt-2 text-secondary"
+          style="font-size: small; font-weight: lighter; line-height: 1.5em"
+          *ngIf="mode == 1"
+        >
+          Your code has not been authenticated
           <br />
         </p>
       </div>
@@ -100,7 +118,7 @@
             class="w-100 row row-cols-{{
               ids.length > 2 ? (ids.length > 6 ? 3 : 2) : 1
             }} row-cols-md-{{
-              ids.length > 6 ? 4 : 2
+              ids.length > 6 ? 3 : 3
             }} justify-content-start mt-2 mx-auto"
           >
             <div class="col p-2" *ngFor="let id of ids ?? []">
@@ -124,22 +142,72 @@
           </div>
         </div>
 
-        <div class="py-4">
-          <p
-            class="w-100 text-center my-4"
-            style="font-size: 17.5px; line-height: 1.2em; font-weight: lighter"
-          >
-            To continue, connect a Wallet holding
-            <b>one of the above NFTs</b>.
-          </p>
+        <div class="py-4 px-2 px-md-0 w-100 w-md-50">
+          <div class="w-100" *ngIf="mode == 0; else authCode">
+            <p
+              class="w-100 text-center my-4"
+              style="
+                font-size: 17.5px;
+                line-height: 1.2em;
+                font-weight: lighter;
+              "
+            >
+              To continue, connect your <b>Ethereum wallet</b> or use your
+              <b>Authentication Code</b>.
+            </p>
 
-          <a
-            class="btn btn-dark w-100 px-3 text-center mt-2 mb-3"
-            style="font-size: 25px; font-weight: lighter"
-            (click)="connectWallet()"
-          >
-            {{ "Connect" }}
-          </a>
+            <a
+              class="btn btn-dark w-100 px-3 text-center mt-2 mb-2"
+              style="font-size: 25px; font-weight: lighter"
+              (click)="connectWallet()"
+            >
+              {{ "Connect with Wallet" }}
+            </a>
+            <a
+              class="btn btn-dark w-100 px-3 text-center mt-0 mb-3"
+              style="font-size: 25px; font-weight: lighter"
+              (click)="useAuthCode()"
+            >
+              {{ "Use Authentication Code" }}
+            </a>
+          </div>
+          <ng-template #authCode>
+            <div class="w-100">
+              <p
+                class="w-100 text-center my-4"
+                style="
+                  font-size: 17.5px;
+                  line-height: 1.2em;
+                  font-weight: lighter;
+                "
+              >
+                Enter your <b>Authentication Code</b>.
+              </p>
+              <form [formGroup]="codeForm" class="w-100">
+                <mat-form-field
+                  class="w-100 mt-2"
+                  style="font-size: small"
+                  appearance="outline"
+                  floatLabel="never"
+                >
+                  <input
+                    type="text"
+                    matInput
+                    formControlName="code"
+                    placeholder="Auth Code"
+                    class="text-dark big-design-input-text"
+                  />
+                </mat-form-field>
+              </form>
+              <a
+                class="btn btn-dark w-100 px-3 text-center mt-0 mb-3"
+                style="font-size: 25px; font-weight: lighter"
+                (click)="submitAuthCode()"
+              >
+                {{ "Continue" }}
+              </a>
+            </div>
+          </ng-template>
         </div>
       </div>
     </ng-template>

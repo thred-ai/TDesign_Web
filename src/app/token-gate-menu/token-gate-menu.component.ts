@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ethers } from 'ethers';
 import { Globals } from '../globals';
@@ -27,19 +28,25 @@ export class TokenGateMenuComponent implements OnInit {
 
   constructor(
     private router: ActivatedRoute,
-    private loadService: LoadService
+    private loadService: LoadService,
+    private fb: FormBuilder
   ) {}
+
+  codeForm = this.fb.group({
+    code: ['', Validators.required],
+  });
 
   ngOnInit(): void {
     this.loadingInfo = true;
     this.router.queryParams.subscribe((params) => {
       try {
         this.pageInfo = JSON.parse(params.i as string);
-        console.log(this.pageInfo);
       } catch (error) {}
 
       let ids = this.pageInfo.items.map((j: any) => `${j.contract}${j.token}`);
       this.ids = ids;
+      console.log(this.pageInfo);
+
       this.loadService.getNFTsById(
         ids,
         (
@@ -61,6 +68,36 @@ export class TokenGateMenuComponent implements OnInit {
   disconnectWallet() {
     this.provider = undefined;
   }
+
+  mode = 0;
+
+  useAuthCode() {
+    this.mode = 1;
+  }
+
+  submitAuthCode() {
+    this.loading = true;
+    const verified = Object.freeze({
+      url: this.pageInfo.url,
+      access: true,
+    });
+
+    setTimeout(() => {
+      this.loading = false
+      this.success = true;
+      setTimeout(() => {
+        
+
+        if (!this.success) {
+          this.success = undefined;
+          return;
+        }
+        window.parent.postMessage(verified, '*');
+      }, 1500);
+    }, 500);
+  }
+
+  code?: any = '';
 
   async connectWallet() {
     if (!this.provider) {
@@ -94,7 +131,7 @@ export class TokenGateMenuComponent implements OnInit {
       }, 1500);
     } catch (error) {
       this.loading = false;
-      this.success = false
+      this.success = false;
 
       setTimeout(() => {
         this.success = undefined;

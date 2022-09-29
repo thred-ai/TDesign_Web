@@ -218,6 +218,8 @@ export class CreateCryptoComponent implements OnInit {
       this.nftForm.controls.royalty.disable();
     }
 
+    console.log(this.nftContract)
+
     this.utility.forEach((u) => {
       u.active = false;
     });

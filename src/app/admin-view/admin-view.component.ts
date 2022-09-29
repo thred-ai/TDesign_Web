@@ -2693,8 +2693,9 @@ export class AdminViewComponent implements OnInit, OnDestroy {
         return;
       }
     }
-    console.log(this.utilities)
+    console.log(selected)
     selected.utils = this.utilities ?? [];
+
     const modalRef = this.dialog.open(CreateCryptoComponent, {
       width: '97.5vw',
       height: '97.5vh',
